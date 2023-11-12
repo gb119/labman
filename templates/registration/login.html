@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+{% load django_bootstrap5 %}
+{% block content %}
+
+{% if form.errors %}
+<p>Your username and password didn't match. Please try again.</p>
+{% endif %}
+
+{% if next %}
+    {% if user.is_authenticated %}
+    <p>Your account doesn't have access to this page. To proceed,
+    please login with an account that has access.</p>
+    {% else %}
+    <p>Please login to see this page.</p>
+    {% endif %}
+{% endif %}
+
+<form method="post" action="{% url 'core_login' %}" role="form" aria-label="Login Form">
+{% csrf_token %}
+<div class="col-md-8">{% bootstrap_field form.username layout="horizontal" size="md" addon_after="@leeds.ac.uk" %}</div>
+<div class="col-md-8" style="margin-top: 6px;">{% bootstrap_field form.password layout="horizontal" size="md"  %}</div>
+<div class="col-md-8" style="margin-top: 12px;">
+<div class="row justify-content-center">
+<div class="col-2">
+{% bootstrap_button "Cancel" button_type="reset"  %}
+</div>
+<div class="col-1">
+{% bootstrap_button "Login" button_type="submit" button_class="btn-primary" icon="glyphicon glyphicon-share-alt" %}
+</div>
+</div>
+<input type="hidden" name="next" value="{{ next }}" />
+</form>
+</div>
+{% endblock content %}

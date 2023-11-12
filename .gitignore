@@ -1,0 +1,32 @@
+# do NOT track Python compilation files
+*.py[cod]
+__python__/*
+
+# do NOT track tox's testing folder
+.tox
+
+# do NOT track coverage files/folders
+.coverage
+coverage_html
+
+# do NOT track compiled language files
+*.mo
+*.pot
+
+# I started relying on putting temporary notes into TODO files
+*.todo
+
+# Runtime files
+run/**
+# Secrets
+**/secrets.py
+**/secrets.pyc
+**/SECRET
+#Compiled files
+**/__pycache__/**
+#Fixtures
+**/*.json
+**/*.sample
+**/*.pyc
+**/migrations/**
+.spyproject/**

@@ -1,0 +1,65 @@
+{% load django_bootstrap5 %}
+{% load labman_tags %}
+<form id="booking" method="POST" action="{{ request.path }}">
+{% csrf_token %}
+{% bootstrap_form form layout="horizontal" %}
+<div class="row justify-content-between">
+<div class="col-md-6">
+{% bootstrap_button "Cancel" button_type="reset"  button_class="btn-secondary bi bi-x" name="cancel" %}
+{% if this %}
+{% bootstrap_button "Edit" button_type="submit" button_class="btn-primary bi bi-pencil" name="book" %}
+{% else %}
+{% bootstrap_button "Book" button_type="submit" button_class="btn-primary bi bi-bookmark-plus" name="book" %}
+{% endif %}
+</div>
+<div class="col-md-3">
+{% if this %}
+{% bootstrap_button "Delete" button_type="button" button_class="btn-danger bi bi-trash" name="delete" %}
+{% endif %}
+</div>
+</div>
+</form>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.12.0/moment.js"></script>
+{{ form.media }}
+<script>
+function sleep(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+}
+$(document).on("dal-element-initialized", function (e) {
+    if (e.detail.element.id === "id_user") {
+        $("#id_user").select2("open").trigger("focus");
+    }
+});
+$(':input[name$=user]').on('change', function() {
+    setTimeout(function() {sleep(250); $("#booking  button.btn-primary").focus();},0);
+    $(':focus').blur();
+    return true;
+
+});
+</script>
+<script>
+(function($) {
+    $('#add-form').click(function() {
+        var index = $('#id_inline_test_models-TOTAL_FORMS').val()
+        var newTable = $('#id_inline_test_models-__prefix__-DELETE').parents('table').clone()
+        newTable.find(':input').each(function() {
+            for (attr of ['name', 'id'])
+                $(this).attr(
+                    attr,
+                    $(this).attr(attr).replace('__prefix__', index)
+                )
+        })
+        newTable.insertBefore($(this))
+        $('#id_inline_test_models-TOTAL_FORMS').val(
+            parseInt($('#id_inline_test_models-TOTAL_FORMS').val()) + 1
+        )
+        newTable.slideDown()
+    })
+})($)
+$("button[name='delete']").on("click", function() {
+    window.location.replace("/bookings/delete/{{ this.pk }}/");
+})
+$("button[name='cancel']").on("click", function() {
+    $("#dialog").dialog("close");
+})
+</script>

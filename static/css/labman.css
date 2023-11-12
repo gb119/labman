@@ -1,0 +1,152 @@
+/* LabMAN custom styling */
+body {
+    background: #f4f2f0;
+}
+
+header#masthead {
+    background: #212121;
+    display: block;
+    clear: both;
+    height: 52px;
+    color: white;
+}
+.logo-mark {
+    margin: 10px;
+}
+.logo-full {
+    display: none;
+}
+
+div.local-header {
+    background: #b31b1b;
+    color: white;
+}
+
+div.local-header-title {
+    display: table-cell;
+    vertical-align: middle;
+    padding: 10px 40px 10px 0;
+}
+
+div.local-header a {
+    font-variant-numeric: lining-nums;
+    font-feature-settings: "lnum";
+    background-color: transparent;
+    text-decoration: none;
+    margin: 0;
+    font-family: freight-sans-pro,sans-serif;
+    font-size: 16px;
+    border: 0;
+    color: #fff;
+}
+
+
+button.bi-search, button.bi-chevron-double-up {
+    margin: 10px;
+    font-size:16px;
+    background: transparent;
+    color: white;
+    border: 0;
+}
+
+button.bi-search span, button.bi-chevron-double-up span {
+    display: none;
+}
+
+#btn__nav {
+    margin-top: 28px;
+    font-size:24pt;
+    background: transparent;
+    color: white;
+    border: 0;
+}
+
+#btn__nav  span {
+    display: none;
+}
+
+nav#mainmenu {
+    display: none
+}
+
+div.navbar-inner {
+    margin: -12 0 0 -12;
+}
+
+li.nav-item a, nav-link a {
+    font-family: var(--bs-font-sans-serif);
+    font-size: 12pt;
+    font-weight: 400;
+    line-height: 1.5;
+    white-space: nowrap;
+    display: block;
+    padding: .5rem 1rem;
+    text-decoration: none;
+    color: rgba(0,0,0,.85);
+}
+main {
+    background: white;
+    padding-bottom: 10px;
+}
+
+footer {
+    font-family: freight-sans-pro,sans-serif;
+    color: #4a4a4a;
+    font-weight: 400;
+    text-rendering: optimizeLegibility;
+    font-size: 10pt;
+    box-sizing: border-box;
+    font-variant-numeric: lining-nums;
+    font-feature-settings: "lnum";
+    background: #111;
+    padding: 8px 0;
+    margin-top:0;
+}
+footer ul.navbar-nav li.nav-item a,footer  a:visited, footer  a:hover  {
+    background-color: transparent;
+    text-decoration: none;
+    color: white;
+    padding-left: 20px;
+    padding-rightL 20px;
+    font-size: 9pt;
+}
+@media (min-width: 480px) {
+    .logo-full {
+        display: block;
+        margin: 10px;
+    }
+    .logo-mark {
+        display: none;
+    }
+    header#masthead {
+        height: 73px;
+    }
+    div.local-header a {
+        font-size: 18px;
+    }
+    button.bi-search, button.bi-chevron-double-up {
+        margin: 12px;
+        font-size:18px;
+    }
+    #btn__nav {
+        display: none;
+    }
+    nav#mainmenu {
+        display: block;
+    }
+}
+@media (min-width: 768px) {
+    div.local-header a {
+        font-size: 20px;
+    }
+    button.bi-search, button.bi-chevron-double-up  {
+        margin: 12px;
+        font-size: 24px;
+    }
+    nav#mainmenu {
+        display: block;
+    }
+    li.nav-item a, nav-link a {
+        font-size: 14pt;
+    }
+}
