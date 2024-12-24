@@ -9,7 +9,7 @@ from django.urls import path, register_converter
 
 
 class FloatUrlParameterConverter:
-    regex = "[0-9]+\.?[0-9]+"
+    regex = r"[0-9]+\.?[0-9]+"
 
     def to_python(self, value):
         return float(value)

@@ -194,7 +194,7 @@ may contain sensible or useless information, so you will not want to keep this
 files in version control. A ``.gitignore``-file is prepared.
 
 This directory will contain the SQLite database file (if you keep the provided
-``dev``-settings) and the *SECRET_KEY* of Django. For a detailled explanation
+``dev``-settings) and the *SECRET_KEY* of Django. For a detailed explanation
 see :ref:`label-project-settings`.
 
 ``run/media/``

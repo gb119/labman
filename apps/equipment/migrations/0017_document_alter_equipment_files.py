@@ -34,7 +34,7 @@ class Migration(migrations.Migration):
                 ("title", models.CharField(max_length=245, unique=True)),
                 ("version", models.IntegerField(default=0)),
                 (
-                    "catagory",
+                    "category",
                     models.CharField(
                         choices=[
                             ("ra", "Risk Assessment"),

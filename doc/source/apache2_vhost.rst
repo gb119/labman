@@ -14,13 +14,13 @@ Usage
 As you may notice, there are three different types of placeholders.
 
 ``[[placeholder_name]]``
-    These placeholders must be filled manually. Most noticable is line 4,
+    These placeholders must be filled manually. Most noticeable is line 4,
     where you **must** set the server name.
 
     ``ServerName    [[SERVER_NAME]]``
 
 ``${placeholder_name}``
-    These placeholders are filled by Apache itsself. Only mess with them, if
+    These placeholders are filled by Apache itself. Only mess with them, if
     you do exactly know what you are doing.
 
 ``{{ placeholder_name }}``

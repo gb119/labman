@@ -1,25 +1,19 @@
-name: django
 channels:
   - defaults
-  - phygbu
-  - conda-forge
 dependencies:
-  - python=3.11
-  - django=4.2.3
+  - python=3.13
+  - django=4.2
   - mamba
   - ipython
-  - ca-certificates
-  - openssl
-  - certifi
   - django-mathfilters
-  - django-import-export=3.2.0
+  - django-import-export
   - django-suit
   - django-tinymce
-  - tablib=3.5.0
+  - tablib
   - djangorestframework
   - django-ajax-selects
   - django-constance
-  - django-grappelli=3.0.6
+  - django-grappelli
   - django-photologue
   - django-simple-file-handler
   - psycopg2
@@ -30,4 +24,14 @@ dependencies:
   - django-picklefield
   - django-ical
   - django-autocomplete-light
-prefix: C:\ProgramData\Anaconda3\envs\django
+  - django-bootstrap-datepicker-plus
+  - django-floppyforms
+  - ca-certificates
+  - certifi
+  - openssl
+  - gunicorn
+  - multiprocess
+  - black
+  - isort
+  - codespell
+prefix: /usr/lib/miniconda3/envs/django

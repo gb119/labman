@@ -1,13 +1,13 @@
 PYTHON_SETUP	=	python setup.py
 
 isort:
-	find . -name '*.py' -exec isort --profile black {} \;
+	find . -name '*.py' | xargs -I {} echo '"{}"' | xargs isort --profile black
 
 spell:
-	-find . -name '*.py' | xargs codespell -w
+	find . -name '*.py' | xargs -I {} codespell '"{}"'
 
 black: isort
-	find . -name '*.py' -exec black -l 119 {} \;
+	find . -name '*.py' | xargs -I {} echo '"{}"' | xargs black -l 119
 
 
 check:
@@ -15,7 +15,7 @@ check:
 
 commit:	_commit
 
-_commit: spell isort black check
+_commit: isort black check
 	git add apps/
 	git commit -a
 	git push origin

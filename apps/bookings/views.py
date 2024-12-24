@@ -68,7 +68,9 @@ def delta_time(time_1: Time, time_2: Time) -> int:
     return dtt.total_seconds()
 
 
-def datetime_to_coord(target: dt, date_vec: List[Date], time_vec: List[Time]) -> Tuple[int, int]:
+def datetime_to_coord(
+    target: dt, date_vec: List[Date], time_vec: List[Time]
+) -> Tuple[int, int]:
     """Workout a target datetime's position in time_vec,date_vec."""
     try:
         target_date = dt.combine(target.date(), Time(), tzinfo=DEFAULT_TZ).date()
@@ -81,7 +83,9 @@ def datetime_to_coord(target: dt, date_vec: List[Date], time_vec: List[Time]) ->
     if target.tzinfo != DEFAULT_TZ:
         target = target.astimezone(DEFAULT_TZ)
     target = target.time()
-    ts_vec = sorted([(abs(delta_time(target, tt)), ix) for ix, tt in enumerate(time_vec, start=1)])
+    ts_vec = sorted(
+        [(abs(delta_time(target, tt)), ix) for ix, tt in enumerate(time_vec, start=1)]
+    )
     row = ts_vec[0][1]
     print(f"{target=}\n{ts_vec=}")
     return row, col
@@ -103,11 +107,15 @@ class CalTable(Table):
         self[:, 0].header = True
         for index_row, date in enumerate(date_vec, start=1):
             self[0, index_row].content = date.strftime("%a %d %b")
-            self[0, index_row].attrs_dict.update({"style": "width: 13%; text-align: center;"})
+            self[0, index_row].attrs_dict.update(
+                {"style": "width: 13%; text-align: center;"}
+            )
             for index_col, time in enumerate(time_vec, start=1):
                 slot_dt = dt.combine(date, time)
                 self[index_col, index_row].attrs_dict["data_ts"] = slot_dt.timestamp()
-                self[index_col, index_row].attrs_dict["data_dt"] = slot_dt.strftime("%Y-%m-%d %I:%M %p")
+                self[index_col, index_row].attrs_dict["data_dt"] = slot_dt.strftime(
+                    "%Y-%m-%d %I:%M %p"
+                )
         for index_col, time in enumerate(time_vec, start=1):
             self[index_col, 0].content = time.strftime("%I:%M %p")
         self.classes += " col-md-10"
@@ -130,7 +138,9 @@ class CalendarView(IsAuthenticaedViewMixin, views.generic.DetailView):
         table = CalTable(
             date_vec=date_vec,
             time_vec=time_vec,
-            table_contents=np.array([["&nbsp;"] * (len(date_vec) + 1)] * (len(time_vec) + 1)),
+            table_contents=np.array(
+                [["&nbsp;"] * (len(date_vec) + 1)] * (len(time_vec) + 1)
+            ),
         )
         table.classes += " table-bordered"
         target_range = DateTimeTZRange(
@@ -139,7 +149,9 @@ class CalendarView(IsAuthenticaedViewMixin, views.generic.DetailView):
         )
         eqipment = context["this"]
         for entry in eqipment.bookings.filter(slot__overlap=target_range):
-            row_start, col_start = datetime_to_coord(entry.slot.lower, date_vec, time_vec)
+            row_start, col_start = datetime_to_coord(
+                entry.slot.lower, date_vec, time_vec
+            )
             row_end, col_end = datetime_to_coord(entry.slot.upper, date_vec, time_vec)
             if col_start == col_end:  # single day
                 table[row_start, col_start].rowspan = max(row_end - row_start, 1)
@@ -201,7 +213,9 @@ class BookingDialog(IsAuthenticaedViewMixin, views.generic.UpdateView):
         slot = DateTimeTZRange(lower=start, upper=end)
         print(f"{slot=}")
         try:
-            ret = models.BookingEntry.objects.get(equipment__pk=equipment, slot__overlap=slot)
+            ret = models.BookingEntry.objects.get(
+                equipment__pk=equipment, slot__overlap=slot
+            )
             print(f"Found slot {ret.slot}")
             return ret
         except ObjectDoesNotExist:
@@ -211,7 +225,12 @@ class BookingDialog(IsAuthenticaedViewMixin, views.generic.UpdateView):
     def get_initial(self):
         """Make initial entry."""
         if this := self.get_object():
-            return {"equipment": this.equipment, "slot": this.slot, "user": this.user, "booker": this.booker}
+            return {
+                "equipment": this.equipment,
+                "slot": this.slot,
+                "user": this.user,
+                "booker": this.booker,
+            }
         equipment = Equipment.objects.get(pk=self.kwargs.get("equipment"))
         start = dt.fromtimestamp(self.kwargs.get("ts"), DEFAULT_TZ)
         end = start + td(hours=3)  # TODO implement shifts
@@ -225,6 +244,10 @@ class BookingDialog(IsAuthenticaedViewMixin, views.generic.UpdateView):
     def get_success_url(self):
         """Work out the booking calendar we came from."""
         equipment = self.kwargs.get("equipment")
-        start = dt.fromtimestamp(self.kwargs.get("ts"), DEFAULT_TZ).date().strftime("%Y%m%d")
+        start = (
+            dt.fromtimestamp(self.kwargs.get("ts"), DEFAULT_TZ)
+            .date()
+            .strftime("%Y%m%d")
+        )
 
         return f"/bookings/cal/{equipment}/{start}/"
