@@ -1,0 +1,33 @@
+name: django
+channels:
+  - defaults
+  - phygbu
+  - conda-forge
+dependencies:
+  - python=3.11
+  - django=4.2.3
+  - mamba
+  - ipython
+  - ca-certificates
+  - openssl
+  - certifi
+  - django-mathfilters
+  - django-import-export=3.2.0
+  - django-suit
+  - django-tinymce
+  - tablib=3.5.0
+  - djangorestframework
+  - django-ajax-selects
+  - django-constance
+  - django-grappelli=3.0.6
+  - django-photologue
+  - django-simple-file-handler
+  - psycopg2
+  - django-sitetree
+  - django-bootstrap5
+  - django-extra-views
+  - simple_html_table
+  - django-picklefield
+  - django-ical
+  - django-autocomplete-light
+prefix: C:\ProgramData\Anaconda3\envs\django

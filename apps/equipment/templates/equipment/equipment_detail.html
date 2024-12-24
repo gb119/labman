@@ -1,0 +1,117 @@
+{% extends "base.html" %}
+{% block css %}
+{{ block.super }}
+<style>
+div.bg-secondary h5 {
+    color: white;
+    margin: 8px;
+}
+</style>}
+{% endblock css %}
+{% block title %}{{ block.super }}: Detail on {{ equipment.title }}{% endblock %}
+{% block content %}
+<h2>{{ equipment.title }}</h2>
+<main>
+<ul class="nav nav-tabs" id="profile_tabs" role="tablist">
+  <li class="nav-item" role="presentation">
+    <button class="nav-link active" id="details-tab" data-bs-toggle="tab" data-bs-target="#details" type="button" role="tab" aria-controls="details" aria-selected="true">Details</button>
+  </li>
+  <li class="nav-item" role="presentation">
+    <button class="nav-link" id="pages-tab" data-bs-toggle="tab" data-bs-target="#pages" type="button" role="tab" aria-controls="pages" aria-selected="false">Information</button>
+  </li>
+  <li class="nav-item" role="presentation">
+    <button class="nav-link" id="resources-tab" data-bs-toggle="tab" data-bs-target="#resources" type="button" role="tab" aria-controls="resources" aria-selected="false">Files</button>
+  </li>
+  <li class="nav-item" role="presentation">
+    <button class="nav-link" id="userlist-tab" data-bs-toggle="tab" data-bs-target="#userlist" type="button" role="tab" aria-controls="userlist" aria-selected="false">Userlist</button>
+  </li>
+</ul>
+
+<div class="tab-content">
+    <div class="tab-pane active" id="details" role="tabpanel" aria-labelledby="details-tab">
+        <div class="float-end">
+            {% if equipment.thumbnail %}
+                {{ equipment.thumbnail }}
+            {% endif %}
+        </div>
+        <div class="col-md-9">
+            <div class="row">
+                <div class="col col-md-3">Equipment :</div><div class="col col-md-9">{{ equipment.name|safe }}</div>
+            </div>
+            <div class="row">
+                <div class="col col-md-3">Description :</div><div class="col col-md-9">{{ equipment.description|safe }}</div>
+            </div>
+            <div class="row">
+                <div class="col col-md-3">Location :</div><div class="col col-med-9">{{ equipment.location }}</div>
+            </div>
+            <div class="row">
+                <div class="col col-md-3">Owner :</div><div class="col col-md-9">
+                    {% if equipment.owner %}
+                        <a href="/accounts/user/{{ equipment.owner.username }}">{{ equipment.owner.display_name }}</a>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="row">
+                <div class="col col-md-3">Schedule :</div><div class="col col-med-9"><a href="{{ equipment.schedule }}">Booking Schedule</a></div>
+            </div>
+        </div>
+    </div>
+    <div class="tab-pane" id="resources" role="tabpanel" aria-labelledby="resources-tab">
+        {% for document in equipment.files.all %}
+            <div class="row">
+                <div class="col col-md-6">
+                    <h5><a href="{{ document.file_url }}" target=_NEW>{{ document.title }}</a></h5>
+                    <p>{{ document.catagory_name }}</p>
+                </div>
+                <div class="col col-md-6">
+                    {{ document.extra_text|safe }}
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+    <div class="tab-pane" id="pages" role="tabpanel" aria-labelledby="pages-tab">
+        <ul class="nav nav-tabs" id="pages_tabs" role="tablist">
+            {% for page in equipment.pages.all %}
+                <li class="nav-item " role="presentation">
+                    <button class="nav-link {% if forloop.first %}active{% endif %}" id="{{ page.slug }}-tab" data-bs-toggle="tab" data-bs-target="#{{ page.slug }}" type="button" role="tab" aria-controls="{{ page.slug }}" aria-selected="true">{{ page.title }}</button>
+                </li>
+            {% endfor %}
+        </ul>
+        <div class="tab-content">
+            {% for page in equipment.pages.all %}
+                <div class="tab-pane {% if forloop.first %}active{% endif %}" id="{{ page.slug }}" role="tabpanel" aria-labelledby="{{ page.slug }}-tab">
+                    {{ page.content| safe}}
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+   <div class="tab-pane" id="userlist" role="tabpanel" aria-labelledby="userlist-tab">
+        <div class="row bg-secondary"><div class="col col-md-3"><h5>User</h5></div>
+        <div class="col col-md-3"><h5>Role</h5></div>
+        <div class="col col-md-3"><h5>Signed</h5></div></div>
+        {% for entry in equipment.users.all %}
+            <div class="row">
+                <div class="col col-md-3">
+                <a href="/accounts/user/{{ entry.user.username }}">
+                {% if entry.user.mugshot %}
+                    <img src="{{ entry.user.mugshot.get_thumbnail_url }}" alt="Picture of {{ entry.user.display_name" />
+                {% endif %}
+                {{ entry.user.display_name }}
+                </a>
+                </div><div class="col col-md-3">{{ entry.role }}</div>
+                <div class="col col-md-3">
+                    {% if entry.hold %}
+                        Sign off required
+                    {% else %}
+                        {{ entry.updated }}
+                    {% endif %}
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+</div>
+
+
+</main>
+
+{% endblock content %}
