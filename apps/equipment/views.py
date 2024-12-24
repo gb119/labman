@@ -61,7 +61,6 @@ class SignOffFormSetView(IsAuthenticaedViewMixin, FormSetView):
 
 
 class EquipmentDetailView(views.generic.DetailView):
-
     """Templated view for Equipment detail."""
 
     template_name = "equipment/equipment_detail.html"

@@ -16,7 +16,6 @@ from .models import Account, ResearchGroup
 
 @register("groups")
 class ResearchGroupLookup(LookupChannel):
-
     """Lookup for the ResearchGroup model by name or code."""
 
     model = ResearchGroup
@@ -36,14 +35,13 @@ class ResearchGroupLookup(LookupChannel):
         return obj.name
 
     def check_auth(self, request):
-        """Reuqire a logged in user."""
+        """Require a logged in user."""
         if not request.user.is_authenticated:
             raise PermissionDenied
 
 
 @register("account")
 class AccountLookup(LookupChannel):
-
     """Lookup Account models by name or username or email."""
 
     model = Account
@@ -64,13 +62,12 @@ class AccountLookup(LookupChannel):
         return obj.display_name
 
     def check_auth(self, request):
-        """Reuqire a logged in user."""
+        """Require a logged in user."""
         if not request.user.is_authenticated:
             raise PermissionDenied
 
 
 class UserAutocomplete(autocomplete.Select2QuerySetView):
-
     """Lookup the user for the given equipment."""
 
     def get_queryset(self):

@@ -88,7 +88,6 @@ def datetime_to_coord(target: dt, date_vec: List[Date], time_vec: List[Time]) ->
 
 
 class CalTable(Table):
-
     """Subclass Table to mae something suitable for making a calendar from."""
 
     def __init__(self, *args, date_vec=None, time_vec=None, **kargs):
@@ -115,7 +114,6 @@ class CalTable(Table):
 
 
 class CalendarView(IsAuthenticaedViewMixin, views.generic.DetailView):
-
     """Make a calendar display for an equipment item and date."""
 
     template_name = "bookings/equipment_calendar.hhtml"
@@ -169,7 +167,6 @@ class CalendarView(IsAuthenticaedViewMixin, views.generic.DetailView):
 
 
 class BookingDelete(IsAuthenticaedViewMixin, views.generic.DetailView):
-
     """Handles deleting a single booking entry by the booking id."""
 
     model = models.BookingEntry
@@ -189,7 +186,6 @@ class BookingDelete(IsAuthenticaedViewMixin, views.generic.DetailView):
 
 
 class BookingDialog(IsAuthenticaedViewMixin, views.generic.UpdateView):
-
     """Prdoce the html for a booking form in the dialog."""
 
     model = models.BookingEntry

@@ -1,6 +1,6 @@
 # Python imports
-import sys
 import socket
+import sys
 from pathlib import Path
 
 # Import some utility functions
@@ -172,7 +172,7 @@ except socket.gaierror:
     DNS_NAME = "loxcalhost"
     IP_ADDR = "127.0.0.1"
 
-ALLOWED_HOSTS = [DNS_NAME, IP_ADDR, "localhost", "127.0.0.1"]
+ALLOWED_HOSTS = [DNS_NAME, IP_ADDR, "localhost", "127.0.0.1", "localhost:8443", "stoner-intranet-dev.leeds.ac.uk"]
 CSRF_TRUSTED_ORIGINS = [f"https://{x}" for x in ALLOWED_HOSTS]
 
 # #### Session Settings
@@ -213,6 +213,7 @@ try:
     SECRET_KEY = SECRET_FILE.read_text().strip()
 except IOError:
     try:
+        # Django imports
         from django.utils.crypto import get_random_string
 
         chars = "abcdefghijklmnopqrstuvwxyz0123456789!$%&()=+-_"
@@ -306,7 +307,7 @@ for app in CUSTOM_APPS:
         for setting in dir(app_settings):
             if setting == setting.upper():
                 set_val = getattr(app_settings, setting)
-                if isinstance(set_val, dict):  # Merge app.seetings
+                if isinstance(set_val, dict):  # Merge app.settings
                     locals()[setting].update(set_val)
                 elif isinstance(set_val, (list, tuple)):  # append app.settings
                     locals()[setting] = locals()[setting] + set_val

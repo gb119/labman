@@ -24,7 +24,6 @@ MANAGER = 1000
 
 
 class Project(models.Model):
-
     """Represent a chargeable project."""
 
     name = models.CharField(max_length=80)
@@ -66,7 +65,6 @@ class ResearchGroup(models.Model):
 
 
 class Account(AbstractUser):
-
     """Replacement for standard user account model that supports extra attributes."""
 
     class Meta:
@@ -153,7 +151,6 @@ class Account(AbstractUser):
 
 
 class Role(models.Model):
-
     """Class to describe a role within the user management system."""
 
     class Meta:

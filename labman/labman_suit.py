@@ -1,6 +1,10 @@
+# Python imports
 from os.path import basename, dirname
 
+# Django imports
 from django.apps import AppConfig
+
+# external imports
 from suit.apps import DjangoSuitConfig
 from suit.menu import ChildItem, ParentItem
 

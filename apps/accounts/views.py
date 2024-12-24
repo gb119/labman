@@ -13,7 +13,6 @@ from .models import Account
 
 # Create your views here.
 class MyAccountView(IsAuthenticaedViewMixin, views.generic.DetailView):
-
     """A template detail view that gets the current logged in user."""
 
     context_object_name = "account"
@@ -25,7 +24,6 @@ class MyAccountView(IsAuthenticaedViewMixin, views.generic.DetailView):
 
 
 class UserAccountView(IsAuthenticaedViewMixin, views.generic.DetailView):
-
     """A template detail view that gets a specific user."""
 
     context_object_name = "account"

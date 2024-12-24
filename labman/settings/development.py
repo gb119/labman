@@ -1,6 +1,7 @@
 # Python imports
 from os.path import join
 
+# app imports
 # project imports
 from .common import *
 from .secrets import DATABASES
@@ -13,12 +14,12 @@ from .secrets import DATABASES
 DEBUG = True
 
 # allow all hosts during development
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = ["*"]
 
 # adjust the minimal login
-LOGIN_URL = 'core_login'
-LOGIN_REDIRECT_URL = '/'
-LOGOUT_REDIRECT_URL = 'core_login'
+LOGIN_URL = "core_login"
+LOGIN_REDIRECT_URL = "/"
+LOGOUT_REDIRECT_URL = "core_login"
 
 
 # ##### APPLICATION CONFIGURATION #########################

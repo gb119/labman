@@ -140,13 +140,13 @@ class DocumentSignOffAdmin(ImportExportModelAdmin):
 
 @register(Document)
 class DocumentAdmin(ImportExportModelAdmin):
-    """Admin interface defintion dor Document objects."""
+    """Admin interface definition dor Document objects."""
 
     actions = None
     search_fields = [
         "title",
         "extra_text",
-        "catagory",
+        "category",
     ]
     readonly_fields = [
         "created",
@@ -161,7 +161,7 @@ class DocumentAdmin(ImportExportModelAdmin):
                 "classes": ("suit-tab", "suit-tab-basic"),
                 "fields": [
                     "title",
-                    ("catagory", "version"),
+                    ("category", "version"),
                     "extra_text",
                     "saved_file",
                 ],
@@ -180,7 +180,7 @@ class DocumentAdmin(ImportExportModelAdmin):
     ]
     list_display = [
         "title",
-        "catagory",
+        "category",
         "version",
         "file_link",
         "created",
@@ -188,7 +188,7 @@ class DocumentAdmin(ImportExportModelAdmin):
     ]
     list_filter = [
         "title",
-        "catagory",
+        "category",
         "version",
         "created",
         "updated",
@@ -196,7 +196,7 @@ class DocumentAdmin(ImportExportModelAdmin):
     suit_list_filter_horizontal = list_filter
 
     ordering = [
-        "catagory",
+        "category",
         "title",
         "version",
     ]
@@ -280,7 +280,7 @@ class EquipmentAdmin(ImportExportModelAdmin):
             },
         ),
         (
-            "Booking Polcies",
+            "Booking Policies",
             {
                 "classes": ("suit-tab", "suit-tab-policies"),
                 "fields": [

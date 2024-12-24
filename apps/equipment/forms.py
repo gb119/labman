@@ -15,7 +15,6 @@ from .models import Document
 
 
 class SignOffForm(forms.Form):
-
     """Form for signing off the documents."""
 
     user = forms.ModelChoiceField(Account.objects.all(), widget=forms.HiddenInput)

@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 """Models for representing objects related to lab equipment items - documents, locations, and so forth."""
+# Python imports
 from datetime import time
 
 # Django imports
@@ -10,7 +11,6 @@ from django.db.models.constraints import CheckConstraint
 from django.utils.html import format_html
 from django.utils.text import slugify
 
-
 # external imports
 from accounts.models import Account, Role
 from django_simple_file_handler import models as dsfh
@@ -20,39 +20,38 @@ from sortedm2m.fields import SortedManyToManyField
 
 
 class Document(dsfh.BaseMixin, dsfh.TitledMixin, dsfh.PublicMixin, dsfh.RenameMixin, models.Model):
-
     """Like a django-simple-file-handler.PublicDocument, but with additional fields to store a category,
     and timestamps."""
 
-    CATGORIES = [
+    CATEGORIES = [
         ("ra", "Risk Assessment"),
         ("sop", "Standard Operator Procedure"),
         ("manual", "Manual/Instructions"),
         ("other", "Other"),
     ]
-    CATAGORIES_DICT = dict(CATGORIES)
+    CATAGORIES_DICT = dict(CATEGORIES)
 
     version = models.IntegerField(default=0)  # Manual version number used to determine if users need to re-ack docs
-    catagory = models.CharField(max_length=20, choices=CATGORIES, default="other")
+    category = models.CharField(max_length=20, choices=CATEGORIES, default="other")
 
     subdirectory_path = dsfh.custom_subdirectory("documents/equipment/")
 
     class Meta:
-        verbose_name = "document (catagorized)"
-        verbose_name_plural = "documents (catagorized)"
+        verbose_name = "document (categorized)"
+        verbose_name_plural = "documents (categorized)"
 
     @property
     def catagory_name(self):
         """Returns the document category as a human readable string."""
-        return self.CATAGORIES_DICT[self.catagory]
+        return self.CATAGORIES_DICT[self.category]
 
     def __str__(self):
         """Return a user friendly name for the file."""
-        return f"{self.title} ({self.CATAGORIES_DICT[self.catagory]})"
+        return f"{self.title} ({self.CATAGORIES_DICT[self.category]})"
 
     def save(self, force_insert=False, force_update=False, using=None, update_fields=None):
         """If version has increased then put a hold on all userlist entries of the associated equipment."""
-        if self.pk and self.catagory in ["ra", "sop"]:
+        if self.pk and self.category in ["ra", "sop"]:
             old = Document.objects.get(pk=self.pk)
             if old.version != self.version:
                 print(f"Version changed {self.title} {old.version}->{self.version}")
@@ -66,7 +65,6 @@ class Document(dsfh.BaseMixin, dsfh.TitledMixin, dsfh.PublicMixin, dsfh.RenameMi
 
 
 class Location(NamedObject):
-
     """Handles a physical location or room."""
 
     class Meta:
@@ -100,7 +98,6 @@ class Location(NamedObject):
 
 
 class Shift(NamedObject):
-
     """Class that represents time shifts for booking the equipment."""
 
     class Meta:
@@ -119,7 +116,6 @@ class Shift(NamedObject):
 
 
 class Equipment(NamedObject):
-
     """Class for representing an Equipment item."""
 
     class Meta:
@@ -141,17 +137,17 @@ class Equipment(NamedObject):
     @property
     def ras(self):
         """Return the risk assessment documents."""
-        return self.files.filter(catagory="ra")
+        return self.files.filter(category="ra")
 
     @property
     def sops(self):
         """Return the standard operating process documents."""
-        return self.files.filter(catagories="sop")
+        return self.files.filter(categories="sop")
 
     @property
     def manuals(self):
         """Return the documents that are listed as manuals."""
-        return self.files.filter(catagory="manual")
+        return self.files.filter(category="manual")
 
     @property
     def thumbnail(self):
@@ -169,7 +165,6 @@ class Equipment(NamedObject):
 
 
 class UserListEntry(models.Model):
-
     """A single entry of a user list - a through table for a many to many field."""
 
     class Meta:
@@ -211,7 +206,6 @@ class UserListEntry(models.Model):
 
 
 class DocumentSignOff(models.Model):
-
     """Records the user signing off that they have read a document."""
 
     document = models.ForeignKey(Document, on_delete=models.CASCADE, related_name="signatures")
@@ -220,7 +214,7 @@ class DocumentSignOff(models.Model):
     created = models.DateTimeField(auto_now_add=True)
 
     class Meta:
-        unique_together = ["document", "version", "user"]  # Enforce unique docuemnt/user/version
+        unique_together = ["document", "version", "user"]  # Enforce unique document/user/version
 
     def __str__(self):
         return f"{self.document.title} v{self.version} ({self.user.display_name}) {self.created}"

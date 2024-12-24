@@ -14,6 +14,7 @@ app_name = basename(dirname(__file__))
 
 class FloatUrlParameterConverter:
     """Allows paths to capture floats in urls."""
+
     regex = r"[0-9]+\.?[0-9]+"
 
     def to_python(self, value):

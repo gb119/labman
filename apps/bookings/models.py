@@ -54,7 +54,6 @@ class UserBookingHeld(ValidationError):
 
 
 class BookingPolicy(NamedObject):
-
     """Represent a policy about booking equipment."""
 
     class Meta:
@@ -154,7 +153,6 @@ class BookingPolicy(NamedObject):
 
 
 class BookingEntry(models.Model):
-
     """Represent a single booking entry for a user against an equipment item."""
 
     class Meta:
@@ -257,6 +255,4 @@ class BookingEntry(models.Model):
     def save(self, force_insert=False, force_update=False, using=None, update_fields=None):
         """Force model.clean to be called."""
         self.clean()
-        super().save(
-            force_insert=force_insert, force_update=force_update, using=using, update_fields=update_fields
-        )
+        super().save(force_insert=force_insert, force_update=force_update, using=using, update_fields=update_fields)

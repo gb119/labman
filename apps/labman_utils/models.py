@@ -39,7 +39,6 @@ def patch_model(model, name=None, prep=None):
 
 
 class NamedObject(models.Model):
-
     """A base class for objects which have a name and an HTML description."""
 
     class Meta:

@@ -1,5 +1,6 @@
 # Python imports
 """URL patterns for the equipment app."""
+# Python imports
 from os.path import basename, dirname
 
 # Django imports
