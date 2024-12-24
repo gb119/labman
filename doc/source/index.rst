@@ -13,7 +13,7 @@ structure is based on research and own experience of developing Django apps.
 **Please note:** This is *my* skeleton and is developed to fit my very own
 needs for new Django projects. Please feel free to modify it to your own
 requirements but be aware that no changes will be made, that **I** do not
-consider usefull.
+consider useful.
 
 **Additional note:** Compatibility checks are made using ``Travis`` and ``tox``.
 Please see :ref:`label-versions` to find a suitable version of this repository for

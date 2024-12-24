@@ -44,4 +44,4 @@ Your project will look like this::
         │   └── login.html
         └── README
 
-See :ref:`label-project-structure` for a detailled description of this layout.
+See :ref:`label-project-structure` for a detailed description of this layout.
