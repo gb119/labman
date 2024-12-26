@@ -1,0 +1,11 @@
+{% for document in equipment.files.all %}
+    <div class="row">
+        <div class="col col-md-6">
+            <h5><a href="{{ document.file_url }}" target=_NEW>{{ document.title }}</a></h5>
+            <p>{{ document.catagory_name }}</p>
+        </div>
+        <div class="col col-md-6">
+            {{ document.extra_text|safe }}
+        </div>
+    </div>
+{% endfor %}

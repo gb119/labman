@@ -16,16 +16,31 @@ div.bg-secondary h5 {
 <!-- Nav tabs -->
 <ul class="nav nav-tabs" id="profile_tabs" role="tablist">
   <li class="nav-item" role="presentation">
-    <button class="nav-link active" id="details-tab" data-bs-toggle="tab" data-bs-target="#details" type="button" role="tab" aria-controls="details" aria-selected="true">Details</button>
+    <button class="nav-link active" id="details-tab"
+            data-bs-toggle="tab" data-bs-target="#details"
+            type="button" role="tab" aria-controls="details"
+            aria-selected="true">Details</button>
   </li>
   <li class="nav-item" role="presentation">
-    <button class="nav-link" id="project-tab" data-bs-toggle="tab" data-bs-target="#project" type="button" role="tab" aria-controls="project" aria-selected="false">Project</button>
+    <button class="nav-link" id="project-tab"
+            hx-get="{{ request.build_absolute_uri }}" hx-target="#project"
+            data-bs-toggle="tab" data-bs-target="#project"
+            type="button" role="tab" aria-controls="project"
+            aria-selected="false">Project</button>
   </li>
   <li class="nav-item" role="presentation">
-    <button class="nav-link" id="underlings-tab" data-bs-toggle="tab" data-bs-target="#underlings" type="button" role="tab" aria-controls="underlings" aria-selected="false">Manages</button>
+    <button class="nav-link" id="underlings-tab"
+            hx-get="{{ request.build_absolute_uri }}" hx-target="#underlings"
+            data-bs-toggle="tab" data-bs-target="#underlings"
+            type="button" role="tab" aria-controls="underlings"
+            aria-selected="false">Manages</button>
   </li>
   <li class="nav-item" role="presentation">
-    <button class="nav-link" id="userlist-tab" data-bs-toggle="tab" data-bs-target="#userlist" type="button" role="tab" aria-controls="userlist" aria-selected="false">Userlist</button>
+    <button class="nav-link" id="userlist-tab"
+            hx-get="{{ request.build_absolute_uri }}" hx-target="#userlist"
+            data-bs-toggle="tab" data-bs-target="#userlist"
+            type="button" role="tab" aria-controls="userlist"
+            aria-selected="false">Userlist</button>
   </li>
 </ul>
 
@@ -53,52 +68,9 @@ div.bg-secondary h5 {
             </div>
         </div>
     </div>
-    <div class="tab-pane" id="project" role="tabpanel" aria-labelledby="project-tab">
-        {% for project in account.project.all %}
-            <div class="row">
-                <div class="col col-md-6">
-                    <h5>{{ project.name }}</h5>
-                    <p>{{ project.short_name }} ({{ project.code }})</p>
-                </div>
-                <div class="col col-md-6">
-                    {{ project.description|safe }}
-                </div>
-            </div>
-        {% endfor %}
-    </div>
-    <div class="tab-pane" id="underlings" role="tabpanel" aria-labelledby="underlings-tab">...</div>
+    <div class="tab-pane" id="project" role="tabpanel" aria-labelledby="project-tab"></div>
+    <div class="tab-pane" id="underlings" role="tabpanel" aria-labelledby="underlings-tab"></div>
     <div class="tab-pane" id="userlist" role="tabpanel" aria-labelledby="userlist-tab">
-        <div class="row bg-secondary">
-            <div class="col col-md-3"><h5>Equipment</h5></div>
-            <div class="col col-md-3"><h5>Role</h5></div>
-            <div class="col col-md-3"><h5>Signed</h5></div>
-            <div class="col col-md-3"><h5>Bookings</h5></div>
-        </div>
-        {% for entry in account.user_of.all %}
-            <div class="row">
-                <div class="col col-md-3">
-                <a href="/equipment/equipment_detail/{{ entry.equipment.pk }}/">
-                {{ entry.equipment.thumbnail }}
-                {{ entry.equipment }}
-                </a>
-                </div><div class="col col-md-3">{{ entry.role }}</div>
-                <div class="col col-md-3">
-                    {% if entry.hold %}
-                        <a href="/equipment/sign-off/{{ entry.equipment.pk }}/">Sign Off</a>
-                    {% else %}
-                        {{ entry.updated }}
-                    {% endif %}
-                </div>
-                <div class="col col-md-3">
-                    {% if entry.hold %}
-                        Booking Not Available
-                    {% else %}
-                        <a href="{{ entry.equipment.schedule }}">Schedule</a>
-                    {% endif %}
-                </div>
-            </div>
-        {% endfor %}
-    </div>
 </div>
 </main>
 

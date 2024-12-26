@@ -1,0 +1,11 @@
+{% for project in account.project.all %}
+    <div class="row">
+        <div class="col col-md-6">
+            <h5>{{ project.name }}</h5>
+            <p>{{ project.short_name }} ({{ project.code }})</p>
+        </div>
+        <div class="col col-md-6">
+            {{ project.description|safe }}
+        </div>
+    </div>
+{% endfor %}

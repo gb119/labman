@@ -10,6 +10,7 @@ from django.core.exceptions import ObjectDoesNotExist
 
 # external imports
 from extra_views import FormSetView
+from htmx_views.views import HTMXProcessMixin
 from labman_utils.views import IsAuthenticaedViewMixin
 
 # app imports
@@ -30,7 +31,7 @@ class SignOffFormSetView(IsAuthenticaedViewMixin, FormSetView):
     def get_initial(self):
         equipment_id = int(self.kwargs["equipment"])
         equipment = Equipment.objects.get(pk=equipment_id)
-        docs = equipment.files.filter(catagory__in=["ra", "sop"])
+        docs = equipment.files.filter(category__in=["ra", "sop"])
         dataset = []
         for doc in docs:
             try:
@@ -44,6 +45,9 @@ class SignOffFormSetView(IsAuthenticaedViewMixin, FormSetView):
         return dataset
 
     def formset_valid(self, formset):
+        equipment_id = int(self.kwargs["equipment"])
+        equipment = Equipment.objects.get(pk=equipment_id)
+        data = None
         for form in formset.forms:
             data = form.cleaned_data
             if data["signed"]:
@@ -51,6 +55,9 @@ class SignOffFormSetView(IsAuthenticaedViewMixin, FormSetView):
                     user=self.request.user, document=data["document"], version=data["document"].version
                 )
                 dso.save()
+        if data is None:  # Force userlist save if no docs to sign!
+            equipment.users.get(user=self.request.user).save()
+
         return super().formset_valid(formset)
 
     def get_context_data(self, **kwargs):
@@ -60,8 +67,11 @@ class SignOffFormSetView(IsAuthenticaedViewMixin, FormSetView):
         return context
 
 
-class EquipmentDetailView(views.generic.DetailView):
+class EquipmentDetailView(HTMXProcessMixin, views.generic.DetailView):
     """Templated view for Equipment detail."""
 
     template_name = "equipment/equipment_detail.html"
+    template_name_resourcestab = "equipment/parts/equipment_detail_resources.html"
+    template_name_pagestab = "equipment/parts/equipment_detail_pages.html"
+    template_name_userlisttab = "equipment/parts/equipment_detail_userlist.html"
     model = Equipment

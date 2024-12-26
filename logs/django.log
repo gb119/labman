@@ -1,0 +1,811 @@
+Internal Server Error: /accounts/me/
+Traceback (most recent call last):
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/views/generic/base.py", line 104, in view
+    return self.dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/contrib/auth/mixins.py", line 135, in dispatch
+    return super().dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/phygbu/labman/apps/htmx_views/views.py", line 21, in dispatch
+    return self._non_htmx_dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/views/generic/base.py", line 143, in dispatch
+    return handler(request, *args, **kwargs)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/views/generic/detail.py", line 109, in get
+    context = self.get_context_data(object=self.object)
+  File "/home/phygbu/labman/apps/htmx_views/views.py", line 52, in get_context_data
+    if not getattr(self.request.htmx, False):  # Default behaviour
+           ~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: attribute name must be string, not 'bool'
+Internal Server Error: /accounts/me/
+Traceback (most recent call last):
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/views/generic/base.py", line 104, in view
+    return self.dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/contrib/auth/mixins.py", line 135, in dispatch
+    return super().dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/phygbu/labman/apps/htmx_views/views.py", line 21, in dispatch
+    return self._non_htmx_dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/views/generic/base.py", line 143, in dispatch
+    return handler(request, *args, **kwargs)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/views/generic/detail.py", line 109, in get
+    context = self.get_context_data(object=self.object)
+  File "/home/phygbu/labman/apps/htmx_views/views.py", line 53, in get_context_data
+    return super().et_context_data(**kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'super' object has no attribute 'et_context_data'
+Internal Server Error: /accounts/me/
+Traceback (most recent call last):
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/views/generic/base.py", line 104, in view
+    return self.dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/contrib/auth/mixins.py", line 135, in dispatch
+    return super().dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/phygbu/labman/apps/htmx_views/views.py", line 21, in dispatch
+    return self._non_htmx_dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/views/generic/base.py", line 143, in dispatch
+    return handler(request, *args, **kwargs)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/views/generic/detail.py", line 110, in get
+    return self.render_to_response(context)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/views/generic/base.py", line 200, in render_to_response
+    template=self.get_template_names(),
+             ~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "/home/phygbu/labman/apps/htmx_views/views.py", line 65, in get_template_names
+    return super().get_template_name()
+           ^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'super' object has no attribute 'get_template_name'
+Internal Server Error: /accounts/me/
+Traceback (most recent call last):
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/views/generic/base.py", line 104, in view
+    return self.dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/contrib/auth/mixins.py", line 135, in dispatch
+    return super().dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/phygbu/labman/apps/htmx_views/views.py", line 24, in dispatch
+    allowed_names = getattr(self, "allowed_htmx_http_method_names", self.allowed_http_method_names)
+                                                                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'MyAccountView' object has no attribute 'allowed_http_method_names'
+Internal Server Error: /accounts/me/
+Traceback (most recent call last):
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/views/generic/base.py", line 104, in view
+    return self.dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/contrib/auth/mixins.py", line 135, in dispatch
+    return super().dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/phygbu/labman/apps/htmx_views/views.py", line 24, in dispatch
+    allowed_names = getattr(self, "allowed_htmx_http_method_names", self.allowed_http_method_names)
+                                                                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'MyAccountView' object has no attribute 'allowed_http_method_names'
+Internal Server Error: /accounts/me/
+Traceback (most recent call last):
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/views/generic/base.py", line 104, in view
+    return self.dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/contrib/auth/mixins.py", line 135, in dispatch
+    return super().dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/phygbu/labman/apps/htmx_views/views.py", line 24, in dispatch
+    allowed_names = getattr(self, "allowed_htmx_http_method_names", self.allowed_http_method_names)
+                                                                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'MyAccountView' object has no attribute 'allowed_http_method_names'
+Internal Server Error: /accounts/me/
+Traceback (most recent call last):
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/views/generic/base.py", line 104, in view
+    return self.dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/contrib/auth/mixins.py", line 135, in dispatch
+    return super().dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/phygbu/labman/apps/htmx_views/views.py", line 24, in dispatch
+    allowed_names = getattr(self, "allowed_htmx_http_method_names", self.allowed_http_method_names)
+                                                                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'MyAccountView' object has no attribute 'allowed_http_method_names'
+Internal Server Error: /accounts/me/
+Traceback (most recent call last):
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/views/generic/base.py", line 104, in view
+    return self.dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/contrib/auth/mixins.py", line 135, in dispatch
+    return super().dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/phygbu/labman/apps/htmx_views/views.py", line 32, in dispatch
+    return handler(request, *args, **kwargs)
+  File "/home/phygbu/labman/apps/htmx_views/views.py", line 100, in htmx_get
+    handler = getattr(self, f"htmx_get_{elem}")
+AttributeError: 'MyAccountView' object has no attribute 'htmx_get_projecttab'
+Internal Server Error: /accounts/me/
+Traceback (most recent call last):
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/views/generic/base.py", line 104, in view
+    return self.dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/contrib/auth/mixins.py", line 135, in dispatch
+    return super().dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/phygbu/labman/apps/htmx_views/views.py", line 32, in dispatch
+    return handler(request, *args, **kwargs)
+  File "/home/phygbu/labman/apps/htmx_views/views.py", line 105, in htmx_get
+    return handler(request, *args, **kwargs)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/views/generic/detail.py", line 109, in get
+    context = self.get_context_data(object=self.object)
+  File "/home/phygbu/labman/apps/htmx_views/views.py", line 57, in get_context_data
+    handler = getattr(self, f"get_context_data_{elem}")
+AttributeError: 'MyAccountView' object has no attribute 'get_context_data_projecttab'
+Internal Server Error: /admin/equipment/location/3/change/
+Traceback (most recent call last):
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/contrib/admin/options.py", line 688, in wrapper
+    return self.admin_site.admin_view(view)(*args, **kwargs)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/utils/decorators.py", line 134, in _wrapper_view
+    response = view_func(request, *args, **kwargs)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/views/decorators/cache.py", line 62, in _wrapper_view_func
+    response = view_func(request, *args, **kwargs)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/contrib/admin/sites.py", line 242, in inner
+    return view(request, *args, **kwargs)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/contrib/admin/options.py", line 1889, in change_view
+    return self.changeform_view(request, object_id, form_url, extra_context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/utils/decorators.py", line 46, in _wrapper
+    return bound_method(*args, **kwargs)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/utils/decorators.py", line 134, in _wrapper_view
+    response = view_func(request, *args, **kwargs)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/contrib/admin/options.py", line 1747, in changeform_view
+    return self._changeform_view(request, object_id, form_url, extra_context)
+           ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/contrib/admin/options.py", line 1798, in _changeform_view
+    self.save_model(request, new_object, form, not add)
+    ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/contrib/admin/options.py", line 1227, in save_model
+    obj.save()
+    ~~~~~~~~^^
+  File "/home/phygbu/labman/apps/equipment/models.py", line 111, in save
+    self.code=self.next_code
+              ^^^^^^^^^^^^^^
+  File "/home/phygbu/labman/apps/equipment/models.py", line 100, in next_code
+    return str(min(possible-codes))
+                   ^^^^^^^^
+UnboundLocalError: cannot access local variable 'possible' where it is not associated with a value
+Internal Server Error: /admin/equipment/location/3/change/
+Traceback (most recent call last):
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/contrib/admin/options.py", line 688, in wrapper
+    return self.admin_site.admin_view(view)(*args, **kwargs)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/utils/decorators.py", line 134, in _wrapper_view
+    response = view_func(request, *args, **kwargs)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/views/decorators/cache.py", line 62, in _wrapper_view_func
+    response = view_func(request, *args, **kwargs)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/contrib/admin/sites.py", line 242, in inner
+    return view(request, *args, **kwargs)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/contrib/admin/options.py", line 1889, in change_view
+    return self.changeform_view(request, object_id, form_url, extra_context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/utils/decorators.py", line 46, in _wrapper
+    return bound_method(*args, **kwargs)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/utils/decorators.py", line 134, in _wrapper_view
+    response = view_func(request, *args, **kwargs)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/contrib/admin/options.py", line 1747, in changeform_view
+    return self._changeform_view(request, object_id, form_url, extra_context)
+           ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/contrib/admin/options.py", line 1798, in _changeform_view
+    self.save_model(request, new_object, form, not add)
+    ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/contrib/admin/options.py", line 1227, in save_model
+    obj.save()
+    ~~~~~~~~^^
+  File "/home/phygbu/labman/apps/equipment/models.py", line 111, in save
+    self.code=self.next_code
+              ^^^^^^^^^^^^^^
+  File "/home/phygbu/labman/apps/equipment/models.py", line 100, in next_code
+    return str(min(possible-codes))
+                   ^^^^^^^^
+UnboundLocalError: cannot access local variable 'possible' where it is not associated with a value
+Internal Server Error: /admin/equipment/location/add/
+Traceback (most recent call last):
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/contrib/admin/options.py", line 688, in wrapper
+    return self.admin_site.admin_view(view)(*args, **kwargs)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/utils/decorators.py", line 134, in _wrapper_view
+    response = view_func(request, *args, **kwargs)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/views/decorators/cache.py", line 62, in _wrapper_view_func
+    response = view_func(request, *args, **kwargs)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/contrib/admin/sites.py", line 242, in inner
+    return view(request, *args, **kwargs)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/contrib/admin/options.py", line 1886, in add_view
+    return self.changeform_view(request, None, form_url, extra_context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/utils/decorators.py", line 46, in _wrapper
+    return bound_method(*args, **kwargs)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/utils/decorators.py", line 134, in _wrapper_view
+    response = view_func(request, *args, **kwargs)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/contrib/admin/options.py", line 1747, in changeform_view
+    return self._changeform_view(request, object_id, form_url, extra_context)
+           ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/contrib/admin/options.py", line 1798, in _changeform_view
+    self.save_model(request, new_object, form, not add)
+    ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/contrib/admin/options.py", line 1227, in save_model
+    obj.save()
+    ~~~~~~~~^^
+  File "/home/phygbu/labman/apps/equipment/models.py", line 111, in save
+    self.code=self.next_code
+              ^^^^^^^^^^^^^^
+  File "/home/phygbu/labman/apps/equipment/models.py", line 96, in next_code
+    possible=set(np.arramge(1,len(peers)+1))
+                 ^^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/numpy/__init__.py", line 414, in __getattr__
+    raise AttributeError("module {!r} has no attribute "
+                         "{!r}".format(__name__, attr))
+AttributeError: module 'numpy' has no attribute 'arramge'. Did you mean: 'arange'?
+Internal Server Error: /admin/equipment/location/add/
+Traceback (most recent call last):
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/contrib/admin/options.py", line 688, in wrapper
+    return self.admin_site.admin_view(view)(*args, **kwargs)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/utils/decorators.py", line 134, in _wrapper_view
+    response = view_func(request, *args, **kwargs)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/views/decorators/cache.py", line 62, in _wrapper_view_func
+    response = view_func(request, *args, **kwargs)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/contrib/admin/sites.py", line 242, in inner
+    return view(request, *args, **kwargs)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/contrib/admin/options.py", line 1886, in add_view
+    return self.changeform_view(request, None, form_url, extra_context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/utils/decorators.py", line 46, in _wrapper
+    return bound_method(*args, **kwargs)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/utils/decorators.py", line 134, in _wrapper_view
+    response = view_func(request, *args, **kwargs)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/contrib/admin/options.py", line 1747, in changeform_view
+    return self._changeform_view(request, object_id, form_url, extra_context)
+           ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/contrib/admin/options.py", line 1798, in _changeform_view
+    self.save_model(request, new_object, form, not add)
+    ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/contrib/admin/options.py", line 1227, in save_model
+    obj.save()
+    ~~~~~~~~^^
+  File "/home/phygbu/labman/apps/equipment/models.py", line 111, in save
+    self.code=self.next_code
+              ^^^^^^^^^^^^^^
+  File "/home/phygbu/labman/apps/equipment/models.py", line 96, in next_code
+    possible=set(np.aramge(1,len(peers)+1))
+                 ^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/numpy/__init__.py", line 414, in __getattr__
+    raise AttributeError("module {!r} has no attribute "
+                         "{!r}".format(__name__, attr))
+AttributeError: module 'numpy' has no attribute 'aramge'. Did you mean: 'arange'?
+Internal Server Error: /admin/equipment/location/add/
+Traceback (most recent call last):
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/contrib/admin/options.py", line 688, in wrapper
+    return self.admin_site.admin_view(view)(*args, **kwargs)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/utils/decorators.py", line 134, in _wrapper_view
+    response = view_func(request, *args, **kwargs)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/views/decorators/cache.py", line 62, in _wrapper_view_func
+    response = view_func(request, *args, **kwargs)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/contrib/admin/sites.py", line 242, in inner
+    return view(request, *args, **kwargs)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/contrib/admin/options.py", line 1886, in add_view
+    return self.changeform_view(request, None, form_url, extra_context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/utils/decorators.py", line 46, in _wrapper
+    return bound_method(*args, **kwargs)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/utils/decorators.py", line 134, in _wrapper_view
+    response = view_func(request, *args, **kwargs)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/contrib/admin/options.py", line 1747, in changeform_view
+    return self._changeform_view(request, object_id, form_url, extra_context)
+           ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/contrib/admin/options.py", line 1798, in _changeform_view
+    self.save_model(request, new_object, form, not add)
+    ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/contrib/admin/options.py", line 1227, in save_model
+    obj.save()
+    ~~~~~~~~^^
+  File "/home/phygbu/labman/apps/equipment/models.py", line 111, in save
+    self.code=self.next_code
+              ^^^^^^^^^^^^^^
+  File "/home/phygbu/labman/apps/equipment/models.py", line 97, in next_code
+    new=str(min(possible-codes))
+            ~~~^^^^^^^^^^^^^^^^
+ValueError: min() iterable argument is empty
+Internal Server Error: /admin/equipment/location/add/
+Traceback (most recent call last):
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/contrib/admin/options.py", line 688, in wrapper
+    return self.admin_site.admin_view(view)(*args, **kwargs)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/utils/decorators.py", line 134, in _wrapper_view
+    response = view_func(request, *args, **kwargs)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/views/decorators/cache.py", line 62, in _wrapper_view_func
+    response = view_func(request, *args, **kwargs)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/contrib/admin/sites.py", line 242, in inner
+    return view(request, *args, **kwargs)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/contrib/admin/options.py", line 1886, in add_view
+    return self.changeform_view(request, None, form_url, extra_context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/utils/decorators.py", line 46, in _wrapper
+    return bound_method(*args, **kwargs)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/utils/decorators.py", line 134, in _wrapper_view
+    response = view_func(request, *args, **kwargs)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/contrib/admin/options.py", line 1747, in changeform_view
+    return self._changeform_view(request, object_id, form_url, extra_context)
+           ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/contrib/admin/options.py", line 1798, in _changeform_view
+    self.save_model(request, new_object, form, not add)
+    ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/contrib/admin/options.py", line 1227, in save_model
+    obj.save()
+    ~~~~~~~~^^
+  File "/home/phygbu/labman/apps/equipment/models.py", line 111, in save
+    self.code=self.next_code
+              ^^^^^^^^^^^^^^
+  File "/home/phygbu/labman/apps/equipment/models.py", line 97, in next_code
+    new=str(min(possible-codes))
+            ~~~^^^^^^^^^^^^^^^^
+ValueError: min() iterable argument is empty
+Internal Server Error: /admin/photologue/photo/add/
+Traceback (most recent call last):
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/contrib/admin/options.py", line 688, in wrapper
+    return self.admin_site.admin_view(view)(*args, **kwargs)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/utils/decorators.py", line 134, in _wrapper_view
+    response = view_func(request, *args, **kwargs)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/views/decorators/cache.py", line 62, in _wrapper_view_func
+    response = view_func(request, *args, **kwargs)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/contrib/admin/sites.py", line 242, in inner
+    return view(request, *args, **kwargs)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/contrib/admin/options.py", line 1886, in add_view
+    return self.changeform_view(request, None, form_url, extra_context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/utils/decorators.py", line 46, in _wrapper
+    return bound_method(*args, **kwargs)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/utils/decorators.py", line 134, in _wrapper_view
+    response = view_func(request, *args, **kwargs)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/contrib/admin/options.py", line 1747, in changeform_view
+    return self._changeform_view(request, object_id, form_url, extra_context)
+           ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/contrib/admin/options.py", line 1798, in _changeform_view
+    self.save_model(request, new_object, form, not add)
+    ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/contrib/admin/options.py", line 1227, in save_model
+    obj.save()
+    ~~~~~~~~^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/photologue/models.py", line 550, in save
+    super().save(*args, **kwargs)
+    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/photologue/models.py", line 496, in save
+    self.pre_cache(recreate)
+    ~~~~~~~~~~~~~~^^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/photologue/models.py", line 463, in pre_cache
+    self.create_size(photosize, recreate)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/photologue/models.py", line 417, in create_size
+    im = self.resize_image(im, photosize)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/photologue/models.py", line 377, in resize_image
+    im = im.resize((int(x), int(y)), Image.ANTIALIAS).crop(box)
+                                     ^^^^^^^^^^^^^^^
+AttributeError: module 'PIL.Image' has no attribute 'ANTIALIAS'
+Internal Server Error: /admin/accounts/account/import/
+Traceback (most recent call last):
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/utils/decorators.py", line 134, in _wrapper_view
+    response = view_func(request, *args, **kwargs)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/views/decorators/cache.py", line 62, in _wrapper_view_func
+    response = view_func(request, *args, **kwargs)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/contrib/admin/sites.py", line 242, in inner
+    return view(request, *args, **kwargs)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/import_export/admin.py", line 523, in import_action
+    result = resource.import_data(
+        dataset,
+    ...<4 lines>...
+        **imp_kwargs,
+    )
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/import_export/resources.py", line 850, in import_data
+    result = self.import_data_inner(
+        dataset,
+    ...<4 lines>...
+        **kwargs,
+    )
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/import_export/resources.py", line 907, in import_data_inner
+    row_result = self.import_row(
+        row,
+        instance_loader,
+        **kwargs,
+    )
+  File "/home/phygbu/labman/apps/accounts/admin.py", line 139, in import_row
+    return super().import_row(row, instance_loader, using_transactions, dry_run, **kwargs)
+           ~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: Resource.import_row() takes 3 positional arguments but 5 were given
+Internal Server Error: /admin/accounts/account/import/
+Traceback (most recent call last):
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/utils/decorators.py", line 134, in _wrapper_view
+    response = view_func(request, *args, **kwargs)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/views/decorators/cache.py", line 62, in _wrapper_view_func
+    response = view_func(request, *args, **kwargs)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/contrib/admin/sites.py", line 242, in inner
+    return view(request, *args, **kwargs)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/import_export/admin.py", line 523, in import_action
+    result = resource.import_data(
+        dataset,
+    ...<4 lines>...
+        **imp_kwargs,
+    )
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/import_export/resources.py", line 850, in import_data
+    result = self.import_data_inner(
+        dataset,
+    ...<4 lines>...
+        **kwargs,
+    )
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/import_export/resources.py", line 907, in import_data_inner
+    row_result = self.import_row(
+        row,
+        instance_loader,
+        **kwargs,
+    )
+  File "/home/phygbu/labman/apps/accounts/resource.py", line 100, in import_row
+    return super().import_row(row, instance_loader, using_transactions, dry_run, **kwargs)
+           ~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: Resource.import_row() takes 3 positional arguments but 5 were given
+Internal Server Error: /admin/accounts/account/import/
+Traceback (most recent call last):
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/utils/decorators.py", line 134, in _wrapper_view
+    response = view_func(request, *args, **kwargs)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/views/decorators/cache.py", line 62, in _wrapper_view_func
+    response = view_func(request, *args, **kwargs)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/contrib/admin/sites.py", line 242, in inner
+    return view(request, *args, **kwargs)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/import_export/admin.py", line 523, in import_action
+    result = resource.import_data(
+        dataset,
+    ...<4 lines>...
+        **imp_kwargs,
+    )
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/import_export/resources.py", line 850, in import_data
+    result = self.import_data_inner(
+        dataset,
+    ...<4 lines>...
+        **kwargs,
+    )
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/import_export/resources.py", line 907, in import_data_inner
+    row_result = self.import_row(
+        row,
+        instance_loader,
+        **kwargs,
+    )
+  File "/home/phygbu/labman/apps/accounts/resource.py", line 100, in import_row
+    return super().import_row(row, instance_loader, using_transactions, dry_run, **kwargs)
+           ~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: Resource.import_row() takes 3 positional arguments but 5 were given
+Internal Server Error: /equipment/sign-off/1/
+Traceback (most recent call last):
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/views/generic/base.py", line 104, in view
+    return self.dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/contrib/auth/mixins.py", line 135, in dispatch
+    return super().dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/phygbu/labman/apps/htmx_views/views.py", line 21, in dispatch
+    return self._non_htmx_dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/views/generic/base.py", line 143, in dispatch
+    return handler(request, *args, **kwargs)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/extra_views/formsets.py", line 233, in get
+    formset = self.construct_formset()
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/extra_views/formsets.py", line 34, in construct_formset
+    return formset_class(**self.get_formset_kwargs())
+                           ~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/extra_views/formsets.py", line 71, in get_formset_kwargs
+    kwargs.update({"initial": self.get_initial(), "prefix": self.get_prefix()})
+                              ~~~~~~~~~~~~~~~~^^
+  File "/home/phygbu/labman/apps/equipment/views.py", line 33, in get_initial
+    docs = equipment.files.filter(catagory__in=["ra", "sop"])
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/db/models/manager.py", line 87, in manager_method
+    return getattr(self.get_queryset(), name)(*args, **kwargs)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/db/models/query.py", line 1436, in filter
+    return self._filter_or_exclude(False, args, kwargs)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/db/models/query.py", line 1454, in _filter_or_exclude
+    clone._filter_or_exclude_inplace(negate, args, kwargs)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/db/models/query.py", line 1461, in _filter_or_exclude_inplace
+    self._query.add_q(Q(*args, **kwargs))
+    ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/db/models/sql/query.py", line 1546, in add_q
+    clause, _ = self._add_q(q_object, self.used_aliases)
+                ~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/db/models/sql/query.py", line 1577, in _add_q
+    child_clause, needed_inner = self.build_filter(
+                                 ~~~~~~~~~~~~~~~~~^
+        child,
+        ^^^^^^
+    ...<6 lines>...
+        summarize=summarize,
+        ^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/db/models/sql/query.py", line 1427, in build_filter
+    lookups, parts, reffed_expression = self.solve_lookup_type(arg, summarize)
+                                        ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/db/models/sql/query.py", line 1237, in solve_lookup_type
+    _, field, _, lookup_parts = self.names_to_path(lookup_splitted, self.get_meta())
+                                ~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/db/models/sql/query.py", line 1725, in names_to_path
+    raise FieldError(
+    ...<2 lines>...
+    )
+django.core.exceptions.FieldError: Cannot resolve keyword 'catagory' into field. Choices are: category, created, equipment, extra_text, generated_name, id, saved_file, signatures, title, updated, version
+Internal Server Error: /equipment/equipment_detail/1/
+Traceback (most recent call last):
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/core/handlers/base.py", line 220, in _get_response
+    response = response.render()
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/template/response.py", line 114, in render
+    self.content = self.rendered_content
+                   ^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/template/response.py", line 90, in rendered_content
+    template = self.resolve_template(self.template_name)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/template/response.py", line 74, in resolve_template
+    return get_template(template, using=self.using)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/template/loader.py", line 19, in get_template
+    raise TemplateDoesNotExist(template_name, chain=chain)
+django.template.exceptions.TemplateDoesNotExist: equipment/parts/equipment_detail_pages.html
+Internal Server Error: /equipment/equipment_detail/1/
+Traceback (most recent call last):
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/core/handlers/base.py", line 220, in _get_response
+    response = response.render()
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/template/response.py", line 114, in render
+    self.content = self.rendered_content
+                   ^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/template/response.py", line 90, in rendered_content
+    template = self.resolve_template(self.template_name)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/template/response.py", line 74, in resolve_template
+    return get_template(template, using=self.using)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/template/loader.py", line 19, in get_template
+    raise TemplateDoesNotExist(template_name, chain=chain)
+django.template.exceptions.TemplateDoesNotExist: equipment/parts/equipment_detail_pages.html
+Internal Server Error: /equipment/sign-off/1/
+Traceback (most recent call last):
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/views/generic/base.py", line 104, in view
+    return self.dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/contrib/auth/mixins.py", line 135, in dispatch
+    return super().dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/phygbu/labman/apps/htmx_views/views.py", line 21, in dispatch
+    return self._non_htmx_dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/views/generic/base.py", line 143, in dispatch
+    return handler(request, *args, **kwargs)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/extra_views/formsets.py", line 243, in post
+    return self.formset_valid(formset)
+           ~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "/home/phygbu/labman/apps/equipment/views.py", line 59, in formset_valid
+    equipment.users.get(user=self.request.user).save()
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "/home/phygbu/labman/apps/equipment/models.py", line 212, in save
+    self.hold = self.check_for_hold()
+                ~~~~~~~~~~~~~~~~~~~^^
+  File "/home/phygbu/labman/apps/equipment/models.py", line 235, in check_for_hold
+    for doc in self.sign_off_docs:
+               ^^^^^^^^^^^^^^^^^^
+  File "/home/phygbu/labman/apps/equipment/models.py", line 224, in sign_off_docs
+    return self.documents.filter(catagory__in=["ra", "sop"])
+           ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/db/models/query.py", line 1436, in filter
+    return self._filter_or_exclude(False, args, kwargs)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/db/models/query.py", line 1454, in _filter_or_exclude
+    clone._filter_or_exclude_inplace(negate, args, kwargs)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/db/models/query.py", line 1461, in _filter_or_exclude_inplace
+    self._query.add_q(Q(*args, **kwargs))
+    ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/db/models/sql/query.py", line 1546, in add_q
+    clause, _ = self._add_q(q_object, self.used_aliases)
+                ~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/db/models/sql/query.py", line 1577, in _add_q
+    child_clause, needed_inner = self.build_filter(
+                                 ~~~~~~~~~~~~~~~~~^
+        child,
+        ^^^^^^
+    ...<6 lines>...
+        summarize=summarize,
+        ^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/db/models/sql/query.py", line 1427, in build_filter
+    lookups, parts, reffed_expression = self.solve_lookup_type(arg, summarize)
+                                        ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/db/models/sql/query.py", line 1237, in solve_lookup_type
+    _, field, _, lookup_parts = self.names_to_path(lookup_splitted, self.get_meta())
+                                ~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/db/models/sql/query.py", line 1725, in names_to_path
+    raise FieldError(
+    ...<2 lines>...
+    )
+django.core.exceptions.FieldError: Cannot resolve keyword 'catagory' into field. Choices are: category, created, equipment, extra_text, generated_name, id, saved_file, signatures, title, updated, version
+Internal Server Error: /bookings/book/1/1735203600.0/
+Traceback (most recent call last):
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/views/generic/base.py", line 104, in view
+    return self.dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/contrib/auth/mixins.py", line 135, in dispatch
+    return super().dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/phygbu/labman/apps/htmx_views/views.py", line 21, in dispatch
+    return self._non_htmx_dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/views/generic/base.py", line 143, in dispatch
+    return handler(request, *args, **kwargs)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/views/generic/edit.py", line 208, in post
+    return super().post(request, *args, **kwargs)
+           ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/views/generic/edit.py", line 152, in post
+    if form.is_valid():
+       ~~~~~~~~~~~~~^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/forms/forms.py", line 201, in is_valid
+    return self.is_bound and not self.errors
+                                 ^^^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/forms/forms.py", line 196, in errors
+    self.full_clean()
+    ~~~~~~~~~~~~~~~^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/forms/forms.py", line 435, in full_clean
+    self._post_clean()
+    ~~~~~~~~~~~~~~~~^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/forms/models.py", line 486, in _post_clean
+    self.instance.full_clean(exclude=exclude, validate_unique=False)
+    ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/db/models/base.py", line 1477, in full_clean
+    self.clean()
+    ~~~~~~~~~~^^
+  File "/home/phygbu/labman/apps/bookings/models.py", line 242, in clean
+    policy = BookingPolicy.get_policy(self)
+  File "/home/phygbu/labman/apps/bookings/models.py", line 146, in get_policy
+    if policy.permitted(booking):
+       ~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "/home/phygbu/labman/apps/bookings/models.py", line 121, in permitted
+    (x.upper - x.lower).total_seconds()
+     ^^^^^^^
+AttributeError: 'tuple' object has no attribute 'upper'
+Internal Server Error: /bookings/book/1/1735203600.0/
+Traceback (most recent call last):
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/views/generic/base.py", line 104, in view
+    return self.dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/contrib/auth/mixins.py", line 135, in dispatch
+    return super().dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/phygbu/labman/apps/htmx_views/views.py", line 21, in dispatch
+    return self._non_htmx_dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/views/generic/base.py", line 143, in dispatch
+    return handler(request, *args, **kwargs)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/views/generic/edit.py", line 208, in post
+    return super().post(request, *args, **kwargs)
+           ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/views/generic/edit.py", line 152, in post
+    if form.is_valid():
+       ~~~~~~~~~~~~~^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/forms/forms.py", line 201, in is_valid
+    return self.is_bound and not self.errors
+                                 ^^^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/forms/forms.py", line 196, in errors
+    self.full_clean()
+    ~~~~~~~~~~~~~~~^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/forms/forms.py", line 435, in full_clean
+    self._post_clean()
+    ~~~~~~~~~~~~~~~~^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/forms/models.py", line 486, in _post_clean
+    self.instance.full_clean(exclude=exclude, validate_unique=False)
+    ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/db/models/base.py", line 1477, in full_clean
+    self.clean()
+    ~~~~~~~~~~^^
+  File "/home/phygbu/labman/apps/bookings/models.py", line 242, in clean
+    policy = BookingPolicy.get_policy(self)
+  File "/home/phygbu/labman/apps/bookings/models.py", line 146, in get_policy
+    if policy.permitted(booking):
+       ~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "/home/phygbu/labman/apps/bookings/models.py", line 121, in permitted
+    (x.upper - x.lower).total_seconds()
+     ^^^^^^^
+AttributeError: 'tuple' object has no attribute 'upper'

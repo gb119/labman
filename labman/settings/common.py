@@ -86,6 +86,7 @@ DEFAULT_APPS = [
     "django.contrib.sites",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    "django_htmx",
     "rest_framework",
     "import_export",
     "sitetree",
@@ -103,6 +104,7 @@ MIDDLEWARE = [
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     "django.contrib.flatpages.middleware.FlatpageFallbackMiddleware",
+    "django_htmx.middleware.HtmxMiddleware",
 ]
 
 # Template stuff

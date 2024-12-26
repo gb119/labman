@@ -19,3 +19,15 @@ class StaffSelectForm(forms.Form):
         queryset=Account.objects.filter(is_staff=True).order_by("last_name"),
         widget=Select(attrs={"onChange": "this.form.submit();"}),
     )
+
+
+class UserAdminForm(forms.ModelForm):
+    """Model form definition for user accounts."""
+
+    class Meta:
+        model = Account
+        widgets = {
+            "first_name": forms.TextInput(attrs={"size": 20}),
+            "last_name": forms.TextInput(attrs={"size": 20}),
+        }
+        fields = "__all__"

@@ -12,6 +12,7 @@ from django.utils.html import format_html
 from django.utils.text import slugify
 
 # external imports
+import numpy as np
 from accounts.models import Account, Role
 from django_simple_file_handler import models as dsfh
 from labman_utils.models import NamedObject, patch_model
@@ -41,7 +42,7 @@ class Document(dsfh.BaseMixin, dsfh.TitledMixin, dsfh.PublicMixin, dsfh.RenameMi
         verbose_name_plural = "documents (categorized)"
 
     @property
-    def catagory_name(self):
+    def category_name(self):
         """Returns the document category as a human readable string."""
         return self.CATAGORIES_DICT[self.category]
 
@@ -79,6 +80,25 @@ class Location(NamedObject):
     )
     code = models.CharField(max_length=80, blank=True)
 
+    @property
+    def next_code(self):
+        """Figure out a location code not based on pk."""
+        peers = self.__class__.objects.filter(location=self.location).exclude(pk=self.pk)
+        if peers.count() == 0:
+            new = "1"
+        else:
+            codes = np.ravel(peers.values_list("code"))
+            if self.location is not None:
+                cut = len(self.location.code) + 1
+            else:
+                cut = 0
+            codes = set([int(x[cut:]) for x in codes])
+            possible = set(np.arange(1, max(codes) + 2))
+            new = str(min(possible - codes))
+        if self.location:
+            return f"{self.location.code},{new}"
+        return new
+
     def save(self, force_insert=False, force_update=False, using=None, update_fields=None):
         """Force the location code to be calculated and then upodate any sub_locations."""
         if self.pk is None:  # Update our pk
@@ -88,10 +108,7 @@ class Location(NamedObject):
                 using=using,
                 update_fields=update_fields,
             )
-        if self.location is None:
-            self.code = f"{self.pk}"
-        else:
-            self.code = f"{self.location.code}.{self.pk}"
+        self.code = self.next_code
         super().save(force_insert=force_insert, force_update=force_update, using=using, update_fields=update_fields)
         for sub in self.sub_locations.all():
             sub.save()
@@ -191,6 +208,8 @@ class UserListEntry(models.Model):
                 self.hold = True
         elif not self.pk:  # New User List entries need to be held
             self.hold = True
+        else:
+            self.hold = self.check_for_hold()
 
         super().save(force_insert=force_insert, force_update=force_update, using=using, update_fields=update_fields)
 
@@ -202,7 +221,22 @@ class UserListEntry(models.Model):
     @property
     def sign_off_docs(self):
         """Filter documents for risk assessments and sops."""
-        return self.documents.filter(catagory__in=["ra", "sop"])
+        return self.documents.filter(category__in=["ra", "sop"])
+
+    def check_for_hold(self):
+        """Check whether user could be signed off or not.
+
+        Returns:
+            (bool):
+                The potential value of the user.hold flag.
+
+        Doesn't actually change the user's hold setting directly.
+        """
+        for doc in self.sign_off_docs:
+            if doc.signatures.filter(user=self.user, version=doc.version).count() == 0:
+                return True
+        else:
+            return False
 
 
 class DocumentSignOff(models.Model):
@@ -224,12 +258,8 @@ class DocumentSignOff(models.Model):
         super().save(force_insert=force_insert, force_update=force_update, using=using, update_fields=update_fields)
         userlists = self.user.user_of.filter(equipment__files=self.document)
         for userlist in userlists.all():
-            for doc in userlist.sign_off_docs:
-                if doc.signatures.filter(user=self.user, version=doc.version).count() == 0:
-                    break
-            else:
-                userlist.hold = False
-                userlist.save()
+            userlist.hold = userlist.check_for_hold()
+            userlist.save()
 
 
 @patch_model(FlatPage, prep=property)
