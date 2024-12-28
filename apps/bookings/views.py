@@ -15,13 +15,19 @@ from typing import List, Tuple, Union
 from django import views
 from django.conf import settings
 from django.core.exceptions import ObjectDoesNotExist
-from django.http import HttpResponseRedirect
+from django.http import (
+    HttpResponseNotFound,
+    HttpResponseNotModified,
+    HttpResponseRedirect,
+)
+from django.template.response import TemplateResponse
 
 # external imports
 import numpy as np
 import pytz
 from constance import config
 from equipment.models import Equipment
+from htmx_views.views import HTMXFormMixin
 from labman_utils.views import IsAuthenticaedViewMixin
 from psycopg2.extras import DateTimeTZRange
 from simple_html_table import Table
@@ -96,6 +102,8 @@ class CalTable(Table):
             args = ((len(time_vec) + 1, len(date_vec) + 1),)
         time_vec = time_vec if time_vec is not None else []
         date_vec = date_vec if date_vec is not None else []
+        request = kargs.pop("request", None)
+        equipment = kargs.pop("equipment", None)
         super().__init__(*args, **kargs)
         self.date_vec = date_vec
         self.time_vec = time_vec
@@ -106,8 +114,18 @@ class CalTable(Table):
             self[0, index_row].attrs_dict.update({"style": "width: 13%; text-align: center;"})
             for index_col, time in enumerate(time_vec, start=1):
                 slot_dt = dt.combine(date, time)
-                self[index_col, index_row].attrs_dict["data_ts"] = slot_dt.timestamp()
-                self[index_col, index_row].attrs_dict["data_dt"] = slot_dt.strftime("%Y-%m-%d %I:%M %p")
+                data_ts = slot_dt.timestamp()
+                data_dt = slot_dt.strftime("%Y-%m-%d %I:%M %p")
+                self[index_col, index_row].attrs_dict["data_ts"] = data_ts
+                self[index_col, index_row].attrs_dict["data_dt"] = data_dt
+                self[index_col, index_row].attrs_dict.update(
+                    {
+                        "hx-get": f"/bookings/book/{equipment.pk}/{data_ts}/",
+                        "data-bs-toggle": "modal",
+                        "data-bs-target": "#dialog",
+                    }
+                )
+
         for index_col, time in enumerate(time_vec, start=1):
             self[index_col, 0].content = time.strftime("%I:%M %p")
         self.classes += " col-md-10"
@@ -116,20 +134,23 @@ class CalTable(Table):
 class CalendarView(IsAuthenticaedViewMixin, views.generic.DetailView):
     """Make a calendar display for an equipment item and date."""
 
-    template_name = "bookings/equipment_calendar.hhtml"
+    template_name = "bookings/equipment_calendar.html"
     model = Equipment
     slug_url_kwarg = "equipment"
     slug_field = "pk"
-    context_object_name = "this"
+    context_object_name = "equipment"
 
     def get_context_data(self, **kwargs):
         """Build the context for the calendar display."""
         context = super().get_context_data(**kwargs)
+        equipment = context["equipment"]
         date_vec = calendar_date_vector(yyyymmdd_to_date(self.kwargs["date"]))
         time_vec = calendar_time_vector()
         table = CalTable(
             date_vec=date_vec,
             time_vec=time_vec,
+            request=self.request,
+            equipment=equipment,
             table_contents=np.array([["&nbsp;"] * (len(date_vec) + 1)] * (len(time_vec) + 1)),
         )
         table.classes += " table-bordered"
@@ -137,8 +158,7 @@ class CalendarView(IsAuthenticaedViewMixin, views.generic.DetailView):
             dt.combine(date_vec[0], time_vec[0], tzinfo=DEFAULT_TZ),
             dt.combine(date_vec[-1], time_vec[-1], tzinfo=DEFAULT_TZ),
         )
-        eqipment = context["this"]
-        for entry in eqipment.bookings.filter(slot__overlap=target_range):
+        for entry in equipment.bookings.filter(slot__overlap=target_range):
             row_start, col_start = datetime_to_coord(entry.slot.lower, date_vec, time_vec)
             row_end, col_end = datetime_to_coord(entry.slot.upper, date_vec, time_vec)
             if col_start == col_end:  # single day
@@ -160,38 +180,69 @@ class CalendarView(IsAuthenticaedViewMixin, views.generic.DetailView):
         context["cal"] = table
         context["start"] = date_vec[0]
         context["end"] = date_vec[-1]
-        context["entries"] = eqipment.bookings.filter(slot__overlap=target_range)
+        context["entries"] = equipment.bookings.filter(slot__overlap=target_range)
         context["form"] = forms.BookinngDialogForm()
 
         return context
 
 
-class BookingDelete(IsAuthenticaedViewMixin, views.generic.DetailView):
-    """Handles deleting a single booking entry by the booking id."""
-
-    model = models.BookingEntry
-    template_name = "bookings/booking_form.html"
-    slug_field = "pk"
-    slug_url_kwarg = "pk"
-    context_object_name = "this"
-
-    def render_to_response(self, context, **response_kwargs):
-        """Delete the booking entry and redirect to the calendar view."""
-        this = context.get("this")
-        start = this.slot.lower.strftime("%Y%m%d")
-        equip = this.equipment
-
-        this.delete()
-        return HttpResponseRedirect(f"/bookings/cal/{equip.pk}/{start}/")
-
-
-class BookingDialog(IsAuthenticaedViewMixin, views.generic.UpdateView):
+class BookingDialog(IsAuthenticaedViewMixin, HTMXFormMixin, views.generic.UpdateView):
     """Prdoce the html for a booking form in the dialog."""
 
     model = models.BookingEntry
     template_name = "bookings/booking_form.html"
     form_class = forms.BookinngDialogForm
     context_object_name = "this"
+
+    def get_context_data_dialog(self, **kwargs):
+        context = super().get_context_data(_context=True, **kwargs)
+        context["current_url"] = self.request.htmx.current_url
+        context["ts"] = self.kwargs.get("ts", None)
+        context["equipment"] = Equipment.objects.get(pk=self.kwargs.get("equipment", None))
+        context["equipment_id"] = self.kwargs.get("equipment", None)
+        return context
+
+    def get_context_data_schedule(self, **kwargs):
+        context = super().get_context_data(_context=True)
+        equipment = self.object.equipment
+        date_vec = calendar_date_vector(yyyymmdd_to_date(self.object.slot.lower.strftime("%Y%m%d")))
+        time_vec = calendar_time_vector()
+        table = CalTable(
+            request=self.request,
+            equipment=equipment,
+            date_vec=date_vec,
+            time_vec=time_vec,
+            table_contents=np.array([["&nbsp;"] * (len(date_vec) + 1)] * (len(time_vec) + 1)),
+        )
+        table.classes += " table-bordered"
+        target_range = DateTimeTZRange(
+            dt.combine(date_vec[0], time_vec[0], tzinfo=DEFAULT_TZ),
+            dt.combine(date_vec[-1], time_vec[-1], tzinfo=DEFAULT_TZ),
+        )
+        for entry in equipment.bookings.filter(slot__overlap=target_range):
+            row_start, col_start = datetime_to_coord(entry.slot.lower, date_vec, time_vec)
+            row_end, col_end = datetime_to_coord(entry.slot.upper, date_vec, time_vec)
+            if col_start == col_end:  # single day
+                table[row_start, col_start].rowspan = max(row_end - row_start, 1)
+                table[row_start, col_start].content = entry.user.display_name
+                table[row_start, col_start].classes += " bg-success p-3 text-center"
+            else:  # spans day boundaries
+                table[row_start, col_start].rowspan = len(time_vec) - row_start + 1
+                table[row_start, col_start].content = entry.user.display_name
+                table[row_start, col_start].classes += " bg-success p-3 text-center"
+                for col in range(col_start + 1, col_end):
+                    table[1, col].rowspan = len(time_vec)
+                    table[1, col].content = entry.user.display_name
+                    table[1, col].classes += " bg-success p-3 text-center"
+                table[1, col_end].rowspan = max(1, row_end)
+                table[1, col_end].content = entry.user.display_name
+                table[1, col_end].classes += " bg-success p-3 text-center"
+
+        context["cal"] = table
+        context["start"] = date_vec[0]
+        context["end"] = date_vec[-1]
+        context["entries"] = equipment.bookings.filter(slot__overlap=target_range)
+        return context
 
     def get_object(self, queryset=None):
         """Either get the BookingEntry or None."""
@@ -226,6 +277,35 @@ class BookingDialog(IsAuthenticaedViewMixin, views.generic.UpdateView):
         else:
             ret["booker"] = self.request.user
         return ret
+
+    def htmx_form_valid_booking(self, form):
+        self.object = form.save()
+        context = self.get_context_data()
+        return TemplateResponse(
+            request=self.request, template="equipment/parts/equipment_detail_schedule.html", context=context
+        )
+
+    def htmx_delete_booking(self, request, *args, **kwargs):
+        pk = self.request.GET.get("booking", None)
+        if not pk or not pk.isnumeric():
+            return HttpResponseNotFound("No booking primary key found!")
+
+        try:
+            booking = models.BookingEntry.objects.get(pk=int(pk))
+            self.object = booking
+        except models.BookingEntry.DoesNotExist:
+            return HttpResponseNotFound("No booking found!")
+        force = self.request.user.is_superuser
+        if booking.user != self.request.user:  # Not our booking so make use th Booker
+            booking.booker = self.request.user
+        try:
+            booking.delete(force=force)
+        except models.BookingError as e:
+            HttpResponseNotModified("Error allowing delete - no action!")
+        context = self.get_context_data()
+        return TemplateResponse(
+            request=self.request, template="equipment/parts/equipment_detail_schedule.html", context=context
+        )
 
     def get_success_url(self):
         """Work out the booking calendar we came from."""

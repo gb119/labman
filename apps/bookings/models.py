@@ -41,15 +41,19 @@ def replace_time(date_time, seconds):
     return _timezone.localize(ret)
 
 
-class PolicyDoesNotApply(ValidationError):
+class BookingError(ValidationError):
+    """Catchall exception for booking problems."""
+
+
+class PolicyDoesNotApply(BookingError):
     """Subclass of ValidationError to signal that the booking policy is not applicable here."""
 
 
-class PolicyNotFound(ValidationError):
+class PolicyNotFound(BookingError):
     """Subclass of ValidationError to signal that no booking policy for this user/equipment can be found."""
 
 
-class UserBookingHeld(ValidationError):
+class UserBookingHeld(BookingError):
     """Subclass of ValidationError to signal that bookings are held by a user-clearanle status."""
 
 
@@ -116,14 +120,10 @@ class BookingPolicy(NamedObject):
         if self.max_forward and tz.now() + self.max_forward < end:  # Booking  to far in advance
             raise PolicyDoesNotApply("End time is blocked by booking max_forward time")
 
-        total = np.sum(
-            [
-                (x.upper - x.lower).total_seconds()
-                for x in BookingEntry.objects.filter(
-                    user=booking.user, equipment=booking.equipment, slot__fully_gt=DateTimeTZRange(tz.now(), tz.now())
-                ).values_list("slot")
-            ]
-        )
+        entries = BookingEntry.objects.filter(
+            user=booking.user, equipment=booking.equipment, slot__fully_gt=DateTimeTZRange(tz.now(), tz.now())
+        ).values_list("slot")
+        total = np.sum([(x[0].upper - x[0].lower).total_seconds() for x in entries])
 
         if self.quota and total > self.quota.total_seconds():  # Too much time booked already
             raise PolicyDoesNotApply("Too much time {total[0]['total']} already booked.")
@@ -131,9 +131,26 @@ class BookingPolicy(NamedObject):
         return True
 
     @classmethod
-    def get_policy(cls, booking):
-        """Try to locate the relevant booking policy for this booking."""
-        if booking.user_hold:
+    def get_policy(cls, booking, no_holds=False):
+        """Try to locate the relevant booking policy for this booking.
+
+        Args:
+            booking (BookingEntry):
+                The potential bookingentry being considered.
+
+        Keyword Args:
+            no_holds (book :True):
+                Do not consider user or admin holds - e.g. for deleting bookings.
+
+        Returns:
+            (BookingPolicy):
+                The effective boooking policy to use.
+
+        Raises:
+            UserBookingHeld - raised if either user.hold or admin.hold is set and no_holds is not.
+            PolicyNotFoind - if no applicable policy can be found.
+        """
+        if booking.user_hold and not no_holds:
             raise UserBookingHeld(
                 f"Bookings for {booking.user} or {booking.equipment} are blocked - user action required"
             )
@@ -256,3 +273,10 @@ class BookingEntry(models.Model):
         """Force model.clean to be called."""
         self.clean()
         super().save(force_insert=force_insert, force_update=force_update, using=using, update_fields=update_fields)
+
+    def delete(self, using=None, keep_parents=False, force=True):
+        """Check whether we can delete this object."""
+        if force:
+            return super().delete(using=using, keep_parents=keep_parents)
+        policy = BookingPolicy.get_policy(self, no_holds=True)
+        return super().delete(using=using, keep_parents=keep_parents)

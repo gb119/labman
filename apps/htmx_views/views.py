@@ -5,6 +5,7 @@
 import re
 
 # Django imports
+from django.conf import settings
 from django.views import View
 
 
@@ -51,7 +52,7 @@ class HTMXProcessMixin:
 
     def get_context_data(self, **kwargs):
         """Get context data being aware of htmx views."""
-        if not getattr(self.request, "htmx", False):  # Default behaviour
+        if not getattr(self.request, "htmx", False) or kwargs.pop("_context", False):  # Default behaviour
             return super().get_context_data(**kwargs)
 
         # Look for a request specifc to the element involved.
@@ -70,11 +71,15 @@ class HTMXProcessMixin:
         for elem in self.htmx_elements():
             handler = getattr(self, f"get_template_names_{elem}", False)
             if handler:
+                if settings.DEBUG:
+                    print(f"Template_handl;er: {handler.__name__}")
                 return handler()
             sub_name = getattr(self, f"template_name_{elem}", False)
             if sub_name:
+                if settings.DEBUG:
+                    print(f"Template_name: {sub_name}")
                 return sub_name
-        return super().get_template_name()
+        return super().get_template_names()
 
     def htmx_delete(self, request, *args, **kwargs):
         """Delegate HTMX DELETE requests.
@@ -84,11 +89,13 @@ class HTMXProcessMixin:
         `method_not_allowed` result instrad.
         """
         for elem in self.htmx_elements():
-            handler = getattr(self, f"htmx_delete_{elem}")
+            handler = getattr(self, f"htmx_delete_{elem}", False)
             if handler:
                 break
         else:
             handler = getattr(self, "delete", self.http_method_not_allowed)
+        if settings.DEBUG:
+            print(f"HTMX Method handler: {handler.__name__}")
         return handler(request, *args, **kwargs)
 
     def htmx_get(self, request, *args, **kwargs):
@@ -104,6 +111,8 @@ class HTMXProcessMixin:
                 break
         else:
             handler = getattr(self, "get", self.http_method_not_allowed)
+        if settings.DEBUG:
+            print(f"HTMX Method handler: {handler.__name__}")
         return handler(request, *args, **kwargs)
 
     def htmx_patch(self, request, *args, **kwargs):
@@ -114,11 +123,13 @@ class HTMXProcessMixin:
         `method_not_allowed` result instrad.
         """
         for elem in self.htmx_elements():
-            handler = getattr(self, f"htmx_patch_{elem}")
+            handler = getattr(self, f"htmx_patch_{elem}", False)
             if handler:
                 break
         else:
             handler = getattr(self, "patch", self.http_method_not_allowed)
+        if settings.DEBUG:
+            print(f"HTMX Method handler: {handler.__name__}")
         return handler(request, *args, **kwargs)
 
     def htmx_post(self, request, *args, **kwargs):
@@ -129,11 +140,13 @@ class HTMXProcessMixin:
         `method_not_allowed` result instrad.
         """
         for elem in self.htmx_elements():
-            handler = getattr(self, f"htmx_post_{elem}")
+            handler = getattr(self, f"htmx_post_{elem}", False)
             if handler:
                 break
         else:
             handler = getattr(self, "post", self.http_method_not_allowed)
+        if settings.DEBUG:
+            print(f"HTMX Method handler: {handler.__name__}")
         return handler(request, *args, **kwargs)
 
     def htmx_put(self, request, *args, **kwargs):
@@ -144,12 +157,62 @@ class HTMXProcessMixin:
         `method_not_allowed` result instrad.
         """
         for elem in self.htmx_elements():
-            handler = getattr(self, f"htmx_put_{elem}")
+            handler = getattr(self, f"htmx_put_{elem}", False)
             if handler:
                 break
         else:
             handler = getattr(self, "put", self.http_method_not_allowed)
+        if settings.DEBUG:
+            print(f"HTMX Method handler: {handler.__name__}")
         return handler(request, *args, **kwargs)
+
+
+class HTMXFormMixin(HTMXProcessMixin):
+    """Provide additional methods to adapt FormView and friends for htmx requests as well."""
+
+    def form_valid(self, form):
+        """Look for HTMX form valid handlers.
+
+        If request.htmx is not set, then return the parent class form_valid, otherwise look for an element
+        specific htmx_form_valid_<name> method, or failing that just an htmx_form_valid meothd. Fnally,
+        give up and return the parent form_valid.
+
+        Notes:
+            htmx_form_valid* methods must not call super().form_valid - otherwise an infinite recursion happens!
+        """
+        if not getattr(self.request, "htmx", False):  # Non HTMX requests
+            return super().form_valid(form)
+        for elem in self.htmx_elements():
+            if settings.DEBUG:
+                print(f"Looking for htmx_form_valid_{elem}")
+            handler = getattr(self, f"htmx_form_valid_{elem}", False)
+            if handler:
+                return handler(form)
+        if handler := getattr(self, "htmx_form_valid", False):
+            return handler(form)
+        return super().form_valid(form)
+
+    def form_invalid(self, form):
+        """Look for HTMX form valid handlers.
+
+        If request.htmx is not set, then return the parent class form_invalid, otherwise look for an element
+        specific htmx_form_invalid_<name> method, or failing that just an htmx_form_invalid meothd. Fnally,
+        give up and return the parent form_invalid.
+
+        Notes:
+            htmx_inform_valid* methods must not call super().form_valid - otherwise an infinite recursion happens!
+        """
+        if not getattr(self.request, "htmx", False):  # Non HTMX requests
+            return super().form_invalid(form)
+        for elem in self.htmx_elements():
+            handler = getattr(self, f"htmx_form_invalid_{elem}", False)
+            if settings.DEBUG:
+                print(f"Looking for htmx_form_invalid_{elem}")
+            if handler:
+                return handler(form)
+        if handler := getattr(self, "htmx_form_invalid", False):
+            return handler(form)
+        return super().form_invalid(form)
 
 
 if not hasattr(View, "_bon_htmx_dispatch"):  # View needs monkey patching

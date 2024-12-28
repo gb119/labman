@@ -1,25 +1,74 @@
 {% load django_bootstrap5 %}
 {% load labman_tags %}
-<form id="booking" method="POST" action="{{ request.path }}">
-{% csrf_token %}
-{% bootstrap_form form layout="horizontal" %}
-<div class="row justify-content-between">
-<div class="col-md-6">
-{% bootstrap_button "Cancel" button_type="reset"  button_class="btn-secondary bi bi-x" name="cancel" %}
-{% if this %}
-{% bootstrap_button "Edit" button_type="submit" button_class="btn-primary bi bi-pencil" name="book" %}
-{% else %}
-{% bootstrap_button "Book" button_type="submit" button_class="btn-primary bi bi-bookmark-plus" name="book" %}
-{% endif %}
-</div>
-<div class="col-md-3">
-{% if this %}
-{% bootstrap_button "Delete" button_type="button" button_class="btn-danger bi bi-trash" name="delete" %}
-{% endif %}
-</div>
-</div>
-</form>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.12.0/moment.js"></script>
+<script>
+function sleep(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+}
+$(document).on("dal-element-initialized", function (e) {
+    if (e.detail.element.id === "id_user") {
+        $("#id_user").select2("open").trigger("focus");
+    }
+});
+$(':input[name$=user]').on('change', function() {
+    setTimeout(function() {sleep(250); $("#booking  button.btn-primary").focus();},0);
+    $(':focus').blur();
+    return true;
+
+});
+</script>
+<script src="/static/admin/js/vendor/select2/select2.full.js"></script>
+<script src="/admin/jsi18n/"></script>
+<script src="/static/admin/js/calendar.js"></script>
+<script src="/static/autocomplete_light/autocomplete_light.js"></script>
+<script src="/static/admin/js/admin/DateTimeShortcuts.js"></script>
+<script src="/static/autocomplete_light/select2.js"></script>
+<script src="/static/autocomplete_light/i18n/en.js"></script>
+
+<div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Book {{equipment.name }}</h5>
+        </div>
+        <div class="modal-body">
+            <form id="booking" method="POST"
+                hx-post="{% url 'bookings:equipment_booking' equipment_id ts %}"
+                hx-target="#schedule">
+                {% csrf_token %}
+                {% bootstrap_form form layout="horizontal" %}
+                <div class="row justify-content-between">
+                    <div class="col-md-6">
+                        <button type="reset"
+                        class="btn-secondary bi bi-x"
+                        data-bs-dismiss="modal"
+                        name="cancel">Cancel</button>
+                        {% if this %}
+                            <button type="submit"
+                            class="btn-primary bi bi-pencil"
+                            data-bs-dismiss="modal"
+                            name="book">Edit</button>
+                        {% else %}
+                            <button type="submit"
+                            class="btn-primary bi bi-bookmark-plus"
+                            data-bs-dismiss="modal"
+                            name="book">Book</button>
+                        {% endif %}
+                    </div>
+                    <div class="col-md-3">
+                        {% if this %}
+                            <button type="button"
+                            class="btn-danger bi bi-trash"
+                            data-bs-dismiss="modal"
+                            hx-delete="{% url 'bookings:equipment_booking' equipment_id ts %}"
+                            name="booking" value={{ this.pk }}>Delete</button>
+                        {% endif %}
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
 {{ form.media }}
 <script>
 function sleep(ms) {

@@ -14,7 +14,11 @@
         </div><div class="col col-md-3">{{ entry.role }}</div>
         <div class="col col-md-3">
             {% if entry.hold %}
-                <a href="/equipment/sign-off/{{ entry.equipment.pk }}/">Sign Off</a>
+                {% if request.user == account %}
+                    <a href="/equipment/sign-off/{{ entry.equipment.pk }}/">Sign Off</a>
+                {% else %}
+                    <span>User needs to sign</span>
+                {% endif %}
             {% else %}
                 {{ entry.updated }}
             {% endif %}

@@ -3,10 +3,8 @@
 """Form definitions for the accounts apps."""
 
 # Django imports
+from django import forms
 from django.forms.widgets import Select
-
-# external imports
-import floppyforms as forms
 
 # app imports
 from .models import Account

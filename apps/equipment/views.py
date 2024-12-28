@@ -4,18 +4,42 @@ Created on Sun Jun 25 18:16:19 2023
 
 @author: phygbu
 """
+# Python imports
+from datetime import (
+    date as Date,
+    datetime as dt,
+    time as Time,
+    timedelta as td,
+)
+
 # Django imports
 from django import views
+from django.conf import settings
 from django.core.exceptions import ObjectDoesNotExist
+from django.template import Template
 
 # external imports
+import numpy as np
+import pytz
+from bookings.forms import BookinngDialogForm
+from bookings.models import BookingEntry
+from bookings.views import (
+    CalTable,
+    calendar_date_vector,
+    calendar_time_vector,
+    datetime_to_coord,
+    yyyymmdd_to_date,
+)
 from extra_views import FormSetView
 from htmx_views.views import HTMXProcessMixin
 from labman_utils.views import IsAuthenticaedViewMixin
+from psycopg2.extras import DateTimeTZRange
 
 # app imports
 from .forms import SignOffForm
 from .models import DocumentSignOff, Equipment
+
+DEFAULT_TZ = pytz.timezone(settings.TIME_ZONE)
 
 # Create your views here.
 
@@ -74,4 +98,49 @@ class EquipmentDetailView(HTMXProcessMixin, views.generic.DetailView):
     template_name_resourcestab = "equipment/parts/equipment_detail_resources.html"
     template_name_pagestab = "equipment/parts/equipment_detail_pages.html"
     template_name_userlisttab = "equipment/parts/equipment_detail_userlist.html"
+    template_name_scheduletab = "equipment/parts/equipment_detail_schedule.html"
     model = Equipment
+
+    def get_context_data_scheduletab(self, **kwargs):
+        """Build the context for the calendar display."""
+        context = super().get_context_data(_context=True, **kwargs)
+        equipment = context["equipment"]
+        date_vec = calendar_date_vector(yyyymmdd_to_date(self.kwargs.get("date", dt.today().strftime("%Y%m%d"))))
+        time_vec = calendar_time_vector()
+        table = CalTable(
+            request=self.request,
+            equipment=equipment,
+            date_vec=date_vec,
+            time_vec=time_vec,
+            table_contents=np.array([["&nbsp;"] * (len(date_vec) + 1)] * (len(time_vec) + 1)),
+        )
+        table.classes += " table-bordered"
+        target_range = DateTimeTZRange(
+            dt.combine(date_vec[0], time_vec[0], tzinfo=DEFAULT_TZ),
+            dt.combine(date_vec[-1], time_vec[-1], tzinfo=DEFAULT_TZ),
+        )
+        for entry in equipment.bookings.filter(slot__overlap=target_range):
+            row_start, col_start = datetime_to_coord(entry.slot.lower, date_vec, time_vec)
+            row_end, col_end = datetime_to_coord(entry.slot.upper, date_vec, time_vec)
+            if col_start == col_end:  # single day
+                table[row_start, col_start].rowspan = max(row_end - row_start, 1)
+                table[row_start, col_start].content = entry.user.display_name
+                table[row_start, col_start].classes += " bg-success p-3 text-center"
+            else:  # spans day boundaries
+                table[row_start, col_start].rowspan = len(time_vec) - row_start + 1
+                table[row_start, col_start].content = entry.user.display_name
+                table[row_start, col_start].classes += " bg-success p-3 text-center"
+                for col in range(col_start + 1, col_end):
+                    table[1, col].rowspan = len(time_vec)
+                    table[1, col].content = entry.user.display_name
+                    table[1, col].classes += " bg-success p-3 text-center"
+                table[1, col_end].rowspan = max(1, row_end)
+                table[1, col_end].content = entry.user.display_name
+                table[1, col_end].classes += " bg-success p-3 text-center"
+
+        context["cal"] = table
+        context["start"] = date_vec[0]
+        context["end"] = date_vec[-1]
+        context["entries"] = equipment.bookings.filter(slot__overlap=target_range)
+
+        return context
