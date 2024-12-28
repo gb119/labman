@@ -4,9 +4,12 @@ isort:
 	find . -name '*.py' | xargs -I {} echo '"{}"' | xargs isort --profile black
 
 spell:
-	find . -name '*.py' | xargs -I {} codespell '"{}"'
+	find . -name '*.py' | xargs -I {} echo '"{}"' | xargs codespell 
 
-black: isort
+djhtml:
+	find . -name '*.html' | xargs -I {} echo '"{}"' | xargs djhtml
+
+black: isort djhtml
 	find . -name '*.py' | xargs -I {} echo '"{}"' | xargs black -l 119
 
 

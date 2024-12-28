@@ -1,15 +1,15 @@
 <div class="row bg-secondary"><div class="col col-md-3"><h5>User</h5></div>
-<div class="col col-md-3"><h5>Role</h5></div>
-<div class="col col-md-3"><h5>Signed</h5></div></div>
+    <div class="col col-md-3"><h5>Role</h5></div>
+    <div class="col col-md-3"><h5>Signed</h5></div></div>
 {% for entry in equipment.users.all %}
     <div class="row">
         <div class="col col-md-3">
-        <a href="/accounts/user/{{ entry.user.username }}">
-        {% if entry.user.mugshot %}
-            <img src="{{ entry.user.mugshot.get_thumbnail_url }}" alt="Picture of {{ entry.user.display_name" />
-        {% endif %}
-        {{ entry.user.display_name }}
-        </a>
+            <a href="/accounts/user/{{ entry.user.username }}">
+                {% if entry.user.mugshot %}
+                    <img src="{{ entry.user.mugshot.get_thumbnail_url }}" alt="Picture of {{ entry.user.display_name" />
+                {% endif %}
+                {{ entry.user.display_name }}
+            </a>
         </div><div class="col col-md-3">{{ entry.role }}</div>
         <div class="col col-md-3">
             {% if entry.hold %}

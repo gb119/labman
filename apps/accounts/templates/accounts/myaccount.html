@@ -1,78 +1,72 @@
 {% extends 'base.html' %}
 {% block title %}{{ block.super }}My Account{% endblock title %}
 {% block css %}
-{{ block.super }}
-<style>
-div.bg-secondary h5 {
-    color: white;
-    margin: 8px;
-}
-</style>}
+    {{ block.super }}
+    <style>
+        div.bg-secondary h5 {
+            color: white;
+            margin: 8px;
+        }
+    </style>}
 {% endblock css %}
 {%block content %}
-<h2>{{ account.display_name }}'s Profile</h2>
-<main>
-
-<!-- Nav tabs -->
-<ul class="nav nav-tabs" id="profile_tabs" role="tablist">
-  <li class="nav-item" role="presentation">
-    <button class="nav-link active" id="details-tab"
-            data-bs-toggle="tab" data-bs-target="#details"
-            type="button" role="tab" aria-controls="details"
-            aria-selected="true">Details</button>
-  </li>
-  <li class="nav-item" role="presentation">
-    <button class="nav-link" id="project-tab"
-            hx-get="{{ request.build_absolute_uri }}" hx-target="#project"
-            data-bs-toggle="tab" data-bs-target="#project"
-            type="button" role="tab" aria-controls="project"
-            aria-selected="false">Project</button>
-  </li>
-  <li class="nav-item" role="presentation">
-    <button class="nav-link" id="underlings-tab"
-            hx-get="{{ request.build_absolute_uri }}" hx-target="#underlings"
-            data-bs-toggle="tab" data-bs-target="#underlings"
-            type="button" role="tab" aria-controls="underlings"
-            aria-selected="false">Manages</button>
-  </li>
-  <li class="nav-item" role="presentation">
-    <button class="nav-link" id="userlist-tab"
-            hx-get="{{ request.build_absolute_uri }}" hx-target="#userlist"
-            data-bs-toggle="tab" data-bs-target="#userlist"
-            type="button" role="tab" aria-controls="userlist"
-            aria-selected="false">Userlist</button>
-  </li>
-</ul>
-
-<!-- Tab panes -->
-<div class="tab-content">
-    <div class="tab-pane active" id="details" role="tabpanel" aria-labelledby="details-tab">
-        <div class="float-end">
-            {% if account.mugshot %}
-                <img src="{{account.mugshot.get_thumbnail_url }}" alt="Picture of {{ account.display_name" />
-            {% endif %}
-        </div>
-        <div class="row">
-            <div class="col col-md-3">Username :</div><div class="col col-md-9">{{ account.username }}</div>
-        </div>
-        <div class="row">
-            <div class="col col-md-3">Email Address :</div><div class="col col-med-9">{{ account.email|urlize }}</div>
-        </div>
-        <div class="row">
-            <div class="col col-md-3">Manager :</div><div class="col col-md-9">
-                {% if account.manager %}
-                    <a href="/accounts/profile/{{ account.manager.username }}">{{ account.manager.display_name }}</a>
-                {% else %}
-                    {{ account.display_name }}
-                {% endif %}
+    <h2>My Profile</h2>
+    <main>
+        <ul class="nav nav-tabs" id="profile_tabs" role="tablist">
+            <li class="nav-item" role="presentation">
+                <button class="nav-link active" id="details-tab"
+                        data-bs-toggle="tab" data-bs-target="#details"
+                        type="button" role="tab" aria-controls="details"
+                        aria-selected="true">Details</button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="project-tab"
+                        hx-get="{{ request.build_absolute_uri }}" hx-target="#project"
+                        data-bs-toggle="tab" data-bs-target="#project"
+                        type="button" role="tab" aria-controls="project"
+                        aria-selected="false">Project</button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="underlings-tab"
+                        hx-get="{{ request.build_absolute_uri }}" hx-target="#underlings"
+                        data-bs-toggle="tab" data-bs-target="#underlings"
+                        type="button" role="tab" aria-controls="underlings"
+                        aria-selected="false">Manages</button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="userlist-tab"
+                        hx-get="{{ request.build_absolute_uri }}" hx-target="#userlist"
+                        data-bs-toggle="tab" data-bs-target="#userlist"
+                        type="button" role="tab" aria-controls="userlist"
+                        aria-selected="false">Userlist</button>
+            </li>
+        </ul>
+        <div class="tab-content">
+            <div class="tab-pane active" id="details" role="tabpanel" aria-labelledby="details-tab">
+                <div class="float-end">
+                    {% if account.mugshot %}
+                        <img src="{{account.mugshot.get_thumbnail_url }}" alt="Picture of {{ account.display_name" />
+                    {% endif %}
+                </div>
+                <div class="row">
+                    <div class="col col-md-3">Username :</div><div class="col col-md-9">{{ account.username }}</div>
+                </div>
+                <div class="row">
+                    <div class="col col-md-3">Email Address :</div><div class="col col-med-9">{{ account.email|urlize }}</div>
+                </div>
+                <div class="row">
+                    <div class="col col-md-3">Manager :</div><div class="col col-md-9">
+                        {% if account.manager %}
+                            <a href="/accounts/profile/{{ account.manager.username }}">{{ account.manager.display_name }}</a>
+                        {% else %}
+                            {{ account.display_name }}
+                        {% endif %}
+                    </div>
+                </div>
             </div>
+            <div class="tab-pane" id="project" role="tabpanel" aria-labelledby="project-tab"></div>
+            <div class="tab-pane" id="underlings" role="tabpanel" aria-labelledby="underlings-tab"></div>
+            <div class="tab-pane" id="userlist" role="tabpanel" aria-labelledby="userlist-tab"></div>
         </div>
-    </div>
-    <div class="tab-pane" id="project" role="tabpanel" aria-labelledby="project-tab"></div>
-    <div class="tab-pane" id="underlings" role="tabpanel" aria-labelledby="underlings-tab"></div>
-    <div class="tab-pane" id="userlist" role="tabpanel" aria-labelledby="userlist-tab">
-</div>
-</main>
-
-
+    </main>
 {% endblock content %}

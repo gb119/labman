@@ -3,26 +3,26 @@
 {% load labman_tags %}
 {% block title %}{{ block.super }}:Sign off Risk Assessments{% endblock title %}
 {% block content %}
-<h2>Sign Off Risk Assessments</h2>
-<main><p>Check the boxes to sign off the documents.</p>
-<form method="POST" action="{{ request.path }}" role="form" aria-label="Document Sign-off Form">
-{% csrf_token %}
-    {{ formset.management_form }}
-    <div class="col-md-8">
-    {% for form,doc in formset|zip:docs %}
-        <div class="float-end">{% bootstrap_form form layput="inline" %}</div>
-        <div class="row"><a href="{{ doc.file_url }}" target=_NEW >{{ doc.title }} (v{{ doc.version }})</a></div>
-        <div class="row">{{ doc.extra_text }}</div>
-    {% endfor %}
-    </div>
-<div class="row justify-content-center">
-<div class="col-1">
-{% bootstrap_button "Cancel" button_type="reset"  %}
-</div>
-<div class="col-1">
-{% bootstrap_button "Sign" button_type="submit" button_class="btn-primary" icon="glyphicon glyphicon-share-alt" %}
-</div>
-</div>
-</form>
-</main>
+    <h2>Sign Off Risk Assessments</h2>
+    <main><p>Check the boxes to sign off the documents.</p>
+        <form method="POST" action="{{ request.path }}" role="form" aria-label="Document Sign-off Form">
+            {% csrf_token %}
+            {{ formset.management_form }}
+            <div class="col-md-8">
+                {% for form,doc in formset|zip:docs %}
+                    <div class="float-end">{% bootstrap_form form layput="inline" %}</div>
+                    <div class="row"><a href="{{ doc.file_url }}" target=_NEW >{{ doc.title }} (v{{ doc.version }})</a></div>
+                    <div class="row">{{ doc.extra_text }}</div>
+                {% endfor %}
+            </div>
+            <div class="row justify-content-center">
+                <div class="col-1">
+                    {% bootstrap_button "Cancel" button_type="reset"  %}
+                </div>
+                <div class="col-1">
+                    {% bootstrap_button "Sign" button_type="submit" button_class="btn-primary" icon="glyphicon glyphicon-share-alt" %}
+                </div>
+            </div>
+        </form>
+    </main>
 {% endblock content %}

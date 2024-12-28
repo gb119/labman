@@ -7,10 +7,10 @@
 {% for entry in account.user_of.all %}
     <div class="row">
         <div class="col col-md-3">
-        <a href="/equipment/equipment_detail/{{ entry.equipment.pk }}/">
-        {{ entry.equipment.thumbnail }}
-        {{ entry.equipment }}
-        </a>
+            <a href="/equipment/equipment_detail/{{ entry.equipment.pk }}/">
+                {{ entry.equipment.thumbnail }}
+                {{ entry.equipment }}
+            </a>
         </div><div class="col col-md-3">{{ entry.role }}</div>
         <div class="col col-md-3">
             {% if entry.hold %}
@@ -32,4 +32,3 @@
         </div>
     </div>
 {% endfor %}
-</div>
