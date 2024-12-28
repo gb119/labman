@@ -62,6 +62,29 @@ class HTMXProcessMixin:
                 return handler(**kwargs)
         return super().get_context_data(**kwargs)
 
+    def get_context_object_name(self, object_list, _default=False):
+        """Get context object name being aware of htmx elements.
+
+        If the get_context_name_<element> method needs to call usper, it shopuld set a keyword
+        argument, _default to be True to avoid a recursive loop.
+        """
+        if not getattr(self.request, "htmx", False) or _default:  # Default behaviour
+            print("No HTMX")
+            return super().get_context_object_name(object_list)
+
+        # Look for a request specifc to the element involved.
+        for elem in self.htmx_elements():
+            if handler := getattr(self, f"get_context_object_name{elem}", False):
+                print(elem, handler)
+                return handler(object_list)
+            if sub_name := getattr(self, f"context_object_{elem}", False):
+                print(elem, sub_name)
+                return sub_name
+
+        print("Super")
+
+        return super().get_context_object_name(object_list)
+
     def get_template_names(self):
         """Look for htmx specific templates."""
         if not getattr(self.request, "htmx", False):  # Default behaviour

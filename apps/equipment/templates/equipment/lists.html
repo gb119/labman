@@ -1,0 +1,69 @@
+{% extends "base.html" %}
+{% block css %}
+    {{ block.super }}
+    <style>
+        div.bg-secondary h5 {
+            color: white;
+            margin: 8px;
+        }
+    </style>}
+{% endblock css %}
+{% block title %}{{ block.super }}: Lists{% endblock %}
+{% block content %}
+    <h2>Lists</h2>
+    <main>
+        <ul class="nav nav-tabs" id="profile_tabs" role="tablist">
+            <li class="nav-item" role="presentation">
+                <button class="nav-link active" id="home-tab"
+                        data-bs-toggle="tab" data-bs-target="#home"
+                        type="button" role="tab" aria-controls="home"
+                        aria-selected="true">Home</button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="accounts-tab"
+                        hx-get="{{ request.build_absolute_uri }}" hx-target="#accounts"
+                        data-bs-toggle="tab" data-bs-target="#accounts"
+                        type="button" role="tab" aria-controls="accounts"
+                        aria-selected="false">Accounts</button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="equipment-tab"
+                        hx-get="{{ request.build_absolute_uri }}" hx-target="#equipment"
+                        data-bs-toggle="tab" data-bs-target="#equipment"
+                        type="button" role="tab" aria-controls="equipment"
+                        aria-selected="false">Equipment</button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="locations-tab"
+                        hx-get="{{ request.build_absolute_uri }}" hx-target="#locations"
+                        data-bs-toggle="tab" data-bs-target="#locations"
+                        type="button" role="tab" aria-controls="locations"
+                        aria-selected="false">Locations</button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="projects-tab"
+                        hx-get="{{ request.build_absolute_uri }}" hx-target="#projects"
+                        data-bs-toggle="tab" data-bs-target="#projects"
+                        type="button" role="tab" aria-controls="projects"
+                        aria-selected="false">Projects</button>
+            </li>
+        </ul>
+
+        <div class="tab-content">
+            <div class="tab-pane active" id="home" role="tabpanel" aria-labelledby="home-tab">
+                <p>Select the list you wish to see from the tabs above.</p>
+            </div>
+            <div class="tab-pane active" id="accounts" role="tabpanel" aria-labelledby="accounts-tab">
+            </div>
+            <div class="tab-pane" id="locations" role="tabpanel" aria-labelledby="locations-tab">
+            </div>
+            <div class="tab-pane" id="equipment" role="tabpanel" aria-labelledby="equipment-tab">
+            </div>
+            <div class="tab-pane" id="projects" role="tabpanel" aria-labelledby="projects-tab">
+            </div>
+        </div>
+
+
+    </main>
+
+{% endblock content %}

@@ -21,6 +21,7 @@ from django.template import Template
 # external imports
 import numpy as np
 import pytz
+from accounts.models import Account, Project
 from bookings.forms import BookinngDialogForm
 from bookings.models import BookingEntry
 from bookings.views import (
@@ -37,7 +38,7 @@ from psycopg2.extras import DateTimeTZRange
 
 # app imports
 from .forms import SignOffForm
-from .models import DocumentSignOff, Equipment
+from .models import DocumentSignOff, Equipment, Location
 
 DEFAULT_TZ = pytz.timezone(settings.TIME_ZONE)
 
@@ -91,7 +92,7 @@ class SignOffFormSetView(IsAuthenticaedViewMixin, FormSetView):
         return context
 
 
-class EquipmentDetailView(HTMXProcessMixin, views.generic.DetailView):
+class EquipmentDetailView(HTMXProcessMixin, IsAuthenticaedViewMixin, views.generic.DetailView):
     """Templated view for Equipment detail."""
 
     template_name = "equipment/equipment_detail.html"
@@ -143,4 +144,38 @@ class EquipmentDetailView(HTMXProcessMixin, views.generic.DetailView):
         context["end"] = date_vec[-1]
         context["entries"] = equipment.bookings.filter(slot__overlap=target_range)
 
+        return context
+
+
+class ModelListView(HTMXProcessMixin, IsAuthenticaedViewMixin, views.generic.ListView):
+    """Setup a tabbed view of lists of various things."""
+
+    template_name = "equipment/lists.html"
+    template_name_equipmenttab = "equipment/parts/equipment_list.html"
+    template_name_locationstab = "equipment/parts/locations_list.html"
+    template_name_projectstab = "equipment/parts/projects_list.html"
+    template_name_accountstab = "equipment/parts/accounts_list.html"
+
+    context_object_equipmenttab = "equipment"
+    context_object_locationstab = "locations"
+    context_object_projectstab = "project"
+    context_object_accountstab = "accounts"
+
+    def get_queryset(self):
+        """Get different querysets for each htmx query."""
+        if not getattr(self.request, "htmx", False):
+            return Account.objects.all()
+        match getattr(self.request.htmx, "trigger", ""):
+            case "equipment-tab":
+                qs = Equipment.objects.all().order_by("name")
+            case "locations-tab":
+                qs = Location.objects.all().order_by("code", "name")
+            case "projects-tab":
+                qs = Project.objects.all().order_by("name")
+            case _:
+                qs = Account.objects.all().order_by("last_name", "first_name")
+        return qs
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
         return context

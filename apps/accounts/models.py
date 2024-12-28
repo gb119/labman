@@ -134,7 +134,7 @@ class Account(AbstractUser):
     @cached_property
     def initials(self):
         """Return the initials of this user account."""
-        if "." in self.email:
+        if "." in self.email.split("@")[0]:
             userfield = self.email.split("@")[0]
             initials = [x.upper()[0] for x in userfield.split(".")]
             initials = "".join(initials)
@@ -148,6 +148,12 @@ class Account(AbstractUser):
     def is_supervisor(self):
         """Return true if the account is a super-user account."""
         return self.managing.count() > 0
+
+    @property
+    def primary_project(self):
+        if self.project.all().count() > 0:
+            return self.project.all().first()
+        return None
 
 
 class Role(models.Model):

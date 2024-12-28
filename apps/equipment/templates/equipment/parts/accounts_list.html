@@ -1,25 +1,21 @@
-{% if account.managing.count %}
-    <div class="row bg-secondary">
-        <div class="col col-md-3">
-            <h5>Name & Username</h5>
-        </div>
-        <div class="col col-md-2">
-            <h5>Thumbnail</h5>
-        </div>
-        <div class="col col-md-2">
-            <h5>Status</h5>
-        </div>
-        <div class="col col-md-2">
-            <h5>Manager</h5>
-        </div>
-        <div class="col col-md-3">
-            <h5>Project</h5>
-        </div>
+<div class="row bg-secondary">
+    <div class="col col-md-3">
+        <h5>Name & Username</h5>
     </div>
-{% else %}
-    <h5>{{ account.first_name }} {{ account.last_name }} has nobody they manager.</h5>
-{% endif %}
-{% for account in account.managing.all %}
+    <div class="col col-md-2">
+        <h5>Thumbnail</h5>
+    </div>
+    <div class="col col-md-2">
+        <h5>Status</h5>
+    </div>
+    <div class="col col-md-2">
+        <h5>Manager</h5>
+    </div>
+    <div class="col col-md-3">
+        <h5>Project</h5>
+    </div>
+</div>
+{% for account in accounts %}
     <div class="row">
         <div class="col col-md-2">
             <span>{% if account.title %}{{ account.title }} {% endif %}
