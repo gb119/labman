@@ -1,29 +1,7 @@
 {% load django_bootstrap5 %}
 {% load labman_tags %}
 <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.12.0/moment.js"></script>
-<script>
-    function sleep(ms) {
-        return new Promise(resolve => setTimeout(resolve, ms));
-    }
-    $(document).on("dal-element-initialized", function (e) {
-        if (e.detail.element.id === "id_user") {
-            $("#id_user").select2("open").trigger("focus");
-        }
-    });
-    $(':input[name$=user]').on('change', function() {
-        setTimeout(function() {sleep(250); $("#booking  button.btn-primary").focus();},0);
-        $(':focus').blur();
-        return true;
-
-    });
-</script>
-<script src="/static/admin/js/vendor/select2/select2.full.js"></script>
-<script src="/admin/jsi18n/"></script>
-<script src="/static/admin/js/calendar.js"></script>
-<script src="/static/autocomplete_light/autocomplete_light.js"></script>
-<script src="/static/admin/js/admin/DateTimeShortcuts.js"></script>
-<script src="/static/autocomplete_light/select2.js"></script>
-<script src="/static/autocomplete_light/i18n/en.js"></script>
+{{ form.media }}
 
 <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content">
@@ -45,11 +23,13 @@
                         {% if this %}
                             <button type="submit"
                                     class="btn-primary bi bi-pencil"
+                                    id = "submit_booking"
                                     data-bs-dismiss="modal"
                                     name="book">Edit</button>
                         {% else %}
                             <button type="submit"
                                     class="btn-primary bi bi-bookmark-plus"
+                                    id = "submit_booking"
                                     data-bs-dismiss="modal"
                                     name="book">Book</button>
                         {% endif %}
@@ -71,44 +51,17 @@
 
 {{ form.media }}
 <script>
-    function sleep(ms) {
-        return new Promise(resolve => setTimeout(resolve, ms));
-    }
-    $(document).on("dal-element-initialized", function (e) {
-        if (e.detail.element.id === "id_user") {
-            $("#id_user").select2("open").trigger("focus");
+
+    htmx.trigger("#user__textinput","focus");
+    htmx.trigger("#user__textinput","mousedown");
+
+    var frm = document.querySelector("#booking");
+
+    frm.addEventListener('keypress', function (event) {
+        if (event.keyCode === 13) {
+            event.preventDefault();
+            htmx.trigger("#submit_booking","focus");
+            htmx.trigger("#booking","submit");
         }
     });
-    $(':input[name$=user]').on('change', function() {
-        setTimeout(function() {sleep(250); $("#booking  button.btn-primary").focus();},0);
-        $(':focus').blur();
-        return true;
-
-    });
-</script>
-<script>
-    (function($) {
-        $('#add-form').click(function() {
-            var index = $('#id_inline_test_models-TOTAL_FORMS').val()
-            var newTable = $('#id_inline_test_models-__prefix__-DELETE').parents('table').clone()
-            newTable.find(':input').each(function() {
-                for (attr of ['name', 'id'])
-                    $(this).attr(
-                        attr,
-                        $(this).attr(attr).replace('__prefix__', index)
-                    )
-            })
-            newTable.insertBefore($(this))
-            $('#id_inline_test_models-TOTAL_FORMS').val(
-                parseInt($('#id_inline_test_models-TOTAL_FORMS').val()) + 1
-            )
-            newTable.slideDown()
-        })
-    })($)
-    $("button[name='delete']").on("click", function() {
-        window.location.replace("/bookings/delete/{{ this.pk }}/");
-    })
-    $("button[name='cancel']").on("click", function() {
-        $("#dialog").dialog("close");
-    })
 </script>

@@ -1,0 +1,36 @@
+<div class="row bg-secondary">
+    <div class="col col-md-1">
+        <h5>Code</h5>
+    </div>
+    <div class="col col-md-3">
+        <h5>Name</h5>
+    </div>
+    <div class="col col-md-4">
+        <h5>Descriptions</h5>
+    </div>
+    <div class="col col-md-2">
+        <h5>Contains</h5>
+    </div>
+</div>
+{% for location in locations %}
+    <div class="row">
+        <div class="col col-md-1">
+            <span>{{ location.code }}</span>
+        </div>
+        <div class="col col-md-3">
+            <span style="margin-left: {{ location.level }}em;">{{ location.name }}</span>
+        </div>
+        <div class="col col-md-4">
+            <div>{{ location.description|safe }}</div>
+        </div>
+        <div class="col col-md-2">
+            {% for item in location.equipment.all %}
+                {% if forllop.first %}<ul>{% endif %}
+                <li><a href="{{ item.url }}">{{ item.name }}</a></li>
+                {% if forllop.last %}</ul>{% endif %}
+            {% empty %}
+                -
+            {% endfor %}
+        </div>
+    </div>
+{% endfor %}

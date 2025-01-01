@@ -86,7 +86,7 @@ class BookingPolicy(NamedObject):
     def applies(self, booking):
         """Returns True if booking policy applies for this user/equipment."""
         role = booking.user_role
-        if getattr(booking, "booker", None) is None:
+        if getattr(booking, "booker", None) is None or booking.booker.is_superuser:
             return role and role.level >= self.for_role.level
         booker_role = booking.booker_role
         return (
@@ -162,10 +162,10 @@ class BookingPolicy(NamedObject):
             try:
                 if policy.permitted(booking):
                     return policy
-            except PolicyNotFound:
+            except (PolicyDoesNotApply, PolicyNotFound):
                 continue
         raise PolicyNotFound(
-            f"No policy permits booking of {booking.equipment} by {booking.user} at {booking.slot.lowe}"
+            f"No policy permits booking of {booking.equipment} by {booking.user} at {booking.slot.lower}"
         )
 
 

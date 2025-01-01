@@ -1,0 +1,279 @@
+.phac_aspc_form_autocomplete {
+    display: block;
+    width: 100%;
+    padding: calc(.375rem - 2px) 2.25rem calc(0.375rem - 2px) 0.75rem;
+    -moz-padding-start: calc(0.75rem - 3px);
+    font-weight: 400;
+    line-height: 1.5;
+    color: #212529;
+    background-color: #fff;
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23343a40' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m2 5 6 6 6-6'/%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right .75rem center;
+    background-size: 16px 12px;
+    border: 1px solid #ced4da;
+    border-radius: .375rem;
+    transition: border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+    appearance: none;
+    min-height: 38px;
+    position: relative;
+}
+
+.phac_aspc_form_autocomplete_focus_ring.disabled .phac_aspc_form_autocomplete {
+    background-color: #e9ecef;
+    background-image: none;
+}
+
+.phac_aspc_form_autocomplete * {
+    box-sizing: border-box;
+}
+
+.phac_aspc_form_autocomplete ul.ac_container {
+    position: relative;
+    overflow: hidden;
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: auto;
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.phac_aspc_form_autocomplete ul.ac_container li {
+    list-style: none;    
+}
+
+.phac_aspc_form_autocomplete ul.ac_container li.chip {
+    position: relative;
+    margin: 3px 5px 3px 0;
+    padding: 3px 20px 3px 5px;
+    border: 1px solid #aaa;
+    max-width: 100%;
+    border-radius: 3px;
+    background-color: #eeeeee;
+    background-image: linear-gradient(#f4f4f4 20%, #f0f0f0 50%, #e8e8e8 52%, #eee 100%);
+    background-size: 100% 19px;
+    background-repeat: repeat-x;
+    background-clip: padding-box;
+    box-shadow: 0 0 2px #fff inset, 0 1px 0 rgb(0 0 0 / 5%);
+    color: #333;
+    line-height: 14px;
+    cursor: default;
+}
+
+.phac_aspc_form_autocomplete_focus_ring.disabled .phac_aspc_form_autocomplete ul.ac_container li.chip {
+    padding: 3px 5px 3px 5px;
+}
+
+.phac_aspc_form_autocomplete ul.ac_container li.chip span {
+    word-wrap: break-word;
+}
+
+.phac_aspc_form_autocomplete ul.ac_container li.chip a {
+    position: absolute;
+    top: 4px;
+    right: 3px;
+    display: block;
+    width: 12px;
+    height: 12px;
+    font-size: 1px;    
+}
+
+.phac_aspc_form_autocomplete ul.ac_container li.chip a svg {
+    user-select: none;
+    cursor: pointer;
+    font-size: 12px;
+    margin: -2.5px 0px 0 0px;
+    top: 0;
+    width: 1em;
+    height: 1em;
+    fill: currentColor;
+    color: rgba(0, 0, 0, 0.26);
+}
+
+.phac_aspc_form_autocomplete ul.ac_container li.chip a svg:hover {
+    color: rgba(0, 0, 0, 0.4);
+}
+
+.phac_aspc_form_autocomplete ul.ac_container li.input {
+    margin: 0;
+    padding: 0;
+    min-width: 10px;
+    white-space: nowrap;
+    flex: 1;
+    display: flex;
+    flex-wrap: nowrap;
+    line-height: 14px;
+}
+
+.phac_aspc_form_autocomplete ul.ac_container li input.textinput {
+    margin: 1px 0;
+    padding: 0;
+    height: 25px;
+    outline: 0;
+    border: 0 !important;
+    background: transparent !important;
+    box-shadow: none;
+    font-size: 100%;
+    line-height: normal;
+    border-radius: 0;
+    flex: 1;
+    max-width: 100%;
+    cursor: pointer;
+}
+
+.phac_aspc_form_autocomplete .ac_required_input {
+    opacity: 0;
+    position: absolute;
+}
+
+.phac_aspc_form_autocomplete ul.ac_container li.search-indicator svg{
+    max-width:25px;
+    max-height:25px;
+}
+.phac_aspc_form_autocomplete ul.ac_container li.search-indicator svg .magnify {
+    fill:#000;
+    animation:search 1s infinite ease;
+}
+.phac_aspc_form_autocomplete ul.ac_container li.search-indicator svg .doc{
+    fill:#444;
+    animation:flyby 1s infinite ease;
+}
+  
+  
+@keyframes search {
+0%{
+    transform:translate(40px, 40px) scale(.6);
+}
+50%{
+    transform:translate(20px, 20px) scale(.6);
+}
+100%{
+    transform:translate(40px, 40px) scale(.6);
+}
+}
+
+@keyframes flyby {
+0%{
+    transform:translate(-20px, 20px) scale(.2);
+    opacity:0
+}
+50%{
+    transform:translate(30px, 20px) scale(.5);
+    opacity:1
+}
+100%{
+    transform:translate(100px, 20px) scale(.2);
+    opacity:0
+}
+}
+
+.phac_aspc_form_autocomplete .more-results {
+    border-top: 1px dashed #ccc;
+}
+
+.phac_aspc_form_autocomplete .more-results span {
+    white-space: nowrap;
+    display: block;
+    font-size: 0.8em;
+    opacity: 0.8;
+    padding: 10px 30px 0 30px;
+}
+
+
+.phac_aspc_form_autocomplete .results {
+    max-height: 240px;
+    max-width: 100%;
+    position: absolute;
+    overflow: auto;
+    z-index: 1000;
+    display: none;
+    min-width: 10rem;
+    padding: 0.5rem 0;
+    margin: 0;
+    font-size: 1rem;
+    color: #212529;
+    text-align: left;
+    list-style: none;
+    background-color: #fff;
+    background-clip: padding-box;
+    border: 1px solid rgba(0, 0, 0, 0.175);
+    border-radius: 0.375rem;
+}
+
+.phac_aspc_form_autocomplete .results.show {
+    display: block;
+}
+
+.phac_aspc_form_autocomplete .results .item {
+    display: block;
+    width: 100%;
+    padding: 2px 1rem 2px 1rem;
+    clear: both;
+    font-weight: 400;
+    color: #212529;
+    text-align: inherit;
+    text-decoration: none;
+    white-space: nowrap;
+    background-color: transparent;
+    border: 0;    
+}
+
+.phac_aspc_form_autocomplete .results .item .highlight {
+    font-weight: 600;
+    text-decoration: underline;
+}
+
+.phac_aspc_form_autocomplete_focus_ring .live_info {
+    border: 0!important;
+    clip: rect(0 0 0 0)!important;
+    height: 1px!important;
+    margin: -1px!important;
+    overflow: hidden!important;
+    padding: 0!important;
+    position: absolute!important;
+    width: 1px!important;
+}
+
+.phac_aspc_form_autocomplete_focus_ring.disabled {
+    cursor: inherit;
+}
+
+.phac_aspc_form_autocomplete_focus_ring {
+    cursor: pointer;
+    padding: 4px;
+}
+
+.phac_aspc_form_autocomplete_focus_ring.active {
+    border: 2px solid #000;
+    padding: 2px;
+}
+.phac_aspc_form_autocomplete_focus_ring.active > div {
+    color: #1e2125;
+    background-color: #e9ecef;
+}
+
+.phac_aspc_form_autocomplete .results .item.hasFocus,
+.phac_aspc_form_autocomplete .results .item:hover {
+    color: #1e2125;
+    background-color: #e9ecef;
+}
+
+.phac_aspc_form_autocomplete .results .item.selected.hasFocus,
+.phac_aspc_form_autocomplete .results .item.selected:hover {
+    color: #1e2125;
+    background-color: #eca9a9;
+}
+
+.phac_aspc_form_autocomplete .results .item.hasFocus {
+    outline: 2px solid #000;
+}
+
+.phac_aspc_form_autocomplete .results .item.selected {
+    display: list-item;
+    color: #ccc;
+}
+
+.phac_aspc_form_autocomplete li.input.ac-active {
+    min-width: 50px !important;
+}

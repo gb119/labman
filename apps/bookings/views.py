@@ -204,8 +204,9 @@ class BookingDialog(IsAuthenticaedViewMixin, HTMXFormMixin, views.generic.Update
 
     def get_context_data_schedule(self, **kwargs):
         context = super().get_context_data(_context=True)
-        equipment = self.object.equipment
-        date_vec = calendar_date_vector(yyyymmdd_to_date(self.object.slot.lower.strftime("%Y%m%d")))
+        equipment = Equipment.objects.get(pk=self.kwargs.get("equipment"))
+        start = dt.fromtimestamp(self.kwargs.get("ts"), DEFAULT_TZ)
+        date_vec = calendar_date_vector(yyyymmdd_to_date(start.strftime("%Y%m%d")))
         time_vec = calendar_time_vector()
         table = CalTable(
             request=self.request,
@@ -242,7 +243,14 @@ class BookingDialog(IsAuthenticaedViewMixin, HTMXFormMixin, views.generic.Update
         context["start"] = date_vec[0]
         context["end"] = date_vec[-1]
         context["entries"] = equipment.bookings.filter(slot__overlap=target_range)
+        context["ts"] = self.kwargs.get("ts", None)
+        context["equipment"] = Equipment.objects.get(pk=self.kwargs.get("equipment", None))
+        context["equipment_id"] = self.kwargs.get("equipment", None)
         return context
+
+    def form_invalid(self, form):
+        err = form.errors
+        return super().form_invalid(form)
 
     def get_object(self, queryset=None):
         """Either get the BookingEntry or None."""
@@ -274,8 +282,7 @@ class BookingDialog(IsAuthenticaedViewMixin, HTMXFormMixin, views.generic.Update
         ret = {"equipment": equipment, "slot": DateTimeTZRange(lower=start, upper=end)}
         if not self.request.user.is_superuser:
             ret["user"] = self.request.user
-        else:
-            ret["booker"] = self.request.user
+        ret["booker"] = self.request.user
         return ret
 
     def htmx_form_valid_booking(self, form):

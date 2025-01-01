@@ -4425,3 +4425,392 @@ Traceback (most recent call last):
     ...<2 lines>...
     )
 django.template.exceptions.TemplateSyntaxError: Could not parse the remainder: '$}{{' from '$}{{'
+Internal Server Error: /autocomplete/UserListAutoComplete/items
+Traceback (most recent call last):
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/views/generic/base.py", line 104, in view
+    return self.dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/phygbu/labman/apps/autocomplete/views.py", line 25, in dispatch
+    return super().dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/phygbu/labman/apps/htmx_views/views.py", line 35, in dispatch
+    return handler(request, *args, **kwargs)
+  File "/home/phygbu/labman/apps/autocomplete/views.py", line 170, in get
+    search_results = self.ac_class.search_items(
+        # or whatever
+        search_query,
+        context_obj,
+    )
+  File "/home/phygbu/labman/apps/autocomplete/shortcuts.py", line 46, in search_items
+    filtered_queryset = cls.get_query_filtered_queryset(search, context)
+  File "/home/phygbu/labman/apps/accounts/autocomplete.py", line 32, in get_query_filtered_queryset
+    conditions = [Q(**{f"{attr}__icontains": search}) for attr in cls.get_search_attrs()]
+                                                                  ~~~~~~~~~~~~~~~~~~~~^^
+  File "/home/phygbu/labman/apps/autocomplete/shortcuts.py", line 16, in get_search_attrs
+    raise ValueError("ModelAutocomplete must have search_attrs")
+ValueError: ModelAutocomplete must have search_attrs
+Internal Server Error: /bookings/book/1/1735635600.0/
+Traceback (most recent call last):
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/views/generic/base.py", line 104, in view
+    return self.dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/contrib/auth/mixins.py", line 135, in dispatch
+    return super().dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/phygbu/labman/apps/htmx_views/views.py", line 35, in dispatch
+    return handler(request, *args, **kwargs)
+  File "/home/phygbu/labman/apps/htmx_views/views.py", line 173, in htmx_post
+    return handler(request, *args, **kwargs)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/views/generic/edit.py", line 208, in post
+    return super().post(request, *args, **kwargs)
+           ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/views/generic/edit.py", line 155, in post
+    return self.form_invalid(form)
+           ~~~~~~~~~~~~~~~~~^^^^^^
+  File "/home/phygbu/labman/apps/htmx_views/views.py", line 238, in form_invalid
+    return super().form_invalid(form)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/views/generic/edit.py", line 69, in form_invalid
+    return self.render_to_response(self.get_context_data(form=form))
+                                   ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^
+  File "/home/phygbu/labman/apps/htmx_views/views.py", line 62, in get_context_data
+    return handler(**kwargs)
+  File "/home/phygbu/labman/apps/bookings/views.py", line 207, in get_context_data_schedule
+    equipment = self.object.equipment
+                ^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'NoneType' object has no attribute 'equipment'
+Internal Server Error: /bookings/book/1/1735635600.0/
+Traceback (most recent call last):
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/core/handlers/base.py", line 220, in _get_response
+    response = response.render()
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/template/response.py", line 114, in render
+    self.content = self.rendered_content
+                   ^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/template/response.py", line 92, in rendered_content
+    return template.render(context, self._request)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/template/backends/django.py", line 61, in render
+    return self.template.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/template/base.py", line 175, in render
+    return self._render(context)
+           ~~~~~~~~~~~~^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/template/base.py", line 167, in _render
+    return self.nodelist.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/template/base.py", line 1005, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/template/base.py", line 966, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/template/defaulttags.py", line 471, in render
+    url = reverse(view_name, args=args, kwargs=kwargs, current_app=current_app)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/urls/base.py", line 88, in reverse
+    return resolver._reverse_with_prefix(view, prefix, *args, **kwargs)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/urls/resolvers.py", line 828, in _reverse_with_prefix
+    raise NoReverseMatch(msg)
+django.urls.exceptions.NoReverseMatch: Reverse for 'equipment_booking' with arguments '('', '')' not found. 1 pattern(s) tried: ['bookings/book/(?P<equipment>[0-9]+)/(?P<ts>[0-9]+\\.?[0-9]+)/\\Z']
+Internal Server Error: /bookings/book/1/1735635600.0/
+Traceback (most recent call last):
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/views/generic/base.py", line 104, in view
+    return self.dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/contrib/auth/mixins.py", line 135, in dispatch
+    return super().dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/phygbu/labman/apps/htmx_views/views.py", line 35, in dispatch
+    return handler(request, *args, **kwargs)
+  File "/home/phygbu/labman/apps/htmx_views/views.py", line 122, in htmx_delete
+    return handler(request, *args, **kwargs)
+  File "/home/phygbu/labman/apps/bookings/views.py", line 305, in htmx_delete_booking
+    context = self.get_context_data()
+  File "/home/phygbu/labman/apps/htmx_views/views.py", line 62, in get_context_data
+    return handler(**kwargs)
+  File "/home/phygbu/labman/apps/bookings/views.py", line 207, in get_context_data_schedule
+    equipment = self.get_object().equipment
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'NoneType' object has no attribute 'equipment'
+Internal Server Error: /bookings/book/1/1735635600.0/
+Traceback (most recent call last):
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/views/generic/base.py", line 104, in view
+    return self.dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/contrib/auth/mixins.py", line 135, in dispatch
+    return super().dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/phygbu/labman/apps/htmx_views/views.py", line 35, in dispatch
+    return handler(request, *args, **kwargs)
+  File "/home/phygbu/labman/apps/htmx_views/views.py", line 173, in htmx_post
+    return handler(request, *args, **kwargs)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/views/generic/edit.py", line 208, in post
+    return super().post(request, *args, **kwargs)
+           ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/views/generic/edit.py", line 155, in post
+    return self.form_invalid(form)
+           ~~~~~~~~~~~~~~~~~^^^^^^
+  File "/home/phygbu/labman/apps/htmx_views/views.py", line 238, in form_invalid
+    return super().form_invalid(form)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/views/generic/edit.py", line 69, in form_invalid
+    return self.render_to_response(self.get_context_data(form=form))
+                                   ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^
+  File "/home/phygbu/labman/apps/htmx_views/views.py", line 62, in get_context_data
+    return handler(**kwargs)
+  File "/home/phygbu/labman/apps/bookings/views.py", line 207, in get_context_data_schedule
+    equipment = self.get_object().equipment
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'NoneType' object has no attribute 'equipment'
+Internal Server Error: /bookings/book/1/1735635600.0/
+Traceback (most recent call last):
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/views/generic/base.py", line 104, in view
+    return self.dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/contrib/auth/mixins.py", line 135, in dispatch
+    return super().dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/phygbu/labman/apps/htmx_views/views.py", line 35, in dispatch
+    return handler(request, *args, **kwargs)
+  File "/home/phygbu/labman/apps/htmx_views/views.py", line 122, in htmx_delete
+    return handler(request, *args, **kwargs)
+  File "/home/phygbu/labman/apps/bookings/views.py", line 309, in htmx_delete_booking
+    context = self.get_context_data()
+  File "/home/phygbu/labman/apps/htmx_views/views.py", line 62, in get_context_data
+    return handler(**kwargs)
+  File "/home/phygbu/labman/apps/bookings/views.py", line 207, in get_context_data_schedule
+    equipment = self.get_object().equipment
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'NoneType' object has no attribute 'equipment'
+Internal Server Error: /bookings/book/1/1735635600.0/
+Traceback (most recent call last):
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/core/handlers/base.py", line 220, in _get_response
+    response = response.render()
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/template/response.py", line 114, in render
+    self.content = self.rendered_content
+                   ^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/template/response.py", line 92, in rendered_content
+    return template.render(context, self._request)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/template/backends/django.py", line 61, in render
+    return self.template.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/template/base.py", line 175, in render
+    return self._render(context)
+           ~~~~~~~~~~~~^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/template/base.py", line 167, in _render
+    return self.nodelist.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/template/base.py", line 1005, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/template/base.py", line 966, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/template/defaulttags.py", line 471, in render
+    url = reverse(view_name, args=args, kwargs=kwargs, current_app=current_app)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/urls/base.py", line 88, in reverse
+    return resolver._reverse_with_prefix(view, prefix, *args, **kwargs)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/urls/resolvers.py", line 828, in _reverse_with_prefix
+    raise NoReverseMatch(msg)
+django.urls.exceptions.NoReverseMatch: Reverse for 'equipment_booking' with arguments '('', '')' not found. 1 pattern(s) tried: ['bookings/book/(?P<equipment>[0-9]+)/(?P<ts>[0-9]+\\.?[0-9]+)/\\Z']
+Internal Server Error: /bookings/book/1/1735635600.0/
+Traceback (most recent call last):
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/core/handlers/base.py", line 220, in _get_response
+    response = response.render()
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/template/response.py", line 114, in render
+    self.content = self.rendered_content
+                   ^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/template/response.py", line 92, in rendered_content
+    return template.render(context, self._request)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/template/backends/django.py", line 61, in render
+    return self.template.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/template/base.py", line 175, in render
+    return self._render(context)
+           ~~~~~~~~~~~~^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/template/base.py", line 167, in _render
+    return self.nodelist.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/template/base.py", line 1005, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/template/base.py", line 966, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/template/defaulttags.py", line 471, in render
+    url = reverse(view_name, args=args, kwargs=kwargs, current_app=current_app)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/urls/base.py", line 88, in reverse
+    return resolver._reverse_with_prefix(view, prefix, *args, **kwargs)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/urls/resolvers.py", line 828, in _reverse_with_prefix
+    raise NoReverseMatch(msg)
+django.urls.exceptions.NoReverseMatch: Reverse for 'equipment_booking' with arguments '('', '')' not found. 1 pattern(s) tried: ['bookings/book/(?P<equipment>[0-9]+)/(?P<ts>[0-9]+\\.?[0-9]+)/\\Z']
+Internal Server Error: /autocomplete/UserListAutoComplete/items
+Traceback (most recent call last):
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/views/generic/base.py", line 104, in view
+    return self.dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/phygbu/labman/apps/autocomplete/views.py", line 25, in dispatch
+    return super().dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/phygbu/labman/apps/htmx_views/views.py", line 35, in dispatch
+    return handler(request, *args, **kwargs)
+  File "/home/phygbu/labman/apps/autocomplete/views.py", line 170, in get
+    search_results = self.ac_class.search_items(
+        # or whatever
+        search_query,
+        context_obj,
+    )
+  File "/home/phygbu/labman/apps/autocomplete/shortcuts.py", line 46, in search_items
+    filtered_queryset = cls.get_query_filtered_queryset(search, context)
+  File "/home/phygbu/labman/apps/accounts/autocomplete.py", line 36, in get_query_filtered_queryset
+    condition_filter = reduce(operator.or_, conditions)
+                                            ^^^^^^^^^^
+UnboundLocalError: cannot access local variable 'conditions' where it is not associated with a value
+Internal Server Error: /autocomplete/UserListAutoComplete/items
+Traceback (most recent call last):
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/views/generic/base.py", line 104, in view
+    return self.dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/phygbu/labman/apps/autocomplete/views.py", line 25, in dispatch
+    return super().dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/phygbu/labman/apps/htmx_views/views.py", line 35, in dispatch
+    return handler(request, *args, **kwargs)
+  File "/home/phygbu/labman/apps/autocomplete/views.py", line 170, in get
+    search_results = self.ac_class.search_items(
+        # or whatever
+        search_query,
+        context_obj,
+    )
+  File "/home/phygbu/labman/apps/autocomplete/shortcuts.py", line 46, in search_items
+    filtered_queryset = cls.get_query_filtered_queryset(search, context)
+  File "/home/phygbu/labman/apps/accounts/autocomplete.py", line 36, in get_query_filtered_queryset
+    condition_filter = reduce(operator.or_, conditions)
+                                            ^^^^^^^^^^
+UnboundLocalError: cannot access local variable 'conditions' where it is not associated with a value
+Internal Server Error: /bookings/book/1/1735722000.0/
+Traceback (most recent call last):
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/views/generic/base.py", line 104, in view
+    return self.dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/contrib/auth/mixins.py", line 135, in dispatch
+    return super().dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/phygbu/labman/apps/htmx_views/views.py", line 35, in dispatch
+    return handler(request, *args, **kwargs)
+  File "/home/phygbu/labman/apps/htmx_views/views.py", line 173, in htmx_post
+    return handler(request, *args, **kwargs)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/views/generic/edit.py", line 208, in post
+    return super().post(request, *args, **kwargs)
+           ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/views/generic/edit.py", line 152, in post
+    if form.is_valid():
+       ~~~~~~~~~~~~~^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/forms/forms.py", line 201, in is_valid
+    return self.is_bound and not self.errors
+                                 ^^^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/forms/forms.py", line 196, in errors
+    self.full_clean()
+    ~~~~~~~~~~~~~~~^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/forms/forms.py", line 435, in full_clean
+    self._post_clean()
+    ~~~~~~~~~~~~~~~~^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/forms/models.py", line 486, in _post_clean
+    self.instance.full_clean(exclude=exclude, validate_unique=False)
+    ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/db/models/base.py", line 1477, in full_clean
+    self.clean()
+    ~~~~~~~~~~^^
+  File "/home/phygbu/labman/apps/bookings/models.py", line 259, in clean
+    policy = BookingPolicy.get_policy(self)
+  File "/home/phygbu/labman/apps/bookings/models.py", line 168, in get_policy
+    f"No policy permits booking of {booking.equipment} by {booking.user} at {booking.slot.lowe}"
+                                                                             ^^^^^^^^^^^^^^^^^
+AttributeError: 'DateTimeTZRange' object has no attribute 'lowe'. Did you mean: 'lower'?
+Internal Server Error: /bookings/book/1/1735635600.0/
+Traceback (most recent call last):
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/views/generic/base.py", line 104, in view
+    return self.dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/contrib/auth/mixins.py", line 135, in dispatch
+    return super().dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/phygbu/labman/apps/htmx_views/views.py", line 35, in dispatch
+    return handler(request, *args, **kwargs)
+  File "/home/phygbu/labman/apps/htmx_views/views.py", line 173, in htmx_post
+    return handler(request, *args, **kwargs)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/views/generic/edit.py", line 208, in post
+    return super().post(request, *args, **kwargs)
+           ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/views/generic/edit.py", line 152, in post
+    if form.is_valid():
+       ~~~~~~~~~~~~~^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/forms/forms.py", line 201, in is_valid
+    return self.is_bound and not self.errors
+                                 ^^^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/forms/forms.py", line 196, in errors
+    self.full_clean()
+    ~~~~~~~~~~~~~~~^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/forms/forms.py", line 435, in full_clean
+    self._post_clean()
+    ~~~~~~~~~~~~~~~~^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/forms/models.py", line 486, in _post_clean
+    self.instance.full_clean(exclude=exclude, validate_unique=False)
+    ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/db/models/base.py", line 1477, in full_clean
+    self.clean()
+    ~~~~~~~~~~^^
+  File "/home/phygbu/labman/apps/bookings/models.py", line 254, in clean
+    self.project = self.user.default_project
+                   ^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/db/models/fields/related_descriptors.py", line 246, in __get__
+    raise self.RelatedObjectDoesNotExist(
+        "%s has no %s." % (self.field.model.__name__, self.field.name)
+    )
+bookings.models.BookingEntry.user.RelatedObjectDoesNotExist: BookingEntry has no user.

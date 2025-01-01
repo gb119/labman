@@ -9,8 +9,9 @@ from django.contrib.postgres.forms import DateTimeRangeField, RangeWidget
 from django.core.exceptions import ValidationError
 
 # external imports
+from accounts.autocomplete import UserListAutoComplete
+from autocomplete import AutocompleteWidget
 from bootstrap_datepicker_plus.widgets import DateTimePickerInput
-from dal import autocomplete
 from dateutil.parser import ParserError, parse
 from psycopg2.extras import DateTimeTZRange
 from pytz import timezone as tz
@@ -57,7 +58,7 @@ class BookinngDialogForm(forms.ModelForm):
         model = BookingEntry
         exclude = []
         widgets = {
-            "user": autocomplete.ModelSelect2(url="accounts:userlist_complete", forward=["equipment"]),
+            "user": AutocompleteWidget(ac_class=UserListAutoComplete),
             "equipment": forms.HiddenInput(),
             "slot": CustomSlotWidget(),
         }

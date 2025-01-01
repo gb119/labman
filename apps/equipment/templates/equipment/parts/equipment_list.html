@@ -1,0 +1,31 @@
+<div class="row bg-secondary">
+    <div class="col col-md-3">
+        <h5>Name</h5>
+    </div>
+    <div class="col col-md-2">
+        <h5>Thumbnail</h5>
+    </div>
+    <div class="col col-md-4">
+        <h5>Descriptions</h5>
+    </div>
+    <div class="col col-md-3">
+        <h5>Location</h5>
+    </div>
+</div>
+{% for item in equipment %}
+    <div class="row">
+        <div class="col col-md-3">
+            <span><a href="{{ item.url }}">{{ item.name }}</a></span><br/>
+            <span><a href="{{ item.schedule }}">Schedule</a></span>
+        </div>
+        <div class="col col-md-2">
+            {{ item.thumbnail }}
+        </div>
+        <div class="col col-md-4">
+            <div>{{ item.description|safe }}</div>
+        </div>
+        <div class="col col-md-3">
+            <span>{{ item.location.name }}</span>
+        </div>
+    </div>
+{% endfor %}

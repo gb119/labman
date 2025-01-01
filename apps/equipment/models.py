@@ -80,6 +80,8 @@ class Location(NamedObject):
     )
     code = models.CharField(max_length=80, blank=True)
 
+    level = models.IntegerField(default=None, editable=False, blank=True, null=True)
+
     @property
     def next_code(self):
         """Figure out a location code not based on pk."""
@@ -109,6 +111,7 @@ class Location(NamedObject):
                 update_fields=update_fields,
             )
         self.code = self.next_code
+        self.level = self.code.count(",")
         super().save(force_insert=force_insert, force_update=force_update, using=using, update_fields=update_fields)
         for sub in self.sub_locations.all():
             sub.save()
@@ -172,6 +175,11 @@ class Equipment(NamedObject):
         if self.photos.all().count() == 0:
             return ""
         return format_html(f"<img src='{self.photos.first().get_thumbnail_url()}' alt='Picture of {self.name}'/>")
+
+    @property
+    def url(self):
+        """Rreturn a URL for the detail page."""
+        return f"/equipment/equipment_detail/{self.pk}/"
 
     @property
     def schedule(self):
