@@ -1,4 +1,9 @@
 {% extends "base.html" %}
+{% block javascript %}
+    {{ block.super }}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.12.0/moment.js"></script>
+    <script src="{% static '/js/htmx_dialog.js' %}"></script>
+{% endblock javascript %}
 {% block css %}
     {{ block.super }}
     <style>
@@ -43,8 +48,8 @@
             <li class="nav-item" role="presentation">
                 <button class="nav-link" id="schedule-tab"
                         hx-get="{{ request.build_absolute_uri }}" hx-target="#schedule"
-                        data-bs-toggle="tab" data-bs-target="#schedule"
-                        type="button" role="tab" aria-controls="schedule"
+                        data-bs-toggle="tab" data-bs-target="#schedule_container"
+                        type="button" role="tab" aria-controls="schedule_container"
                         aria-selected="false">Schedule</button>
             </li>
         </ul>
@@ -84,11 +89,23 @@
             </div>
             <div class="tab-pane" id="userlist" role="tabpanel" aria-labelledby="userlist-tab">
             </div>
-            <div class="tab-pane" id="schedule" role="tabpanel" aria-labelledby="schedule-tab">
+            <div class="tab-pane" id="schedule_container" role="tabpanel" aria-labelledby="schedule-tab"
+                 hx-trigger="refreshSchedule from:body"
+                 hx-get="{% url 'equipment:equipment_detail' equipment.pk %}"
+                 hx-target="#schedule">
+                <div id="schedule"></div>
             </div>
 
         </div>
-
+        <div id="modal"
+             class="modal modal-blur fade"
+             style="display: none"
+             aria-hidden="false"
+             tabindex="-1">
+            <div class="modal-dialog modal-lg modal-dialog-centered" role="document" id="dialog">
+                <div class="modal-content"></div>
+            </div>
+        </div>
 
     </main>
 

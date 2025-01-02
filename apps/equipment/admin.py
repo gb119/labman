@@ -21,6 +21,7 @@ from .models import (
     DocumentSignOff,
     Equipment,
     Location,
+    Shift,
     UserListEntry,
 )
 
@@ -63,6 +64,14 @@ class EquipmentListFilter(SimpleListFilter):
         if not self.value():
             return queryset
         return queryset.filter(equipment__pk=self.value())
+
+
+class ShiftReource(resources.ModelResource):
+    """Import-export resource for Location objects."""
+
+    class Meta:
+        model = Shift
+        import_id_fields = ["name"]
 
 
 class LocationResource(resources.ModelResource):
@@ -235,6 +244,23 @@ class LocationAdmin(ImportExportModelAdmin):
         return LocationResource
 
 
+@register(Shift)
+class ShiftAdmin(ImportExportModelAdmin):
+
+    list_display = ["name", "start_time", "end_time"]
+    list_filter = list_display
+    suit_list_filter_horizontal = list_display
+    search_fields = ["name", "description"]
+
+    def get_export_resource_class(self):
+        """Return import-export admin resource class."""
+        return ShiftResource
+
+    def get_import_resource_class(self):
+        """Return import-export admin resource class."""
+        return ShiftResource
+
+
 @register(Equipment)
 class EquipmentAdmin(ImportExportModelAdmin):
     """Admin interface definition for Equipment objects."""
@@ -254,6 +280,7 @@ class EquipmentAdmin(ImportExportModelAdmin):
         ("basic", "Details"),
         ("resources", "Resources"),
         ("userlists", "Userlist"),
+        ("shifts", "Shifts"),
         ("policies", "Booking Policies"),
     )
     fieldsets = (
@@ -286,6 +313,13 @@ class EquipmentAdmin(ImportExportModelAdmin):
                 "fields": [
                     "policies",
                 ],
+            },
+        ),
+        (
+            "Shifts",
+            {
+                "classes": ("suit-tab", "suit-tab-shifts"),
+                "fields": ["shifts"],
             },
         ),
     )

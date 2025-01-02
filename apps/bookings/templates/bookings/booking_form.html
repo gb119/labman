@@ -1,67 +1,47 @@
 {% load django_bootstrap5 %}
 {% load labman_tags %}
 <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.12.0/moment.js"></script>
-{{ form.media }}
-
-<div class="modal-dialog modal-dialog-centered">
-    <div class="modal-content">
-        <div class="modal-header">
-            <h5 class="modal-title">Book {{equipment.name }}</h5>
-        </div>
-        <div class="modal-body">
-            <form id="booking" method="POST"
-                  hx-post="{% url 'bookings:equipment_booking' equipment_id ts %}"
-                  hx-target="#schedule">
-                {% csrf_token %}
-                {% bootstrap_form form layout="horizontal" %}
-                <div class="row justify-content-between">
-                    <div class="col-md-6">
-                        <button type="reset"
-                                class="btn-secondary bi bi-x"
+<div class="modal-content">
+    <div class="modal-header">
+        <h5 class="modal-title">Book {{equipment.name }}</h5>
+    </div>
+    <div class="modal-body">
+        <form id="booking" method="POST"
+              hx-post="{% url 'bookings:equipment_booking' equipment_id ts %}"
+              hx-target="#dialog">
+            {% csrf_token %}
+            {% bootstrap_form form layout="horizontal" %}
+            <div class="row justify-content-between">
+                <div class="col-md-6">
+                    <button type="reset"
+                            class="btn-secondary bi bi-x"
+                            data-bs-dismiss="modal"
+                            name="cancel">Cancel</button>
+                    {% if edit %}
+                        <button type="submit"
+                                class="btn-primary bi bi-pencil"
+                                id = "submit_booking"
                                 data-bs-dismiss="modal"
-                                name="cancel">Cancel</button>
-                        {% if this %}
-                            <button type="submit"
-                                    class="btn-primary bi bi-pencil"
-                                    id = "submit_booking"
-                                    data-bs-dismiss="modal"
-                                    name="book">Edit</button>
-                        {% else %}
-                            <button type="submit"
-                                    class="btn-primary bi bi-bookmark-plus"
-                                    id = "submit_booking"
-                                    data-bs-dismiss="modal"
-                                    name="book">Book</button>
-                        {% endif %}
-                    </div>
-                    <div class="col-md-3">
-                        {% if this %}
-                            <button type="button"
-                                    class="btn-danger bi bi-trash"
-                                    data-bs-dismiss="modal"
-                                    hx-delete="{% url 'bookings:equipment_booking' equipment_id ts %}"
-                                    name="booking" value={{ this.pk }}>Delete</button>
-                        {% endif %}
-                    </div>
+                                name="book">Edit</button>
+                    {% else %}
+                        <button type="submit"
+                                class="btn-primary bi bi-bookmark-plus"
+                                id = "submit_booking"
+                                data-bs-dismiss="modal"
+                                name="book">Book</button>
+                    {% endif %}
                 </div>
-            </form>
-        </div>
+                <div class="col-md-3">
+                    {% if edit %}
+                        <button type="button"
+                                id ="delete_booking"
+                                class="btn-danger bi bi-trash"
+                                hx-delete="{% url 'bookings:equipment_booking' equipment_id ts %}"
+                                name="booking" value={{ this.pk }}>Delete</button>
+                    {% endif %}
+                </div>
+            </div>
+        </form>
     </div>
 </div>
-
 {{ form.media }}
-<script>
-
-    htmx.trigger("#user__textinput","focus");
-    htmx.trigger("#user__textinput","mousedown");
-
-    var frm = document.querySelector("#booking");
-
-    frm.addEventListener('keypress', function (event) {
-        if (event.keyCode === 13) {
-            event.preventDefault();
-            htmx.trigger("#submit_booking","focus");
-            htmx.trigger("#booking","submit");
-        }
-    });
-</script>

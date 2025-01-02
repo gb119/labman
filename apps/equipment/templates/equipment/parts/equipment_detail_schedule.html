@@ -1,18 +1,18 @@
 <style>
     td.html_td {cursor: pointer; }
 </style>
-<div class="d-flex justify-content-between">
-    <div class="col-md-2">{{ start }}</div><div class="col-md-2">{{ end }}</div>
-</div>
-<div class="d-flex justify-content-center table-responsive-lg" id="calendar" hx-target="#dialog" id="schedule">
-    {{ cal.render|safe }}
-</div>
-<div id="dialog"
-     class="modal modal-blur fade"
-     style="display: none"
-     aria-hidden="false"
-     tabindex="-1">
-    <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
-        <div class="modal-content"></div>
+
+<div id="schedule_container"
+     hx-trigger="refreshSchedule from:body"
+     hx-get="{% url 'equipment:equipment_detail' equipment.pk %}"
+     hx-target="#schedule"
+     hx-vals='{"date":{{ start_date }}}' >
+    <div id="schedule">
+        <div class="d-flex justify-content-between">
+            <div class="col-md-2">{{ start }}</div><div class="col-md-2">{{ end }}</div>
+        </div>
+        <div class="d-flex justify-content-center table-responsive-lg" hx-target="#dialog">
+            {{ cal.render|safe }}
+        </div>
     </div>
 </div>

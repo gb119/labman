@@ -1,10 +1,16 @@
 # -*- coding: utf-8 -*-
 """Models for representing objects related to lab equipment items - documents, locations, and so forth."""
 # Python imports
-from datetime import time
+from datetime import (
+    date as Date,
+    datetime as dt,
+    time as Time,
+    timedelta as td,
+)
 
 # Django imports
 import django.utils.timezone as tz
+from django.conf import settings
 from django.contrib.flatpages.models import FlatPage
 from django.db import models, transaction
 from django.db.models.constraints import CheckConstraint
@@ -13,11 +19,14 @@ from django.utils.text import slugify
 
 # external imports
 import numpy as np
+import pytz
 from accounts.models import Account, Role
 from django_simple_file_handler import models as dsfh
 from labman_utils.models import NamedObject, patch_model
 from photologue.models import Photo
 from sortedm2m.fields import SortedManyToManyField
+
+DEFAULT_TZ = pytz.timezone(settings.TIME_ZONE)
 
 
 class Document(dsfh.BaseMixin, dsfh.TitledMixin, dsfh.PublicMixin, dsfh.RenameMixin, models.Model):
@@ -121,18 +130,23 @@ class Shift(NamedObject):
     """Class that represents time shifts for booking the equipment."""
 
     class Meta:
-        constraints = [
-            CheckConstraint(check=models.Q(start_time__lt=models.F("end_time")), name="Positive Duration Constraint")
-        ]
-        verbose_name_plural = "Booking shofts"
+        verbose_name_plural = "Booking Shifts"
         verbose_name = "Booking Shift"
         ordering = ["start_time"]
 
-    start_time = models.TimeField(default=time(9, 0))
-    end_time = models.TimeField(default=time(18, 0))
+    start_time = models.TimeField(default=Time(9, 0))
+    end_time = models.TimeField(default=Time(18, 0))
 
     def __str__(self):
-        return f"{self.name} {self.slot.lower} to {self.slot.upper}"
+        return f"{self.name} {self.start_time}-{self.end_time}"
+
+    @property
+    def duration(self):
+        """Work out duration incouding oging over midnight."""
+        if (dt.combine(dt.today(), self.end_time) - dt.combine(dt.today(), self.start_time)).total_seconds() > 0:
+            return dt.combined(dt.today(), self.end_time) - dt.combine(dt.today(), self.start_time)
+        else:
+            return dt.combine(dt.today(), self.end_time) - dt.combine(dt.today(), self.start_time) + td(days=1)
 
 
 class Equipment(NamedObject):
@@ -187,6 +201,36 @@ class Equipment(NamedObject):
         date = tz.now().strftime("%Y%m%d")
 
         return f"/bookings/cal/{self.id}/{date}/"
+
+    @property
+    def calendar_time_vector(self):
+        """Return an array of times with which to construct a calendar."""
+        if self.shifts.all().count() == 0:
+            return None
+        # Got some shifts
+        ret = []
+        for shift in self.shifts.all():
+            ret.append(shift.start_time)
+        return ret
+
+    def get_shift(self, time):
+        """Return the shift object for the datetime specified."""
+        if self.shifts.all().count() == 0:
+            return None
+        if isinstance(time, dt):
+            time = time.time()
+        elif not isinstance(time, Time):
+            raise TypeError("Was expecting to get either a datetime or time object.")
+        time = dt.combine(dt.today(), time)
+        for shift in self.shifts.all():
+            s = dt.combine(dt.today(), shift.start_time)
+            e = dt.combine(dt.today(), shift.end_time)
+            if (e - s).total_seconds() <= 0:
+                e += td(days=1)
+            print(f"Shifts: {time} {s} {e} {(time-s).total_seconds()>=0} and {(e-time).total_seconds()>0}")
+            if (time - s).total_seconds() >= 0 and (e - time).total_seconds() > 0:
+                return shift
+        return None
 
 
 class UserListEntry(models.Model):

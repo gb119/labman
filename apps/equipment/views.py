@@ -100,51 +100,37 @@ class EquipmentDetailView(HTMXProcessMixin, IsAuthenticaedViewMixin, views.gener
     template_name_pagestab = "equipment/parts/equipment_detail_pages.html"
     template_name_userlisttab = "equipment/parts/equipment_detail_userlist.html"
     template_name_scheduletab = "equipment/parts/equipment_detail_schedule.html"
+    template_name_schedule_container = "equipment/parts/equipment_detail_schedule.html"
     model = Equipment
 
     def get_context_data_scheduletab(self, **kwargs):
         """Build the context for the calendar display."""
         context = super().get_context_data(_context=True, **kwargs)
         equipment = context["equipment"]
-        date_vec = calendar_date_vector(yyyymmdd_to_date(self.kwargs.get("date", dt.today().strftime("%Y%m%d"))))
-        time_vec = calendar_time_vector()
+        # Build the calendar rows from the shifts.
+        time_vec = equipment.calendar_time_vector
+        time_vec = calendar_time_vector() if time_vec is None else time_vec
         table = CalTable(
+            date=self.kwargs.get("date", int(self.request.GET.get("date", dt.today().strftime("%Y%m%d")))),
             request=self.request,
             equipment=equipment,
-            date_vec=date_vec,
-            time_vec=time_vec,
-            table_contents=np.array([["&nbsp;"] * (len(date_vec) + 1)] * (len(time_vec) + 1)),
+            table_contents="&nbsp;",
         )
         table.classes += " table-bordered"
-        target_range = DateTimeTZRange(
-            dt.combine(date_vec[0], time_vec[0], tzinfo=DEFAULT_TZ),
-            dt.combine(date_vec[-1], time_vec[-1], tzinfo=DEFAULT_TZ),
-        )
-        for entry in equipment.bookings.filter(slot__overlap=target_range):
-            row_start, col_start = datetime_to_coord(entry.slot.lower, date_vec, time_vec)
-            row_end, col_end = datetime_to_coord(entry.slot.upper, date_vec, time_vec)
-            if col_start == col_end:  # single day
-                table[row_start, col_start].rowspan = max(row_end - row_start, 1)
-                table[row_start, col_start].content = entry.user.display_name
-                table[row_start, col_start].classes += " bg-success p-3 text-center"
-            else:  # spans day boundaries
-                table[row_start, col_start].rowspan = len(time_vec) - row_start + 1
-                table[row_start, col_start].content = entry.user.display_name
-                table[row_start, col_start].classes += " bg-success p-3 text-center"
-                for col in range(col_start + 1, col_end):
-                    table[1, col].rowspan = len(time_vec)
-                    table[1, col].content = entry.user.display_name
-                    table[1, col].classes += " bg-success p-3 text-center"
-                table[1, col_end].rowspan = max(1, row_end)
-                table[1, col_end].content = entry.user.display_name
-                table[1, col_end].classes += " bg-success p-3 text-center"
+        entries = table.fill_entries(equipment)
 
         context["cal"] = table
-        context["start"] = date_vec[0]
-        context["end"] = date_vec[-1]
-        context["entries"] = equipment.bookings.filter(slot__overlap=target_range)
+        context["start"] = table.date_vec[0]
+        context["end"] = table.date_vec[-1]
+        context["start_date"] = table.date_vec[0].strftime("%Y%m%d")
+        context["entries"] = entries
+        context["form"] = BookinngDialogForm()
 
         return context
+
+        return context
+
+    get_context_data_schedule_container = get_context_data_scheduletab
 
 
 class ModelListView(HTMXProcessMixin, IsAuthenticaedViewMixin, views.generic.ListView):
