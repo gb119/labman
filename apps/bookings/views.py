@@ -248,22 +248,9 @@ class CalendarView(IsAuthenticaedViewMixin, views.generic.DetailView):
         # Build the calendar rows from the shifts.
         time_vec = equipment.calendar_time_vector
         time_vec = calendar_time_vector() if time_vec is None else time_vec
-        table = CalTable(
-            date=self.kwargs.get("date", int(self.request.GET.get("date", dt.today().strftime("%Y%m%d")))),
-            request=self.request,
-            equipment=equipment,
-            table_contents="&nbsp;",
-        )
-        table.classes += " table-bordered"
-        entries = table.fill_entries(equipment)
-
-        context["cal"] = table
-        context["start"] = table.date_vec[0]
-        context["end"] = table.date_vec[-1]
-        context["start_date"] = table.date_vec[0].strftime("%Y%m%d")
-        context["entries"] = entries
+        date = (self.kwargs.get("date", int(self.request.GET.get("date", dt.today().strftime("%Y%m%d")))),)
+        context["start_date"] = date
         context["form"] = forms.BookinngDialogForm()
-
         return context
 
 

@@ -16,17 +16,12 @@
     <h2>{{ equipment.name }}</h2>
     {{ equipment.description|safe }}
     <div id="schedule_container"
-         hx-trigger="refreshSchedule from:body"
+         hx-trigger="refreshSchedule from:body, revealed"
          hx-get="{% url 'equipment:equipment_detail' equipment.pk %}"
          hx-target="#schedule"
          hx-vals='{"date":{{ start_date }}}' >
         <div id="schedule">
-            <div class="d-flex justify-content-between">
-                <div class="col-md-2">{{ start }}</div><div class="col-md-2">{{ end }}</div>
-            </div>
-            <div class="d-flex justify-content-center table-responsive-lg" hx-target="#dialog">
-                {{ cal.render|safe }}
-            </div>
+            Lazy Loaded
         </div>
     </div>
     <div id="modal"
