@@ -144,7 +144,7 @@ class Shift(NamedObject):
     def duration(self):
         """Work out duration incouding oging over midnight."""
         if (dt.combine(dt.today(), self.end_time) - dt.combine(dt.today(), self.start_time)).total_seconds() > 0:
-            return dt.combined(dt.today(), self.end_time) - dt.combine(dt.today(), self.start_time)
+            return dt.combine(dt.today(), self.end_time) - dt.combine(dt.today(), self.start_time)
         else:
             return dt.combine(dt.today(), self.end_time) - dt.combine(dt.today(), self.start_time) + td(days=1)
 

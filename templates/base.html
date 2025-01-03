@@ -32,7 +32,7 @@
                 <link href="{% static 'css/labman.css' %}" rel="stylesheet">
             {%endblock css %}
         </head>
-        <body hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'>
+        <body hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}' hx-swap="innerHTML">
             <header id="masthead" role="banner" class="container-lg">
                 {% block header %}
                     <div class="float-start menu-button">

@@ -8177,3 +8177,722 @@ Traceback (most recent call last):
     raise ValueError("time data %r does not match format %r" %
                      (data_string, format))
 ValueError: time data '0' does not match format '%Y%m%d'
+Internal Server Error: /equipment/equipment_detail/1/
+Traceback (most recent call last):
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/views/generic/base.py", line 104, in view
+    return self.dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/contrib/auth/mixins.py", line 135, in dispatch
+    return super().dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/phygbu/labman/apps/htmx_views/views.py", line 35, in dispatch
+    return handler(request, *args, **kwargs)
+  File "/home/phygbu/labman/apps/htmx_views/views.py", line 139, in htmx_get
+    return handler(request, *args, **kwargs)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/views/generic/detail.py", line 109, in get
+    context = self.get_context_data(object=self.object)
+  File "/home/phygbu/labman/apps/htmx_views/views.py", line 62, in get_context_data
+    return handler(**kwargs)
+  File "/home/phygbu/labman/apps/equipment/views.py", line 125, in get_context_data_scheduletab
+    table = CalTable(
+        date=self.kwargs.get("date", date),
+    ...<3 lines>...
+        table_contents="&nbsp;",
+    )
+  File "/home/phygbu/labman/apps/bookings/views.py", line 144, in __init__
+    self.equip_vec = equip_vec
+                     ^^^^^^^^^
+UnboundLocalError: cannot access local variable 'equip_vec' where it is not associated with a value
+Internal Server Error: /equipment/equipment_detail/1/
+Traceback (most recent call last):
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/views/generic/base.py", line 104, in view
+    return self.dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/contrib/auth/mixins.py", line 135, in dispatch
+    return super().dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/phygbu/labman/apps/htmx_views/views.py", line 35, in dispatch
+    return handler(request, *args, **kwargs)
+  File "/home/phygbu/labman/apps/htmx_views/views.py", line 139, in htmx_get
+    return handler(request, *args, **kwargs)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/views/generic/detail.py", line 109, in get
+    context = self.get_context_data(object=self.object)
+  File "/home/phygbu/labman/apps/htmx_views/views.py", line 62, in get_context_data
+    return handler(**kwargs)
+  File "/home/phygbu/labman/apps/equipment/views.py", line 125, in get_context_data_scheduletab
+    table = CalTable(
+        date=self.kwargs.get("date", date),
+    ...<3 lines>...
+        table_contents="&nbsp;",
+    )
+  File "/home/phygbu/labman/apps/bookings/views.py", line 140, in __init__
+    row_label = kargs.pops("row_label", [])
+                ^^^^^^^^^^
+AttributeError: 'dict' object has no attribute 'pops'. Did you mean: 'pop'?
+Internal Server Error: /equipment/equipment_detail/1/
+Traceback (most recent call last):
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/views/generic/base.py", line 104, in view
+    return self.dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/contrib/auth/mixins.py", line 135, in dispatch
+    return super().dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/phygbu/labman/apps/htmx_views/views.py", line 35, in dispatch
+    return handler(request, *args, **kwargs)
+  File "/home/phygbu/labman/apps/htmx_views/views.py", line 139, in htmx_get
+    return handler(request, *args, **kwargs)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/views/generic/detail.py", line 109, in get
+    context = self.get_context_data(object=self.object)
+  File "/home/phygbu/labman/apps/htmx_views/views.py", line 62, in get_context_data
+    return handler(**kwargs)
+  File "/home/phygbu/labman/apps/equipment/views.py", line 137, in get_context_data_scheduletab
+    entries=chain(*(table.fill_entries(equipment) for equipment in equip_qs))
+                                                                   ^^^^^^^^
+NameError: name 'equip_qs' is not defined. Did you mean: 'equip_vec'?
+Internal Server Error: /equipment/equipment_detail/1/
+Traceback (most recent call last):
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/views/generic/base.py", line 104, in view
+    return self.dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/contrib/auth/mixins.py", line 135, in dispatch
+    return super().dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/phygbu/labman/apps/htmx_views/views.py", line 35, in dispatch
+    return handler(request, *args, **kwargs)
+  File "/home/phygbu/labman/apps/htmx_views/views.py", line 139, in htmx_get
+    return handler(request, *args, **kwargs)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/views/generic/detail.py", line 109, in get
+    context = self.get_context_data(object=self.object)
+  File "/home/phygbu/labman/apps/htmx_views/views.py", line 62, in get_context_data
+    return handler(**kwargs)
+  File "/home/phygbu/labman/apps/equipment/views.py", line 137, in get_context_data_scheduletab
+    entries=chain(*(table.fill_entries(equipment) for equipment in equip_vec))
+  File "/home/phygbu/labman/apps/equipment/views.py", line 137, in <genexpr>
+    entries=chain(*(table.fill_entries(equipment) for equipment in equip_vec))
+                    ~~~~~~~~~~~~~~~~~~^^^^^^^^^^^
+  File "/home/phygbu/labman/apps/bookings/views.py", line 205, in fill_entries
+    dt.combine(date_vec[0], time_vec[0], tzinfo=DEFAULT_TZ),
+               ~~~~~~~~^^^
+IndexError: list index out of range
+Internal Server Error: /equipment/equipment_detail/1/
+Traceback (most recent call last):
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/views/generic/base.py", line 104, in view
+    return self.dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/contrib/auth/mixins.py", line 135, in dispatch
+    return super().dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/phygbu/labman/apps/htmx_views/views.py", line 35, in dispatch
+    return handler(request, *args, **kwargs)
+  File "/home/phygbu/labman/apps/htmx_views/views.py", line 139, in htmx_get
+    return handler(request, *args, **kwargs)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/views/generic/detail.py", line 109, in get
+    context = self.get_context_data(object=self.object)
+  File "/home/phygbu/labman/apps/htmx_views/views.py", line 62, in get_context_data
+    return handler(**kwargs)
+  File "/home/phygbu/labman/apps/equipment/views.py", line 125, in get_context_data_scheduletab
+    table = CalTable(
+        date=self.kwargs.get("date", date),
+    ...<3 lines>...
+        table_contents="&nbsp;",
+    )
+  File "/home/phygbu/labman/apps/bookings/views.py", line 144, in __init__
+    self.equip_vec = equip_vec
+                     ^^^^^^^^^
+UnboundLocalError: cannot access local variable 'equip_vec' where it is not associated with a value
+Internal Server Error: /equipment/equipment_detail/1/
+Traceback (most recent call last):
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/views/generic/base.py", line 104, in view
+    return self.dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/contrib/auth/mixins.py", line 135, in dispatch
+    return super().dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/phygbu/labman/apps/htmx_views/views.py", line 35, in dispatch
+    return handler(request, *args, **kwargs)
+  File "/home/phygbu/labman/apps/htmx_views/views.py", line 139, in htmx_get
+    return handler(request, *args, **kwargs)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/views/generic/detail.py", line 109, in get
+    context = self.get_context_data(object=self.object)
+  File "/home/phygbu/labman/apps/htmx_views/views.py", line 62, in get_context_data
+    return handler(**kwargs)
+  File "/home/phygbu/labman/apps/equipment/views.py", line 114, in get_context_data_scheduletab
+    assert False
+           ^^^^^
+AssertionError
+Internal Server Error: /equipment/equipment_detail/1/
+Traceback (most recent call last):
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/views/generic/base.py", line 104, in view
+    return self.dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/contrib/auth/mixins.py", line 135, in dispatch
+    return super().dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/phygbu/labman/apps/htmx_views/views.py", line 35, in dispatch
+    return handler(request, *args, **kwargs)
+  File "/home/phygbu/labman/apps/htmx_views/views.py", line 139, in htmx_get
+    return handler(request, *args, **kwargs)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/views/generic/detail.py", line 109, in get
+    context = self.get_context_data(object=self.object)
+  File "/home/phygbu/labman/apps/htmx_views/views.py", line 62, in get_context_data
+    return handler(**kwargs)
+  File "/home/phygbu/labman/apps/equipment/views.py", line 114, in get_context_data_scheduletab
+    assert False
+           ^^^^^
+AssertionError
+Internal Server Error: /equipment/equipment_detail/1/
+Traceback (most recent call last):
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/views/generic/base.py", line 104, in view
+    return self.dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/contrib/auth/mixins.py", line 135, in dispatch
+    return super().dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/phygbu/labman/apps/htmx_views/views.py", line 35, in dispatch
+    return handler(request, *args, **kwargs)
+  File "/home/phygbu/labman/apps/htmx_views/views.py", line 139, in htmx_get
+    return handler(request, *args, **kwargs)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/views/generic/detail.py", line 109, in get
+    context = self.get_context_data(object=self.object)
+  File "/home/phygbu/labman/apps/htmx_views/views.py", line 62, in get_context_data
+    return handler(**kwargs)
+  File "/home/phygbu/labman/apps/equipment/views.py", line 114, in get_context_data_scheduletab
+    assert False
+           ^^^^^
+AssertionError
+Internal Server Error: /bookings/cal/all/
+Traceback (most recent call last):
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/core/handlers/base.py", line 220, in _get_response
+    response = response.render()
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/template/response.py", line 114, in render
+    self.content = self.rendered_content
+                   ^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/template/response.py", line 92, in rendered_content
+    return template.render(context, self._request)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/template/backends/django.py", line 61, in render
+    return self.template.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/template/base.py", line 175, in render
+    return self._render(context)
+           ~~~~~~~~~~~~^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/template/base.py", line 167, in _render
+    return self.nodelist.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/template/base.py", line 1005, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/template/base.py", line 966, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/template/loader_tags.py", line 157, in render
+    return compiled_parent._render(context)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/template/base.py", line 167, in _render
+    return self.nodelist.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/template/base.py", line 1005, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/template/base.py", line 966, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/template/loader_tags.py", line 63, in render
+    result = block.nodelist.render(context)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/template/base.py", line 1005, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/template/base.py", line 966, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/template/defaulttags.py", line 471, in render
+    url = reverse(view_name, args=args, kwargs=kwargs, current_app=current_app)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/urls/base.py", line 88, in reverse
+    return resolver._reverse_with_prefix(view, prefix, *args, **kwargs)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/urls/resolvers.py", line 828, in _reverse_with_prefix
+    raise NoReverseMatch(msg)
+django.urls.exceptions.NoReverseMatch: Reverse for 'equipment_detail' with arguments '('',)' not found. 1 pattern(s) tried: ['equipment/equipment_detail/(?P<pk>[0-9]+)/\\Z']
+Internal Server Error: /bookings/cal/all/
+Traceback (most recent call last):
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/core/handlers/base.py", line 220, in _get_response
+    response = response.render()
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/template/response.py", line 114, in render
+    self.content = self.rendered_content
+                   ^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/template/response.py", line 92, in rendered_content
+    return template.render(context, self._request)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/template/backends/django.py", line 61, in render
+    return self.template.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/template/base.py", line 175, in render
+    return self._render(context)
+           ~~~~~~~~~~~~^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/template/base.py", line 167, in _render
+    return self.nodelist.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/template/base.py", line 1005, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/template/base.py", line 966, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/template/loader_tags.py", line 157, in render
+    return compiled_parent._render(context)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/template/base.py", line 167, in _render
+    return self.nodelist.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/template/base.py", line 1005, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/template/base.py", line 966, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/template/loader_tags.py", line 63, in render
+    result = block.nodelist.render(context)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/template/base.py", line 1005, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/template/base.py", line 966, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/template/defaulttags.py", line 471, in render
+    url = reverse(view_name, args=args, kwargs=kwargs, current_app=current_app)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/urls/base.py", line 88, in reverse
+    return resolver._reverse_with_prefix(view, prefix, *args, **kwargs)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/urls/resolvers.py", line 828, in _reverse_with_prefix
+    raise NoReverseMatch(msg)
+django.urls.exceptions.NoReverseMatch: Reverse for 'equipment_detail' with arguments '('',)' not found. 1 pattern(s) tried: ['equipment/equipment_detail/(?P<pk>[0-9]+)/\\Z']
+Internal Server Error: /bookings/cal/all/
+Traceback (most recent call last):
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/core/handlers/base.py", line 220, in _get_response
+    response = response.render()
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/template/response.py", line 114, in render
+    self.content = self.rendered_content
+                   ^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/template/response.py", line 92, in rendered_content
+    return template.render(context, self._request)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/template/backends/django.py", line 61, in render
+    return self.template.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/template/base.py", line 175, in render
+    return self._render(context)
+           ~~~~~~~~~~~~^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/template/base.py", line 167, in _render
+    return self.nodelist.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/template/base.py", line 1005, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/template/base.py", line 966, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/template/loader_tags.py", line 157, in render
+    return compiled_parent._render(context)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/template/base.py", line 167, in _render
+    return self.nodelist.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/template/base.py", line 1005, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/template/base.py", line 966, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/template/loader_tags.py", line 63, in render
+    result = block.nodelist.render(context)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/template/base.py", line 1005, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/template/base.py", line 966, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/template/defaulttags.py", line 471, in render
+    url = reverse(view_name, args=args, kwargs=kwargs, current_app=current_app)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/urls/base.py", line 88, in reverse
+    return resolver._reverse_with_prefix(view, prefix, *args, **kwargs)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/urls/resolvers.py", line 828, in _reverse_with_prefix
+    raise NoReverseMatch(msg)
+django.urls.exceptions.NoReverseMatch: Reverse for 'equipment_detail' with arguments '('',)' not found. 1 pattern(s) tried: ['equipment/equipment_detail/(?P<pk>[0-9]+)/\\Z']
+Internal Server Error: /equipment/equipment_detail/1/
+Traceback (most recent call last):
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/views/generic/base.py", line 104, in view
+    return self.dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/contrib/auth/mixins.py", line 135, in dispatch
+    return super().dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/phygbu/labman/apps/htmx_views/views.py", line 35, in dispatch
+    return handler(request, *args, **kwargs)
+  File "/home/phygbu/labman/apps/htmx_views/views.py", line 139, in htmx_get
+    return handler(request, *args, **kwargs)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/views/generic/detail.py", line 109, in get
+    context = self.get_context_data(object=self.object)
+  File "/home/phygbu/labman/apps/htmx_views/views.py", line 62, in get_context_data
+    return handler(**kwargs)
+  File "/home/phygbu/labman/apps/equipment/views.py", line 96, in get_context_data_scheduletab
+    date = int(self.request.GET.get("date", dt.today().strftime("%Y%m%d")))
+ValueError: invalid literal for int() with base 10: '(20250103,)'
+Internal Server Error: /bookings/book/2/1735459200.0/
+Traceback (most recent call last):
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/views/generic/base.py", line 104, in view
+    return self.dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/contrib/auth/mixins.py", line 135, in dispatch
+    return super().dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/phygbu/labman/apps/htmx_views/views.py", line 35, in dispatch
+    return handler(request, *args, **kwargs)
+  File "/home/phygbu/labman/apps/htmx_views/views.py", line 139, in htmx_get
+    return handler(request, *args, **kwargs)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/views/generic/edit.py", line 204, in get
+    return super().get(request, *args, **kwargs)
+           ~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/views/generic/edit.py", line 144, in get
+    return self.render_to_response(self.get_context_data())
+                                   ~~~~~~~~~~~~~~~~~~~~~^^
+  File "/home/phygbu/labman/apps/htmx_views/views.py", line 62, in get_context_data
+    return handler(**kwargs)
+  File "/home/phygbu/labman/apps/bookings/views.py", line 92, in get_context_data_dialog
+    context = super().get_context_data(_context=True, **kwargs)
+  File "/home/phygbu/labman/apps/htmx_views/views.py", line 56, in get_context_data
+    return super().get_context_data(**kwargs)
+           ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/views/generic/edit.py", line 74, in get_context_data
+    kwargs["form"] = self.get_form()
+                     ~~~~~~~~~~~~~^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/views/generic/edit.py", line 39, in get_form
+    return form_class(**self.get_form_kwargs())
+                        ~~~~~~~~~~~~~~~~~~~~^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/views/generic/edit.py", line 114, in get_form_kwargs
+    kwargs = super().get_form_kwargs()
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/views/generic/edit.py", line 44, in get_form_kwargs
+    "initial": self.get_initial(),
+               ~~~~~~~~~~~~~~~~^^
+  File "/home/phygbu/labman/apps/bookings/views.py", line 129, in get_initial
+    end = start + shift.duration
+                  ^^^^^^^^^^^^^^
+  File "/home/phygbu/labman/apps/equipment/models.py", line 147, in duration
+    return dt.combined(dt.today(), self.end_time) - dt.combine(dt.today(), self.start_time)
+           ^^^^^^^^^^^
+AttributeError: type object 'datetime.datetime' has no attribute 'combined'. Did you mean: 'combine'?
+Internal Server Error: /bookings/book/2/1735545600.0/
+Traceback (most recent call last):
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/views/generic/base.py", line 104, in view
+    return self.dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/contrib/auth/mixins.py", line 135, in dispatch
+    return super().dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/phygbu/labman/apps/htmx_views/views.py", line 35, in dispatch
+    return handler(request, *args, **kwargs)
+  File "/home/phygbu/labman/apps/htmx_views/views.py", line 173, in htmx_post
+    return handler(request, *args, **kwargs)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/views/generic/edit.py", line 208, in post
+    return super().post(request, *args, **kwargs)
+           ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/views/generic/edit.py", line 152, in post
+    if form.is_valid():
+       ~~~~~~~~~~~~~^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/forms/forms.py", line 201, in is_valid
+    return self.is_bound and not self.errors
+                                 ^^^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/forms/forms.py", line 196, in errors
+    self.full_clean()
+    ~~~~~~~~~~~~~~~^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/forms/forms.py", line 435, in full_clean
+    self._post_clean()
+    ~~~~~~~~~~~~~~~~^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/forms/models.py", line 486, in _post_clean
+    self.instance.full_clean(exclude=exclude, validate_unique=False)
+    ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/db/models/base.py", line 1477, in full_clean
+    self.clean()
+    ~~~~~~~~~~^^
+  File "/home/phygbu/labman/apps/bookings/models.py", line 260, in clean
+    self.rationalise(policy)
+    ~~~~~~~~~~~~~~~~^^^^^^^^
+  File "/home/phygbu/labman/apps/bookings/models.py", line 238, in rationalise
+    start_t = quanta * (start_t // quanta) + policy_start_secs
+                        ~~~~~~~~^^~~~~~~~
+ZeroDivisionError: float floor division by zero
+Internal Server Error: /equipment/equipment_detail/1/
+Traceback (most recent call last):
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/views/generic/base.py", line 104, in view
+    return self.dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/contrib/auth/mixins.py", line 135, in dispatch
+    return super().dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/phygbu/labman/apps/htmx_views/views.py", line 35, in dispatch
+    return handler(request, *args, **kwargs)
+  File "/home/phygbu/labman/apps/htmx_views/views.py", line 139, in htmx_get
+    return handler(request, *args, **kwargs)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/views/generic/detail.py", line 109, in get
+    context = self.get_context_data(object=self.object)
+  File "/home/phygbu/labman/apps/htmx_views/views.py", line 62, in get_context_data
+    return handler(**kwargs)
+  File "/home/phygbu/labman/apps/equipment/views.py", line 120, in get_context_data_scheduletab
+    entries = chain(*(table.fill_entries(equipment) for equipment in equip_vec))
+  File "/home/phygbu/labman/apps/equipment/views.py", line 120, in <genexpr>
+    entries = chain(*(table.fill_entries(equipment) for equipment in equip_vec))
+                      ~~~~~~~~~~~~~~~~~~^^^^^^^^^^^
+  File "/home/phygbu/labman/apps/equipment/tables.py", line 184, in fill_entries
+    assert False
+           ^^^^^
+AssertionError
+Internal Server Error: /equipment/equipment_detail/1/
+Traceback (most recent call last):
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/views/generic/base.py", line 104, in view
+    return self.dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/contrib/auth/mixins.py", line 135, in dispatch
+    return super().dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/phygbu/labman/apps/htmx_views/views.py", line 35, in dispatch
+    return handler(request, *args, **kwargs)
+  File "/home/phygbu/labman/apps/htmx_views/views.py", line 139, in htmx_get
+    return handler(request, *args, **kwargs)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/views/generic/detail.py", line 109, in get
+    context = self.get_context_data(object=self.object)
+  File "/home/phygbu/labman/apps/htmx_views/views.py", line 62, in get_context_data
+    return handler(**kwargs)
+  File "/home/phygbu/labman/apps/equipment/views.py", line 120, in get_context_data_scheduletab
+    entries = chain(*(table.fill_entries(equipment) for equipment in equip_vec))
+  File "/home/phygbu/labman/apps/equipment/views.py", line 120, in <genexpr>
+    entries = chain(*(table.fill_entries(equipment) for equipment in equip_vec))
+                      ~~~~~~~~~~~~~~~~~~^^^^^^^^^^^
+  File "/home/phygbu/labman/apps/equipment/tables.py", line 184, in fill_entries
+    assert False
+           ^^^^^
+AssertionError
+Internal Server Error: /equipment/equipment_detail/1/
+Traceback (most recent call last):
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/views/generic/base.py", line 104, in view
+    return self.dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/contrib/auth/mixins.py", line 135, in dispatch
+    return super().dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/phygbu/labman/apps/htmx_views/views.py", line 35, in dispatch
+    return handler(request, *args, **kwargs)
+  File "/home/phygbu/labman/apps/htmx_views/views.py", line 139, in htmx_get
+    return handler(request, *args, **kwargs)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/views/generic/detail.py", line 109, in get
+    context = self.get_context_data(object=self.object)
+  File "/home/phygbu/labman/apps/htmx_views/views.py", line 62, in get_context_data
+    return handler(**kwargs)
+  File "/home/phygbu/labman/apps/equipment/views.py", line 120, in get_context_data_scheduletab
+    entries = chain(*(table.fill_entries(equipment) for equipment in equip_vec))
+  File "/home/phygbu/labman/apps/equipment/views.py", line 120, in <genexpr>
+    entries = chain(*(table.fill_entries(equipment) for equipment in equip_vec))
+                      ~~~~~~~~~~~~~~~~~~^^^^^^^^^^^
+  File "/home/phygbu/labman/apps/equipment/tables.py", line 199, in fill_entries
+    self[1+row_base, col_end].rowspan = max(1, row_end)
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/simple_html_table/htmltable.py", line 429, in rowspan
+    self._table[r]._cols[c] = self  # Overwrite cell with a copy of self
+    ~~~~~~~~~~~^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/simple_html_table/htmltable.py", line 217, in __getitem__
+    return self._rows[item]
+           ~~~~~~~~~~^^^^^^
+IndexError: list index out of range
+Internal Server Error: /bookings/cal/all/
+Traceback (most recent call last):
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/views/generic/base.py", line 104, in view
+    return self.dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/contrib/auth/mixins.py", line 135, in dispatch
+    return super().dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/phygbu/labman/apps/htmx_views/views.py", line 24, in dispatch
+    return self._non_htmx_dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/views/generic/base.py", line 143, in dispatch
+    return handler(request, *args, **kwargs)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/views/generic/base.py", line 226, in get
+    context = self.get_context_data(**kwargs)
+  File "/home/phygbu/labman/apps/bookings/views.py", line 79, in get_context_data
+    date_obj=dt.strptime(date,"%Y%m%d")
+TypeError: strptime() argument 1 must be str, not int
+Internal Server Error: /bookings/cal/all/
+Traceback (most recent call last):
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/core/handlers/base.py", line 220, in _get_response
+    response = response.render()
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/template/response.py", line 114, in render
+    self.content = self.rendered_content
+                   ^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/template/response.py", line 92, in rendered_content
+    return template.render(context, self._request)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/template/backends/django.py", line 61, in render
+    return self.template.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/template/base.py", line 175, in render
+    return self._render(context)
+           ~~~~~~~~~~~~^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/template/base.py", line 167, in _render
+    return self.nodelist.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/template/base.py", line 1005, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/template/base.py", line 966, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/template/loader_tags.py", line 157, in render
+    return compiled_parent._render(context)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/template/base.py", line 167, in _render
+    return self.nodelist.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/template/base.py", line 1005, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/template/base.py", line 966, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/template/loader_tags.py", line 63, in render
+    result = block.nodelist.render(context)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/template/base.py", line 1005, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/template/base.py", line 966, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/template/defaulttags.py", line 471, in render
+    url = reverse(view_name, args=args, kwargs=kwargs, current_app=current_app)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/urls/base.py", line 88, in reverse
+    return resolver._reverse_with_prefix(view, prefix, *args, **kwargs)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/urls/resolvers.py", line 828, in _reverse_with_prefix
+    raise NoReverseMatch(msg)
+django.urls.exceptions.NoReverseMatch: Reverse for 'equipment_detail' with arguments '('',)' not found. 1 pattern(s) tried: ['equipment/equipment_detail/(?P<pk>[0-9]+)/\\Z']
+Internal Server Error: /bookings/cal/all/
+Traceback (most recent call last):
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/core/handlers/base.py", line 220, in _get_response
+    response = response.render()
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/template/response.py", line 114, in render
+    self.content = self.rendered_content
+                   ^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/template/response.py", line 92, in rendered_content
+    return template.render(context, self._request)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/template/backends/django.py", line 61, in render
+    return self.template.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/template/base.py", line 175, in render
+    return self._render(context)
+           ~~~~~~~~~~~~^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/template/base.py", line 167, in _render
+    return self.nodelist.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/template/base.py", line 1005, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/template/base.py", line 966, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/template/loader_tags.py", line 157, in render
+    return compiled_parent._render(context)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/template/base.py", line 167, in _render
+    return self.nodelist.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/template/base.py", line 1005, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/template/base.py", line 966, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/template/loader_tags.py", line 63, in render
+    result = block.nodelist.render(context)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/template/base.py", line 1005, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/template/base.py", line 966, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/template/defaulttags.py", line 471, in render
+    url = reverse(view_name, args=args, kwargs=kwargs, current_app=current_app)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/urls/base.py", line 88, in reverse
+    return resolver._reverse_with_prefix(view, prefix, *args, **kwargs)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/urls/resolvers.py", line 828, in _reverse_with_prefix
+    raise NoReverseMatch(msg)
+django.urls.exceptions.NoReverseMatch: Reverse for 'equipment_detail' with arguments '('',)' not found. 1 pattern(s) tried: ['equipment/equipment_detail/(?P<pk>[0-9]+)/\\Z']

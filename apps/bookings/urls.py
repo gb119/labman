@@ -31,5 +31,7 @@ register_converter(FloatUrlParameterConverter, "float")
 
 urlpatterns = [
     path("cal/<int:equipment>/<int:date>/", views.CalendarView.as_view(), name="equipment_calendar"),
+    path("cal/all/<int:date>/", views.AllCalendarView.as_view(), name="all_equipment_calendar"),
+    path("cal/all/", views.AllCalendarView.as_view(), name="all_equipment_calendar"),
     path("book/<int:equipment>/<float:ts>/", views.BookingDialog.as_view(), name="equipment_booking"),
 ]

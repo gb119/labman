@@ -13,11 +13,11 @@
     </style>
 {% endblock css %}
 {% block content %}
-    <h2>{{ equipment.name }}</h2>
-    {{ equipment.description|safe }}
+    <h2>All Equipment Schedules</h2>
+
     <div id="schedule_container"
          hx-trigger="refreshSchedule from:body consume, revealed consume"
-         hx-vals='{"date":{{ start_date }}, "mode":"{{ mode }}" }'
+         hx-vals='{"date":"{{ start_date }}", "mode":"{{ mode }}" }'
          hx-get="{% url 'equipment:equipment_detail' equipment.pk %}"
          hx-target="#schedule_container"      hx-swap="outerHTML">
         <div id="schedule">

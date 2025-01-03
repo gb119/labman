@@ -1,44 +1,27 @@
 # -*- coding: utf-8 -*-
-"""
-Created on Sun Jun 25 18:16:19 2023
-
-@author: phygbu
-"""
+"""View classes for the equipment app - including showing booking tables."""
 # Python imports
-from datetime import (
-    date as Date,
-    datetime as dt,
-    time as Time,
-    timedelta as td,
-)
+from datetime import datetime as dt, timedelta as td
+from itertools import chain
 
 # Django imports
 from django import views
 from django.conf import settings
 from django.core.exceptions import ObjectDoesNotExist
-from django.template import Template
+from django.db.models import Count
 
 # external imports
-import numpy as np
 import pytz
 from accounts.models import Account, Project
 from bookings.forms import BookinngDialogForm
-from bookings.models import BookingEntry
-from bookings.views import (
-    CalTable,
-    calendar_date_vector,
-    calendar_time_vector,
-    datetime_to_coord,
-    yyyymmdd_to_date,
-)
 from extra_views import FormSetView
 from htmx_views.views import HTMXProcessMixin
 from labman_utils.views import IsAuthenticaedViewMixin
-from psycopg2.extras import DateTimeTZRange
 
 # app imports
 from .forms import SignOffForm
 from .models import DocumentSignOff, Equipment, Location
+from .tables import CalTable
 
 DEFAULT_TZ = pytz.timezone(settings.TIME_ZONE)
 
@@ -54,6 +37,7 @@ class SignOffFormSetView(IsAuthenticaedViewMixin, FormSetView):
     factory_kwargs = {"extra": 0, "max_num": None, "can_order": False, "can_delete": False}
 
     def get_initial(self):
+        """Get initial data for the document sign-off formset."""
         equipment_id = int(self.kwargs["equipment"])
         equipment = Equipment.objects.get(pk=equipment_id)
         docs = equipment.files.filter(category__in=["ra", "sop"])
@@ -70,6 +54,7 @@ class SignOffFormSetView(IsAuthenticaedViewMixin, FormSetView):
         return dataset
 
     def formset_valid(self, formset):
+        """Process the formset to add sign=offs of documents."""
         equipment_id = int(self.kwargs["equipment"])
         equipment = Equipment.objects.get(pk=equipment_id)
         data = None
@@ -86,6 +71,7 @@ class SignOffFormSetView(IsAuthenticaedViewMixin, FormSetView):
         return super().formset_valid(formset)
 
     def get_context_data(self, **kwargs):
+        """Ensure context data includes the documents for the equipment item."""
         context = super().get_context_data(**kwargs)
         docs = [x.initial["document"] for x in context["formset"].forms]
         context["docs"] = docs
@@ -101,23 +87,49 @@ class EquipmentDetailView(HTMXProcessMixin, IsAuthenticaedViewMixin, views.gener
     template_name_userlisttab = "equipment/parts/equipment_detail_userlist.html"
     template_name_scheduletab = "equipment/parts/equipment_detail_schedule.html"
     template_name_schedule_container = "equipment/parts/equipment_detail_schedule.html"
+    template_name_cal_back = "equipment/parts/equipment_detail_schedule.html"
+    template_name_cal_forward = "equipment/parts/equipment_detail_schedule.html"
     model = Equipment
 
     def get_context_data_scheduletab(self, **kwargs):
         """Build the context for the calendar display."""
         context = super().get_context_data(_context=True, **kwargs)
-        equipment = context["equipment"]
         # Build the calendar rows from the shifts.
-        time_vec = equipment.calendar_time_vector
-        time_vec = calendar_time_vector() if time_vec is None else time_vec
+        date = int(self.request.GET.get("date", dt.today().strftime("%Y%m%d")))
+        mode = self.kwargs.get("mode", self.request.GET.get("mode", "single")).strip().lower()
+        context["start_date"] = date
+        date_obj = dt.strptime(str(date), "%Y%m%d")
+        back_date = date_obj - td(days=7)
+        forward_date = date_obj + td(days=7)
+        context["back_date"] = back_date.strftime("%Y%m%d")
+        context["forward_date"] = forward_date.strftime("%Y%m%d")
+        context["mode"] = mode
+
+        match mode:
+            case "single":
+                equipment = context["equipment"]
+                equip_vec = None
+            case "all":
+                equipment = None
+                equip_vec = Equipment.objects.all().annotate(policy_count=Count("policies")).filter(policy_count__gt=0)
+            case _:
+                raise ValueError(f"Unknow mode {mode} in scedule detail.")
+
         table = CalTable(
-            date=self.kwargs.get("date", int(self.request.GET.get("date", dt.today().strftime("%Y%m%d")))),
+            date=self.kwargs.get("date", date),
             request=self.request,
             equipment=equipment,
+            equip_vec=equip_vec,
             table_contents="&nbsp;",
         )
         table.classes += " table-bordered"
-        entries = table.fill_entries(equipment)
+        match mode:
+            case "single":
+                entries = table.fill_entries(equipment)
+            case "all":
+                entries = chain(*(table.fill_entries(equipment) for equipment in equip_vec))
+            case _:
+                raise ValueError(f"How did we get here with {mode}?")
 
         context["cal"] = table
         context["start"] = table.date_vec[0]
@@ -128,9 +140,9 @@ class EquipmentDetailView(HTMXProcessMixin, IsAuthenticaedViewMixin, views.gener
 
         return context
 
-        return context
-
     get_context_data_schedule_container = get_context_data_scheduletab
+    get_context_data_cal_back = get_context_data_scheduletab
+    get_context_data_cal_forward = get_context_data_scheduletab
 
 
 class ModelListView(HTMXProcessMixin, IsAuthenticaedViewMixin, views.generic.ListView):
@@ -161,7 +173,3 @@ class ModelListView(HTMXProcessMixin, IsAuthenticaedViewMixin, views.generic.Lis
             case _:
                 qs = Account.objects.all().order_by("last_name", "first_name")
         return qs
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        return context

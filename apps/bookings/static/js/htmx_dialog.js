@@ -19,21 +19,12 @@ const elem=document.querySelector("#modal");
         }
 
     });
-        frm.addEventListener('keydown', function (event) {
-            if (event.keyCode == 8 && document.activeElement != document.querySelector("#user__textinput")) {
-                htmx.trigger("#delete_booking","focus");
-                htmx.trigger("#delete_booking","click");
-            }
-            return false;
-
-        });
-
     }
   })
 
   htmx.on("htmx:beforeSwap", (e) => {
     // Empty response targeting #dialog => hide the modal
-    if (e.detail.target.id == "dialog" && !e.detail.xhr.response) {
+    if (e.detail.target.id == "dialog" && e.detail.xhr.status==204) {
       var modal = bootstrap.Modal.getOrCreateInstance(elem)
       modal.hide()
       e.detail.shouldSwap = false

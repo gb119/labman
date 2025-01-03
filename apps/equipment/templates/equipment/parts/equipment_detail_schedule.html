@@ -3,16 +3,42 @@
 </style>
 
 <div id="schedule_container"
-     hx-trigger="refreshSchedule from:body"
+     hx-trigger="refreshSchedule from:body consume"
+     hx-vals='{"date":{{ start_date }}, "mode":"{{ mode }}" }'
      hx-get="{% url 'equipment:equipment_detail' equipment.pk %}"
-     hx-target="#schedule"
-     hx-vals='{"date":{{ start_date }}}' >
+     hx-target="#schedule_container"      hx-swap="outerHTML">
     <div id="schedule">
-        <div class="d-flex justify-content-between">
-            <div class="col-md-2">{{ start }}</div><div class="col-md-2">{{ end }}</div>
+        <div class="row">
+            <div class="d-flex justify-content-between">
+                <div class="col-md-2">
+                    <button type="button" class="btn btn-outline-secondary" id="cal_back"
+                            hx-vals='{"date":{{ back_date }}, "mode":"{{ mode }}" }'
+                            hx-get="{% url 'equipment:equipment_detail' equipment.pk %}"
+                            hx-target="#schedule_container"      hx-swap="outerHTML">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-rewind" viewBox="0 0 16 16">
+                            <path d="M9.196 8 15 4.633v6.734zm-.792-.696a.802.802 0 0 0 0 1.392l6.363 3.692c.52.302 1.233-.043 1.233-.696V4.308c0-.653-.713-.998-1.233-.696z"></path>
+                            <path d="M1.196 8 7 4.633v6.734zm-.792-.696a.802.802 0 0 0 0 1.392l6.363 3.692c.52.302 1.233-.043 1.233-.696V4.308c0-.653-.713-.998-1.233-.696z"></path>
+                        </svg>
+                        <span class="visually-hidden">Button</span>
+                    </button>
+                    {{ start }}</div>
+                <div class="col-md-2">{{ end }}
+                    <button type="button" class="btn btn-outline-secondary" id="cal_forward"
+                            hx-vals='{"date":{{ forward_date }}, "mode":"{{ mode }}" }'
+                            hx-get="{% url 'equipment:equipment_detail' equipment.pk %}"
+                            hx-target="#schedule_container"      hx-swap="outerHTML">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-fast-forward" viewBox="0 0 16 16">
+                            <path d="M6.804 8 1 4.633v6.734zm.792-.696a.802.802 0 0 1 0 1.392l-6.363 3.692C.713 12.69 0 12.345 0 11.692V4.308c0-.653.713-.998 1.233-.696z"></path>
+                            <path d="M14.804 8 9 4.633v6.734zm.792-.696a.802.802 0 0 1 0 1.392l-6.363 3.692C8.713 12.69 8 12.345 8 11.692V4.308c0-.653.713-.998 1.233-.696z"></path>
+                        </svg>
+                        <span class="visually-hidden">Button</span>
+                    </button></div>
+            </div>
         </div>
-        <div class="d-flex justify-content-center table-responsive-lg" hx-target="#dialog">
-            {{ cal.render|safe }}
+        <div class="row">
+            <div class="mt-4 d-flex justify-content-center table-responsive-lg" hx-target="#dialog">
+                {{ cal.render|safe }}
+            </div>
         </div>
     </div>
 </div>
