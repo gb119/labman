@@ -86,6 +86,7 @@ DEFAULT_APPS = [
     "django.contrib.sites",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    "django_extensions",
     "django_htmx",
     "rest_framework",
     "import_export",

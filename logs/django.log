@@ -8896,3 +8896,2283 @@ Traceback (most recent call last):
   File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/urls/resolvers.py", line 828, in _reverse_with_prefix
     raise NoReverseMatch(msg)
 django.urls.exceptions.NoReverseMatch: Reverse for 'equipment_detail' with arguments '('',)' not found. 1 pattern(s) tried: ['equipment/equipment_detail/(?P<pk>[0-9]+)/\\Z']
+Internal Server Error: /equipment/equipment_detail/1/
+Traceback (most recent call last):
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/core/handlers/base.py", line 220, in _get_response
+    response = response.render()
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/template/response.py", line 114, in render
+    self.content = self.rendered_content
+                   ^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/template/response.py", line 92, in rendered_content
+    return template.render(context, self._request)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/template/backends/django.py", line 61, in render
+    return self.template.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/template/base.py", line 175, in render
+    return self._render(context)
+           ~~~~~~~~~~~~^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/template/base.py", line 167, in _render
+    return self.nodelist.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/template/base.py", line 1005, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/template/base.py", line 966, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/template/base.py", line 1064, in render
+    output = self.filter_expression.resolve(context)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/template/base.py", line 715, in resolve
+    obj = self.var.resolve(context)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/template/base.py", line 847, in resolve
+    value = self._resolve_lookup(context)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/template/base.py", line 914, in _resolve_lookup
+    current = current()
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/simple_html_table/htmltable.py", line 242, in render
+    content += row.render()
+               ~~~~~~~~~~^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/simple_html_table/htmltable.py", line 338, in render
+    content += "\n\t\t" + cell.render()
+                          ~~~~~~~~~~~^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/simple_html_table/htmltable.py", line 49, in render
+    classes = f" class='{self.classes}'" if self.classes else ""
+                                            ^^^^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/simple_html_table/htmltable.py", line 60, in classes
+    return " ".join(self._classes)
+           ~~~~~~~~^^^^^^^^^^^^^^^
+TypeError: sequence item 1: expected str instance, set found
+Internal Server Error: /bookings/book/2/1735977600.0/
+Traceback (most recent call last):
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/db/backends/utils.py", line 89, in _execute
+    return self.cursor.execute(sql, params)
+           ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+psycopg2.errors.UndefinedColumn: column bookings_bookingpolicy.use_shifts does not exist
+LINE 1: ...."max_forward", "bookings_bookingpolicy"."quota", "bookings_...
+                                                             ^
+
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/views/generic/base.py", line 104, in view
+    return self.dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/contrib/auth/mixins.py", line 135, in dispatch
+    return super().dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/phygbu/labman/apps/htmx_views/views.py", line 35, in dispatch
+    return handler(request, *args, **kwargs)
+  File "/home/phygbu/labman/apps/htmx_views/views.py", line 173, in htmx_post
+    return handler(request, *args, **kwargs)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/views/generic/edit.py", line 208, in post
+    return super().post(request, *args, **kwargs)
+           ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/views/generic/edit.py", line 152, in post
+    if form.is_valid():
+       ~~~~~~~~~~~~~^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/forms/forms.py", line 201, in is_valid
+    return self.is_bound and not self.errors
+                                 ^^^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/forms/forms.py", line 196, in errors
+    self.full_clean()
+    ~~~~~~~~~~~~~~~^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/forms/forms.py", line 435, in full_clean
+    self._post_clean()
+    ~~~~~~~~~~~~~~~~^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/forms/models.py", line 486, in _post_clean
+    self.instance.full_clean(exclude=exclude, validate_unique=False)
+    ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/db/models/base.py", line 1477, in full_clean
+    self.clean()
+    ~~~~~~~~~~^^
+  File "/home/phygbu/labman/apps/bookings/models.py", line 288, in clean
+    policy = BookingPolicy.get_policy(self)
+  File "/home/phygbu/labman/apps/bookings/models.py", line 203, in get_policy
+    for policy in booking.equipment.policies.all():
+                  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/db/models/query.py", line 398, in __iter__
+    self._fetch_all()
+    ~~~~~~~~~~~~~~~^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/db/models/query.py", line 1881, in _fetch_all
+    self._result_cache = list(self._iterable_class(self))
+                         ~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/db/models/query.py", line 91, in __iter__
+    results = compiler.execute_sql(
+        chunked_fetch=self.chunked_fetch, chunk_size=self.chunk_size
+    )
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/db/models/sql/compiler.py", line 1562, in execute_sql
+    cursor.execute(sql, params)
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/db/backends/utils.py", line 102, in execute
+    return super().execute(sql, params)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/db/backends/utils.py", line 67, in execute
+    return self._execute_with_wrappers(
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        sql, params, many=False, executor=self._execute
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/db/backends/utils.py", line 80, in _execute_with_wrappers
+    return executor(sql, params, many, context)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/db/backends/utils.py", line 84, in _execute
+    with self.db.wrap_database_errors:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/db/utils.py", line 91, in __exit__
+    raise dj_exc_value.with_traceback(traceback) from exc_value
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/db/backends/utils.py", line 89, in _execute
+    return self.cursor.execute(sql, params)
+           ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+django.db.utils.ProgrammingError: column bookings_bookingpolicy.use_shifts does not exist
+LINE 1: ...."max_forward", "bookings_bookingpolicy"."quota", "bookings_...
+                                                             ^
+
+Internal Server Error: /bookings/book/2/1735977600.0/
+Traceback (most recent call last):
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/views/generic/base.py", line 104, in view
+    return self.dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/contrib/auth/mixins.py", line 135, in dispatch
+    return super().dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/phygbu/labman/apps/htmx_views/views.py", line 35, in dispatch
+    return handler(request, *args, **kwargs)
+  File "/home/phygbu/labman/apps/htmx_views/views.py", line 173, in htmx_post
+    return handler(request, *args, **kwargs)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/views/generic/edit.py", line 208, in post
+    return super().post(request, *args, **kwargs)
+           ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/views/generic/edit.py", line 152, in post
+    if form.is_valid():
+       ~~~~~~~~~~~~~^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/forms/forms.py", line 201, in is_valid
+    return self.is_bound and not self.errors
+                                 ^^^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/forms/forms.py", line 196, in errors
+    self.full_clean()
+    ~~~~~~~~~~~~~~~^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/forms/forms.py", line 435, in full_clean
+    self._post_clean()
+    ~~~~~~~~~~~~~~~~^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/forms/models.py", line 486, in _post_clean
+    self.instance.full_clean(exclude=exclude, validate_unique=False)
+    ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/db/models/base.py", line 1477, in full_clean
+    self.clean()
+    ~~~~~~~~~~^^
+  File "/home/phygbu/labman/apps/bookings/models.py", line 288, in clean
+    policy = BookingPolicy.get_policy(self)
+  File "/home/phygbu/labman/apps/bookings/models.py", line 205, in get_policy
+    if policy.permitted(booking):
+       ~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "/home/phygbu/labman/apps/bookings/models.py", line 148, in permitted
+    start,end = self.fix_times(booking)
+                ~~~~~~~~~~~~~~^^^^^^^^^
+  File "/home/phygbu/labman/apps/bookings/models.py", line 127, in fix_times
+    if delta_t(start,start_shift.start_time)<0:
+       ~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/phygbu/labman/apps/bookings/models.py", line 33, in delta_t
+    return dt.combine(date.today(), time1) - dt.combine(date.today(), time2)
+           ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^
+TypeError: combine() argument 2 must be datetime.time, not datetime.datetime
+Internal Server Error: /bookings/book/2/1735977600.0/
+Traceback (most recent call last):
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/views/generic/base.py", line 104, in view
+    return self.dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/contrib/auth/mixins.py", line 135, in dispatch
+    return super().dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/phygbu/labman/apps/htmx_views/views.py", line 35, in dispatch
+    return handler(request, *args, **kwargs)
+  File "/home/phygbu/labman/apps/htmx_views/views.py", line 173, in htmx_post
+    return handler(request, *args, **kwargs)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/views/generic/edit.py", line 208, in post
+    return super().post(request, *args, **kwargs)
+           ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/views/generic/edit.py", line 152, in post
+    if form.is_valid():
+       ~~~~~~~~~~~~~^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/forms/forms.py", line 201, in is_valid
+    return self.is_bound and not self.errors
+                                 ^^^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/forms/forms.py", line 196, in errors
+    self.full_clean()
+    ~~~~~~~~~~~~~~~^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/forms/forms.py", line 435, in full_clean
+    self._post_clean()
+    ~~~~~~~~~~~~~~~~^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/forms/models.py", line 486, in _post_clean
+    self.instance.full_clean(exclude=exclude, validate_unique=False)
+    ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/db/models/base.py", line 1477, in full_clean
+    self.clean()
+    ~~~~~~~~~~^^
+  File "/home/phygbu/labman/apps/bookings/models.py", line 292, in clean
+    policy = BookingPolicy.get_policy(self)
+  File "/home/phygbu/labman/apps/bookings/models.py", line 209, in get_policy
+    if policy.permitted(booking):
+       ~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "/home/phygbu/labman/apps/bookings/models.py", line 152, in permitted
+    start,end = self.fix_times(booking)
+                ~~~~~~~~~~~~~~^^^^^^^^^
+  File "/home/phygbu/labman/apps/bookings/models.py", line 131, in fix_times
+    if delta_t(start,start_shift.start_time)<0:
+       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: '<' not supported between instances of 'datetime.timedelta' and 'int'
+Internal Server Error: /bookings/book/2/1735977600.0/
+Traceback (most recent call last):
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/views/generic/base.py", line 104, in view
+    return self.dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/contrib/auth/mixins.py", line 135, in dispatch
+    return super().dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/phygbu/labman/apps/htmx_views/views.py", line 35, in dispatch
+    return handler(request, *args, **kwargs)
+  File "/home/phygbu/labman/apps/htmx_views/views.py", line 173, in htmx_post
+    return handler(request, *args, **kwargs)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/views/generic/edit.py", line 208, in post
+    return super().post(request, *args, **kwargs)
+           ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/views/generic/edit.py", line 152, in post
+    if form.is_valid():
+       ~~~~~~~~~~~~~^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/forms/forms.py", line 201, in is_valid
+    return self.is_bound and not self.errors
+                                 ^^^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/forms/forms.py", line 196, in errors
+    self.full_clean()
+    ~~~~~~~~~~~~~~~^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/forms/forms.py", line 435, in full_clean
+    self._post_clean()
+    ~~~~~~~~~~~~~~~~^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/forms/models.py", line 486, in _post_clean
+    self.instance.full_clean(exclude=exclude, validate_unique=False)
+    ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/db/models/base.py", line 1477, in full_clean
+    self.clean()
+    ~~~~~~~~~~^^
+  File "/home/phygbu/labman/apps/bookings/models.py", line 292, in clean
+    policy = BookingPolicy.get_policy(self)
+  File "/home/phygbu/labman/apps/bookings/models.py", line 209, in get_policy
+    if policy.permitted(booking):
+       ~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "/home/phygbu/labman/apps/bookings/models.py", line 152, in permitted
+    start,end = self.fix_times(booking)
+                ~~~~~~~~~~~~~~^^^^^^^^^
+  File "/home/phygbu/labman/apps/bookings/models.py", line 131, in fix_times
+    if delta_t(start,start_shift.start_time).to_seconds()<0:
+       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'datetime.timedelta' object has no attribute 'to_seconds'. Did you mean: 'seconds'?
+Internal Server Error: /bookings/book/2/1735977600.0/
+Traceback (most recent call last):
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/views/generic/base.py", line 104, in view
+    return self.dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/contrib/auth/mixins.py", line 135, in dispatch
+    return super().dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/phygbu/labman/apps/htmx_views/views.py", line 35, in dispatch
+    return handler(request, *args, **kwargs)
+  File "/home/phygbu/labman/apps/htmx_views/views.py", line 173, in htmx_post
+    return handler(request, *args, **kwargs)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/views/generic/edit.py", line 208, in post
+    return super().post(request, *args, **kwargs)
+           ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/views/generic/edit.py", line 152, in post
+    if form.is_valid():
+       ~~~~~~~~~~~~~^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/forms/forms.py", line 201, in is_valid
+    return self.is_bound and not self.errors
+                                 ^^^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/forms/forms.py", line 196, in errors
+    self.full_clean()
+    ~~~~~~~~~~~~~~~^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/forms/forms.py", line 435, in full_clean
+    self._post_clean()
+    ~~~~~~~~~~~~~~~~^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/forms/models.py", line 486, in _post_clean
+    self.instance.full_clean(exclude=exclude, validate_unique=False)
+    ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/db/models/base.py", line 1477, in full_clean
+    self.clean()
+    ~~~~~~~~~~^^
+  File "/home/phygbu/labman/apps/bookings/models.py", line 292, in clean
+    policy = BookingPolicy.get_policy(self)
+  File "/home/phygbu/labman/apps/bookings/models.py", line 209, in get_policy
+    if policy.permitted(booking):
+       ~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "/home/phygbu/labman/apps/bookings/models.py", line 166, in permitted
+    if self.max_forward and tz.now() + self.max_forward < end:  # Booking  to far in advance
+                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: can't compare offset-naive and offset-aware datetimes
+Internal Server Error: /bookings/book/2/1735977600.0/
+Traceback (most recent call last):
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/views/generic/base.py", line 104, in view
+    return self.dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/contrib/auth/mixins.py", line 135, in dispatch
+    return super().dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/phygbu/labman/apps/htmx_views/views.py", line 35, in dispatch
+    return handler(request, *args, **kwargs)
+  File "/home/phygbu/labman/apps/htmx_views/views.py", line 173, in htmx_post
+    return handler(request, *args, **kwargs)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/views/generic/edit.py", line 208, in post
+    return super().post(request, *args, **kwargs)
+           ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/views/generic/edit.py", line 152, in post
+    if form.is_valid():
+       ~~~~~~~~~~~~~^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/forms/forms.py", line 201, in is_valid
+    return self.is_bound and not self.errors
+                                 ^^^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/forms/forms.py", line 196, in errors
+    self.full_clean()
+    ~~~~~~~~~~~~~~~^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/forms/forms.py", line 435, in full_clean
+    self._post_clean()
+    ~~~~~~~~~~~~~~~~^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/forms/models.py", line 486, in _post_clean
+    self.instance.full_clean(exclude=exclude, validate_unique=False)
+    ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/db/models/base.py", line 1477, in full_clean
+    self.clean()
+    ~~~~~~~~~~^^
+  File "/home/phygbu/labman/apps/bookings/models.py", line 295, in clean
+    self.rationalise(policy)
+    ~~~~~~~~~~~~~~~~^^^^^^^^
+  File "/home/phygbu/labman/apps/bookings/models.py", line 277, in rationalise
+    assert False
+           ^^^^^
+AssertionError
+Internal Server Error: /bookings/book/2/1735977600.0/
+Traceback (most recent call last):
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/views/generic/base.py", line 104, in view
+    return self.dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/contrib/auth/mixins.py", line 135, in dispatch
+    return super().dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/phygbu/labman/apps/htmx_views/views.py", line 35, in dispatch
+    return handler(request, *args, **kwargs)
+  File "/home/phygbu/labman/apps/htmx_views/views.py", line 173, in htmx_post
+    return handler(request, *args, **kwargs)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/views/generic/edit.py", line 208, in post
+    return super().post(request, *args, **kwargs)
+           ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/views/generic/edit.py", line 152, in post
+    if form.is_valid():
+       ~~~~~~~~~~~~~^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/forms/forms.py", line 201, in is_valid
+    return self.is_bound and not self.errors
+                                 ^^^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/forms/forms.py", line 196, in errors
+    self.full_clean()
+    ~~~~~~~~~~~~~~~^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/forms/forms.py", line 435, in full_clean
+    self._post_clean()
+    ~~~~~~~~~~~~~~~~^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/forms/models.py", line 486, in _post_clean
+    self.instance.full_clean(exclude=exclude, validate_unique=False)
+    ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/db/models/base.py", line 1477, in full_clean
+    self.clean()
+    ~~~~~~~~~~^^
+  File "/home/phygbu/labman/apps/bookings/models.py", line 295, in clean
+    self.rationalise(policy)
+    ~~~~~~~~~~~~~~~~^^^^^^^^
+  File "/home/phygbu/labman/apps/bookings/models.py", line 278, in rationalise
+    assert False
+           ^^^^^
+AssertionError
+Internal Server Error: /bookings/book/2/1735977600.0/
+Traceback (most recent call last):
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/views/generic/base.py", line 104, in view
+    return self.dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/contrib/auth/mixins.py", line 135, in dispatch
+    return super().dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/phygbu/labman/apps/htmx_views/views.py", line 35, in dispatch
+    return handler(request, *args, **kwargs)
+  File "/home/phygbu/labman/apps/htmx_views/views.py", line 173, in htmx_post
+    return handler(request, *args, **kwargs)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/views/generic/edit.py", line 208, in post
+    return super().post(request, *args, **kwargs)
+           ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/views/generic/edit.py", line 152, in post
+    if form.is_valid():
+       ~~~~~~~~~~~~~^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/forms/forms.py", line 201, in is_valid
+    return self.is_bound and not self.errors
+                                 ^^^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/forms/forms.py", line 196, in errors
+    self.full_clean()
+    ~~~~~~~~~~~~~~~^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/forms/forms.py", line 435, in full_clean
+    self._post_clean()
+    ~~~~~~~~~~~~~~~~^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/forms/models.py", line 486, in _post_clean
+    self.instance.full_clean(exclude=exclude, validate_unique=False)
+    ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/db/models/base.py", line 1477, in full_clean
+    self.clean()
+    ~~~~~~~~~~^^
+  File "/home/phygbu/labman/apps/bookings/models.py", line 295, in clean
+    self.rationalise(policy)
+    ~~~~~~~~~~~~~~~~^^^^^^^^
+  File "/home/phygbu/labman/apps/bookings/models.py", line 278, in rationalise
+    assert False
+           ^^^^^
+AssertionError
+Internal Server Error: /bookings/book/2/1735977600.0/
+Traceback (most recent call last):
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/views/generic/base.py", line 104, in view
+    return self.dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/contrib/auth/mixins.py", line 135, in dispatch
+    return super().dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/phygbu/labman/apps/htmx_views/views.py", line 35, in dispatch
+    return handler(request, *args, **kwargs)
+  File "/home/phygbu/labman/apps/htmx_views/views.py", line 173, in htmx_post
+    return handler(request, *args, **kwargs)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/views/generic/edit.py", line 208, in post
+    return super().post(request, *args, **kwargs)
+           ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/views/generic/edit.py", line 152, in post
+    if form.is_valid():
+       ~~~~~~~~~~~~~^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/forms/forms.py", line 201, in is_valid
+    return self.is_bound and not self.errors
+                                 ^^^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/forms/forms.py", line 196, in errors
+    self.full_clean()
+    ~~~~~~~~~~~~~~~^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/forms/forms.py", line 435, in full_clean
+    self._post_clean()
+    ~~~~~~~~~~~~~~~~^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/forms/models.py", line 486, in _post_clean
+    self.instance.full_clean(exclude=exclude, validate_unique=False)
+    ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/db/models/base.py", line 1477, in full_clean
+    self.clean()
+    ~~~~~~~~~~^^
+  File "/home/phygbu/labman/apps/bookings/models.py", line 295, in clean
+    self.rationalise(policy)
+    ~~~~~~~~~~~~~~~~^^^^^^^^
+  File "/home/phygbu/labman/apps/bookings/models.py", line 278, in rationalise
+    assert False
+           ^^^^^
+AssertionError
+Internal Server Error: /bookings/book/2/1735995600.0/
+Traceback (most recent call last):
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/views/generic/base.py", line 104, in view
+    return self.dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/contrib/auth/mixins.py", line 135, in dispatch
+    return super().dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/phygbu/labman/apps/htmx_views/views.py", line 35, in dispatch
+    return handler(request, *args, **kwargs)
+  File "/home/phygbu/labman/apps/htmx_views/views.py", line 173, in htmx_post
+    return handler(request, *args, **kwargs)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/views/generic/edit.py", line 208, in post
+    return super().post(request, *args, **kwargs)
+           ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/views/generic/edit.py", line 152, in post
+    if form.is_valid():
+       ~~~~~~~~~~~~~^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/forms/forms.py", line 201, in is_valid
+    return self.is_bound and not self.errors
+                                 ^^^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/forms/forms.py", line 196, in errors
+    self.full_clean()
+    ~~~~~~~~~~~~~~~^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/forms/forms.py", line 435, in full_clean
+    self._post_clean()
+    ~~~~~~~~~~~~~~~~^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/forms/models.py", line 486, in _post_clean
+    self.instance.full_clean(exclude=exclude, validate_unique=False)
+    ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/db/models/base.py", line 1477, in full_clean
+    self.clean()
+    ~~~~~~~~~~^^
+  File "/home/phygbu/labman/apps/bookings/models.py", line 292, in clean
+    policy = BookingPolicy.get_policy(self)
+  File "/home/phygbu/labman/apps/bookings/models.py", line 210, in get_policy
+    if policy.permitted(booking):
+       ~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "/home/phygbu/labman/apps/bookings/models.py", line 153, in permitted
+    start,end = self.fix_times(booking)
+                ~~~~~~~~~~~~~~^^^^^^^^^
+  File "/home/phygbu/labman/apps/bookings/models.py", line 144, in fix_times
+    return DEFAULT_TZ.localize(start),DEFAULT_TZ.localize(end)
+           ~~~~~~~~~~~~~~~~~~~^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/pytz/tzinfo.py", line 321, in localize
+    raise ValueError('Not naive datetime (tzinfo is already set)')
+ValueError: Not naive datetime (tzinfo is already set)
+Internal Server Error: /bookings/book/2/1735995600.0/
+Traceback (most recent call last):
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/views/generic/base.py", line 104, in view
+    return self.dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/contrib/auth/mixins.py", line 135, in dispatch
+    return super().dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/phygbu/labman/apps/htmx_views/views.py", line 35, in dispatch
+    return handler(request, *args, **kwargs)
+  File "/home/phygbu/labman/apps/htmx_views/views.py", line 173, in htmx_post
+    return handler(request, *args, **kwargs)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/views/generic/edit.py", line 208, in post
+    return super().post(request, *args, **kwargs)
+           ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/views/generic/edit.py", line 152, in post
+    if form.is_valid():
+       ~~~~~~~~~~~~~^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/forms/forms.py", line 201, in is_valid
+    return self.is_bound and not self.errors
+                                 ^^^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/forms/forms.py", line 196, in errors
+    self.full_clean()
+    ~~~~~~~~~~~~~~~^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/forms/forms.py", line 435, in full_clean
+    self._post_clean()
+    ~~~~~~~~~~~~~~~~^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/forms/models.py", line 486, in _post_clean
+    self.instance.full_clean(exclude=exclude, validate_unique=False)
+    ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/db/models/base.py", line 1477, in full_clean
+    self.clean()
+    ~~~~~~~~~~^^
+  File "/home/phygbu/labman/apps/bookings/models.py", line 301, in clean
+    self.rationalise(policy)
+    ~~~~~~~~~~~~~~~~^^^^^^^^
+  File "/home/phygbu/labman/apps/bookings/models.py", line 284, in rationalise
+    assert False
+           ^^^^^
+AssertionError
+Internal Server Error: /admin/bookings/bookingentry/
+Traceback (most recent call last):
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/db/models/options.py", line 681, in get_field
+    return self.fields_map[field_name]
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^
+KeyError: 'slot_display'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/contrib/admin/utils.py", line 272, in lookup_field
+    f = _get_non_gfk_field(opts, name)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/contrib/admin/utils.py", line 303, in _get_non_gfk_field
+    field = opts.get_field(name)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/db/models/options.py", line 683, in get_field
+    raise FieldDoesNotExist(
+        "%s has no field named '%s'" % (self.object_name, field_name)
+    )
+django.core.exceptions.FieldDoesNotExist: BookingEntry has no field named 'slot_display'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/core/handlers/base.py", line 220, in _get_response
+    response = response.render()
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/template/response.py", line 114, in render
+    self.content = self.rendered_content
+                   ^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/template/response.py", line 92, in rendered_content
+    return template.render(context, self._request)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/template/backends/django.py", line 61, in render
+    return self.template.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/template/base.py", line 175, in render
+    return self._render(context)
+           ~~~~~~~~~~~~^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/template/base.py", line 167, in _render
+    return self.nodelist.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/template/base.py", line 1005, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/template/base.py", line 966, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/template/loader_tags.py", line 157, in render
+    return compiled_parent._render(context)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/template/base.py", line 167, in _render
+    return self.nodelist.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/template/base.py", line 1005, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/template/base.py", line 966, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/template/loader_tags.py", line 157, in render
+    return compiled_parent._render(context)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/template/base.py", line 167, in _render
+    return self.nodelist.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/template/base.py", line 1005, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/template/base.py", line 966, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/template/loader_tags.py", line 157, in render
+    return compiled_parent._render(context)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/template/base.py", line 167, in _render
+    return self.nodelist.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/template/base.py", line 1005, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/template/base.py", line 966, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/template/loader_tags.py", line 157, in render
+    return compiled_parent._render(context)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/template/base.py", line 167, in _render
+    return self.nodelist.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/template/base.py", line 1005, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/template/base.py", line 966, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/template/loader_tags.py", line 157, in render
+    return compiled_parent._render(context)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/template/base.py", line 167, in _render
+    return self.nodelist.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/template/base.py", line 1005, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/template/base.py", line 966, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/template/loader_tags.py", line 157, in render
+    return compiled_parent._render(context)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/template/base.py", line 167, in _render
+    return self.nodelist.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/template/base.py", line 1005, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/template/base.py", line 966, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/template/loader_tags.py", line 63, in render
+    result = block.nodelist.render(context)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/template/base.py", line 1005, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/template/base.py", line 966, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/template/loader_tags.py", line 63, in render
+    result = block.nodelist.render(context)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/template/base.py", line 1005, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/template/base.py", line 966, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/contrib/admin/templatetags/base.py", line 45, in render
+    return super().render(context)
+           ~~~~~~~~~~~~~~^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/template/library.py", line 258, in render
+    _dict = self.func(*resolved_args, **resolved_kwargs)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/contrib/admin/templatetags/admin_list.py", line 336, in result_list
+    "results": list(results(cl)),
+               ~~~~^^^^^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/contrib/admin/templatetags/admin_list.py", line 312, in results
+    yield ResultList(None, items_for_result(cl, res, None))
+          ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/contrib/admin/templatetags/admin_list.py", line 303, in __init__
+    super().__init__(*items)
+    ~~~~~~~~~~~~~~~~^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/contrib/admin/templatetags/admin_list.py", line 213, in items_for_result
+    f, attr, value = lookup_field(field_name, result, cl.model_admin)
+                     ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/contrib/admin/utils.py", line 281, in lookup_field
+    value = attr(obj)
+  File "/home/phygbu/labman/apps/bookings/admin.py", line 167, in slot_display
+    if start.date() == end.date():  # Simplified for start and end on same day
+       ^^^^^^^^^^
+AttributeError: 'NoneType' object has no attribute 'date'
+Internal Server Error: /equipment/equipment_detail/1/
+Traceback (most recent call last):
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/views/generic/base.py", line 104, in view
+    return self.dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/contrib/auth/mixins.py", line 135, in dispatch
+    return super().dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/phygbu/labman/apps/htmx_views/views.py", line 35, in dispatch
+    return handler(request, *args, **kwargs)
+  File "/home/phygbu/labman/apps/htmx_views/views.py", line 139, in htmx_get
+    return handler(request, *args, **kwargs)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/views/generic/detail.py", line 109, in get
+    context = self.get_context_data(object=self.object)
+  File "/home/phygbu/labman/apps/htmx_views/views.py", line 62, in get_context_data
+    return handler(**kwargs)
+  File "/home/phygbu/labman/apps/equipment/views.py", line 130, in get_context_data_scheduletab
+    entries = chain(*(table.fill_entries(equipment) for equipment in equip_vec))
+  File "/home/phygbu/labman/apps/equipment/views.py", line 130, in <genexpr>
+    entries = chain(*(table.fill_entries(equipment) for equipment in equip_vec))
+                      ~~~~~~~~~~~~~~~~~~^^^^^^^^^^^
+  File "/home/phygbu/labman/apps/equipment/tables.py", line 193, in fill_entries
+    assert False
+           ^^^^^
+AssertionError
+Internal Server Error: /equipment/equipment_detail/1/
+Traceback (most recent call last):
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/views/generic/base.py", line 104, in view
+    return self.dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/contrib/auth/mixins.py", line 135, in dispatch
+    return super().dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/phygbu/labman/apps/htmx_views/views.py", line 35, in dispatch
+    return handler(request, *args, **kwargs)
+  File "/home/phygbu/labman/apps/htmx_views/views.py", line 139, in htmx_get
+    return handler(request, *args, **kwargs)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/views/generic/detail.py", line 109, in get
+    context = self.get_context_data(object=self.object)
+  File "/home/phygbu/labman/apps/htmx_views/views.py", line 62, in get_context_data
+    return handler(**kwargs)
+  File "/home/phygbu/labman/apps/equipment/views.py", line 130, in get_context_data_scheduletab
+    entries = chain(*(table.fill_entries(equipment) for equipment in equip_vec))
+  File "/home/phygbu/labman/apps/equipment/views.py", line 130, in <genexpr>
+    entries = chain(*(table.fill_entries(equipment) for equipment in equip_vec))
+                      ~~~~~~~~~~~~~~~~~~^^^^^^^^^^^
+  File "/home/phygbu/labman/apps/equipment/tables.py", line 193, in fill_entries
+    assert False
+           ^^^^^
+AssertionError
+Internal Server Error: /equipment/equipment_detail/1/
+Traceback (most recent call last):
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/views/generic/base.py", line 104, in view
+    return self.dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/contrib/auth/mixins.py", line 135, in dispatch
+    return super().dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/phygbu/labman/apps/htmx_views/views.py", line 35, in dispatch
+    return handler(request, *args, **kwargs)
+  File "/home/phygbu/labman/apps/htmx_views/views.py", line 139, in htmx_get
+    return handler(request, *args, **kwargs)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/views/generic/detail.py", line 109, in get
+    context = self.get_context_data(object=self.object)
+  File "/home/phygbu/labman/apps/htmx_views/views.py", line 62, in get_context_data
+    return handler(**kwargs)
+  File "/home/phygbu/labman/apps/equipment/views.py", line 130, in get_context_data_scheduletab
+    entries = chain(*(table.fill_entries(equipment) for equipment in equip_vec))
+  File "/home/phygbu/labman/apps/equipment/views.py", line 130, in <genexpr>
+    entries = chain(*(table.fill_entries(equipment) for equipment in equip_vec))
+                      ~~~~~~~~~~~~~~~~~~^^^^^^^^^^^
+  File "/home/phygbu/labman/apps/equipment/tables.py", line 194, in fill_entries
+    assert False
+           ^^^^^
+AssertionError
+Internal Server Error: /equipment/equipment_detail/1/
+Traceback (most recent call last):
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/views/generic/base.py", line 104, in view
+    return self.dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/contrib/auth/mixins.py", line 135, in dispatch
+    return super().dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/phygbu/labman/apps/htmx_views/views.py", line 35, in dispatch
+    return handler(request, *args, **kwargs)
+  File "/home/phygbu/labman/apps/htmx_views/views.py", line 139, in htmx_get
+    return handler(request, *args, **kwargs)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/views/generic/detail.py", line 109, in get
+    context = self.get_context_data(object=self.object)
+  File "/home/phygbu/labman/apps/htmx_views/views.py", line 62, in get_context_data
+    return handler(**kwargs)
+  File "/home/phygbu/labman/apps/equipment/views.py", line 130, in get_context_data_scheduletab
+    entries = chain(*(table.fill_entries(equipment) for equipment in equip_vec))
+  File "/home/phygbu/labman/apps/equipment/views.py", line 130, in <genexpr>
+    entries = chain(*(table.fill_entries(equipment) for equipment in equip_vec))
+                      ~~~~~~~~~~~~~~~~~~^^^^^^^^^^^
+  File "/home/phygbu/labman/apps/equipment/tables.py", line 194, in fill_entries
+    assert False
+           ^^^^^
+AssertionError
+Internal Server Error: /equipment/equipment_detail/1/
+Traceback (most recent call last):
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/views/generic/base.py", line 104, in view
+    return self.dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/contrib/auth/mixins.py", line 135, in dispatch
+    return super().dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/phygbu/labman/apps/htmx_views/views.py", line 35, in dispatch
+    return handler(request, *args, **kwargs)
+  File "/home/phygbu/labman/apps/htmx_views/views.py", line 139, in htmx_get
+    return handler(request, *args, **kwargs)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/views/generic/detail.py", line 109, in get
+    context = self.get_context_data(object=self.object)
+  File "/home/phygbu/labman/apps/htmx_views/views.py", line 62, in get_context_data
+    return handler(**kwargs)
+  File "/home/phygbu/labman/apps/equipment/views.py", line 130, in get_context_data_scheduletab
+    entries = chain(*(table.fill_entries(equipment) for equipment in equip_vec))
+  File "/home/phygbu/labman/apps/equipment/views.py", line 130, in <genexpr>
+    entries = chain(*(table.fill_entries(equipment) for equipment in equip_vec))
+                      ~~~~~~~~~~~~~~~~~~^^^^^^^^^^^
+  File "/home/phygbu/labman/apps/equipment/tables.py", line 189, in fill_entries
+    row_start, col_start = datetime_to_coord(entry.slot.lower, date_vec, time_vec, mode="start")
+                           ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/phygbu/labman/apps/equipment/tables.py", line 78, in datetime_to_coord
+    assert False
+           ^^^^^
+AssertionError
+Internal Server Error: /equipment/equipment_detail/1/
+Traceback (most recent call last):
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/views/generic/base.py", line 104, in view
+    return self.dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/contrib/auth/mixins.py", line 135, in dispatch
+    return super().dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/phygbu/labman/apps/htmx_views/views.py", line 35, in dispatch
+    return handler(request, *args, **kwargs)
+  File "/home/phygbu/labman/apps/htmx_views/views.py", line 139, in htmx_get
+    return handler(request, *args, **kwargs)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/views/generic/detail.py", line 109, in get
+    context = self.get_context_data(object=self.object)
+  File "/home/phygbu/labman/apps/htmx_views/views.py", line 62, in get_context_data
+    return handler(**kwargs)
+  File "/home/phygbu/labman/apps/equipment/views.py", line 130, in get_context_data_scheduletab
+    entries = chain(*(table.fill_entries(equipment) for equipment in equip_vec))
+  File "/home/phygbu/labman/apps/equipment/views.py", line 130, in <genexpr>
+    entries = chain(*(table.fill_entries(equipment) for equipment in equip_vec))
+                      ~~~~~~~~~~~~~~~~~~^^^^^^^^^^^
+  File "/home/phygbu/labman/apps/equipment/tables.py", line 189, in fill_entries
+    row_start, col_start = datetime_to_coord(entry.slot.lower, date_vec, time_vec, mode="start")
+                           ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/phygbu/labman/apps/equipment/tables.py", line 78, in datetime_to_coord
+    assert False
+           ^^^^^
+AssertionError
+Internal Server Error: /equipment/equipment_detail/1/
+Traceback (most recent call last):
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/views/generic/base.py", line 104, in view
+    return self.dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/contrib/auth/mixins.py", line 135, in dispatch
+    return super().dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/phygbu/labman/apps/htmx_views/views.py", line 35, in dispatch
+    return handler(request, *args, **kwargs)
+  File "/home/phygbu/labman/apps/htmx_views/views.py", line 139, in htmx_get
+    return handler(request, *args, **kwargs)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/views/generic/detail.py", line 109, in get
+    context = self.get_context_data(object=self.object)
+  File "/home/phygbu/labman/apps/htmx_views/views.py", line 62, in get_context_data
+    return handler(**kwargs)
+  File "/home/phygbu/labman/apps/equipment/views.py", line 130, in get_context_data_scheduletab
+    entries = chain(*(table.fill_entries(equipment) for equipment in equip_vec))
+  File "/home/phygbu/labman/apps/equipment/views.py", line 130, in <genexpr>
+    entries = chain(*(table.fill_entries(equipment) for equipment in equip_vec))
+                      ~~~~~~~~~~~~~~~~~~^^^^^^^^^^^
+  File "/home/phygbu/labman/apps/equipment/tables.py", line 194, in fill_entries
+    assert False
+           ^^^^^
+AssertionError
+Internal Server Error: /equipment/equipment_detail/1/
+Traceback (most recent call last):
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/views/generic/base.py", line 104, in view
+    return self.dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/contrib/auth/mixins.py", line 135, in dispatch
+    return super().dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/phygbu/labman/apps/htmx_views/views.py", line 35, in dispatch
+    return handler(request, *args, **kwargs)
+  File "/home/phygbu/labman/apps/htmx_views/views.py", line 139, in htmx_get
+    return handler(request, *args, **kwargs)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/views/generic/detail.py", line 109, in get
+    context = self.get_context_data(object=self.object)
+  File "/home/phygbu/labman/apps/htmx_views/views.py", line 62, in get_context_data
+    return handler(**kwargs)
+  File "/home/phygbu/labman/apps/equipment/views.py", line 130, in get_context_data_scheduletab
+    entries = chain(*(table.fill_entries(equipment) for equipment in equip_vec))
+  File "/home/phygbu/labman/apps/equipment/views.py", line 130, in <genexpr>
+    entries = chain(*(table.fill_entries(equipment) for equipment in equip_vec))
+                      ~~~~~~~~~~~~~~~~~~^^^^^^^^^^^
+  File "/home/phygbu/labman/apps/equipment/tables.py", line 194, in fill_entries
+    assert False
+           ^^^^^
+AssertionError
+Internal Server Error: /bookings/book/2/1735977600.0/
+Traceback (most recent call last):
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/views/generic/base.py", line 104, in view
+    return self.dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/contrib/auth/mixins.py", line 135, in dispatch
+    return super().dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/phygbu/labman/apps/htmx_views/views.py", line 35, in dispatch
+    return handler(request, *args, **kwargs)
+  File "/home/phygbu/labman/apps/htmx_views/views.py", line 173, in htmx_post
+    return handler(request, *args, **kwargs)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/views/generic/edit.py", line 208, in post
+    return super().post(request, *args, **kwargs)
+           ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/views/generic/edit.py", line 152, in post
+    if form.is_valid():
+       ~~~~~~~~~~~~~^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/forms/forms.py", line 201, in is_valid
+    return self.is_bound and not self.errors
+                                 ^^^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/forms/forms.py", line 196, in errors
+    self.full_clean()
+    ~~~~~~~~~~~~~~~^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/forms/forms.py", line 435, in full_clean
+    self._post_clean()
+    ~~~~~~~~~~~~~~~~^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/forms/models.py", line 486, in _post_clean
+    self.instance.full_clean(exclude=exclude, validate_unique=False)
+    ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/db/models/base.py", line 1477, in full_clean
+    self.clean()
+    ~~~~~~~~~~^^
+  File "/home/phygbu/labman/apps/bookings/models.py", line 306, in clean
+    self.rationalise(policy)
+    ~~~~~~~~~~~~~~~~^^^^^^^^
+  File "/home/phygbu/labman/apps/bookings/models.py", line 289, in rationalise
+    assert False
+           ^^^^^
+AssertionError
+Internal Server Error: /bookings/book/2/1735977600.0/
+Traceback (most recent call last):
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/template/base.py", line 880, in _resolve_lookup
+    current = current[bit]
+              ~~~~~~~^^^^^
+TypeError: 'BookingEntry' object is not subscriptable
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/core/handlers/base.py", line 220, in _get_response
+    response = response.render()
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/template/response.py", line 114, in render
+    self.content = self.rendered_content
+                   ^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/template/response.py", line 92, in rendered_content
+    return template.render(context, self._request)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/template/backends/django.py", line 61, in render
+    return self.template.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/template/base.py", line 175, in render
+    return self._render(context)
+           ~~~~~~~~~~~~^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/template/base.py", line 167, in _render
+    return self.nodelist.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/template/base.py", line 1005, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/template/base.py", line 966, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/template/defaulttags.py", line 321, in render
+    return nodelist.render(context)
+           ~~~~~~~~~~~~~~~^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/template/base.py", line 1005, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/template/base.py", line 966, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/template/base.py", line 1064, in render
+    output = self.filter_expression.resolve(context)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/template/base.py", line 715, in resolve
+    obj = self.var.resolve(context)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/template/base.py", line 847, in resolve
+    value = self._resolve_lookup(context)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/template/base.py", line 890, in _resolve_lookup
+    current = getattr(current, bit)
+  File "/home/phygbu/labman/apps/bookings/models.py", line 280, in policy
+    return BookingPolicy.get_policy(self)
+           ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "/home/phygbu/labman/apps/bookings/models.py", line 216, in get_policy
+    if policy.permitted(booking):
+       ~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "/home/phygbu/labman/apps/bookings/models.py", line 159, in permitted
+    start,end = self.fix_times(booking)
+                ~~~~~~~~~~~~~~^^^^^^^^^
+  File "/home/phygbu/labman/apps/bookings/models.py", line 149, in fix_times
+    assert False
+           ^^^^^
+AssertionError
+Internal Server Error: /bookings/book/2/1735977600.0/
+Traceback (most recent call last):
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/template/base.py", line 880, in _resolve_lookup
+    current = current[bit]
+              ~~~~~~~^^^^^
+TypeError: 'BookingEntry' object is not subscriptable
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/core/handlers/base.py", line 220, in _get_response
+    response = response.render()
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/template/response.py", line 114, in render
+    self.content = self.rendered_content
+                   ^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/template/response.py", line 92, in rendered_content
+    return template.render(context, self._request)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/template/backends/django.py", line 61, in render
+    return self.template.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/template/base.py", line 175, in render
+    return self._render(context)
+           ~~~~~~~~~~~~^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/template/base.py", line 167, in _render
+    return self.nodelist.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/template/base.py", line 1005, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/template/base.py", line 966, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/template/defaulttags.py", line 321, in render
+    return nodelist.render(context)
+           ~~~~~~~~~~~~~~~^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/template/base.py", line 1005, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/template/base.py", line 966, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/template/base.py", line 1064, in render
+    output = self.filter_expression.resolve(context)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/template/base.py", line 715, in resolve
+    obj = self.var.resolve(context)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/template/base.py", line 847, in resolve
+    value = self._resolve_lookup(context)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/template/base.py", line 890, in _resolve_lookup
+    current = getattr(current, bit)
+  File "/home/phygbu/labman/apps/bookings/models.py", line 280, in policy
+    return BookingPolicy.get_policy(self)
+           ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "/home/phygbu/labman/apps/bookings/models.py", line 216, in get_policy
+    if policy.permitted(booking):
+       ~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "/home/phygbu/labman/apps/bookings/models.py", line 159, in permitted
+    start,end = self.fix_times(booking)
+                ~~~~~~~~~~~~~~^^^^^^^^^
+  File "/home/phygbu/labman/apps/bookings/models.py", line 146, in fix_times
+    assert False
+           ^^^^^
+AssertionError
+Internal Server Error: /bookings/book/2/1735977600.0/
+Traceback (most recent call last):
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/template/base.py", line 880, in _resolve_lookup
+    current = current[bit]
+              ~~~~~~~^^^^^
+TypeError: 'BookingEntry' object is not subscriptable
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/core/handlers/base.py", line 220, in _get_response
+    response = response.render()
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/template/response.py", line 114, in render
+    self.content = self.rendered_content
+                   ^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/template/response.py", line 92, in rendered_content
+    return template.render(context, self._request)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/template/backends/django.py", line 61, in render
+    return self.template.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/template/base.py", line 175, in render
+    return self._render(context)
+           ~~~~~~~~~~~~^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/template/base.py", line 167, in _render
+    return self.nodelist.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/template/base.py", line 1005, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/template/base.py", line 966, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/template/defaulttags.py", line 321, in render
+    return nodelist.render(context)
+           ~~~~~~~~~~~~~~~^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/template/base.py", line 1005, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/template/base.py", line 966, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/template/base.py", line 1064, in render
+    output = self.filter_expression.resolve(context)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/template/base.py", line 715, in resolve
+    obj = self.var.resolve(context)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/template/base.py", line 847, in resolve
+    value = self._resolve_lookup(context)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/template/base.py", line 890, in _resolve_lookup
+    current = getattr(current, bit)
+  File "/home/phygbu/labman/apps/bookings/models.py", line 254, in policy
+    return BookingPolicy.get_policy(self)
+           ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "/home/phygbu/labman/apps/bookings/models.py", line 190, in get_policy
+    if policy.permitted(booking):
+       ~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "/home/phygbu/labman/apps/bookings/models.py", line 133, in permitted
+    start,end = self.fix_times(booking)
+                ~~~~~~~~~~~~~~^^^^^^^^^
+  File "/home/phygbu/labman/apps/bookings/models.py", line 120, in fix_times
+    assert False
+           ^^^^^
+AssertionError
+Internal Server Error: /autocomplete/UserListAutoComplete/toggle
+Traceback (most recent call last):
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/views/generic/base.py", line 104, in view
+    return self.dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/phygbu/labman/apps/autocomplete/views.py", line 27, in dispatch
+    return super().dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/phygbu/labman/apps/htmx_views/views.py", line 35, in dispatch
+    return handler(request, *args, **kwargs)
+  File "/home/phygbu/labman/apps/autocomplete/views.py", line 165, in get
+    assert False
+           ^^^^^
+AssertionError
+Internal Server Error: /autocomplete/UserListAutoComplete/items
+Traceback (most recent call last):
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/views/generic/base.py", line 104, in view
+    return self.dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/phygbu/labman/apps/autocomplete/views.py", line 29, in dispatch
+    return super().dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/phygbu/labman/apps/htmx_views/views.py", line 35, in dispatch
+    return handler(request, *args, **kwargs)
+  File "/home/phygbu/labman/apps/autocomplete/views.py", line 211, in get
+    **self.get_template_context(),
+      ~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "/home/phygbu/labman/apps/autocomplete/views.py", line 73, in get_template_context
+    "hx_attrs":self.get_hx_atrrs()
+               ^^^^^^^^^^^^^^^^^
+AttributeError: 'ItemsView' object has no attribute 'get_hx_atrrs'. Did you mean: 'get_hx_attrs'?
+Internal Server Error: /autocomplete/UserListAutoComplete/toggle
+Traceback (most recent call last):
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/views/generic/base.py", line 104, in view
+    return self.dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/phygbu/labman/apps/autocomplete/views.py", line 29, in dispatch
+    return super().dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/phygbu/labman/apps/htmx_views/views.py", line 35, in dispatch
+    return handler(request, *args, **kwargs)
+  File "/home/phygbu/labman/apps/autocomplete/views.py", line 171, in get
+    resp.headers["HX-Trigger-After-Settle"] = json.dumps(
+                                              ~~~~~~~~~~^
+        {
+        ^
+    ...<8 lines>...
+        }
+        ^
+    )
+    ^
+  File "/opt/miniconda3/envs/django/lib/python3.13/json/__init__.py", line 231, in dumps
+    return _default_encoder.encode(obj)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/json/encoder.py", line 200, in encode
+    chunks = self.iterencode(o, _one_shot=True)
+  File "/opt/miniconda3/envs/django/lib/python3.13/json/encoder.py", line 261, in iterencode
+    return _iterencode(o, 0)
+  File "/opt/miniconda3/envs/django/lib/python3.13/json/encoder.py", line 180, in default
+    raise TypeError(f'Object of type {o.__class__.__name__} '
+                    f'is not JSON serializable')
+TypeError: Object of type set is not JSON serializable
+Internal Server Error: /accounts/lookups/projects/
+Traceback (most recent call last):
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/core/handlers/base.py", line 220, in _get_response
+    response = response.render()
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/template/response.py", line 114, in render
+    self.content = self.rendered_content
+                   ^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/template/response.py", line 90, in rendered_content
+    template = self.resolve_template(self.template_name)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/template/response.py", line 72, in resolve_template
+    return select_template(template, using=self.using)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/template/loader.py", line 42, in select_template
+    return engine.get_template(template_name)
+           ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/template/backends/django.py", line 33, in get_template
+    return Template(self.engine.get_template(template_name), self)
+                    ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/template/engine.py", line 175, in get_template
+    template, origin = self.find_template(template_name)
+                       ~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/template/engine.py", line 157, in find_template
+    template = loader.get_template(name, skip=skip)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/template/loaders/cached.py", line 57, in get_template
+    template = super().get_template(template_name, skip)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/template/loaders/base.py", line 28, in get_template
+    return Template(
+        contents,
+    ...<2 lines>...
+        self.engine,
+    )
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/template/base.py", line 154, in __init__
+    self.nodelist = self.compile_nodelist()
+                    ~~~~~~~~~~~~~~~~~~~~~^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/template/base.py", line 200, in compile_nodelist
+    return parser.parse()
+           ~~~~~~~~~~~~^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/template/base.py", line 513, in parse
+    raise self.error(token, e)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/template/base.py", line 511, in parse
+    compiled_result = compile_func(self, token)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/template/defaulttags.py", line 853, in do_for
+    nodelist_loop = parser.parse(
+        (
+    ...<2 lines>...
+        )
+    )
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/template/base.py", line 484, in parse
+    raise self.error(token, e)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/template/base.py", line 482, in parse
+    filter_expression = self.compile_filter(token.contents)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/template/base.py", line 600, in compile_filter
+    return FilterExpression(token, self)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/template/base.py", line 703, in __init__
+    raise TemplateSyntaxError(
+    ...<2 lines>...
+    )
+django.template.exceptions.TemplateSyntaxError: Could not parse the remainder: ' )' from 'project )'
+Internal Server Error: /accounts/lookups/projects/
+Traceback (most recent call last):
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/views/generic/base.py", line 104, in view
+    return self.dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/contrib/auth/mixins.py", line 135, in dispatch
+    return super().dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/phygbu/labman/apps/htmx_views/views.py", line 35, in dispatch
+    return handler(request, *args, **kwargs)
+  File "/home/phygbu/labman/apps/htmx_views/views.py", line 140, in htmx_get
+    return handler(request, *args, **kwargs)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/views/generic/base.py", line 226, in get
+    context = self.get_context_data(**kwargs)
+  File "/home/phygbu/labman/apps/htmx_views/views.py", line 63, in get_context_data
+    return handler(**kwargs)
+  File "/home/phygbu/labman/apps/accounts/views.py", line 53, in get_context_data_id_project
+    projects=form.instance.user.project.all()
+             ^^^^^^^^^^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/db/models/fields/related_descriptors.py", line 246, in __get__
+    raise self.RelatedObjectDoesNotExist(
+        "%s has no %s." % (self.field.model.__name__, self.field.name)
+    )
+bookings.models.BookingEntry.user.RelatedObjectDoesNotExist: BookingEntry has no user.
+Internal Server Error: /accounts/lookups/projects/
+Traceback (most recent call last):
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/views/generic/base.py", line 104, in view
+    return self.dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/contrib/auth/mixins.py", line 135, in dispatch
+    return super().dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/phygbu/labman/apps/htmx_views/views.py", line 35, in dispatch
+    return handler(request, *args, **kwargs)
+  File "/home/phygbu/labman/apps/htmx_views/views.py", line 140, in htmx_get
+    return handler(request, *args, **kwargs)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/views/generic/base.py", line 226, in get
+    context = self.get_context_data(**kwargs)
+  File "/home/phygbu/labman/apps/htmx_views/views.py", line 63, in get_context_data
+    return handler(**kwargs)
+  File "/home/phygbu/labman/apps/accounts/views.py", line 53, in get_context_data_id_project
+    projects=form.user.project.all()
+             ^^^^^^^^^
+AttributeError: 'BookinngDialogForm' object has no attribute 'user'
+Internal Server Error: /accounts/lookups/projects/
+Traceback (most recent call last):
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/views/generic/base.py", line 104, in view
+    return self.dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/contrib/auth/mixins.py", line 135, in dispatch
+    return super().dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/phygbu/labman/apps/htmx_views/views.py", line 35, in dispatch
+    return handler(request, *args, **kwargs)
+  File "/home/phygbu/labman/apps/htmx_views/views.py", line 140, in htmx_get
+    return handler(request, *args, **kwargs)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/views/generic/base.py", line 226, in get
+    context = self.get_context_data(**kwargs)
+  File "/home/phygbu/labman/apps/htmx_views/views.py", line 63, in get_context_data
+    return handler(**kwargs)
+  File "/home/phygbu/labman/apps/accounts/views.py", line 53, in get_context_data_id_project
+    projects=form.cleaned_data["user"].project.all()
+             ^^^^^^^^^^^^^^^^^
+AttributeError: 'BookinngDialogForm' object has no attribute 'cleaned_data'. Did you mean: 'changed_data'?
+Internal Server Error: /accounts/lookups/projects/
+Traceback (most recent call last):
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/views/generic/base.py", line 104, in view
+    return self.dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/contrib/auth/mixins.py", line 135, in dispatch
+    return super().dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/phygbu/labman/apps/htmx_views/views.py", line 35, in dispatch
+    return handler(request, *args, **kwargs)
+  File "/home/phygbu/labman/apps/htmx_views/views.py", line 140, in htmx_get
+    return handler(request, *args, **kwargs)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/views/generic/base.py", line 226, in get
+    context = self.get_context_data(**kwargs)
+  File "/home/phygbu/labman/apps/htmx_views/views.py", line 63, in get_context_data
+    return handler(**kwargs)
+  File "/home/phygbu/labman/apps/accounts/views.py", line 53, in get_context_data_id_project
+    form.clean()
+    ~~~~~~~~~~^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/forms/models.py", line 427, in clean
+    return self.cleaned_data
+           ^^^^^^^^^^^^^^^^^
+AttributeError: 'BookinngDialogForm' object has no attribute 'cleaned_data'. Did you mean: 'changed_data'?
+Internal Server Error: /accounts/lookups/projects/
+Traceback (most recent call last):
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/views/generic/base.py", line 104, in view
+    return self.dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/contrib/auth/mixins.py", line 135, in dispatch
+    return super().dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/phygbu/labman/apps/htmx_views/views.py", line 35, in dispatch
+    return handler(request, *args, **kwargs)
+  File "/home/phygbu/labman/apps/htmx_views/views.py", line 140, in htmx_get
+    return handler(request, *args, **kwargs)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/views/generic/base.py", line 226, in get
+    context = self.get_context_data(**kwargs)
+  File "/home/phygbu/labman/apps/htmx_views/views.py", line 63, in get_context_data
+    return handler(**kwargs)
+  File "/home/phygbu/labman/apps/accounts/views.py", line 54, in get_context_data_id_project
+    projects=form.cleaned_data["user"].project.all()
+             ^^^^^^^^^^^^^^^^^
+AttributeError: 'BookinngDialogForm' object has no attribute 'cleaned_data'. Did you mean: 'changed_data'?
+Internal Server Error: /accounts/lookups/projects/
+Traceback (most recent call last):
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/views/generic/base.py", line 104, in view
+    return self.dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/contrib/auth/mixins.py", line 135, in dispatch
+    return super().dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/phygbu/labman/apps/htmx_views/views.py", line 35, in dispatch
+    return handler(request, *args, **kwargs)
+  File "/home/phygbu/labman/apps/htmx_views/views.py", line 140, in htmx_get
+    return handler(request, *args, **kwargs)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/views/generic/base.py", line 226, in get
+    context = self.get_context_data(**kwargs)
+  File "/home/phygbu/labman/apps/htmx_views/views.py", line 63, in get_context_data
+    return handler(**kwargs)
+  File "/home/phygbu/labman/apps/accounts/views.py", line 54, in get_context_data_id_project
+    projects=form.cleaned_data["user"].project.all()
+             ^^^^^^^^^^^^^^^^^
+AttributeError: 'BookinngDialogForm' object has no attribute 'cleaned_data'. Did you mean: 'changed_data'?
+Internal Server Error: /accounts/lookups/projects/
+Traceback (most recent call last):
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/views/generic/base.py", line 104, in view
+    return self.dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/contrib/auth/mixins.py", line 135, in dispatch
+    return super().dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/phygbu/labman/apps/htmx_views/views.py", line 35, in dispatch
+    return handler(request, *args, **kwargs)
+  File "/home/phygbu/labman/apps/htmx_views/views.py", line 140, in htmx_get
+    return handler(request, *args, **kwargs)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/views/generic/base.py", line 226, in get
+    context = self.get_context_data(**kwargs)
+  File "/home/phygbu/labman/apps/htmx_views/views.py", line 63, in get_context_data
+    return handler(**kwargs)
+  File "/home/phygbu/labman/apps/accounts/views.py", line 59, in get_context_data_id_project
+    assert False
+           ^^^^^
+AssertionError
+Internal Server Error: /accounts/lookups/projects/
+Traceback (most recent call last):
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/views/generic/base.py", line 104, in view
+    return self.dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/contrib/auth/mixins.py", line 135, in dispatch
+    return super().dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/phygbu/labman/apps/htmx_views/views.py", line 35, in dispatch
+    return handler(request, *args, **kwargs)
+  File "/home/phygbu/labman/apps/htmx_views/views.py", line 140, in htmx_get
+    return handler(request, *args, **kwargs)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/views/generic/base.py", line 226, in get
+    context = self.get_context_data(**kwargs)
+  File "/home/phygbu/labman/apps/htmx_views/views.py", line 63, in get_context_data
+    return handler(**kwargs)
+  File "/home/phygbu/labman/apps/accounts/views.py", line 57, in get_context_data_id_project
+    context["projects"]=projects
+                        ^^^^^^^^
+UnboundLocalError: cannot access local variable 'projects' where it is not associated with a value
+Internal Server Error: /accounts/lookups/projects/
+Traceback (most recent call last):
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/views/generic/base.py", line 104, in view
+    return self.dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/contrib/auth/mixins.py", line 135, in dispatch
+    return super().dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/phygbu/labman/apps/htmx_views/views.py", line 35, in dispatch
+    return handler(request, *args, **kwargs)
+  File "/home/phygbu/labman/apps/htmx_views/views.py", line 140, in htmx_get
+    return handler(request, *args, **kwargs)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/views/generic/base.py", line 226, in get
+    context = self.get_context_data(**kwargs)
+  File "/home/phygbu/labman/apps/htmx_views/views.py", line 63, in get_context_data
+    return handler(**kwargs)
+  File "/home/phygbu/labman/apps/accounts/views.py", line 57, in get_context_data_id_project
+    assert False
+           ^^^^^
+AssertionError
+Internal Server Error: /accounts/lookups/projects/
+Traceback (most recent call last):
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/views/generic/base.py", line 104, in view
+    return self.dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/contrib/auth/mixins.py", line 135, in dispatch
+    return super().dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/phygbu/labman/apps/htmx_views/views.py", line 35, in dispatch
+    return handler(request, *args, **kwargs)
+  File "/home/phygbu/labman/apps/htmx_views/views.py", line 140, in htmx_get
+    return handler(request, *args, **kwargs)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/views/generic/base.py", line 226, in get
+    context = self.get_context_data(**kwargs)
+  File "/home/phygbu/labman/apps/htmx_views/views.py", line 63, in get_context_data
+    return handler(**kwargs)
+  File "/home/phygbu/labman/apps/accounts/views.py", line 57, in get_context_data_id_project
+    assert False
+           ^^^^^
+AssertionError
+Internal Server Error: /accounts/lookups/projects/
+Traceback (most recent call last):
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/views/generic/base.py", line 104, in view
+    return self.dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/contrib/auth/mixins.py", line 135, in dispatch
+    return super().dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/phygbu/labman/apps/htmx_views/views.py", line 35, in dispatch
+    return handler(request, *args, **kwargs)
+  File "/home/phygbu/labman/apps/htmx_views/views.py", line 140, in htmx_get
+    return handler(request, *args, **kwargs)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/views/generic/base.py", line 226, in get
+    context = self.get_context_data(**kwargs)
+  File "/home/phygbu/labman/apps/htmx_views/views.py", line 63, in get_context_data
+    return handler(**kwargs)
+  File "/home/phygbu/labman/apps/accounts/views.py", line 57, in get_context_data_id_project
+    assert False, form.__dict__
+           ^^^^^
+AssertionError: {'instance': <BookingEntry: Gavin Burnell on Yoda @ [2025-01-05 09:00:00+00:00, 2025-01-06 09:00:00+00:00)>, '_validate_unique': True, 'is_bound': True, 'data': <QueryDict: {'csrfmiddlewaretoken': ['QXvoBsTsMFep0kFr0m7ENrfaeKzjCUqF7tNAuIULi0RQAPi6O9hsARyNfrxyEBQA'], 'user': ['2'], 'booker': ['1'], 'equipment': ['1'], 'slot_0': ['2025-01-05 09:00:00'], 'slot_1': ['2025-01-06 09:00:00'], 'project': ['2']}>, 'files': <MultiValueDict: {}>, 'auto_id': 'id_%s', 'initial': {}, 'error_class': <class 'django.forms.utils.ErrorList'>, 'label_suffix': ':', 'empty_permitted': False, '_errors': {'__all__': ['Unable to save the booking entry due to overlapping entry for the same equipment']}, 'fields': {'user': <django.forms.models.ModelChoiceField object at 0x7fff8b4b8530>, 'booker': <django.forms.models.ModelChoiceField object at 0x7fff8b4bb520>, 'equipment': <django.forms.models.ModelChoiceField object at 0x7fff8b4ba680>, 'slot': <django.contrib.postgres.forms.ranges.DateTimeRangeField object at 0x7fff8b4d7650>, 'project': <django.forms.models.ModelChoiceField object at 0x7fff8b4bb380>}, '_bound_fields_cache': {'user': <django.forms.boundfield.BoundField object at 0x7fff8b4d7ad0>, 'booker': <django.forms.boundfield.BoundField object at 0x7fff8a2f3020>, 'equipment': <django.forms.boundfield.BoundField object at 0x7fff8a2f3350>, 'slot': <django.forms.boundfield.BoundField object at 0x7fff8a29c750>, 'project': <django.forms.boundfield.BoundField object at 0x7fff8a29cd50>}, 'renderer': <django.forms.renderers.DjangoTemplates object at 0x7fff8b76cd70>, 'cleaned_data': {'user': <Account: Burnell, Gavin (phygbu)>, 'booker': <Account: Administrator, System (Admin)>, 'equipment': <Equipment: Yoda>, 'slot': DateTimeTZRange(datetime.datetime(2025, 1, 5, 9, 0, tzinfo=zoneinfo.ZoneInfo(key='Europe/London')), datetime.datetime(2025, 1, 6, 9, 0, tzinfo=zoneinfo.ZoneInfo(key='Europe/London')), '[)'), 'project': <Project: One-Code (28010010)>}}
+Internal Server Error: /accounts/lookups/projects/
+Traceback (most recent call last):
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/views/generic/base.py", line 104, in view
+    return self.dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/contrib/auth/mixins.py", line 135, in dispatch
+    return super().dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/phygbu/labman/apps/htmx_views/views.py", line 35, in dispatch
+    return handler(request, *args, **kwargs)
+  File "/home/phygbu/labman/apps/htmx_views/views.py", line 140, in htmx_get
+    return handler(request, *args, **kwargs)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/views/generic/base.py", line 226, in get
+    context = self.get_context_data(**kwargs)
+  File "/home/phygbu/labman/apps/htmx_views/views.py", line 63, in get_context_data
+    return handler(**kwargs)
+  File "/home/phygbu/labman/apps/accounts/views.py", line 52, in get_context_data_id_project
+    if form.is_valid() or getattr(form,"cleaned_data",{}).get("user",None):
+       ~~~~~~~~~~~~~^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/forms/forms.py", line 201, in is_valid
+    return self.is_bound and not self.errors
+                                 ^^^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/forms/forms.py", line 196, in errors
+    self.full_clean()
+    ~~~~~~~~~~~~~~~^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/forms/forms.py", line 435, in full_clean
+    self._post_clean()
+    ~~~~~~~~~~~~~~~~^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/forms/models.py", line 486, in _post_clean
+    self.instance.full_clean(exclude=exclude, validate_unique=False)
+    ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/db/models/base.py", line 1477, in full_clean
+    self.clean()
+    ~~~~~~~~~~^^
+  File "/home/phygbu/labman/apps/bookings/models.py", line 268, in clean
+    if self.project not in self.user.projects.all() and not self.user.is_superuser:
+                           ^^^^^^^^^^^^^^^^^^
+AttributeError: 'Account' object has no attribute 'projects'. Did you mean: 'project'?
+Internal Server Error: /bookings/book/1/1735981200.0/
+Traceback (most recent call last):
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/views/generic/base.py", line 104, in view
+    return self.dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/contrib/auth/mixins.py", line 135, in dispatch
+    return super().dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/phygbu/labman/apps/htmx_views/views.py", line 35, in dispatch
+    return handler(request, *args, **kwargs)
+  File "/home/phygbu/labman/apps/htmx_views/views.py", line 140, in htmx_get
+    return handler(request, *args, **kwargs)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/views/generic/edit.py", line 204, in get
+    return super().get(request, *args, **kwargs)
+           ~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/views/generic/edit.py", line 144, in get
+    return self.render_to_response(self.get_context_data())
+                                   ~~~~~~~~~~~~~~~~~~~~~^^
+  File "/home/phygbu/labman/apps/htmx_views/views.py", line 63, in get_context_data
+    return handler(**kwargs)
+  File "/home/phygbu/labman/apps/bookings/views.py", line 100, in get_context_data_dialog
+    context = super().get_context_data(_context=True, **kwargs)
+  File "/home/phygbu/labman/apps/htmx_views/views.py", line 57, in get_context_data
+    return super().get_context_data(**kwargs)
+           ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/views/generic/edit.py", line 74, in get_context_data
+    kwargs["form"] = self.get_form()
+                     ~~~~~~~~~~~~~^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/views/generic/edit.py", line 39, in get_form
+    return form_class(**self.get_form_kwargs())
+                        ~~~~~~~~~~~~~~~~~~~~^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/views/generic/edit.py", line 114, in get_form_kwargs
+    kwargs = super().get_form_kwargs()
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/views/generic/edit.py", line 44, in get_form_kwargs
+    "initial": self.get_initial(),
+               ~~~~~~~~~~~~~~~~^^
+  File "/home/phygbu/labman/apps/bookings/views.py", line 127, in get_initial
+    assert False
+           ^^^^^
+AssertionError
+Internal Server Error: /bookings/book/1/1735981200.0/
+Traceback (most recent call last):
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/views/generic/base.py", line 104, in view
+    return self.dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/contrib/auth/mixins.py", line 135, in dispatch
+    return super().dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/phygbu/labman/apps/htmx_views/views.py", line 35, in dispatch
+    return handler(request, *args, **kwargs)
+  File "/home/phygbu/labman/apps/htmx_views/views.py", line 140, in htmx_get
+    return handler(request, *args, **kwargs)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/views/generic/edit.py", line 204, in get
+    return super().get(request, *args, **kwargs)
+           ~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/views/generic/edit.py", line 144, in get
+    return self.render_to_response(self.get_context_data())
+                                   ~~~~~~~~~~~~~~~~~~~~~^^
+  File "/home/phygbu/labman/apps/htmx_views/views.py", line 63, in get_context_data
+    return handler(**kwargs)
+  File "/home/phygbu/labman/apps/bookings/views.py", line 100, in get_context_data_dialog
+    context = super().get_context_data(_context=True, **kwargs)
+  File "/home/phygbu/labman/apps/htmx_views/views.py", line 57, in get_context_data
+    return super().get_context_data(**kwargs)
+           ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/views/generic/edit.py", line 74, in get_context_data
+    kwargs["form"] = self.get_form()
+                     ~~~~~~~~~~~~~^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/views/generic/edit.py", line 39, in get_form
+    return form_class(**self.get_form_kwargs())
+                        ~~~~~~~~~~~~~~~~~~~~^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/views/generic/edit.py", line 114, in get_form_kwargs
+    kwargs = super().get_form_kwargs()
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/views/generic/edit.py", line 44, in get_form_kwargs
+    "initial": self.get_initial(),
+               ~~~~~~~~~~~~~~~~^^
+  File "/home/phygbu/labman/apps/bookings/views.py", line 127, in get_initial
+    assert False, this.__dict__
+           ^^^^^
+AssertionError: {'_state': <django.db.models.base.ModelState object at 0x7ffef5b081d0>, 'id': 136, 'user_id': 2, 'booker_id': 1, 'equipment_id': 1, 'slot': DateTimeTZRange(datetime.datetime(2025, 1, 4, 9, 0, tzinfo=datetime.timezone.utc), datetime.datetime(2025, 1, 5, 9, 0, tzinfo=datetime.timezone.utc), '[)'), 'project_id': 2}
+Internal Server Error: /bookings/book/1/1735981200.0/
+Traceback (most recent call last):
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/views/generic/base.py", line 104, in view
+    return self.dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/contrib/auth/mixins.py", line 135, in dispatch
+    return super().dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/phygbu/labman/apps/htmx_views/views.py", line 35, in dispatch
+    return handler(request, *args, **kwargs)
+  File "/home/phygbu/labman/apps/htmx_views/views.py", line 140, in htmx_get
+    return handler(request, *args, **kwargs)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/views/generic/edit.py", line 204, in get
+    return super().get(request, *args, **kwargs)
+           ~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/views/generic/edit.py", line 144, in get
+    return self.render_to_response(self.get_context_data())
+                                   ~~~~~~~~~~~~~~~~~~~~~^^
+  File "/home/phygbu/labman/apps/htmx_views/views.py", line 63, in get_context_data
+    return handler(**kwargs)
+  File "/home/phygbu/labman/apps/bookings/views.py", line 100, in get_context_data_dialog
+    context = super().get_context_data(_context=True, **kwargs)
+  File "/home/phygbu/labman/apps/htmx_views/views.py", line 57, in get_context_data
+    return super().get_context_data(**kwargs)
+           ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/views/generic/edit.py", line 74, in get_context_data
+    kwargs["form"] = self.get_form()
+                     ~~~~~~~~~~~~~^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/views/generic/edit.py", line 39, in get_form
+    return form_class(**self.get_form_kwargs())
+                        ~~~~~~~~~~~~~~~~~~~~^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/views/generic/edit.py", line 114, in get_form_kwargs
+    kwargs = super().get_form_kwargs()
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/views/generic/edit.py", line 44, in get_form_kwargs
+    "initial": self.get_initial(),
+               ~~~~~~~~~~~~~~~~^^
+  File "/home/phygbu/labman/apps/bookings/views.py", line 127, in get_initial
+    assert False, this.project
+           ^^^^^
+AssertionError: One-Code (28010010)
+Internal Server Error: /bookings/book/1/1735981200.0/
+Traceback (most recent call last):
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/views/generic/base.py", line 104, in view
+    return self.dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/contrib/auth/mixins.py", line 135, in dispatch
+    return super().dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/phygbu/labman/apps/htmx_views/views.py", line 35, in dispatch
+    return handler(request, *args, **kwargs)
+  File "/home/phygbu/labman/apps/htmx_views/views.py", line 140, in htmx_get
+    return handler(request, *args, **kwargs)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/views/generic/edit.py", line 204, in get
+    return super().get(request, *args, **kwargs)
+           ~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/views/generic/edit.py", line 144, in get
+    return self.render_to_response(self.get_context_data())
+                                   ~~~~~~~~~~~~~~~~~~~~~^^
+  File "/home/phygbu/labman/apps/htmx_views/views.py", line 63, in get_context_data
+    return handler(**kwargs)
+  File "/home/phygbu/labman/apps/bookings/views.py", line 107, in get_context_data_dialog
+    assert False, context["form"]
+           ^^^^^
+AssertionError: <tr>
+    <th><label for="id_user">User:</label></th>
+    <td>
+      
+      <div class="phac_aspc_form_autocomplete_focus_ring ">
+    <div
+        id="user__container"
+        class="phac_aspc_form_autocomplete"
+    >
+    
+    
+        <div id="user">
+            
+
+
+
+    <span><input type="hidden"
+                name="user"
+                tabindex="-1"
+                
+                value="2" /></span>
+
+
+        </div>
+
+    
+        <span
+            id="user__data"
+            
+                data-phac-aspc-autocomplete="Burnell, Gavin (phygbu)"
+            
+        ></span>
+
+        
+
+        
+<ul
+    class="ac_container"
+    id="user_ac_container"
+    
+>
+    
+    <li class="input">
+        
+
+
+    <input
+        class="textinput"
+        id="user__textinput"
+        type="text"
+
+        autocomplete="off"
+        autocapitalize="none"
+
+        role="combobox"
+        aria-autocomplete="list"
+        aria-controls="user__items"
+        aria-haspopup="listbox"
+        aria-expanded="false"
+        
+
+        onkeydown="return phac_aspc_autocomplete_keydown_handler(event)"
+        onkeyup="return phac_aspc_autocomplete_keyup_handler(event)"
+        onblur="return phac_aspc_autocomplete_blur_handler(event, 'user', true)"
+        onfocus="return phac_aspc_autocomplete_focus_handler(event)"
+
+        hx-get="/autocomplete/UserListAutoComplete/items"
+        hx-trigger="phac_aspc_autocomplete_trigger"
+        hx-include="closest form"
+        hx-target="#user__items"
+        hx-vals='js:{"field_name": "user", "component_prefix": "", "required": true,search: document.getElementById("user__textinput").value}'
+        hx-swap="outerHTML"
+        
+        
+
+        
+
+        
+            value="Burnell, Gavin (phygbu)"
+        
+
+        
+
+        
+    >
+
+
+    </li>
+    
+</ul>
+
+        <div
+            class="results"
+            role="listbox"
+            id="user__items"
+            
+        ></div>
+    
+        <div role="region" class="live_info" id="user__info" aria-live="polite">
+            
+                
+                    
+                        
+Burnell, Gavin (phygbu) selected,
+
+                    
+                
+            
+        </div>
+    
+        
+    </div>
+</div>
+
+<script
+    data-componentid="user"
+    data-css="/static/autocomplete/css/autocomplete.css"
+    data-js="/static/autocomplete/js/autocomplete.js"
+    data-toggleurl="/autocomplete/UserListAutoComplete/toggle"
+>
+    (function () {
+        const { componentid, css, js, toggleurl } = document.currentScript.dataset;
+        // Add CSS if not already added
+        const ln = document.createElement('link');
+        ln.href = css;
+        ln.rel = 'stylesheet';
+        if (!Array.from(document.querySelectorAll('link')).map(s => s.href).includes(ln.href)) {
+            document.getElementsByTagName('head')[0].appendChild(ln);
+        }
+        
+        
+        // Add JS if not already added
+            const sc = document.createElement('script');
+            sc.src = js;
+            if (!Array.from(document.querySelectorAll('script')).map(s => s.src).includes(sc.src)) {
+                document.body.appendChild(sc);
+            }
+        // Add click handler on container to set focus on <input> box
+            document.querySelector(`#${componentid}__container`).addEventListener(
+                'mousedown',
+                function(event) {
+                    const container = event.target.closest('.phac_aspc_form_autocomplete');
+                    const id = container.getAttribute('id');
+                    phac_aspc_autocomplete_blur_skip[id] = true;
+                }
+            );
+            document.querySelector(`#${componentid}__container`).addEventListener(
+                'mouseup',
+                function(event) {
+                    const container = event.target.closest('.phac_aspc_form_autocomplete');
+                    const id = container.getAttribute('id');
+                    phac_aspc_autocomplete_blur_skip[id] = false;
+                }
+            );
+            document.querySelector(`#${componentid}__container`).addEventListener(
+                'click',
+                function(event) {
+                    if (
+                        event.target === this ||
+                        event.target.classList.contains('ac_container') ||
+                        event.target.classList.contains('textinput')
+                    ) {
+                        return phac_aspc_autocomplete_click_handler(event);
+                    }
+                }
+            );
+            document.body.addEventListener(
+                'htmx:afterSettle', (event) => {
+                    if (event.detail.elt.getAttribute('id') === `${componentid}__items`) {
+                        const shown = event.detail.elt.classList.contains('show');
+                        const el = document.querySelector(`#${componentid}__textinput`);
+                        el.setAttribute('aria-expanded', shown);
+                    } else if (
+                        event.detail.elt.getAttribute('id') === `${componentid}__textinput` &&
+                        event.detail.pathInfo.requestPath === toggleurl
+                    ) {
+                        phac_aspc_autocomplete_trigger_change(`${componentid}__container`);
+                    }
+                }
+            );
+            document.body.addEventListener(
+                'htmx:oobAfterSwap', (event) => {
+                    if (event.detail.target.getAttribute('id') == `${componentid}__textinput`) {
+                        setTimeout(() => {
+                            const el = document.querySelector(`#${componentid}__textinput`);
+                            phac_aspc_autocomplete_set_initial_value(document.querySelector(`#${componentid}__container`), true);
+                            el.selectionStart = el.selectionEnd = el.value.length;
+                        }, 0)
+                    }
+                }
+            );
+            document.body.addEventListener('htmx:configRequest', function(event) {
+                const container = document.querySelector(`#${componentid}__container`);
+                if (
+                    container.contains(event.detail.elt) &&
+                    event.detail.path.endsWith('/toggle')
+                ) {
+                // HTMX will include the entire form for non get requests, so we update
+                // it here.  If the name is being used in multiple locations in the
+                // form, without this intervention it will not work as expected.
+                    event.detail.parameters = {
+                        ...event.detail.parameters,
+                        ...htmx.values(event.detail.elt, 'get'),
+                    }
+                }
+            });
+        
+    })();
+</script>
+      
+      
+    </td>
+  </tr>
+
+  <tr>
+    <th><label for="id_booker">Booker:</label></th>
+    <td>
+      
+      <select name="booker" id="id_booker">
+  <option value="">---------</option>
+
+  <option value="1" selected>Administrator, System (Admin)</option>
+
+  <option value="2">Burnell, Gavin (phygbu)</option>
+
+  <option value="4">Gupta, Sachin (py17sg)</option>
+
+</select>
+      
+      
+    </td>
+  </tr>
+
+  <tr>
+    <th><label>Slot:</label></th>
+    <td>
+      
+      <div class="input-group dbdp"><input type="text" name="slot_0" value="2025-01-04 09:00:00" id="id_slot_0" data-dbdp-config="{&quot;variant&quot;:&quot;datetime&quot;,&quot;backend_date_format&quot;:&quot;YYYY-MM-DD HH:mm:ss&quot;,&quot;options&quot;:{}}" data-dbdp-debug=""><div class="input-group-addon input-group-append input-group-text"><i class=""></i></div></div><script>
+  // This script is only added when DEBUG=True to check if media files are loaded
+  if (!window.dbdpMediaCheckerRegistered) {
+    document.addEventListener("DOMContentLoaded", () => {
+      setTimeout(() => {
+        if (!window.dbdpInitialized) {
+          const errorDisplay = document.createElement("div");
+          errorDisplay.className = "alert alert-danger"
+          errorDisplay.innerHTML = "form.media was not loaded, did you forget to add it to template? This message is only visible when DEBUG=True";
+          for (let el of document.querySelectorAll("[data-dbdp-config]")) el.closest(".dbdp").after(errorDisplay.cloneNode(true));
+        }
+      })
+    });
+    window.dbdpMediaCheckerRegistered = true;
+  }
+</script><div class="input-group dbdp"><input type="text" name="slot_1" value="2025-01-05 09:00:00" id="id_slot_1" data-dbdp-config="{&quot;variant&quot;:&quot;datetime&quot;,&quot;backend_date_format&quot;:&quot;YYYY-MM-DD HH:mm:ss&quot;,&quot;options&quot;:{}}" data-dbdp-debug=""><div class="input-group-addon input-group-append input-group-text"><i class=""></i></div></div><script>
+  // This script is only added when DEBUG=True to check if media files are loaded
+  if (!window.dbdpMediaCheckerRegistered) {
+    document.addEventListener("DOMContentLoaded", () => {
+      setTimeout(() => {
+        if (!window.dbdpInitialized) {
+          const errorDisplay = document.createElement("div");
+          errorDisplay.className = "alert alert-danger"
+          errorDisplay.innerHTML = "form.media was not loaded, did you forget to add it to template? This message is only visible when DEBUG=True";
+          for (let el of document.querySelectorAll("[data-dbdp-config]")) el.closest(".dbdp").after(errorDisplay.cloneNode(true));
+        }
+      })
+    });
+    window.dbdpMediaCheckerRegistered = true;
+  }
+</script>
+      
+      
+    </td>
+  </tr>
+
+  <tr>
+    <th><label for="id_project">Project:</label></th>
+    <td>
+      
+      <select name="project" id="id_project">
+  <option value="">---------</option>
+
+  <option value="1">Admin (28010010)</option>
+
+  <option value="2" selected>One-Code (28010010)</option>
+
+  <option value="3">SuperSpin (104783.04)</option>
+
+</select>
+      
+      
+        <input type="hidden" name="equipment" value="1" id="id_equipment">
+      
+    </td>
+  </tr>
+Internal Server Error: /accounts/lookups/projects/
+Traceback (most recent call last):
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/template/smartif.py", line 179, in translate_token
+    op = OPERATORS[token]
+         ~~~~~~~~~^^^^^^^
+KeyError: 'selected==project'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/core/handlers/base.py", line 220, in _get_response
+    response = response.render()
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/template/response.py", line 114, in render
+    self.content = self.rendered_content
+                   ^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/template/response.py", line 90, in rendered_content
+    template = self.resolve_template(self.template_name)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/template/response.py", line 72, in resolve_template
+    return select_template(template, using=self.using)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/template/loader.py", line 42, in select_template
+    return engine.get_template(template_name)
+           ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/template/backends/django.py", line 33, in get_template
+    return Template(self.engine.get_template(template_name), self)
+                    ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/template/engine.py", line 175, in get_template
+    template, origin = self.find_template(template_name)
+                       ~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/template/engine.py", line 157, in find_template
+    template = loader.get_template(name, skip=skip)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/template/loaders/cached.py", line 57, in get_template
+    template = super().get_template(template_name, skip)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/template/loaders/base.py", line 28, in get_template
+    return Template(
+        contents,
+    ...<2 lines>...
+        self.engine,
+    )
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/template/base.py", line 154, in __init__
+    self.nodelist = self.compile_nodelist()
+                    ~~~~~~~~~~~~~~~~~~~~~^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/template/base.py", line 200, in compile_nodelist
+    return parser.parse()
+           ~~~~~~~~~~~~^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/template/base.py", line 513, in parse
+    raise self.error(token, e)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/template/base.py", line 511, in parse
+    compiled_result = compile_func(self, token)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/template/defaulttags.py", line 853, in do_for
+    nodelist_loop = parser.parse(
+        (
+    ...<2 lines>...
+        )
+    )
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/template/base.py", line 513, in parse
+    raise self.error(token, e)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/template/base.py", line 511, in parse
+    compiled_result = compile_func(self, token)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/template/defaulttags.py", line 952, in do_if
+    condition = TemplateIfParser(parser, bits).parse()
+                ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/template/defaulttags.py", line 885, in __init__
+    super().__init__(*args, **kwargs)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/template/smartif.py", line 170, in __init__
+    mapped_tokens.append(self.translate_token(token))
+                         ~~~~~~~~~~~~~~~~~~~~^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/template/smartif.py", line 181, in translate_token
+    return self.create_var(token)
+           ~~~~~~~~~~~~~~~^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/template/defaulttags.py", line 888, in create_var
+    return TemplateLiteral(self.template_parser.compile_filter(value), value)
+                           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/template/base.py", line 600, in compile_filter
+    return FilterExpression(token, self)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/template/base.py", line 703, in __init__
+    raise TemplateSyntaxError(
+    ...<2 lines>...
+    )
+django.template.exceptions.TemplateSyntaxError: Could not parse the remainder: '==project' from 'selected==project'
+Internal Server Error: /accounts/lookups/projects/
+Traceback (most recent call last):
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/views/generic/base.py", line 104, in view
+    return self.dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/contrib/auth/mixins.py", line 135, in dispatch
+    return super().dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/phygbu/labman/apps/htmx_views/views.py", line 35, in dispatch
+    return handler(request, *args, **kwargs)
+  File "/home/phygbu/labman/apps/htmx_views/views.py", line 140, in htmx_get
+    return handler(request, *args, **kwargs)
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django/views/generic/base.py", line 226, in get
+    context = self.get_context_data(**kwargs)
+  File "/home/phygbu/labman/apps/htmx_views/views.py", line 63, in get_context_data
+    return handler(**kwargs)
+  File "/home/phygbu/labman/apps/accounts/views.py", line 59, in get_context_data_id_project
+    assert False
+           ^^^^^
+AssertionError
+Error: database "labman" does not exist
+Traceback (most recent call last):
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django_extensions/management/commands/reset_db.py", line 183, in handle
+    cursor.execute(drop_query)
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^
+psycopg2.errors.InvalidCatalogName: database "labman" does not exist
+
+Error: database "labman" does not exist
+Traceback (most recent call last):
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django_extensions/management/commands/reset_db.py", line 183, in handle
+    cursor.execute(drop_query)
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^
+psycopg2.errors.InvalidCatalogName: database "labman" does not exist
+
+Error: database "labman" does not exist
+Traceback (most recent call last):
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django_extensions/management/commands/reset_db.py", line 183, in handle
+    cursor.execute(drop_query)
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^
+psycopg2.errors.InvalidCatalogName: database "labman" does not exist
+
+Error: database "labman" does not exist
+Traceback (most recent call last):
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django_extensions/management/commands/reset_db.py", line 183, in handle
+    cursor.execute(drop_query)
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^
+psycopg2.errors.InvalidCatalogName: database "labman" does not exist
+
+Error: database "labman" does not exist
+Traceback (most recent call last):
+  File "/opt/miniconda3/envs/django/lib/python3.13/site-packages/django_extensions/management/commands/reset_db.py", line 183, in handle
+    cursor.execute(drop_query)
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^
+psycopg2.errors.InvalidCatalogName: database "labman" does not exist
+

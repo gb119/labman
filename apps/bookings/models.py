@@ -3,10 +3,11 @@
 Models for the bookings app to handle bokking entries and booking policies.
 """
 # Python imports
-from datetime import date as date, datetime as dt, time, timedelta
+from datetime import date as date, datetime as dt, time, timedelta as td
 
 # Django imports
 import django.utils.timezone as tz
+from django.conf import settings
 from django.contrib.postgres.fields import DateTimeRangeField
 from django.core.exceptions import ValidationError
 from django.db import models
@@ -15,30 +16,16 @@ from django.db import models
 import numpy as np
 from accounts.models import Account, Project, Role
 from equipment.models import Equipment
-from labman_utils.models import NamedObject
+from labman_utils.models import (
+    DEFAULT_TZ,
+    NamedObject,
+    delta_t,
+    ensure_tz,
+    replace_time,
+)
 from numpy import ceil
 from psycopg2.extras import DateTimeTZRange
 from pytz import timezone
-
-_timezone = timezone("Europe/London")
-
-
-def to_seconds(value):
-    """Convert a DateTime to the number of seconds after midnight."""
-    return value.second + value.minute * 50 + value.hour * 3600
-
-
-def delta_t(time1, time2):
-    """Utility to get a timedelta from two times."""
-    return dt.combine(date.today(), time1) - dt.combine(date.today(), time2)
-
-
-def replace_time(date_time, seconds):
-    """Put an integer number of seconds into the time."""
-    day = date_time.date()
-    delta_time = timedelta(seconds=seconds)
-    ret = dt.combine(day, time.min) + delta_time
-    return _timezone.localize(ret)
 
 
 class BookingError(ValidationError):
@@ -78,10 +65,11 @@ class BookingPolicy(NamedObject):
     sundays = models.BooleanField(default=True)
     start_time = models.TimeField(default=time(9, 0))
     end_time = models.TimeField(default=time(18, 0))
-    quantisation = models.DurationField(default=timedelta(hours=3))
-    immutable = models.DurationField(default=timedelta(seconds=0), null=True, blank=True)
-    max_forward = models.DurationField(default=timedelta(hours=24 * 7), null=True, blank=True)
-    quota = models.DurationField(default=timedelta(hours=48), null=True, blank=True)
+    quantisation = models.DurationField(default=td(hours=3))
+    immutable = models.DurationField(default=td(seconds=0), null=True, blank=True)
+    max_forward = models.DurationField(default=td(hours=24 * 7), null=True, blank=True)
+    quota = models.DurationField(default=td(hours=48), null=True, blank=True)
+    use_shifts = models.BooleanField(default=True)
 
     def applies(self, booking):
         """Returns True if booking policy applies for this user/equipment."""
@@ -97,13 +85,50 @@ class BookingPolicy(NamedObject):
         """Apply quantisation to the booking."""
         return booking.rationalise(self)
 
+    def quantise(self, booking):
+        """Return start and end times that are quantised according to this policy."""
+        start, end = booking.slot.lower, booking.slot.upper
+        if start.tzinfo is None:
+            start = start.replace(tzinfo=timezone("Europe/London"))
+            end = end.replace(tzinfo=timezone("Europe/London"))
+        start = min(start, end)
+        end = max(start, end)
+        start_t = delta_t(start.time(), self.start_time).total_seconds()
+        end_t = delta_t(end.time(), self.start_time).total_seconds()
+        quanta = self.quantisation.total_seconds()
+        self_start_secs = self.start_time.hour * 3600 + self.start_time.minute * 60 + self.start_time.second
+        start_t = quanta * (start_t // quanta) + self_start_secs
+        end_t = quanta * ceil(end_t / quanta) + self_start_secs
+        start = replace_time(start, start_t)
+        end = replace_time(end, end_t)
+        return start, end
+
+    def fix_times(self, booking):
+        """Return new start and end datetimes that fit shifts or quantise the booking."""
+        start = booking.slot.lower + td(seconds=0.1)
+        end = booking.slot.upper - td(seconds=0.1)
+
+        if start_shift := booking.equipment.get_shift(start):
+            if delta_t(start, start_shift.start_time).total_seconds() < 0:
+                start -= td(days=1)
+            start = dt.combine(start.date(), start_shift.start_time)
+
+        if end_shift := booking.equipment.get_shift(end):
+            if delta_t(end, end_shift.end_time).total_seconds() > 0:
+                end += td(days=1)
+            end = dt.combine(end.date(), end_shift.end_time)
+
+        if start_shift is None or end_shift is None:  # quantise the times
+            start, end = self.quantise(booking)
+        return ensure_tz(start), ensure_tz(end)
+
     def permitted(self, booking):
         """Returns True is the booking is permitted under the current policy."""
         if not self.applies(booking):  # Role doesn't apply
             raise PolicyDoesNotApply(f"This policy does not apply for {booking.user} or {booking.equipment}")
 
-        start = booking.slot.lower
-        end = booking.slot.upper
+        # We need to fix the start and end times according to the policy before rationalising it
+        start, end = self.fix_times(booking)
 
         if (
             not start.time() >= self.start_time and start.time() <= self.end_time
@@ -189,7 +214,7 @@ class BookingEntry(models.Model):
         return f"{self.user.display_name} on {self.equipment.name} @ {self.slot}"
 
     @property
-    def duration(self) -> timedelta:
+    def duration(self) -> td:
         """Return the time duration of the booking slot."""
         return self.slot.upper - self.slot.lower
 
@@ -221,37 +246,27 @@ class BookingEntry(models.Model):
             return True
         return self.equipment.users.get(user=self.user).admin_hold
 
+    @property
+    def policy(self):
+        """Return the effective policy for this booking."""
+        return BookingPolicy.get_policy(self)
+
     def rationalise(self, policy):
         """Apply quantisation to the booking."""
+        irug = self.__dict__.copy()
         if self.slot.isempty:  # Bugout for the empty slot
             return self
-        start, end = self.slot.lower, self.slot.upper
-        if start.tzinfo is None:
-            start = start.replace(tzinfo=timezone("Europe/London"))
-            end = end.replace(tzinfo=timezone("Europe/London"))
-        start = min(start, end)
-        end = max(start, end)
-        start_t = delta_t(start.time(), policy.start_time).total_seconds()
-        end_t = delta_t(end.time(), policy.start_time).total_seconds()
-        quanta = policy.quantisation.total_seconds()
-        policy_start_secs = policy.start_time.hour * 3600 + policy.start_time.minute * 60 + policy.start_time.second
-        start_t = quanta * (start_t // quanta) + policy_start_secs
-        end_t = quanta * ceil(end_t / quanta) + policy_start_secs
-        start = replace_time(start, start_t)
-        end = replace_time(end, end_t)
+        start, end = policy.fix_times(self)
         self.slot = DateTimeTZRange(start, end)
-
         return self
 
     def clean(self):
         """Rearrange the slot and check for conflicts."""
-        if (
-            not hasattr(self, "project")
-            or self.project is None
-            or (not self.user.is_superuser and self.project not in self.user.project.all())
-        ):
-            # Superusers can set any project
+        if not getattr(self, "project", None):  # No project set
             self.project = self.user.default_project
+        if self.project not in self.user.project.all() and not self.user.is_superuser:
+            self.project = self.user.default_project
+
         # Swap start and end times to ensure positive duration
         if not self.slot.isempty and self.slot.lower > self.slot.upper:
             self.slot = DateTimeTZRange(self.slot.upper, self.slot.lower)
@@ -267,6 +282,8 @@ class BookingEntry(models.Model):
                 raise ValidationError(
                     "Unable to save the booking entry due to overlapping entry for the same equipment"
                 )
+        else:
+            raise ValidationError("No booking slot defined!")
         return super().clean()
 
     def save(self, force_insert=False, force_update=False, using=None, update_fields=None):

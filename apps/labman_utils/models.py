@@ -1,9 +1,49 @@
 # -*- coding: utf-8 -*-
+# Python imports
+from datetime import date, datetime as dt, time, timedelta as td
+
 # Django imports
-from django.db import models
+from django.conf import settings
+from django.contrib.flatpages.models import FlatPage
+from django.db import models, transaction
 
 # external imports
+import pytz
+from django_simple_file_handler import models as dsfh
+from photologue.models import Photo
+from sortedm2m.fields import SortedManyToManyField
 from tinymce.models import HTMLField
+
+DEFAULT_TZ = pytz.timezone(settings.TIME_ZONE)
+
+
+def to_seconds(value):
+    """Convert a DateTime to the number of seconds after midnight."""
+    return value.second + value.minute * 50 + value.hour * 3600
+
+
+def delta_t(time1, time2):
+    """Get a td from two times."""
+    if isinstance(time1, dt):
+        time1 = time1.time()
+    if isinstance(time2, dt):
+        time2 = time2.time()
+    return dt.combine(date.today(), time1) - dt.combine(date.today(), time2)
+
+
+def replace_time(date_time, seconds):
+    """Put an integer number of seconds into the time."""
+    day = date_time.date()
+    delta_time = td(seconds=seconds)
+    ret = dt.combine(day, time.min) + delta_time
+    return ensure_tz(ret)
+
+
+def ensure_tz(time):
+    """Ensure that time has a timezone or apply DEFAULT_TZ if not."""
+    if time.tzinfo is None:
+        time = DEFAULT_TZ.localize(time)
+    return time
 
 
 # Create your models here.
@@ -49,3 +89,57 @@ class NamedObject(models.Model):
 
     def __str__(self):
         return f"{self.__class__.__name__}:{self.name}"
+
+
+class Document(dsfh.BaseMixin, dsfh.TitledMixin, dsfh.PublicMixin, dsfh.RenameMixin, models.Model):
+    """Like a django-simple-file-handler.PublicDocument, but with additional fields to store a category,
+    and timestamps."""
+
+    CATEGORIES = [
+        ("ra", "Risk Assessment"),
+        ("sop", "Standard Operator Procedure"),
+        ("manual", "Manual/Instructions"),
+        ("other", "Other"),
+    ]
+    CATAGORIES_DICT = dict(CATEGORIES)
+
+    version = models.IntegerField(default=0)  # Manual version number used to determine if users need to re-ack docs
+    category = models.CharField(max_length=20, choices=CATEGORIES, default="other")
+
+    subdirectory_path = dsfh.custom_subdirectory("documents/equipment/")
+
+    class Meta:
+        verbose_name = "document (categorized)"
+        verbose_name_plural = "documents (categorized)"
+
+    @property
+    def category_name(self):
+        """Returns the document category as a human readable string."""
+        return self.CATAGORIES_DICT[self.category]
+
+    def __str__(self):
+        """Return a user friendly name for the file."""
+        return f"{self.title} ({self.CATAGORIES_DICT[self.category]})"
+
+    def save(self, force_insert=False, force_update=False, using=None, update_fields=None):
+        """If version has increased then put a hold on all userlist entries of the associated equipment."""
+        if self.pk and self.category in ["ra", "sop"]:
+            old = Document.objects.get(pk=self.pk)
+            if old.version != self.version:
+                with transaction.atomic():
+                    for equipment in self.equipment.all():
+                        for entry in equipment.users.all():
+                            entry.hold = True
+                            entry.save()
+        super().save(force_insert=force_insert, force_update=force_update, using=using, update_fields=update_fields)
+
+
+class ResourceedObject(NamedObject):
+    """A base class that adds photos, pages and documents to the object."""
+
+    photos = SortedManyToManyField(Photo, related_name="%(class)s", blank=True)
+    files = SortedManyToManyField(Document, related_name="%(class)s", blank=True)
+    pages = SortedManyToManyField(FlatPage, related_name="%(class)s", blank=True)
+
+    class Meta:
+        abstract = True

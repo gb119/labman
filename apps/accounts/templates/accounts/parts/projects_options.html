@@ -1,0 +1,4 @@
+{{ errors }}
+{% for project in projects %}
+    <option value="{{ project.pk }}"{% if selected.pk == project.pk %} selected{% endif %}>{{ project }}</option>
+{% endfor %}

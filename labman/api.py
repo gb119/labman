@@ -31,8 +31,6 @@ for f in (Path(PROJECT_ROOT) / "apps").iterdir():
         app_module = __import__(f.name, globals(), locals(), ["api"])
         api = getattr(app_module, "api", None)
         if hasattr(api, "router"):
-            # print(f"Adding api {api.__name__}")
             for pth, viewset in api.router:
-                # print(f"{pth} {viewset}")
                 main_router.register(pth, viewset)
 urlpatterns.append(path("", include(main_router.urls)))

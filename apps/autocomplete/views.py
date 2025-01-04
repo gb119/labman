@@ -1,3 +1,6 @@
+# Python imports
+import json
+
 # Django imports
 from django.http import HttpResponseBadRequest
 from django.shortcuts import render
@@ -34,6 +37,9 @@ class AutocompleteBaseView(View):
     def get_field_name(self):
         return self.request_dict["field_name"]
 
+    def get_hx_attrs(self):
+        return self.request_dict.get("hx_attrs", {})
+
     def get_component_id(self):
         prefix = self.get_configurable_value("component_prefix")
 
@@ -64,6 +70,7 @@ class AutocompleteBaseView(View):
             "multiselect": bool(self.get_configurable_value("multiselect")),
             "component_prefix": self.get_configurable_value("component_prefix"),
             "disabled": bool(self.get_configurable_value("disabled")),
+            "hx_attrs": self.get_hx_attrs(),
         }
 
 
@@ -149,7 +156,7 @@ class ToggleView(AutocompleteBaseView):
         if target_item is None:
             raise ValueError("Requested item to toggle not found.")
 
-        return render(
+        resp = render(
             request,
             "autocomplete/item.html",
             {
@@ -162,6 +169,19 @@ class ToggleView(AutocompleteBaseView):
                 "swap_oob": swap_oob,
             },
         )
+        resp.headers["HX-Trigger-After-Settle"] = json.dumps(
+            {
+                f"{field_name}_change": {
+                    "search": "",
+                    "values": list(new_selected_keys),
+                    "item_as_list": [target_item],
+                    "item": target_item,
+                    "toggle": new_items,
+                    "swap_oob": swap_oob,
+                }
+            }
+        )
+        return resp
 
 
 class ItemsView(AutocompleteBaseView):

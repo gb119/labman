@@ -3,13 +3,15 @@
 """Views for the accounts apps."""
 # Django imports
 from django import views
+from django.views.generic import TemplateView
 
 # external imports
+from bookings.forms import BookinngDialogForm
 from htmx_views.views import HTMXProcessMixin
 from labman_utils.views import IsAuthenticaedViewMixin
 
 # app imports
-from .models import Account
+from .models import Account, Project
 
 
 # Create your views here.
@@ -38,3 +40,22 @@ class MyAccountView(UserAccountView):
     def get_object(self, queryset=None):
         """Always return the current logged in user."""
         return self.request.user
+
+
+class ProjectView(IsAuthenticaedViewMixin, HTMXProcessMixin, TemplateView):
+    """Make a list of user projects."""
+
+    template_name = "accounts/parts/projects_options.html"
+
+    def get_context_data_id_project(self, **kwargs):
+        """Add the projects for this yser."""
+        context = super().get_context_data(_context=True, **kwargs)
+        form = BookinngDialogForm(self.request.GET)
+        if form.is_valid() or getattr(form, "cleaned_data", {}).get("user", None):
+            projects = form.cleaned_data["user"].project.all()
+            context["selected"] = form.cleaned_data["project"]
+        else:
+            context["errors"] = form.errors
+            projects = Project.objects.none()
+        context["projects"] = projects
+        return context

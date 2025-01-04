@@ -48,6 +48,8 @@ class HTMXProcessMixin:
         for attr in ["trigger_name", "trigger", "target"]:
             if elem := getattr(self.request.htmx, attr, None):
                 elem = re.sub(r"[^A-Za-z0-9_]", "", elem).lower()
+                if settings.DEBUG:
+                    print(elem)
                 yield elem
 
     def get_context_data(self, **kwargs):
@@ -69,16 +71,13 @@ class HTMXProcessMixin:
         argument, _default to be True to avoid a recursive loop.
         """
         if not getattr(self.request, "htmx", False) or _default:  # Default behaviour
-            print("No HTMX")
             return super().get_context_object_name(object_list)
 
         # Look for a request specifc to the element involved.
         for elem in self.htmx_elements():
             if handler := getattr(self, f"get_context_object_name{elem}", False):
-                print(elem, handler)
                 return handler(object_list)
             if sub_name := getattr(self, f"context_object_{elem}", False):
-                print(elem, sub_name)
                 return sub_name
 
         print("Super")
@@ -241,4 +240,3 @@ class HTMXFormMixin(HTMXProcessMixin):
 if not hasattr(View, "_bon_htmx_dispatch"):  # View needs monkey patching
     setattr(View, "_non_htmx_dispatch", View.dispatch)
     setattr(View, "dispatch", dispatch)
-    print("View.dispatch patched")

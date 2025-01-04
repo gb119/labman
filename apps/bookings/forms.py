@@ -39,6 +39,10 @@ class CustomSlotWidget(RangeWidget):
             return ([start.date(), start.time()], [end.date(), end.time()])
         return [[None, None], [None, None]]
 
+    @property
+    def media(self):
+        return DateTimePickerInput().media
+
 
 class BookingEntryAdminForm(forms.ModelForm):
     """A form for editing the booking slots in the admin interface."""
@@ -48,6 +52,15 @@ class BookingEntryAdminForm(forms.ModelForm):
         exclude = []
         widgets = {
             "slot": CustomSlotWidget(),
+        }
+
+    class Media:
+        js = ["https://code.jquery.com/jquery-3.7.1.min.js", "https://code.jquery.com/ui/1.14.1/jquery-ui.min.js"]
+        css = {
+            "all": [
+                "https://code.jquery.com/ui/1.14.1/themes/smoothness/jquery-ui.css",
+                "https://code.jquery.com/ui/1.14.1/themes/base/jquery-ui.css",
+            ]
         }
 
 
@@ -61,4 +74,13 @@ class BookinngDialogForm(forms.ModelForm):
             "user": AutocompleteWidget(ac_class=UserListAutoComplete),
             "equipment": forms.HiddenInput(),
             "slot": CustomSlotWidget(),
+        }
+
+    class Media:
+        js = ["https://code.jquery.com/jquery-3.7.1.min.js", "https://code.jquery.com/ui/1.14.1/jquery-ui.min.js"]
+        css = {
+            "all": [
+                "https://code.jquery.com/ui/1.14.1/themes/smoothness/jquery-ui.css",
+                "https://code.jquery.com/ui/1.14.1/themes/base/jquery-ui.css",
+            ]
         }

@@ -60,19 +60,19 @@ def datetime_to_coord(
         for itt, time in enumerate(time_vec):
             data[idt * len(time_vec) + itt] = dt.combine(date, time).timestamp()
     target = target.timestamp()
-    delta = target - data
+    delta = data - target
     match mode:
-        case "round_down":
+        case "start":  # Looking for a ts that is == or < target
+            delta[delta > 0] = np.nan
+            ix = np.nanargmax(delta)
+        case "end":  # looking for a ts that is == to > target and then back of 1 on the ix
             delta[delta < 0] = np.nan
-            if np.nanargmin(delta) % len(time_vec) == 0:
-                delta[delta <= 0] = np.nan
-        case "round_up":
-            delta[delta >= 0] = np.nan
-        case "nearest":
+            ix = np.nanargmin(delta) - 1
+        case "nearest":  # Looking for the ts that is closest in any direction.
             delta = np.abs(delta)
+            ix = np.nanargmin(delta)
         case _:
             raise ValueError(f"Uknown find_coords {mode}")
-    ix = np.nanargmin(delta)
     col = ix // len(time_vec) + 1
     row = ix % len(time_vec) + 1
     return row, col
@@ -128,6 +128,7 @@ class CalTable(Table):
         self[:, 0].header = True
         for index_col, date in enumerate(self.date_vec, start=1):
             self[0, index_col].content = date.strftime("%a %d %b")
+            self[0, index_col].classes_list.append("table-dark")
             self[0, index_col].attrs_dict.update({"style": "width: 13%; text-align: center;"})
             for idx_row, (time, equipment) in enumerate(zip(self.time_vec, self.equip_vec), start=1):
                 slot_dt = dt.combine(date, time)
@@ -157,8 +158,9 @@ class CalTable(Table):
                         + f"<span style='font-size:smaller;'>{time.strftime("%I:%M %p")}</span>"
                     )
                     self[idx_row, 0].content = format_html(label)
+            self[idx_row, 0].classes += " table-dark"
 
-        self.classes += " col-md-10"
+        self.classes += " table col-md-10 table-hover"
 
     def fill_entries(self, equipment):
         """Fill in the entries for this item of equipment."""
@@ -183,16 +185,14 @@ class CalTable(Table):
         )
         entries = equipment.bookings.filter(slot__overlap=target_range)
         for entry in entries:
-            row_start, col_start = datetime_to_coord(entry.slot.lower, date_vec, time_vec)
-            row_end, col_end = datetime_to_coord(entry.slot.upper, date_vec, time_vec, mode="round_down")
+            row_start, col_start = datetime_to_coord(entry.slot.lower, date_vec, time_vec, mode="start")
+            row_end, col_end = datetime_to_coord(entry.slot.upper, date_vec, time_vec, mode="end")
             row_start += row_base
             row_end += row_base
-            if entry.equipment.name == "Yaddle":
-                assert True
             if col_end < 0:  # Finished before first slot
                 continue
             if col_start == col_end:  # single day
-                self[row_start, col_start].rowspan = max(row_end - row_start, 1)
+                self[row_start, col_start].rowspan = max(row_end - row_start + 1, 1)
                 self[row_start, col_start].content = entry.user.display_name
                 self[row_start, col_start].classes += " bg-success p-3 text-center"
             else:  # spans day boundaries

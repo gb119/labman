@@ -156,7 +156,7 @@ class ModelListView(HTMXProcessMixin, IsAuthenticaedViewMixin, views.generic.Lis
 
     context_object_equipmenttab = "equipment"
     context_object_locationstab = "locations"
-    context_object_projectstab = "project"
+    context_object_projectstab = "projects"
     context_object_accountstab = "accounts"
 
     def get_queryset(self):

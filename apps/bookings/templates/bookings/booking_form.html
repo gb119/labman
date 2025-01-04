@@ -2,7 +2,10 @@
 {% load labman_tags %}
 <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.12.0/moment.js"></script>
 <div class="modal-content">
-    <div class="modal-header">
+    <div class="modal-header" hx-trigger="user_change from:body {% if this %},revealed{% endif %}"
+         hx-target="#id_project"
+         hx-get="/accounts/lookups/projects/"
+         hx-include="#booking">
         <h5 class="modal-title">Book {{equipment.name }}</h5>
     </div>
     <div class="modal-body">
@@ -39,6 +42,9 @@
                     {% endif %}
                 </div>
             </div>
+            {% if this %}
+                <div class="row bg-info m-4 p-4">{{ this.policy }}</div>
+            {% endif %}
         </form>
     </div>
 </div>

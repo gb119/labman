@@ -9,6 +9,7 @@ from django.db import models
 from django.utils.functional import cached_property, classproperty
 
 # external imports
+from labman_utils.models import ResourceedObject
 from photologue.models import Photo
 from six import string_types
 from sortedm2m.fields import SortedManyToManyField
@@ -23,26 +24,27 @@ INSTRUCTOR = 300
 MANAGER = 1000
 
 
-class Project(models.Model):
+class Project(ResourceedObject):
     """Represent a chargeable project."""
 
-    name = models.CharField(max_length=80)
     short_name = models.CharField(max_length=20)
     code = models.CharField(max_length=20)
-    description = HTMLField()
+
+    class Meta:
+        constraints = [models.UniqueConstraint(fields=["name"], name="Unique Project Name")]
 
     def __str__(self):
         return f"{self.short_name} ({self.code})"
 
 
-class ResearchGroup(models.Model):
+class ResearchGroup(ResourceedObject):
     """Represetns a |Research Group"""
 
-    name = models.CharField(max_length=50, unique=True)
     code = models.CharField(max_length=10, primary_key=True)
 
     class Meta:
         ordering = ["code"]
+        constraints = [models.UniqueConstraint(fields=["name"], name="Unique Research Group Name")]
 
     def __str__(self):
         return self.name
@@ -117,6 +119,11 @@ class Account(AbstractUser):
         initials = ".".join(self.initials[:-1])
         return f"{title} {initials} {self.last_name}".strip()
 
+    @cached_property
+    def url(self):
+        """Return a URL to the account page."""
+        return f"/accounts/user/{self.username}/"
+
     def __str__(self):
         """String conversion includes the name and username."""
         return f"{self.last_name}, {self.first_name} ({self.username})"
@@ -156,14 +163,13 @@ class Account(AbstractUser):
         return None
 
 
-class Role(models.Model):
+class Role(ResourceedObject):
     """Class to describe a role within the user management system."""
 
     class Meta:
         ordering = ["level"]
+        constraints = [models.UniqueConstraint(fields=["name"], name="Unique Role Name")]
 
-    name = models.CharField(max_length=20, primary_key=True)
-    description = HTMLField(null=True, blank=True)
     level = models.IntegerField(default=TRAINEE)
 
     def __str__(self):

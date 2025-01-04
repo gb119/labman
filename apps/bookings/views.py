@@ -103,7 +103,6 @@ class BookingDialog(IsAuthenticaedViewMixin, HTMXFormMixin, views.generic.Update
         context["equipment"] = Equipment.objects.get(pk=self.kwargs.get("equipment", None))
         context["equipment_id"] = self.kwargs.get("equipment", None)
         context["edit"] = self.get_object() is not None
-        print(context)
         return context
 
     def get_object(self, queryset=None):
@@ -112,13 +111,10 @@ class BookingDialog(IsAuthenticaedViewMixin, HTMXFormMixin, views.generic.Update
         start = dt.fromtimestamp(self.kwargs.get("ts"), DEFAULT_TZ)
         end = start + td(seconds=1)
         slot = DateTimeTZRange(lower=start, upper=end)
-        print(f"Test slot = {slot=}")
         try:
             ret = models.BookingEntry.objects.get(equipment__pk=equipment, slot__overlap=slot)
-            print(f"Found slot {ret.slot}")
             return ret
         except ObjectDoesNotExist:
-            print("no slot found")
             return None
 
     def get_initial(self):
@@ -129,6 +125,7 @@ class BookingDialog(IsAuthenticaedViewMixin, HTMXFormMixin, views.generic.Update
                 "slot": this.slot,
                 "user": this.user,
                 "booker": this.booker,
+                "project": this.project,
             }
         equipment = Equipment.objects.get(pk=self.kwargs.get("equipment"))
         start = dt.fromtimestamp(self.kwargs.get("ts"), DEFAULT_TZ)

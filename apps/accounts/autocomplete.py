@@ -27,7 +27,6 @@ class UserListAutoComplete(ModelAutocomplete):
     @classmethod
     def get_query_filtered_queryset(cls, search, context):
         base_qs = cls.get_queryset()
-        print(context.request.GET)
         if equipment := context.request.GET.get("equipment", None):
             try:
                 equipment = int(equipment[0])

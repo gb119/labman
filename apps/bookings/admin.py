@@ -164,6 +164,8 @@ class BookingtEntryAdmin(ImportExportModelAdmin):
     def slot_display(self, obj):
         """Custom display of slot value."""
         start, end = obj.slot.lower, obj.slot.upper
+        if start is None or end is None:
+            return "Bad slot"
         if start.date() == end.date():  # Simplified for start and end on same day
             return start.strftime("%a %b %d %X") + " - " + end.strftime("%X %Y")
         return start.strftime("%c") + " - " + end.strftime("%c")

@@ -10,9 +10,8 @@ from datetime import (
 
 # Django imports
 import django.utils.timezone as tz
-from django.conf import settings
 from django.contrib.flatpages.models import FlatPage
-from django.db import models, transaction
+from django.db import models
 from django.db.models.constraints import CheckConstraint
 from django.utils.html import format_html
 from django.utils.text import slugify
@@ -21,60 +20,18 @@ from django.utils.text import slugify
 import numpy as np
 import pytz
 from accounts.models import Account, Role
-from django_simple_file_handler import models as dsfh
-from labman_utils.models import NamedObject, patch_model
-from photologue.models import Photo
+from labman_utils.models import (
+    DEFAULT_TZ,
+    Document,
+    NamedObject,
+    ResourceedObject,
+    delta_t,
+    patch_model,
+)
 from sortedm2m.fields import SortedManyToManyField
 
-DEFAULT_TZ = pytz.timezone(settings.TIME_ZONE)
 
-
-class Document(dsfh.BaseMixin, dsfh.TitledMixin, dsfh.PublicMixin, dsfh.RenameMixin, models.Model):
-    """Like a django-simple-file-handler.PublicDocument, but with additional fields to store a category,
-    and timestamps."""
-
-    CATEGORIES = [
-        ("ra", "Risk Assessment"),
-        ("sop", "Standard Operator Procedure"),
-        ("manual", "Manual/Instructions"),
-        ("other", "Other"),
-    ]
-    CATAGORIES_DICT = dict(CATEGORIES)
-
-    version = models.IntegerField(default=0)  # Manual version number used to determine if users need to re-ack docs
-    category = models.CharField(max_length=20, choices=CATEGORIES, default="other")
-
-    subdirectory_path = dsfh.custom_subdirectory("documents/equipment/")
-
-    class Meta:
-        verbose_name = "document (categorized)"
-        verbose_name_plural = "documents (categorized)"
-
-    @property
-    def category_name(self):
-        """Returns the document category as a human readable string."""
-        return self.CATAGORIES_DICT[self.category]
-
-    def __str__(self):
-        """Return a user friendly name for the file."""
-        return f"{self.title} ({self.CATAGORIES_DICT[self.category]})"
-
-    def save(self, force_insert=False, force_update=False, using=None, update_fields=None):
-        """If version has increased then put a hold on all userlist entries of the associated equipment."""
-        if self.pk and self.category in ["ra", "sop"]:
-            old = Document.objects.get(pk=self.pk)
-            if old.version != self.version:
-                print(f"Version changed {self.title} {old.version}->{self.version}")
-                with transaction.atomic():
-                    for equipment in self.equipment.all():
-                        for entry in equipment.users.all():
-                            entry.hold = True
-                            print(f"{entry.user} Set to hold for {entry.equipment}")
-                            entry.save()
-        super().save(force_insert=force_insert, force_update=force_update, using=using, update_fields=update_fields)
-
-
-class Location(NamedObject):
+class Location(ResourceedObject):
     """Handles a physical location or room."""
 
     class Meta:
@@ -149,21 +106,18 @@ class Shift(NamedObject):
             return dt.combine(dt.today(), self.end_time) - dt.combine(dt.today(), self.start_time) + td(days=1)
 
 
-class Equipment(NamedObject):
+class Equipment(ResourceedObject):
     """Class for representing an Equipment item."""
 
     class Meta:
-        constraints = [models.UniqueConstraint(fields=["name"], name="Unique Equipment Name")]
         verbose_name_plural = "Equipment Items"
         verbose_name = "Equipment Item"
+        constraints = [models.UniqueConstraint(fields=["name"], name="Unique Equipment Name")]
 
     location = models.ForeignKey(Location, on_delete=models.CASCADE, related_name="equipment")
     owner = models.ForeignKey(Account, on_delete=models.CASCADE, related_name="equipment")
     shifts = SortedManyToManyField(Shift, related_name="equipment", blank=True)
-    photos = SortedManyToManyField(Photo, related_name="equipment", blank=True)
-    files = SortedManyToManyField(Document, related_name="equipment", blank=True)
     policies = SortedManyToManyField("bookings.BookingPolicy", related_name="equipment", blank=True)
-    pages = SortedManyToManyField(FlatPage, related_name="equipment", blank=True)
 
     def __str__(self):
         return f"{self.name}"
@@ -221,13 +175,15 @@ class Equipment(NamedObject):
             time = time.time()
         elif not isinstance(time, Time):
             raise TypeError("Was expecting to get either a datetime or time object.")
-        time = dt.combine(dt.today(), time)
+        if delta_t(time, self.shifts.first().start_time).total_seconds() < 0:  # Booking from previous day
+            time = dt.combine(dt.today(), time) + td(days=1)
+        else:
+            time = dt.combine(dt.today(), time)
         for shift in self.shifts.all():
             s = dt.combine(dt.today(), shift.start_time)
             e = dt.combine(dt.today(), shift.end_time)
             if (e - s).total_seconds() <= 0:
                 e += td(days=1)
-            print(f"Shifts: {time} {s} {e} {(time-s).total_seconds()>=0} and {(e-time).total_seconds()>0}")
             if (time - s).total_seconds() >= 0 and (e - time).total_seconds() > 0:
                 return shift
         return None
