@@ -1,44 +1,65 @@
-<div class="row bg-secondary">
-    <div class="col col-md-3">
-        <h5>Name & Username</h5>
-    </div>
-    <div class="col col-md-2">
-        <h5>Thumbnail</h5>
-    </div>
-    <div class="col col-md-2">
-        <h5>Status</h5>
-    </div>
-    <div class="col col-md-2">
-        <h5>Manager</h5>
-    </div>
-    <div class="col col-md-3">
-        <h5>Project</h5>
-    </div>
+<div class="accordion" id="AccountsList">
+    {% for group,account_list in accounts.items %}
+        {% if account_list.count > 0 %}
+            <div class="accordion-item">
+                <h2 class="accordion-header" id="{{ group }}">
+                    <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapse_{{ group }}"
+                            aria-expanded="{% if forloop.first %}true{% else %}false{% endif%}" aria-controls="collapse_{{ group }}">
+                        {{ group }}
+                    </button>
+                </h2>
+                <div id="collapse_{{ group }}" class="accordion-collapse collapse{% if forloop.first %} show{% endif %}"
+                     aria-labelledby="{{ group }}" data-bs-parent="#AccountsList">
+                    <div class="accordion-body">
+                        {% for account in account_list %}
+                            {% if forloop.first %}
+                                <div class="row bg-secondary">
+                                    <div class="col col-md-3">
+                                        <h5>Name & Username</h5>
+                                    </div>
+                                    <div class="col col-md-2">
+                                        <h5>Thumbnail</h5>
+                                    </div>
+                                    <div class="col col-md-2">
+                                        <h5>Status</h5>
+                                    </div>
+                                    <div class="col col-md-2">
+                                        <h5>Manager</h5>
+                                    </div>
+                                    <div class="col col-md-3">
+                                        <h5>Project</h5>
+                                    </div>
+                                </div>
+                            {% endif %}
+                            <div class="row">
+                                <div class="col col-md-2">
+                                    <span>{% if account.title %}{{ account.title }} {% endif %}
+                                        {{ account.first_name }} {{ account.last_name }}</span>
+                                </div>
+                                <div class="col col-md-1">
+                                    <a href="/accounts/user/{{ account.username }}">{{ account.username }}</a>
+                                </div>
+                                <div class="col col-md-2">
+                                    {% if account.mugshot %}
+                                        <img src="{{account.mugshot.get_thumbnail_url }}" alt="Picture of {{ account.display_name" style="margin-top:5px;"/>
+                                    {% endif %}
+                                </div>
+                                <div class="col col-md-2">
+                                    <span>{{ account.groups.first.name }} - {{ account.research_group.code }}</span>
+                                </div>
+                                <div class="col col-md-2">
+                                    {% if account.manager %}
+                                        <a href="/accounts/user/{{ account.manager.username }}">{{ account.manager.formal_name }}</a>
+                                    {% endif %}
+                                </div>
+                                <div class="col col-md-3">
+                                    <span>{% for project in account.project.all %}{{ project.name }}<br/>{% endfor %}</span>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+    {% endfor %}
 </div>
-{% for account in accounts %}
-    <div class="row">
-        <div class="col col-md-2">
-            <span>{% if account.title %}{{ account.title }} {% endif %}
-                {{ account.first_name }} {{ account.last_name }}</span>
-        </div>
-        <div class="col col-md-1">
-            <a href="/accounts/user/{{ account.username }}">{{ account.username }}</a>
-        </div>
-        <div class="col col-md-2">
-            {% if account.mugshot %}
-                <img src="{{account.mugshot.get_thumbnail_url }}" alt="Picture of {{ account.display_name" style="margin-top:5px;"/>
-            {% endif %}
-        </div>
-        <div class="col col-md-2">
-            <span>TODO!</span>
-        </div>
-        <div class="col col-md-2">
-            {% if account.manager %}
-                <a href="/accounts/user/{{ account.manager.username }}">{{ account.manager.formal_name }}</a>
-            {% endif %}
-        </div>
-        <div class="col col-md-3">
-            <span>{% for project in account.project.all %}{{ project.name }}<br/>{% endfor %}</span>
-        </div>
-    </div>
-{% endfor %}

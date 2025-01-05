@@ -19,30 +19,30 @@
 {% else %}
     <h5>{{ account.first_name }} {{ account.last_name }} has nobody they manager.</h5>
 {% endif %}
-{% for account in account.managing.all %}
+{% for underling in account.managing.all %}
     <div class="row">
         <div class="col col-md-2">
-            <span>{% if account.title %}{{ account.title }} {% endif %}
-                {{ account.first_name }} {{ account.last_name }}</span>
+            <span>{% if underling.title %}{{ underling.title }} {% endif %}
+                {{ underling.first_name }} {{ underling.last_name }}</span>
         </div>
         <div class="col col-md-1">
-            <a href="/accounts/user/{{ account.username }}">{{ account.username }}</a>
+            <a href="/accounts/user/{{ underling.username }}">{{ underling.username }}</a>
         </div>
         <div class="col col-md-2">
-            {% if account.mugshot %}
-                <img src="{{account.mugshot.get_thumbnail_url }}" alt="Picture of {{ account.display_name" style="margin-top:5px;"/>
+            {% if underling.mugshot %}
+                <img src="{{ underling.mugshot.get_thumbnail_url }}" alt="Picture of {{ underling.display_name" style="margin-top:5px;"/>
             {% endif %}
         </div>
         <div class="col col-md-2">
-            <span>TODO!</span>
+            <span>{{ underling.groups.first.name }} - {{ underling.research_group.code }}</span>
         </div>
         <div class="col col-md-2">
-            {% if account.manager %}
-                <a href="/accounts/user/{{ account.manager.username }}">{{ account.manager.formal_name }}</a>
+            {% if underling.manager %}
+                <a href="/accounts/user/{{ underling.manager.username }}">{{ underling.manager.formal_name }}</a>
             {% endif %}
         </div>
         <div class="col col-md-3">
-            <span>{% for project in account.project.all %}{{ project.name }}<br/>{% endfor %}</span>
+            <span>{% for project in underling.project.all %}{{ project.name }}<br/>{% endfor %}</span>
         </div>
     </div>
 {% endfor %}

@@ -67,6 +67,42 @@ class Location(ResourceedObject):
             return f"{self.location.code},{new}"
         return new
 
+    @property
+    def _code_regexp(self):
+        """Create a regexp that will match all parent locations."""
+        parts = self.code.split(",")
+        if len(parts) <= 1:
+            return self.code
+        pat = ""
+        for part in reversed(parts[1:]):
+            pat = f"(,{part}{pat})?"
+        return f"^{parts[0]}{pat}$"
+
+    @property
+    def all_parents(self):
+        """Return a set of all locations that contain this location."""
+        return self.__class__.objects.filter(code__regex=self._code_regexp).order_by("-code")
+
+    @property
+    def children(self):
+        """Return a set of all sub-locations of this location."""
+        return self.__class__.objects.filter(code__startswith=self.code).order_by("code")
+
+    @property
+    def all_files(self):
+        """Return all the files that are attached to this location and it's parents."""
+        return self.files.model.objects.filter(location__in=self.all_parents)
+
+    @property
+    def all_photos(self):
+        """Return all the files that are attached to this location and it's parents."""
+        return self.photos.model.objects.filter(location__in=self.all_parents)
+
+    @property
+    def all_pages(self):
+        """Return all the files that are attached to this location and it's parents."""
+        return self.pages.model.objects.filter(location__in=self.all_parents)
+
     def save(self, force_insert=False, force_update=False, using=None, update_fields=None):
         """Force the location code to be calculated and then upodate any sub_locations."""
         if self.pk is None:  # Update our pk
@@ -166,6 +202,15 @@ class Equipment(ResourceedObject):
         for shift in self.shifts.all():
             ret.append(shift.start_time)
         return ret
+
+    def __getattr__(self, name):
+        """Deal with Role's."""
+        try:
+            role = Role.objects.get(name=name)
+            return self.users.filter(role__level__gte=role.level)
+        except Role.DoesNotExist:
+            pass
+        raise AttributeError(f"{name} is not a Role or an attribute.")
 
     def get_shift(self, time):
         """Return the shift object for the datetime specified."""

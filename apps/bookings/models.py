@@ -260,13 +260,18 @@ class BookingEntry(models.Model):
         self.slot = DateTimeTZRange(start, end)
         return self
 
+    def fix_project(self):
+        """Workout a project for this booking."""
+        if self.user.project.count() == 0:
+            return None
+        if self.project not in self.user.project.all() and not self.user.is_superuser:
+            return self.user.default_project
+
     def clean(self):
         """Rearrange the slot and check for conflicts."""
         if not getattr(self, "project", None):  # No project set
             self.project = self.user.default_project
-        if self.project not in self.user.project.all() and not self.user.is_superuser:
-            self.project = self.user.default_project
-
+        self.project = self.fix_project()
         # Swap start and end times to ensure positive duration
         if not self.slot.isempty and self.slot.lower > self.slot.upper:
             self.slot = DateTimeTZRange(self.slot.upper, self.slot.lower)

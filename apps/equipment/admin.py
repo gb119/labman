@@ -12,7 +12,6 @@ from django.db.models import Model
 # external imports
 import django_simple_file_handler as dsfh
 from accounts.admin import AccountrAdmin, UserListFilter
-from import_export import resources
 from import_export.admin import ImportExportModelAdmin
 
 # app imports
@@ -23,6 +22,14 @@ from .models import (
     Location,
     Shift,
     UserListEntry,
+)
+from .resource import (
+    DocumentResource,
+    DocumentSignOffResource,
+    EquipmentResource,
+    LocationResource,
+    ShiftReource,
+    UserListEntryResource,
 )
 
 
@@ -64,53 +71,6 @@ class EquipmentListFilter(SimpleListFilter):
         if not self.value():
             return queryset
         return queryset.filter(equipment__pk=self.value())
-
-
-class ShiftReource(resources.ModelResource):
-    """Import-export resource for Location objects."""
-
-    class Meta:
-        model = Shift
-        import_id_fields = ["name"]
-
-
-class LocationResource(resources.ModelResource):
-    """Import-export resource for Location objects."""
-
-    class Meta:
-        model = Location
-        import_id_fields = ["name"]
-
-
-class DocumentResource(resources.ModelResource):
-    """Import-export resource for Document objects."""
-
-    class Meta:
-        model = Document
-        import_id_fields = ["title"]
-
-
-class DocumentSignOffResource(resources.ModelResource):
-    """Import-export resource for Sign-off objects."""
-
-    class Meta:
-        model = DocumentSignOff
-        import_id_fields = ["user", "document", "version"]
-
-
-class EquipmentResource(resources.ModelResource):
-    """Import-export resource for Equipment objects."""
-
-    class Meta:
-        model = Equipment
-        import_id_fields = ["name"]
-
-
-class UserListEntryResource(resources.ModelResource):
-    """Import-export resource for UserListEntry objects."""
-
-    class Meta:
-        model = UserListEntry
 
 
 class UserListInlineAdmin(TabularInline):

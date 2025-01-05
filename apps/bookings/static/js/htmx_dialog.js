@@ -39,4 +39,4 @@ const elem=document.querySelector("#modal");
 
 
 
-}, false);
+});

@@ -7,6 +7,7 @@ from django import forms
 from django.contrib.admin import widgets as admin_widgets
 from django.contrib.postgres.forms import DateTimeRangeField, RangeWidget
 from django.core.exceptions import ValidationError
+from django.db.models import Q
 
 # external imports
 from accounts.autocomplete import UserListAutoComplete
@@ -74,13 +75,4 @@ class BookinngDialogForm(forms.ModelForm):
             "user": AutocompleteWidget(ac_class=UserListAutoComplete),
             "equipment": forms.HiddenInput(),
             "slot": CustomSlotWidget(),
-        }
-
-    class Media:
-        js = ["https://code.jquery.com/jquery-3.7.1.min.js", "https://code.jquery.com/ui/1.14.1/jquery-ui.min.js"]
-        css = {
-            "all": [
-                "https://code.jquery.com/ui/1.14.1/themes/smoothness/jquery-ui.css",
-                "https://code.jquery.com/ui/1.14.1/themes/base/jquery-ui.css",
-            ]
         }

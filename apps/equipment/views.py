@@ -111,7 +111,12 @@ class EquipmentDetailView(HTMXProcessMixin, IsAuthenticaedViewMixin, views.gener
                 equip_vec = None
             case "all":
                 equipment = None
-                equip_vec = Equipment.objects.all().annotate(policy_count=Count("policies")).filter(policy_count__gt=0)
+                equip_vec = (
+                    Equipment.objects.all()
+                    .annotate(policy_count=Count("policies"))
+                    .filter(policy_count__gt=0)
+                    .order_by("location__code", "name")
+                )
             case _:
                 raise ValueError(f"Unknow mode {mode} in scedule detail.")
 
@@ -162,7 +167,10 @@ class ModelListView(HTMXProcessMixin, IsAuthenticaedViewMixin, views.generic.Lis
     def get_queryset(self):
         """Get different querysets for each htmx query."""
         if not getattr(self.request, "htmx", False):
-            return Account.objects.all()
+            ret = {}
+            for grp in ["Academic", "Staff", "PDRA", "PostGrad", "Visitor", "Project"]:
+                ret[grp] = Account.objects.filter(groups__name__icontains=grp).order_by("last_name", "first_name")
+            return ret
         match getattr(self.request.htmx, "trigger", ""):
             case "equipment-tab":
                 qs = Equipment.objects.all().order_by("name")
@@ -171,5 +179,7 @@ class ModelListView(HTMXProcessMixin, IsAuthenticaedViewMixin, views.generic.Lis
             case "projects-tab":
                 qs = Project.objects.all().order_by("name")
             case _:
-                qs = Account.objects.all().order_by("last_name", "first_name")
+                qs = {}
+                for grp in ["Academic", "Staff", "PDRA", "PostGrad", "Visitor", "Project"]:
+                    qs[grp] = Account.objects.filter(groups__name__icontains=grp).order_by("last_name", "first_name")
         return qs

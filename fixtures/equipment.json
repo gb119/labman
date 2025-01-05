@@ -1,0 +1,4898 @@
+[
+{
+    "model": "equipment.location",
+    "pk": 1,
+    "fields": {
+        "name": "WH Bragg Building",
+        "description": "<p>William Henry Bragg Building</p>",
+        "location": null,
+        "code": "1",
+        "level": 0,
+        "photos": [],
+        "files": [],
+        "pages": []
+    }
+},
+{
+    "model": "equipment.location",
+    "pk": 2,
+    "fields": {
+        "name": "Electrical Engineering Building",
+        "description": "<p>CM and Cryogencs labs in EEE Building</p>",
+        "location": null,
+        "code": "2",
+        "level": 0,
+        "photos": [],
+        "files": [],
+        "pages": []
+    }
+},
+{
+    "model": "equipment.location",
+    "pk": 3,
+    "fields": {
+        "name": "Level 3",
+        "description": "<p>Level 3 of the Bragg Building</p>",
+        "location": 1,
+        "code": "1,1",
+        "level": 1,
+        "photos": [],
+        "files": [],
+        "pages": []
+    }
+},
+{
+    "model": "equipment.location",
+    "pk": 4,
+    "fields": {
+        "name": "Ground Floor",
+        "description": "<p>Ground Floor int he Bragg Building</p>",
+        "location": 1,
+        "code": "1,2",
+        "level": 1,
+        "photos": [],
+        "files": [],
+        "pages": []
+    }
+},
+{
+    "model": "equipment.location",
+    "pk": 5,
+    "fields": {
+        "name": "CM LT Measurement Lab",
+        "description": "<p>B64 - the CM Low Temperature Measurement Lab</p>",
+        "location": 2,
+        "code": "2,1",
+        "level": 1,
+        "photos": [],
+        "files": [],
+        "pages": []
+    }
+},
+{
+    "model": "equipment.location",
+    "pk": 6,
+    "fields": {
+        "name": "Cryogenics Plant",
+        "description": "<p>The Cryogenics Plant</p>",
+        "location": 2,
+        "code": "2,2",
+        "level": 1,
+        "photos": [],
+        "files": [],
+        "pages": []
+    }
+},
+{
+    "model": "equipment.location",
+    "pk": 7,
+    "fields": {
+        "name": "Furnace Room",
+        "description": "<p>3.14 Lab</p>",
+        "location": 3,
+        "code": "1,1,1",
+        "level": 2,
+        "photos": [],
+        "files": [],
+        "pages": []
+    }
+},
+{
+    "model": "equipment.location",
+    "pk": 8,
+    "fields": {
+        "name": "Level 3 Teaching Lab",
+        "description": "<p>3.13 the level 3 teaching lab room</p>",
+        "location": 3,
+        "code": "1,1,2",
+        "level": 2,
+        "photos": [],
+        "files": [],
+        "pages": []
+    }
+},
+{
+    "model": "equipment.location",
+    "pk": 9,
+    "fields": {
+        "name": "Laser Darkrooms",
+        "description": "<p>3.07 Main lab</p>",
+        "location": 3,
+        "code": "1,1,3",
+        "level": 2,
+        "photos": [],
+        "files": [],
+        "pages": []
+    }
+},
+{
+    "model": "equipment.location",
+    "pk": 10,
+    "fields": {
+        "name": "MOKE Hutch",
+        "description": "<p>3.07a - MOKE Laser room</p>",
+        "location": 9,
+        "code": "1,1,3,1",
+        "level": 3,
+        "photos": [],
+        "files": [],
+        "pages": []
+    }
+},
+{
+    "model": "equipment.location",
+    "pk": 11,
+    "fields": {
+        "name": "Spectroscopy Lab",
+        "description": "<p>CM/SMP Joint Spectroscopy Lab 3.12</p>",
+        "location": 3,
+        "code": "1,1,4",
+        "level": 2,
+        "photos": [],
+        "files": [],
+        "pages": []
+    }
+},
+{
+    "model": "equipment.location",
+    "pk": 12,
+    "fields": {
+        "name": "Thin Film Deposition Lab",
+        "description": "<p>GR16 - the main thin film growth lab</p>",
+        "location": 4,
+        "code": "1,2,1",
+        "level": 2,
+        "photos": [],
+        "files": [],
+        "pages": []
+    }
+},
+{
+    "model": "equipment.location",
+    "pk": 13,
+    "fields": {
+        "name": "X-Ray Lab",
+        "description": "<p>Physics X-Ray Lab</p>",
+        "location": 3,
+        "code": "1,1,5",
+        "level": 2,
+        "photos": [],
+        "files": [],
+        "pages": []
+    }
+},
+{
+    "model": "equipment.shift",
+    "pk": 1,
+    "fields": {
+        "name": "24 Hour shift",
+        "description": "<p>A shift from 8am to 8am</p>",
+        "start_time": "08:00:00",
+        "end_time": "08:00:00"
+    }
+},
+{
+    "model": "equipment.shift",
+    "pk": 2,
+    "fields": {
+        "name": "Morning shift",
+        "description": "<p>8am to 1pm shift</p>",
+        "start_time": "08:00:00",
+        "end_time": "13:00:00"
+    }
+},
+{
+    "model": "equipment.shift",
+    "pk": 3,
+    "fields": {
+        "name": "Afternoon Shift",
+        "description": "<p>1pm to 6pm shift</p>",
+        "start_time": "13:00:00",
+        "end_time": "18:00:00"
+    }
+},
+{
+    "model": "equipment.shift",
+    "pk": 4,
+    "fields": {
+        "name": "Overnight Shift",
+        "description": "<p>From 6pm to 8am</p>",
+        "start_time": "18:00:00",
+        "end_time": "08:00:00"
+    }
+},
+{
+    "model": "equipment.equipment",
+    "pk": 77,
+    "fields": {
+        "name": "Big Blue",
+        "description": "Oxofrd Instruments 8T Integra Cryostat",
+        "location": 5,
+        "owner": 86,
+        "photos": [],
+        "files": [],
+        "pages": [],
+        "shifts": [
+            1
+        ],
+        "policies": [
+            2,
+            3,
+            1
+        ]
+    }
+},
+{
+    "model": "equipment.equipment",
+    "pk": 78,
+    "fields": {
+        "name": "VSM",
+        "description": "Oxford Instruments 9T Cryostat",
+        "location": 5,
+        "owner": 85,
+        "photos": [],
+        "files": [],
+        "pages": [],
+        "shifts": [
+            1
+        ],
+        "policies": [
+            2,
+            3,
+            1
+        ]
+    }
+},
+{
+    "model": "equipment.equipment",
+    "pk": 79,
+    "fields": {
+        "name": "IVOR",
+        "description": "7 Target Sputter Deposition System",
+        "location": 12,
+        "owner": 85,
+        "photos": [],
+        "files": [],
+        "pages": [],
+        "shifts": [
+            1
+        ],
+        "policies": [
+            2,
+            3,
+            1
+        ]
+    }
+},
+{
+    "model": "equipment.equipment",
+    "pk": 80,
+    "fields": {
+        "name": "Mjolnir",
+        "description": "4 Target UHV sputter spytem",
+        "location": 12,
+        "owner": 86,
+        "photos": [],
+        "files": [],
+        "pages": [],
+        "shifts": [
+            1
+        ],
+        "policies": [
+            2,
+            3,
+            1
+        ]
+    }
+},
+{
+    "model": "equipment.equipment",
+    "pk": 81,
+    "fields": {
+        "name": "Slim",
+        "description": "Multi-functional Sputter depositio system",
+        "location": 12,
+        "owner": 86,
+        "photos": [],
+        "files": [],
+        "pages": [],
+        "shifts": [
+            1
+        ],
+        "policies": [
+            2,
+            3,
+            1
+        ]
+    }
+},
+{
+    "model": "equipment.equipment",
+    "pk": 82,
+    "fields": {
+        "name": "Wharfedale",
+        "description": "X-ray diffractometer",
+        "location": 13,
+        "owner": 85,
+        "photos": [],
+        "files": [],
+        "pages": [],
+        "shifts": [
+            1
+        ],
+        "policies": [
+            2,
+            3,
+            1
+        ]
+    }
+},
+{
+    "model": "equipment.equipment",
+    "pk": 83,
+    "fields": {
+        "name": "MOKE",
+        "description": "Laser Magneto=optical Kerr ffect System",
+        "location": 10,
+        "owner": 86,
+        "photos": [],
+        "files": [],
+        "pages": [],
+        "shifts": [
+            1
+        ],
+        "policies": [
+            2,
+            3,
+            1
+        ]
+    }
+},
+{
+    "model": "equipment.equipment",
+    "pk": 84,
+    "fields": {
+        "name": "PCAR",
+        "description": "Point Contact Andreev Rflection Rig",
+        "location": 8,
+        "owner": 87,
+        "photos": [],
+        "files": [],
+        "pages": [],
+        "shifts": [
+            1
+        ],
+        "policies": [
+            2,
+            3,
+            1
+        ]
+    }
+},
+{
+    "model": "equipment.equipment",
+    "pk": 85,
+    "fields": {
+        "name": "Fridge",
+        "description": "Adiabatic Demganetisation Fridge",
+        "location": 5,
+        "owner": 85,
+        "photos": [],
+        "files": [],
+        "pages": [],
+        "shifts": [
+            1
+        ],
+        "policies": [
+            2,
+            3,
+            1
+        ]
+    }
+},
+{
+    "model": "equipment.equipment",
+    "pk": 86,
+    "fields": {
+        "name": "MR Transport Rig - Room Temperature",
+        "description": "Magneto-transport room temperature and angle dependent rig",
+        "location": 5,
+        "owner": 86,
+        "photos": [],
+        "files": [],
+        "pages": [],
+        "shifts": [
+            1
+        ],
+        "policies": [
+            2,
+            3,
+            1
+        ]
+    }
+},
+{
+    "model": "equipment.equipment",
+    "pk": 87,
+    "fields": {
+        "name": "MR Transport Rig  -  Temp.  & Vacuum",
+        "description": "Magneto-transport high temperature rig",
+        "location": 5,
+        "owner": 86,
+        "photos": [],
+        "files": [],
+        "pages": [],
+        "shifts": [
+            1
+        ],
+        "policies": [
+            2,
+            3,
+            1
+        ]
+    }
+},
+{
+    "model": "equipment.equipment",
+    "pk": 88,
+    "fields": {
+        "name": "Dip probe",
+        "description": "Teaching He-4 dip probe",
+        "location": 8,
+        "owner": 85,
+        "photos": [],
+        "files": [],
+        "pages": [],
+        "shifts": [
+            1
+        ],
+        "policies": [
+            2,
+            3,
+            1
+        ]
+    }
+},
+{
+    "model": "equipment.equipment",
+    "pk": 89,
+    "fields": {
+        "name": "Tube Furnace",
+        "description": "Tube Furnace",
+        "location": 7,
+        "owner": 100,
+        "photos": [],
+        "files": [],
+        "pages": [],
+        "shifts": [
+            1
+        ],
+        "policies": [
+            2,
+            3,
+            1
+        ]
+    }
+},
+{
+    "model": "equipment.equipment",
+    "pk": 90,
+    "fields": {
+        "name": "Wirebonder",
+        "description": "Wedge wirebonder",
+        "location": 5,
+        "owner": 87,
+        "photos": [],
+        "files": [],
+        "pages": [],
+        "shifts": [
+            1
+        ],
+        "policies": [
+            2,
+            3,
+            1
+        ]
+    }
+},
+{
+    "model": "equipment.equipment",
+    "pk": 91,
+    "fields": {
+        "name": "FMR Rig",
+        "description": "Ferromagneetic Resonance Rig",
+        "location": 9,
+        "owner": 86,
+        "photos": [],
+        "files": [],
+        "pages": [],
+        "shifts": [
+            1
+        ],
+        "policies": [
+            2,
+            3,
+            1
+        ]
+    }
+},
+{
+    "model": "equipment.equipment",
+    "pk": 92,
+    "fields": {
+        "name": "Arkengarthdale",
+        "description": "Bruker D8 X-ray diffractometer",
+        "location": 13,
+        "owner": 85,
+        "photos": [],
+        "files": [],
+        "pages": [],
+        "shifts": [
+            1
+        ],
+        "policies": [
+            2,
+            3,
+            1
+        ]
+    }
+},
+{
+    "model": "equipment.equipment",
+    "pk": 93,
+    "fields": {
+        "name": "Slim-Shady",
+        "description": "Shadow Evaporation deposition system",
+        "location": 12,
+        "owner": 85,
+        "photos": [],
+        "files": [],
+        "pages": [],
+        "shifts": [
+            1
+        ],
+        "policies": [
+            2,
+            3,
+            1
+        ]
+    }
+},
+{
+    "model": "equipment.equipment",
+    "pk": 94,
+    "fields": {
+        "name": "Bl&#195;&#165;tand ",
+        "description": "Oxofrd Instruments 8T Integra Cryostat",
+        "location": 5,
+        "owner": 87,
+        "photos": [],
+        "files": [],
+        "pages": [],
+        "shifts": [
+            1
+        ],
+        "policies": [
+            2,
+            3,
+            1
+        ]
+    }
+},
+{
+    "model": "equipment.equipment",
+    "pk": 95,
+    "fields": {
+        "name": "Deep Freeze",
+        "description": "He-3 insert for Blue cryostats",
+        "location": 5,
+        "owner": 87,
+        "photos": [],
+        "files": [],
+        "pages": [],
+        "shifts": [
+            1
+        ],
+        "policies": [
+            2,
+            3,
+            1
+        ]
+    }
+},
+{
+    "model": "equipment.equipment",
+    "pk": 96,
+    "fields": {
+        "name": "Haribo",
+        "description": "Horiba LabRAM Raman microscope",
+        "location": 11,
+        "owner": 90,
+        "photos": [],
+        "files": [],
+        "pages": [],
+        "shifts": [
+            1
+        ],
+        "policies": [
+            2,
+            3,
+            1
+        ]
+    }
+},
+{
+    "model": "equipment.equipment",
+    "pk": 97,
+    "fields": {
+        "name": "Kermit",
+        "description": "Evico Kerr Microscope",
+        "location": 5,
+        "owner": 92,
+        "photos": [],
+        "files": [],
+        "pages": [],
+        "shifts": [
+            1
+        ],
+        "policies": [
+            2,
+            3,
+            1
+        ]
+    }
+},
+{
+    "model": "equipment.equipment",
+    "pk": 98,
+    "fields": {
+        "name": "Kraken",
+        "description": "QD MPMS-3 SQUID magnetometer",
+        "location": 5,
+        "owner": 90,
+        "photos": [],
+        "files": [],
+        "pages": [],
+        "shifts": [
+            1
+        ],
+        "policies": [
+            2,
+            3,
+            1
+        ]
+    }
+},
+{
+    "model": "equipment.equipment",
+    "pk": 99,
+    "fields": {
+        "name": "Yoda",
+        "description": "Cryogenics split pair He=3 cryostat",
+        "location": 5,
+        "owner": 85,
+        "photos": [],
+        "files": [],
+        "pages": [],
+        "shifts": [
+            1
+        ],
+        "policies": [
+            2,
+            3,
+            1
+        ]
+    }
+},
+{
+    "model": "equipment.equipment",
+    "pk": 100,
+    "fields": {
+        "name": "Research Dip Probe",
+        "description": "He=4 dip=probe orignally built by Dr P McBrien University of Cambridge",
+        "location": 5,
+        "owner": 87,
+        "photos": [],
+        "files": [],
+        "pages": [],
+        "shifts": [
+            1
+        ],
+        "policies": [
+            2,
+            3,
+            1
+        ]
+    }
+},
+{
+    "model": "equipment.equipment",
+    "pk": 101,
+    "fields": {
+        "name": "Yaddle",
+        "description": "Cryogenics split pair He=3 cryostat",
+        "location": 5,
+        "owner": 85,
+        "photos": [],
+        "files": [],
+        "pages": [],
+        "shifts": [
+            1
+        ],
+        "policies": [
+            2,
+            3,
+            1
+        ]
+    }
+},
+{
+    "model": "equipment.equipment",
+    "pk": 102,
+    "fields": {
+        "name": "Miss Piggy",
+        "description": "Evico Kerr Microscope",
+        "location": 5,
+        "owner": 92,
+        "photos": [],
+        "files": [],
+        "pages": [],
+        "shifts": [
+            1
+        ],
+        "policies": [
+            2,
+            3,
+            1
+        ]
+    }
+},
+{
+    "model": "equipment.equipment",
+    "pk": 103,
+    "fields": {
+        "name": "MTI Wafer Saw",
+        "description": "Wavfer Saw",
+        "location": 12,
+        "owner": 85,
+        "photos": [],
+        "files": [],
+        "pages": [],
+        "shifts": [
+            1
+        ],
+        "policies": [
+            2,
+            3,
+            1
+        ]
+    }
+},
+{
+    "model": "equipment.equipment",
+    "pk": 104,
+    "fields": {
+        "name": "Oxford Raman Microstat",
+        "description": "Optistat He-4 continuous flow cryostat",
+        "location": 11,
+        "owner": 90,
+        "photos": [],
+        "files": [],
+        "pages": [],
+        "shifts": [
+            1
+        ],
+        "policies": [
+            2,
+            3,
+            1
+        ]
+    }
+},
+{
+    "model": "equipment.equipment",
+    "pk": 105,
+    "fields": {
+        "name": "Muffle Furnace",
+        "description": "1000C furnaces (set of 3)",
+        "location": 7,
+        "owner": 100,
+        "photos": [],
+        "files": [],
+        "pages": [],
+        "shifts": [
+            1
+        ],
+        "policies": [
+            2,
+            3,
+            1
+        ]
+    }
+},
+{
+    "model": "equipment.equipment",
+    "pk": 106,
+    "fields": {
+        "name": "Oxford N2 Microstat",
+        "description": "77K-400K transport system",
+        "location": 5,
+        "owner": 86,
+        "photos": [],
+        "files": [],
+        "pages": [],
+        "shifts": [
+            1
+        ],
+        "policies": [
+            2,
+            3,
+            1
+        ]
+    }
+},
+{
+    "model": "equipment.equipment",
+    "pk": 107,
+    "fields": {
+        "name": "MTI Wire Saw",
+        "description": "Wire saw for cutting bulk crystals",
+        "location": 7,
+        "owner": 100,
+        "photos": [],
+        "files": [],
+        "pages": [],
+        "shifts": [
+            1
+        ],
+        "policies": [
+            2,
+            3,
+            1
+        ]
+    }
+},
+{
+    "model": "equipment.equipment",
+    "pk": 108,
+    "fields": {
+        "name": "Glove Box ",
+        "description": "Controlled atomosphere preparatiuon",
+        "location": 3,
+        "owner": 100,
+        "photos": [],
+        "files": [],
+        "pages": [],
+        "shifts": [
+            1
+        ],
+        "policies": [
+            2,
+            3,
+            1
+        ]
+    }
+},
+{
+    "model": "equipment.equipment",
+    "pk": 109,
+    "fields": {
+        "name": "Victor - Metals",
+        "description": "Prevac UHV sputter deposition system",
+        "location": 12,
+        "owner": 85,
+        "photos": [],
+        "files": [],
+        "pages": [],
+        "shifts": [
+            1
+        ],
+        "policies": [
+            2,
+            3,
+            1
+        ]
+    }
+},
+{
+    "model": "equipment.equipment",
+    "pk": 110,
+    "fields": {
+        "name": "Victor - TI",
+        "description": "Prevac UHV MBE for Topolgical Materials",
+        "location": 12,
+        "owner": 85,
+        "photos": [],
+        "files": [],
+        "pages": [],
+        "shifts": [
+            1
+        ],
+        "policies": [
+            2,
+            3,
+            1
+        ]
+    }
+},
+{
+    "model": "equipment.equipment",
+    "pk": 111,
+    "fields": {
+        "name": "Victor - Organics",
+        "description": "Prevac MBE/evaporator and sputtering system",
+        "location": 12,
+        "owner": 85,
+        "photos": [],
+        "files": [],
+        "pages": [],
+        "shifts": [
+            1
+        ],
+        "policies": [
+            2,
+            3,
+            1
+        ]
+    }
+},
+{
+    "model": "equipment.equipment",
+    "pk": 112,
+    "fields": {
+        "name": "Victor - PLD",
+        "description": "TSST Pulsed laser Depisition system",
+        "location": 12,
+        "owner": 85,
+        "photos": [],
+        "files": [],
+        "pages": [],
+        "shifts": [
+            1
+        ],
+        "policies": [
+            2,
+            3,
+            1
+        ]
+    }
+},
+{
+    "model": "equipment.equipment",
+    "pk": 113,
+    "fields": {
+        "name": "Attocube",
+        "description": "Attocube low temperature microscopy system",
+        "location": 5,
+        "owner": 85,
+        "photos": [],
+        "files": [],
+        "pages": [],
+        "shifts": [
+            1
+        ],
+        "policies": [
+            2,
+            3,
+            1
+        ]
+    }
+},
+{
+    "model": "equipment.equipment",
+    "pk": 114,
+    "fields": {
+        "name": "nGauge Pro AFM",
+        "description": "Bench top atomic force microscope",
+        "location": 9,
+        "owner": 120,
+        "photos": [],
+        "files": [],
+        "pages": [],
+        "shifts": [
+            1
+        ],
+        "policies": [
+            2,
+            3,
+            1
+        ]
+    }
+},
+{
+    "model": "equipment.userlistentry",
+    "pk": 1912,
+    "fields": {
+        "equipment": 78,
+        "user": 88,
+        "role": 4,
+        "hold": true,
+        "admin_hold": false,
+        "updated": "2025-01-05T17:46:06.186Z"
+    }
+},
+{
+    "model": "equipment.userlistentry",
+    "pk": 1913,
+    "fields": {
+        "equipment": 79,
+        "user": 88,
+        "role": 1,
+        "hold": true,
+        "admin_hold": false,
+        "updated": "2025-01-05T17:46:06.190Z"
+    }
+},
+{
+    "model": "equipment.userlistentry",
+    "pk": 1914,
+    "fields": {
+        "equipment": 82,
+        "user": 88,
+        "role": 1,
+        "hold": true,
+        "admin_hold": false,
+        "updated": "2025-01-05T17:46:06.194Z"
+    }
+},
+{
+    "model": "equipment.userlistentry",
+    "pk": 1915,
+    "fields": {
+        "equipment": 80,
+        "user": 88,
+        "role": 1,
+        "hold": true,
+        "admin_hold": false,
+        "updated": "2025-01-05T17:46:06.198Z"
+    }
+},
+{
+    "model": "equipment.userlistentry",
+    "pk": 1916,
+    "fields": {
+        "equipment": 88,
+        "user": 87,
+        "role": 1,
+        "hold": false,
+        "admin_hold": false,
+        "updated": "2025-01-05T21:33:58.592Z"
+    }
+},
+{
+    "model": "equipment.userlistentry",
+    "pk": 1917,
+    "fields": {
+        "equipment": 86,
+        "user": 88,
+        "role": 1,
+        "hold": true,
+        "admin_hold": false,
+        "updated": "2025-01-05T17:46:06.204Z"
+    }
+},
+{
+    "model": "equipment.userlistentry",
+    "pk": 1918,
+    "fields": {
+        "equipment": 83,
+        "user": 88,
+        "role": 1,
+        "hold": true,
+        "admin_hold": false,
+        "updated": "2025-01-05T17:46:06.208Z"
+    }
+},
+{
+    "model": "equipment.userlistentry",
+    "pk": 1919,
+    "fields": {
+        "equipment": 81,
+        "user": 88,
+        "role": 1,
+        "hold": true,
+        "admin_hold": false,
+        "updated": "2025-01-05T17:46:06.211Z"
+    }
+},
+{
+    "model": "equipment.userlistentry",
+    "pk": 1920,
+    "fields": {
+        "equipment": 82,
+        "user": 85,
+        "role": 3,
+        "hold": true,
+        "admin_hold": false,
+        "updated": "2025-01-05T17:46:06.215Z"
+    }
+},
+{
+    "model": "equipment.userlistentry",
+    "pk": 1921,
+    "fields": {
+        "equipment": 80,
+        "user": 89,
+        "role": 2,
+        "hold": true,
+        "admin_hold": false,
+        "updated": "2025-01-05T17:46:06.218Z"
+    }
+},
+{
+    "model": "equipment.userlistentry",
+    "pk": 1922,
+    "fields": {
+        "equipment": 82,
+        "user": 89,
+        "role": 2,
+        "hold": true,
+        "admin_hold": false,
+        "updated": "2025-01-05T17:46:06.222Z"
+    }
+},
+{
+    "model": "equipment.userlistentry",
+    "pk": 1923,
+    "fields": {
+        "equipment": 86,
+        "user": 89,
+        "role": 2,
+        "hold": true,
+        "admin_hold": false,
+        "updated": "2025-01-05T17:46:06.225Z"
+    }
+},
+{
+    "model": "equipment.userlistentry",
+    "pk": 1924,
+    "fields": {
+        "equipment": 80,
+        "user": 86,
+        "role": 3,
+        "hold": true,
+        "admin_hold": false,
+        "updated": "2025-01-05T17:46:06.229Z"
+    }
+},
+{
+    "model": "equipment.userlistentry",
+    "pk": 1925,
+    "fields": {
+        "equipment": 78,
+        "user": 90,
+        "role": 1,
+        "hold": true,
+        "admin_hold": false,
+        "updated": "2025-01-05T17:46:06.232Z"
+    }
+},
+{
+    "model": "equipment.userlistentry",
+    "pk": 1926,
+    "fields": {
+        "equipment": 77,
+        "user": 89,
+        "role": 2,
+        "hold": true,
+        "admin_hold": false,
+        "updated": "2025-01-05T17:46:06.236Z"
+    }
+},
+{
+    "model": "equipment.userlistentry",
+    "pk": 1927,
+    "fields": {
+        "equipment": 87,
+        "user": 89,
+        "role": 2,
+        "hold": true,
+        "admin_hold": false,
+        "updated": "2025-01-05T17:46:06.239Z"
+    }
+},
+{
+    "model": "equipment.userlistentry",
+    "pk": 1928,
+    "fields": {
+        "equipment": 88,
+        "user": 89,
+        "role": 2,
+        "hold": true,
+        "admin_hold": false,
+        "updated": "2025-01-05T17:46:06.243Z"
+    }
+},
+{
+    "model": "equipment.userlistentry",
+    "pk": 1929,
+    "fields": {
+        "equipment": 83,
+        "user": 85,
+        "role": 3,
+        "hold": true,
+        "admin_hold": false,
+        "updated": "2025-01-05T17:46:06.246Z"
+    }
+},
+{
+    "model": "equipment.userlistentry",
+    "pk": 1930,
+    "fields": {
+        "equipment": 85,
+        "user": 85,
+        "role": 1,
+        "hold": true,
+        "admin_hold": false,
+        "updated": "2025-01-05T17:46:06.250Z"
+    }
+},
+{
+    "model": "equipment.userlistentry",
+    "pk": 1931,
+    "fields": {
+        "equipment": 79,
+        "user": 90,
+        "role": 3,
+        "hold": true,
+        "admin_hold": false,
+        "updated": "2025-01-05T17:46:06.253Z"
+    }
+},
+{
+    "model": "equipment.userlistentry",
+    "pk": 1932,
+    "fields": {
+        "equipment": 90,
+        "user": 89,
+        "role": 3,
+        "hold": true,
+        "admin_hold": false,
+        "updated": "2025-01-05T17:46:06.257Z"
+    }
+},
+{
+    "model": "equipment.userlistentry",
+    "pk": 1933,
+    "fields": {
+        "equipment": 84,
+        "user": 88,
+        "role": 4,
+        "hold": true,
+        "admin_hold": false,
+        "updated": "2025-01-05T17:46:06.260Z"
+    }
+},
+{
+    "model": "equipment.userlistentry",
+    "pk": 1934,
+    "fields": {
+        "equipment": 92,
+        "user": 88,
+        "role": 1,
+        "hold": true,
+        "admin_hold": false,
+        "updated": "2025-01-05T17:46:06.264Z"
+    }
+},
+{
+    "model": "equipment.userlistentry",
+    "pk": 1935,
+    "fields": {
+        "equipment": 79,
+        "user": 89,
+        "role": 2,
+        "hold": true,
+        "admin_hold": false,
+        "updated": "2025-01-05T17:46:06.267Z"
+    }
+},
+{
+    "model": "equipment.userlistentry",
+    "pk": 1936,
+    "fields": {
+        "equipment": 93,
+        "user": 88,
+        "role": 1,
+        "hold": true,
+        "admin_hold": false,
+        "updated": "2025-01-05T17:46:06.271Z"
+    }
+},
+{
+    "model": "equipment.userlistentry",
+    "pk": 1937,
+    "fields": {
+        "equipment": 93,
+        "user": 87,
+        "role": 3,
+        "hold": false,
+        "admin_hold": false,
+        "updated": "2025-01-05T21:34:02.357Z"
+    }
+},
+{
+    "model": "equipment.userlistentry",
+    "pk": 1938,
+    "fields": {
+        "equipment": 93,
+        "user": 89,
+        "role": 2,
+        "hold": true,
+        "admin_hold": false,
+        "updated": "2025-01-05T17:46:06.278Z"
+    }
+},
+{
+    "model": "equipment.userlistentry",
+    "pk": 1939,
+    "fields": {
+        "equipment": 92,
+        "user": 89,
+        "role": 3,
+        "hold": true,
+        "admin_hold": false,
+        "updated": "2025-01-05T17:46:06.281Z"
+    }
+},
+{
+    "model": "equipment.userlistentry",
+    "pk": 1940,
+    "fields": {
+        "equipment": 94,
+        "user": 87,
+        "role": 1,
+        "hold": false,
+        "admin_hold": false,
+        "updated": "2025-01-05T21:34:07.495Z"
+    }
+},
+{
+    "model": "equipment.userlistentry",
+    "pk": 1941,
+    "fields": {
+        "equipment": 93,
+        "user": 85,
+        "role": 3,
+        "hold": true,
+        "admin_hold": false,
+        "updated": "2025-01-05T17:46:06.288Z"
+    }
+},
+{
+    "model": "equipment.userlistentry",
+    "pk": 1942,
+    "fields": {
+        "equipment": 84,
+        "user": 85,
+        "role": 4,
+        "hold": true,
+        "admin_hold": false,
+        "updated": "2025-01-05T17:46:06.292Z"
+    }
+},
+{
+    "model": "equipment.userlistentry",
+    "pk": 1943,
+    "fields": {
+        "equipment": 77,
+        "user": 85,
+        "role": 3,
+        "hold": true,
+        "admin_hold": false,
+        "updated": "2025-01-05T17:46:06.295Z"
+    }
+},
+{
+    "model": "equipment.userlistentry",
+    "pk": 1944,
+    "fields": {
+        "equipment": 78,
+        "user": 85,
+        "role": 4,
+        "hold": true,
+        "admin_hold": false,
+        "updated": "2025-01-05T17:46:06.298Z"
+    }
+},
+{
+    "model": "equipment.userlistentry",
+    "pk": 1945,
+    "fields": {
+        "equipment": 95,
+        "user": 87,
+        "role": 1,
+        "hold": false,
+        "admin_hold": false,
+        "updated": "2025-01-05T21:34:11.219Z"
+    }
+},
+{
+    "model": "equipment.userlistentry",
+    "pk": 1946,
+    "fields": {
+        "equipment": 96,
+        "user": 90,
+        "role": 1,
+        "hold": true,
+        "admin_hold": false,
+        "updated": "2025-01-05T17:46:06.305Z"
+    }
+},
+{
+    "model": "equipment.userlistentry",
+    "pk": 1947,
+    "fields": {
+        "equipment": 79,
+        "user": 92,
+        "role": 3,
+        "hold": true,
+        "admin_hold": false,
+        "updated": "2025-01-05T17:46:06.309Z"
+    }
+},
+{
+    "model": "equipment.userlistentry",
+    "pk": 1948,
+    "fields": {
+        "equipment": 96,
+        "user": 89,
+        "role": 2,
+        "hold": true,
+        "admin_hold": false,
+        "updated": "2025-01-05T17:46:06.312Z"
+    }
+},
+{
+    "model": "equipment.userlistentry",
+    "pk": 1949,
+    "fields": {
+        "equipment": 87,
+        "user": 88,
+        "role": 1,
+        "hold": true,
+        "admin_hold": false,
+        "updated": "2025-01-05T17:46:06.316Z"
+    }
+},
+{
+    "model": "equipment.userlistentry",
+    "pk": 1950,
+    "fields": {
+        "equipment": 90,
+        "user": 88,
+        "role": 3,
+        "hold": true,
+        "admin_hold": false,
+        "updated": "2025-01-05T17:46:06.319Z"
+    }
+},
+{
+    "model": "equipment.userlistentry",
+    "pk": 1951,
+    "fields": {
+        "equipment": 83,
+        "user": 87,
+        "role": 3,
+        "hold": false,
+        "admin_hold": false,
+        "updated": "2025-01-05T21:33:54.043Z"
+    }
+},
+{
+    "model": "equipment.userlistentry",
+    "pk": 1952,
+    "fields": {
+        "equipment": 77,
+        "user": 87,
+        "role": 3,
+        "hold": false,
+        "admin_hold": false,
+        "updated": "2025-01-05T21:31:58.689Z"
+    }
+},
+{
+    "model": "equipment.userlistentry",
+    "pk": 1953,
+    "fields": {
+        "equipment": 84,
+        "user": 89,
+        "role": 2,
+        "hold": true,
+        "admin_hold": false,
+        "updated": "2025-01-05T17:46:06.330Z"
+    }
+},
+{
+    "model": "equipment.userlistentry",
+    "pk": 1954,
+    "fields": {
+        "equipment": 97,
+        "user": 92,
+        "role": 1,
+        "hold": true,
+        "admin_hold": false,
+        "updated": "2025-01-05T17:46:06.333Z"
+    }
+},
+{
+    "model": "equipment.userlistentry",
+    "pk": 1955,
+    "fields": {
+        "equipment": 98,
+        "user": 88,
+        "role": 1,
+        "hold": true,
+        "admin_hold": false,
+        "updated": "2025-01-05T17:46:06.337Z"
+    }
+},
+{
+    "model": "equipment.userlistentry",
+    "pk": 1956,
+    "fields": {
+        "equipment": 98,
+        "user": 90,
+        "role": 1,
+        "hold": true,
+        "admin_hold": false,
+        "updated": "2025-01-05T17:46:06.340Z"
+    }
+},
+{
+    "model": "equipment.userlistentry",
+    "pk": 1957,
+    "fields": {
+        "equipment": 95,
+        "user": 88,
+        "role": 2,
+        "hold": true,
+        "admin_hold": false,
+        "updated": "2025-01-05T17:46:06.344Z"
+    }
+},
+{
+    "model": "equipment.userlistentry",
+    "pk": 1958,
+    "fields": {
+        "equipment": 88,
+        "user": 88,
+        "role": 3,
+        "hold": true,
+        "admin_hold": false,
+        "updated": "2025-01-05T17:46:06.347Z"
+    }
+},
+{
+    "model": "equipment.userlistentry",
+    "pk": 1959,
+    "fields": {
+        "equipment": 97,
+        "user": 89,
+        "role": 2,
+        "hold": true,
+        "admin_hold": false,
+        "updated": "2025-01-05T17:46:06.350Z"
+    }
+},
+{
+    "model": "equipment.userlistentry",
+    "pk": 1960,
+    "fields": {
+        "equipment": 98,
+        "user": 89,
+        "role": 2,
+        "hold": true,
+        "admin_hold": false,
+        "updated": "2025-01-05T17:46:06.354Z"
+    }
+},
+{
+    "model": "equipment.userlistentry",
+    "pk": 1961,
+    "fields": {
+        "equipment": 89,
+        "user": 88,
+        "role": 1,
+        "hold": true,
+        "admin_hold": false,
+        "updated": "2025-01-05T17:46:06.357Z"
+    }
+},
+{
+    "model": "equipment.userlistentry",
+    "pk": 1962,
+    "fields": {
+        "equipment": 77,
+        "user": 88,
+        "role": 3,
+        "hold": true,
+        "admin_hold": false,
+        "updated": "2025-01-05T17:46:06.361Z"
+    }
+},
+{
+    "model": "equipment.userlistentry",
+    "pk": 1963,
+    "fields": {
+        "equipment": 99,
+        "user": 88,
+        "role": 1,
+        "hold": true,
+        "admin_hold": false,
+        "updated": "2025-01-05T17:46:06.364Z"
+    }
+},
+{
+    "model": "equipment.userlistentry",
+    "pk": 1964,
+    "fields": {
+        "equipment": 99,
+        "user": 87,
+        "role": 4,
+        "hold": false,
+        "admin_hold": false,
+        "updated": "2025-01-05T21:34:15.349Z"
+    }
+},
+{
+    "model": "equipment.userlistentry",
+    "pk": 1965,
+    "fields": {
+        "equipment": 99,
+        "user": 85,
+        "role": 3,
+        "hold": true,
+        "admin_hold": false,
+        "updated": "2025-01-05T17:46:06.371Z"
+    }
+},
+{
+    "model": "equipment.userlistentry",
+    "pk": 1966,
+    "fields": {
+        "equipment": 97,
+        "user": 99,
+        "role": 3,
+        "hold": true,
+        "admin_hold": false,
+        "updated": "2025-01-05T17:46:06.375Z"
+    }
+},
+{
+    "model": "equipment.userlistentry",
+    "pk": 1967,
+    "fields": {
+        "equipment": 100,
+        "user": 88,
+        "role": 1,
+        "hold": true,
+        "admin_hold": false,
+        "updated": "2025-01-05T17:46:06.378Z"
+    }
+},
+{
+    "model": "equipment.userlistentry",
+    "pk": 1968,
+    "fields": {
+        "equipment": 86,
+        "user": 99,
+        "role": 3,
+        "hold": true,
+        "admin_hold": false,
+        "updated": "2025-01-05T17:46:06.382Z"
+    }
+},
+{
+    "model": "equipment.userlistentry",
+    "pk": 1969,
+    "fields": {
+        "equipment": 99,
+        "user": 89,
+        "role": 2,
+        "hold": true,
+        "admin_hold": false,
+        "updated": "2025-01-05T17:46:06.386Z"
+    }
+},
+{
+    "model": "equipment.userlistentry",
+    "pk": 1970,
+    "fields": {
+        "equipment": 94,
+        "user": 99,
+        "role": 1,
+        "hold": true,
+        "admin_hold": false,
+        "updated": "2025-01-05T17:46:06.389Z"
+    }
+},
+{
+    "model": "equipment.userlistentry",
+    "pk": 1971,
+    "fields": {
+        "equipment": 100,
+        "user": 89,
+        "role": 3,
+        "hold": true,
+        "admin_hold": false,
+        "updated": "2025-01-05T17:46:06.393Z"
+    }
+},
+{
+    "model": "equipment.userlistentry",
+    "pk": 1972,
+    "fields": {
+        "equipment": 85,
+        "user": 99,
+        "role": 2,
+        "hold": true,
+        "admin_hold": false,
+        "updated": "2025-01-05T17:46:06.396Z"
+    }
+},
+{
+    "model": "equipment.userlistentry",
+    "pk": 1973,
+    "fields": {
+        "equipment": 99,
+        "user": 99,
+        "role": 3,
+        "hold": true,
+        "admin_hold": false,
+        "updated": "2025-01-05T17:46:06.400Z"
+    }
+},
+{
+    "model": "equipment.userlistentry",
+    "pk": 1974,
+    "fields": {
+        "equipment": 101,
+        "user": 88,
+        "role": 1,
+        "hold": true,
+        "admin_hold": false,
+        "updated": "2025-01-05T17:46:06.403Z"
+    }
+},
+{
+    "model": "equipment.userlistentry",
+    "pk": 1975,
+    "fields": {
+        "equipment": 102,
+        "user": 92,
+        "role": 1,
+        "hold": true,
+        "admin_hold": false,
+        "updated": "2025-01-05T17:46:06.406Z"
+    }
+},
+{
+    "model": "equipment.userlistentry",
+    "pk": 1976,
+    "fields": {
+        "equipment": 103,
+        "user": 88,
+        "role": 1,
+        "hold": true,
+        "admin_hold": false,
+        "updated": "2025-01-05T17:46:06.410Z"
+    }
+},
+{
+    "model": "equipment.userlistentry",
+    "pk": 1977,
+    "fields": {
+        "equipment": 104,
+        "user": 88,
+        "role": 1,
+        "hold": true,
+        "admin_hold": false,
+        "updated": "2025-01-05T17:46:06.413Z"
+    }
+},
+{
+    "model": "equipment.userlistentry",
+    "pk": 1978,
+    "fields": {
+        "equipment": 104,
+        "user": 90,
+        "role": 1,
+        "hold": true,
+        "admin_hold": false,
+        "updated": "2025-01-05T17:46:06.417Z"
+    }
+},
+{
+    "model": "equipment.userlistentry",
+    "pk": 1979,
+    "fields": {
+        "equipment": 105,
+        "user": 88,
+        "role": 1,
+        "hold": true,
+        "admin_hold": false,
+        "updated": "2025-01-05T17:46:06.420Z"
+    }
+},
+{
+    "model": "equipment.userlistentry",
+    "pk": 1980,
+    "fields": {
+        "equipment": 105,
+        "user": 100,
+        "role": 1,
+        "hold": true,
+        "admin_hold": false,
+        "updated": "2025-01-05T17:46:06.424Z"
+    }
+},
+{
+    "model": "equipment.userlistentry",
+    "pk": 1981,
+    "fields": {
+        "equipment": 91,
+        "user": 89,
+        "role": 2,
+        "hold": true,
+        "admin_hold": false,
+        "updated": "2025-01-05T17:46:06.427Z"
+    }
+},
+{
+    "model": "equipment.userlistentry",
+    "pk": 1982,
+    "fields": {
+        "equipment": 83,
+        "user": 89,
+        "role": 3,
+        "hold": true,
+        "admin_hold": false,
+        "updated": "2025-01-05T17:46:06.431Z"
+    }
+},
+{
+    "model": "equipment.userlistentry",
+    "pk": 1983,
+    "fields": {
+        "equipment": 101,
+        "user": 89,
+        "role": 2,
+        "hold": true,
+        "admin_hold": false,
+        "updated": "2025-01-05T17:46:06.434Z"
+    }
+},
+{
+    "model": "equipment.userlistentry",
+    "pk": 1984,
+    "fields": {
+        "equipment": 94,
+        "user": 89,
+        "role": 2,
+        "hold": true,
+        "admin_hold": false,
+        "updated": "2025-01-05T17:46:06.437Z"
+    }
+},
+{
+    "model": "equipment.userlistentry",
+    "pk": 1985,
+    "fields": {
+        "equipment": 90,
+        "user": 99,
+        "role": 1,
+        "hold": true,
+        "admin_hold": false,
+        "updated": "2025-01-05T17:46:06.441Z"
+    }
+},
+{
+    "model": "equipment.userlistentry",
+    "pk": 1986,
+    "fields": {
+        "equipment": 102,
+        "user": 89,
+        "role": 2,
+        "hold": true,
+        "admin_hold": false,
+        "updated": "2025-01-05T17:46:06.444Z"
+    }
+},
+{
+    "model": "equipment.userlistentry",
+    "pk": 1987,
+    "fields": {
+        "equipment": 89,
+        "user": 89,
+        "role": 2,
+        "hold": true,
+        "admin_hold": false,
+        "updated": "2025-01-05T17:46:06.448Z"
+    }
+},
+{
+    "model": "equipment.userlistentry",
+    "pk": 1988,
+    "fields": {
+        "equipment": 91,
+        "user": 88,
+        "role": 3,
+        "hold": true,
+        "admin_hold": false,
+        "updated": "2025-01-05T17:46:06.451Z"
+    }
+},
+{
+    "model": "equipment.userlistentry",
+    "pk": 1989,
+    "fields": {
+        "equipment": 106,
+        "user": 88,
+        "role": 1,
+        "hold": true,
+        "admin_hold": false,
+        "updated": "2025-01-05T17:46:06.455Z"
+    }
+},
+{
+    "model": "equipment.userlistentry",
+    "pk": 1990,
+    "fields": {
+        "equipment": 77,
+        "user": 99,
+        "role": 1,
+        "hold": true,
+        "admin_hold": false,
+        "updated": "2025-01-05T17:46:06.458Z"
+    }
+},
+{
+    "model": "equipment.userlistentry",
+    "pk": 1991,
+    "fields": {
+        "equipment": 77,
+        "user": 105,
+        "role": 3,
+        "hold": true,
+        "admin_hold": false,
+        "updated": "2025-01-05T17:46:06.462Z"
+    }
+},
+{
+    "model": "equipment.userlistentry",
+    "pk": 1992,
+    "fields": {
+        "equipment": 94,
+        "user": 105,
+        "role": 2,
+        "hold": true,
+        "admin_hold": false,
+        "updated": "2025-01-05T17:46:06.465Z"
+    }
+},
+{
+    "model": "equipment.userlistentry",
+    "pk": 1993,
+    "fields": {
+        "equipment": 95,
+        "user": 105,
+        "role": 2,
+        "hold": true,
+        "admin_hold": false,
+        "updated": "2025-01-05T17:46:06.469Z"
+    }
+},
+{
+    "model": "equipment.userlistentry",
+    "pk": 1994,
+    "fields": {
+        "equipment": 88,
+        "user": 105,
+        "role": 2,
+        "hold": true,
+        "admin_hold": false,
+        "updated": "2025-01-05T17:46:06.472Z"
+    }
+},
+{
+    "model": "equipment.userlistentry",
+    "pk": 1995,
+    "fields": {
+        "equipment": 85,
+        "user": 105,
+        "role": 2,
+        "hold": true,
+        "admin_hold": false,
+        "updated": "2025-01-05T17:46:06.476Z"
+    }
+},
+{
+    "model": "equipment.userlistentry",
+    "pk": 1996,
+    "fields": {
+        "equipment": 98,
+        "user": 105,
+        "role": 2,
+        "hold": true,
+        "admin_hold": false,
+        "updated": "2025-01-05T17:46:06.479Z"
+    }
+},
+{
+    "model": "equipment.userlistentry",
+    "pk": 1997,
+    "fields": {
+        "equipment": 104,
+        "user": 105,
+        "role": 2,
+        "hold": true,
+        "admin_hold": false,
+        "updated": "2025-01-05T17:46:06.483Z"
+    }
+},
+{
+    "model": "equipment.userlistentry",
+    "pk": 1998,
+    "fields": {
+        "equipment": 78,
+        "user": 105,
+        "role": 2,
+        "hold": true,
+        "admin_hold": false,
+        "updated": "2025-01-05T17:46:06.486Z"
+    }
+},
+{
+    "model": "equipment.userlistentry",
+    "pk": 1999,
+    "fields": {
+        "equipment": 101,
+        "user": 105,
+        "role": 3,
+        "hold": true,
+        "admin_hold": false,
+        "updated": "2025-01-05T17:46:06.490Z"
+    }
+},
+{
+    "model": "equipment.userlistentry",
+    "pk": 2000,
+    "fields": {
+        "equipment": 99,
+        "user": 105,
+        "role": 2,
+        "hold": true,
+        "admin_hold": false,
+        "updated": "2025-01-05T17:46:06.493Z"
+    }
+},
+{
+    "model": "equipment.userlistentry",
+    "pk": 2001,
+    "fields": {
+        "equipment": 79,
+        "user": 87,
+        "role": 2,
+        "hold": false,
+        "admin_hold": false,
+        "updated": "2025-01-05T21:32:08.726Z"
+    }
+},
+{
+    "model": "equipment.userlistentry",
+    "pk": 2002,
+    "fields": {
+        "equipment": 92,
+        "user": 106,
+        "role": 2,
+        "hold": true,
+        "admin_hold": false,
+        "updated": "2025-01-05T17:46:06.500Z"
+    }
+},
+{
+    "model": "equipment.userlistentry",
+    "pk": 2003,
+    "fields": {
+        "equipment": 77,
+        "user": 106,
+        "role": 2,
+        "hold": true,
+        "admin_hold": false,
+        "updated": "2025-01-05T17:46:06.504Z"
+    }
+},
+{
+    "model": "equipment.userlistentry",
+    "pk": 2004,
+    "fields": {
+        "equipment": 94,
+        "user": 106,
+        "role": 2,
+        "hold": true,
+        "admin_hold": false,
+        "updated": "2025-01-05T17:46:06.507Z"
+    }
+},
+{
+    "model": "equipment.userlistentry",
+    "pk": 2005,
+    "fields": {
+        "equipment": 91,
+        "user": 106,
+        "role": 2,
+        "hold": true,
+        "admin_hold": false,
+        "updated": "2025-01-05T17:46:06.511Z"
+    }
+},
+{
+    "model": "equipment.userlistentry",
+    "pk": 2006,
+    "fields": {
+        "equipment": 96,
+        "user": 106,
+        "role": 2,
+        "hold": true,
+        "admin_hold": false,
+        "updated": "2025-01-05T17:46:06.514Z"
+    }
+},
+{
+    "model": "equipment.userlistentry",
+    "pk": 2007,
+    "fields": {
+        "equipment": 79,
+        "user": 106,
+        "role": 2,
+        "hold": true,
+        "admin_hold": false,
+        "updated": "2025-01-05T17:46:06.518Z"
+    }
+},
+{
+    "model": "equipment.userlistentry",
+    "pk": 2008,
+    "fields": {
+        "equipment": 97,
+        "user": 106,
+        "role": 2,
+        "hold": true,
+        "admin_hold": false,
+        "updated": "2025-01-05T17:46:06.521Z"
+    }
+},
+{
+    "model": "equipment.userlistentry",
+    "pk": 2009,
+    "fields": {
+        "equipment": 98,
+        "user": 106,
+        "role": 2,
+        "hold": true,
+        "admin_hold": false,
+        "updated": "2025-01-05T17:46:06.525Z"
+    }
+},
+{
+    "model": "equipment.userlistentry",
+    "pk": 2010,
+    "fields": {
+        "equipment": 102,
+        "user": 106,
+        "role": 2,
+        "hold": true,
+        "admin_hold": false,
+        "updated": "2025-01-05T17:46:06.528Z"
+    }
+},
+{
+    "model": "equipment.userlistentry",
+    "pk": 2011,
+    "fields": {
+        "equipment": 83,
+        "user": 106,
+        "role": 2,
+        "hold": true,
+        "admin_hold": false,
+        "updated": "2025-01-05T17:46:06.531Z"
+    }
+},
+{
+    "model": "equipment.userlistentry",
+    "pk": 2012,
+    "fields": {
+        "equipment": 105,
+        "user": 106,
+        "role": 2,
+        "hold": true,
+        "admin_hold": false,
+        "updated": "2025-01-05T17:46:06.535Z"
+    }
+},
+{
+    "model": "equipment.userlistentry",
+    "pk": 2013,
+    "fields": {
+        "equipment": 106,
+        "user": 106,
+        "role": 2,
+        "hold": true,
+        "admin_hold": false,
+        "updated": "2025-01-05T17:46:06.538Z"
+    }
+},
+{
+    "model": "equipment.userlistentry",
+    "pk": 2014,
+    "fields": {
+        "equipment": 104,
+        "user": 106,
+        "role": 2,
+        "hold": true,
+        "admin_hold": false,
+        "updated": "2025-01-05T17:46:06.542Z"
+    }
+},
+{
+    "model": "equipment.userlistentry",
+    "pk": 2015,
+    "fields": {
+        "equipment": 93,
+        "user": 106,
+        "role": 2,
+        "hold": true,
+        "admin_hold": false,
+        "updated": "2025-01-05T17:46:06.545Z"
+    }
+},
+{
+    "model": "equipment.userlistentry",
+    "pk": 2016,
+    "fields": {
+        "equipment": 89,
+        "user": 106,
+        "role": 2,
+        "hold": true,
+        "admin_hold": false,
+        "updated": "2025-01-05T17:46:06.549Z"
+    }
+},
+{
+    "model": "equipment.userlistentry",
+    "pk": 2017,
+    "fields": {
+        "equipment": 78,
+        "user": 106,
+        "role": 2,
+        "hold": true,
+        "admin_hold": false,
+        "updated": "2025-01-05T17:46:06.552Z"
+    }
+},
+{
+    "model": "equipment.userlistentry",
+    "pk": 2018,
+    "fields": {
+        "equipment": 101,
+        "user": 106,
+        "role": 2,
+        "hold": true,
+        "admin_hold": false,
+        "updated": "2025-01-05T17:46:06.556Z"
+    }
+},
+{
+    "model": "equipment.userlistentry",
+    "pk": 2019,
+    "fields": {
+        "equipment": 99,
+        "user": 106,
+        "role": 2,
+        "hold": true,
+        "admin_hold": false,
+        "updated": "2025-01-05T17:46:06.559Z"
+    }
+},
+{
+    "model": "equipment.userlistentry",
+    "pk": 2020,
+    "fields": {
+        "equipment": 82,
+        "user": 106,
+        "role": 2,
+        "hold": true,
+        "admin_hold": false,
+        "updated": "2025-01-05T17:46:06.563Z"
+    }
+},
+{
+    "model": "equipment.userlistentry",
+    "pk": 2021,
+    "fields": {
+        "equipment": 86,
+        "user": 106,
+        "role": 2,
+        "hold": true,
+        "admin_hold": false,
+        "updated": "2025-01-05T17:46:06.566Z"
+    }
+},
+{
+    "model": "equipment.userlistentry",
+    "pk": 2022,
+    "fields": {
+        "equipment": 107,
+        "user": 88,
+        "role": 1,
+        "hold": true,
+        "admin_hold": false,
+        "updated": "2025-01-05T17:46:06.569Z"
+    }
+},
+{
+    "model": "equipment.userlistentry",
+    "pk": 2023,
+    "fields": {
+        "equipment": 101,
+        "user": 87,
+        "role": 3,
+        "hold": false,
+        "admin_hold": false,
+        "updated": "2025-01-05T21:34:19.398Z"
+    }
+},
+{
+    "model": "equipment.userlistentry",
+    "pk": 2024,
+    "fields": {
+        "equipment": 96,
+        "user": 99,
+        "role": 3,
+        "hold": true,
+        "admin_hold": false,
+        "updated": "2025-01-05T17:46:06.576Z"
+    }
+},
+{
+    "model": "equipment.userlistentry",
+    "pk": 2025,
+    "fields": {
+        "equipment": 110,
+        "user": 99,
+        "role": 4,
+        "hold": true,
+        "admin_hold": false,
+        "updated": "2025-01-05T17:46:06.580Z"
+    }
+},
+{
+    "model": "equipment.userlistentry",
+    "pk": 2026,
+    "fields": {
+        "equipment": 77,
+        "user": 109,
+        "role": 2,
+        "hold": true,
+        "admin_hold": false,
+        "updated": "2025-01-05T17:46:06.583Z"
+    }
+},
+{
+    "model": "equipment.userlistentry",
+    "pk": 2027,
+    "fields": {
+        "equipment": 94,
+        "user": 109,
+        "role": 2,
+        "hold": true,
+        "admin_hold": false,
+        "updated": "2025-01-05T17:46:06.587Z"
+    }
+},
+{
+    "model": "equipment.userlistentry",
+    "pk": 2028,
+    "fields": {
+        "equipment": 101,
+        "user": 109,
+        "role": 3,
+        "hold": true,
+        "admin_hold": false,
+        "updated": "2025-01-05T17:46:06.590Z"
+    }
+},
+{
+    "model": "equipment.userlistentry",
+    "pk": 2029,
+    "fields": {
+        "equipment": 99,
+        "user": 109,
+        "role": 2,
+        "hold": true,
+        "admin_hold": false,
+        "updated": "2025-01-05T17:46:06.594Z"
+    }
+},
+{
+    "model": "equipment.userlistentry",
+    "pk": 2030,
+    "fields": {
+        "equipment": 112,
+        "user": 88,
+        "role": 1,
+        "hold": true,
+        "admin_hold": false,
+        "updated": "2025-01-05T17:46:06.598Z"
+    }
+},
+{
+    "model": "equipment.userlistentry",
+    "pk": 2031,
+    "fields": {
+        "equipment": 96,
+        "user": 88,
+        "role": 1,
+        "hold": true,
+        "admin_hold": false,
+        "updated": "2025-01-05T17:46:06.601Z"
+    }
+},
+{
+    "model": "equipment.userlistentry",
+    "pk": 2032,
+    "fields": {
+        "equipment": 89,
+        "user": 99,
+        "role": 3,
+        "hold": true,
+        "admin_hold": false,
+        "updated": "2025-01-05T17:46:06.604Z"
+    }
+},
+{
+    "model": "equipment.userlistentry",
+    "pk": 2033,
+    "fields": {
+        "equipment": 113,
+        "user": 88,
+        "role": 1,
+        "hold": true,
+        "admin_hold": false,
+        "updated": "2025-01-05T17:46:06.608Z"
+    }
+},
+{
+    "model": "equipment.userlistentry",
+    "pk": 2034,
+    "fields": {
+        "equipment": 113,
+        "user": 100,
+        "role": 1,
+        "hold": true,
+        "admin_hold": false,
+        "updated": "2025-01-05T17:46:06.611Z"
+    }
+},
+{
+    "model": "equipment.userlistentry",
+    "pk": 2035,
+    "fields": {
+        "equipment": 103,
+        "user": 99,
+        "role": 3,
+        "hold": true,
+        "admin_hold": false,
+        "updated": "2025-01-05T17:46:06.615Z"
+    }
+},
+{
+    "model": "equipment.userlistentry",
+    "pk": 2036,
+    "fields": {
+        "equipment": 113,
+        "user": 110,
+        "role": 2,
+        "hold": true,
+        "admin_hold": false,
+        "updated": "2025-01-05T17:46:06.618Z"
+    }
+},
+{
+    "model": "equipment.userlistentry",
+    "pk": 2037,
+    "fields": {
+        "equipment": 95,
+        "user": 110,
+        "role": 2,
+        "hold": true,
+        "admin_hold": false,
+        "updated": "2025-01-05T17:46:06.622Z"
+    }
+},
+{
+    "model": "equipment.userlistentry",
+    "pk": 2038,
+    "fields": {
+        "equipment": 88,
+        "user": 110,
+        "role": 2,
+        "hold": true,
+        "admin_hold": false,
+        "updated": "2025-01-05T17:46:06.625Z"
+    }
+},
+{
+    "model": "equipment.userlistentry",
+    "pk": 2039,
+    "fields": {
+        "equipment": 85,
+        "user": 110,
+        "role": 2,
+        "hold": true,
+        "admin_hold": false,
+        "updated": "2025-01-05T17:46:06.628Z"
+    }
+},
+{
+    "model": "equipment.userlistentry",
+    "pk": 2040,
+    "fields": {
+        "equipment": 80,
+        "user": 110,
+        "role": 2,
+        "hold": true,
+        "admin_hold": false,
+        "updated": "2025-01-05T17:46:06.632Z"
+    }
+},
+{
+    "model": "equipment.userlistentry",
+    "pk": 2041,
+    "fields": {
+        "equipment": 87,
+        "user": 110,
+        "role": 2,
+        "hold": true,
+        "admin_hold": false,
+        "updated": "2025-01-05T17:46:06.635Z"
+    }
+},
+{
+    "model": "equipment.userlistentry",
+    "pk": 2042,
+    "fields": {
+        "equipment": 103,
+        "user": 110,
+        "role": 2,
+        "hold": true,
+        "admin_hold": false,
+        "updated": "2025-01-05T17:46:06.639Z"
+    }
+},
+{
+    "model": "equipment.userlistentry",
+    "pk": 2043,
+    "fields": {
+        "equipment": 107,
+        "user": 110,
+        "role": 2,
+        "hold": true,
+        "admin_hold": false,
+        "updated": "2025-01-05T17:46:06.642Z"
+    }
+},
+{
+    "model": "equipment.userlistentry",
+    "pk": 2044,
+    "fields": {
+        "equipment": 106,
+        "user": 110,
+        "role": 2,
+        "hold": true,
+        "admin_hold": false,
+        "updated": "2025-01-05T17:46:06.646Z"
+    }
+},
+{
+    "model": "equipment.userlistentry",
+    "pk": 2045,
+    "fields": {
+        "equipment": 104,
+        "user": 110,
+        "role": 2,
+        "hold": true,
+        "admin_hold": false,
+        "updated": "2025-01-05T17:46:06.649Z"
+    }
+},
+{
+    "model": "equipment.userlistentry",
+    "pk": 2046,
+    "fields": {
+        "equipment": 84,
+        "user": 110,
+        "role": 2,
+        "hold": true,
+        "admin_hold": false,
+        "updated": "2025-01-05T17:46:06.653Z"
+    }
+},
+{
+    "model": "equipment.userlistentry",
+    "pk": 2047,
+    "fields": {
+        "equipment": 100,
+        "user": 110,
+        "role": 2,
+        "hold": true,
+        "admin_hold": false,
+        "updated": "2025-01-05T17:46:06.656Z"
+    }
+},
+{
+    "model": "equipment.userlistentry",
+    "pk": 2048,
+    "fields": {
+        "equipment": 93,
+        "user": 110,
+        "role": 2,
+        "hold": true,
+        "admin_hold": false,
+        "updated": "2025-01-05T17:46:06.659Z"
+    }
+},
+{
+    "model": "equipment.userlistentry",
+    "pk": 2049,
+    "fields": {
+        "equipment": 109,
+        "user": 110,
+        "role": 2,
+        "hold": true,
+        "admin_hold": false,
+        "updated": "2025-01-05T17:46:06.663Z"
+    }
+},
+{
+    "model": "equipment.userlistentry",
+    "pk": 2050,
+    "fields": {
+        "equipment": 111,
+        "user": 110,
+        "role": 2,
+        "hold": true,
+        "admin_hold": false,
+        "updated": "2025-01-05T17:46:06.666Z"
+    }
+},
+{
+    "model": "equipment.userlistentry",
+    "pk": 2051,
+    "fields": {
+        "equipment": 112,
+        "user": 110,
+        "role": 2,
+        "hold": true,
+        "admin_hold": false,
+        "updated": "2025-01-05T17:46:06.670Z"
+    }
+},
+{
+    "model": "equipment.userlistentry",
+    "pk": 2052,
+    "fields": {
+        "equipment": 78,
+        "user": 110,
+        "role": 2,
+        "hold": true,
+        "admin_hold": false,
+        "updated": "2025-01-05T17:46:06.673Z"
+    }
+},
+{
+    "model": "equipment.userlistentry",
+    "pk": 2053,
+    "fields": {
+        "equipment": 82,
+        "user": 110,
+        "role": 2,
+        "hold": true,
+        "admin_hold": false,
+        "updated": "2025-01-05T17:46:06.677Z"
+    }
+},
+{
+    "model": "equipment.userlistentry",
+    "pk": 2054,
+    "fields": {
+        "equipment": 90,
+        "user": 110,
+        "role": 2,
+        "hold": true,
+        "admin_hold": false,
+        "updated": "2025-01-05T17:46:06.680Z"
+    }
+},
+{
+    "model": "equipment.userlistentry",
+    "pk": 2055,
+    "fields": {
+        "equipment": 77,
+        "user": 111,
+        "role": 4,
+        "hold": true,
+        "admin_hold": false,
+        "updated": "2025-01-05T17:46:06.684Z"
+    }
+},
+{
+    "model": "equipment.userlistentry",
+    "pk": 2056,
+    "fields": {
+        "equipment": 94,
+        "user": 111,
+        "role": 3,
+        "hold": true,
+        "admin_hold": false,
+        "updated": "2025-01-05T17:46:06.687Z"
+    }
+},
+{
+    "model": "equipment.userlistentry",
+    "pk": 2057,
+    "fields": {
+        "equipment": 77,
+        "user": 112,
+        "role": 3,
+        "hold": true,
+        "admin_hold": false,
+        "updated": "2025-01-05T17:46:06.691Z"
+    }
+},
+{
+    "model": "equipment.userlistentry",
+    "pk": 2058,
+    "fields": {
+        "equipment": 103,
+        "user": 112,
+        "role": 3,
+        "hold": true,
+        "admin_hold": false,
+        "updated": "2025-01-05T17:46:06.694Z"
+    }
+},
+{
+    "model": "equipment.userlistentry",
+    "pk": 2059,
+    "fields": {
+        "equipment": 107,
+        "user": 112,
+        "role": 2,
+        "hold": true,
+        "admin_hold": false,
+        "updated": "2025-01-05T17:46:06.698Z"
+    }
+},
+{
+    "model": "equipment.userlistentry",
+    "pk": 2060,
+    "fields": {
+        "equipment": 105,
+        "user": 112,
+        "role": 4,
+        "hold": true,
+        "admin_hold": false,
+        "updated": "2025-01-05T17:46:06.701Z"
+    }
+},
+{
+    "model": "equipment.userlistentry",
+    "pk": 2061,
+    "fields": {
+        "equipment": 92,
+        "user": 113,
+        "role": 1,
+        "hold": true,
+        "admin_hold": false,
+        "updated": "2025-01-05T17:46:06.704Z"
+    }
+},
+{
+    "model": "equipment.userlistentry",
+    "pk": 2062,
+    "fields": {
+        "equipment": 101,
+        "user": 99,
+        "role": 3,
+        "hold": true,
+        "admin_hold": false,
+        "updated": "2025-01-05T17:46:06.708Z"
+    }
+},
+{
+    "model": "equipment.userlistentry",
+    "pk": 2063,
+    "fields": {
+        "equipment": 92,
+        "user": 115,
+        "role": 3,
+        "hold": true,
+        "admin_hold": false,
+        "updated": "2025-01-05T17:46:06.711Z"
+    }
+},
+{
+    "model": "equipment.userlistentry",
+    "pk": 2064,
+    "fields": {
+        "equipment": 96,
+        "user": 115,
+        "role": 3,
+        "hold": true,
+        "admin_hold": false,
+        "updated": "2025-01-05T17:46:06.715Z"
+    }
+},
+{
+    "model": "equipment.userlistentry",
+    "pk": 2065,
+    "fields": {
+        "equipment": 111,
+        "user": 115,
+        "role": 3,
+        "hold": true,
+        "admin_hold": false,
+        "updated": "2025-01-05T17:46:06.718Z"
+    }
+},
+{
+    "model": "equipment.userlistentry",
+    "pk": 2066,
+    "fields": {
+        "equipment": 109,
+        "user": 113,
+        "role": 3,
+        "hold": true,
+        "admin_hold": false,
+        "updated": "2025-01-05T17:46:06.722Z"
+    }
+},
+{
+    "model": "equipment.userlistentry",
+    "pk": 2067,
+    "fields": {
+        "equipment": 98,
+        "user": 115,
+        "role": 3,
+        "hold": true,
+        "admin_hold": false,
+        "updated": "2025-01-05T17:46:06.725Z"
+    }
+},
+{
+    "model": "equipment.userlistentry",
+    "pk": 2068,
+    "fields": {
+        "equipment": 99,
+        "user": 115,
+        "role": 4,
+        "hold": true,
+        "admin_hold": false,
+        "updated": "2025-01-05T17:46:06.729Z"
+    }
+},
+{
+    "model": "equipment.userlistentry",
+    "pk": 2069,
+    "fields": {
+        "equipment": 92,
+        "user": 117,
+        "role": 3,
+        "hold": true,
+        "admin_hold": false,
+        "updated": "2025-01-05T17:46:06.732Z"
+    }
+},
+{
+    "model": "equipment.userlistentry",
+    "pk": 2070,
+    "fields": {
+        "equipment": 110,
+        "user": 117,
+        "role": 3,
+        "hold": true,
+        "admin_hold": false,
+        "updated": "2025-01-05T17:46:06.736Z"
+    }
+},
+{
+    "model": "equipment.userlistentry",
+    "pk": 2071,
+    "fields": {
+        "equipment": 90,
+        "user": 117,
+        "role": 1,
+        "hold": true,
+        "admin_hold": false,
+        "updated": "2025-01-05T17:46:06.739Z"
+    }
+},
+{
+    "model": "equipment.userlistentry",
+    "pk": 2072,
+    "fields": {
+        "equipment": 111,
+        "user": 97,
+        "role": 2,
+        "hold": true,
+        "admin_hold": false,
+        "updated": "2025-01-05T17:46:06.743Z"
+    }
+},
+{
+    "model": "equipment.userlistentry",
+    "pk": 2073,
+    "fields": {
+        "equipment": 94,
+        "user": 112,
+        "role": 4,
+        "hold": true,
+        "admin_hold": false,
+        "updated": "2025-01-05T17:46:06.746Z"
+    }
+},
+{
+    "model": "equipment.userlistentry",
+    "pk": 2074,
+    "fields": {
+        "equipment": 98,
+        "user": 113,
+        "role": 3,
+        "hold": true,
+        "admin_hold": false,
+        "updated": "2025-01-05T17:46:06.750Z"
+    }
+},
+{
+    "model": "equipment.userlistentry",
+    "pk": 2075,
+    "fields": {
+        "equipment": 100,
+        "user": 106,
+        "role": 2,
+        "hold": true,
+        "admin_hold": false,
+        "updated": "2025-01-05T17:46:06.753Z"
+    }
+},
+{
+    "model": "equipment.userlistentry",
+    "pk": 2076,
+    "fields": {
+        "equipment": 79,
+        "user": 115,
+        "role": 3,
+        "hold": true,
+        "admin_hold": false,
+        "updated": "2025-01-05T17:46:06.758Z"
+    }
+},
+{
+    "model": "equipment.userlistentry",
+    "pk": 2077,
+    "fields": {
+        "equipment": 99,
+        "user": 111,
+        "role": 3,
+        "hold": true,
+        "admin_hold": false,
+        "updated": "2025-01-05T17:46:06.762Z"
+    }
+},
+{
+    "model": "equipment.userlistentry",
+    "pk": 2078,
+    "fields": {
+        "equipment": 99,
+        "user": 112,
+        "role": 3,
+        "hold": true,
+        "admin_hold": false,
+        "updated": "2025-01-05T17:46:06.766Z"
+    }
+},
+{
+    "model": "equipment.userlistentry",
+    "pk": 2079,
+    "fields": {
+        "equipment": 77,
+        "user": 117,
+        "role": 3,
+        "hold": true,
+        "admin_hold": false,
+        "updated": "2025-01-05T17:46:06.769Z"
+    }
+},
+{
+    "model": "equipment.userlistentry",
+    "pk": 2080,
+    "fields": {
+        "equipment": 101,
+        "user": 112,
+        "role": 3,
+        "hold": true,
+        "admin_hold": false,
+        "updated": "2025-01-05T17:46:06.773Z"
+    }
+},
+{
+    "model": "equipment.userlistentry",
+    "pk": 2081,
+    "fields": {
+        "equipment": 101,
+        "user": 117,
+        "role": 3,
+        "hold": true,
+        "admin_hold": false,
+        "updated": "2025-01-05T17:46:06.777Z"
+    }
+},
+{
+    "model": "equipment.userlistentry",
+    "pk": 2082,
+    "fields": {
+        "equipment": 99,
+        "user": 117,
+        "role": 3,
+        "hold": true,
+        "admin_hold": false,
+        "updated": "2025-01-05T17:46:06.780Z"
+    }
+},
+{
+    "model": "equipment.userlistentry",
+    "pk": 2083,
+    "fields": {
+        "equipment": 94,
+        "user": 117,
+        "role": 3,
+        "hold": true,
+        "admin_hold": false,
+        "updated": "2025-01-05T17:46:06.784Z"
+    }
+},
+{
+    "model": "equipment.userlistentry",
+    "pk": 2084,
+    "fields": {
+        "equipment": 101,
+        "user": 111,
+        "role": 3,
+        "hold": true,
+        "admin_hold": false,
+        "updated": "2025-01-05T17:46:06.788Z"
+    }
+},
+{
+    "model": "equipment.userlistentry",
+    "pk": 2085,
+    "fields": {
+        "equipment": 113,
+        "user": 117,
+        "role": 1,
+        "hold": true,
+        "admin_hold": false,
+        "updated": "2025-01-05T17:46:06.791Z"
+    }
+},
+{
+    "model": "equipment.userlistentry",
+    "pk": 2086,
+    "fields": {
+        "equipment": 92,
+        "user": 118,
+        "role": 1,
+        "hold": true,
+        "admin_hold": false,
+        "updated": "2025-01-05T17:46:06.795Z"
+    }
+},
+{
+    "model": "equipment.userlistentry",
+    "pk": 2087,
+    "fields": {
+        "equipment": 113,
+        "user": 118,
+        "role": 2,
+        "hold": true,
+        "admin_hold": false,
+        "updated": "2025-01-05T17:46:06.799Z"
+    }
+},
+{
+    "model": "equipment.userlistentry",
+    "pk": 2088,
+    "fields": {
+        "equipment": 98,
+        "user": 118,
+        "role": 1,
+        "hold": true,
+        "admin_hold": false,
+        "updated": "2025-01-05T17:46:06.802Z"
+    }
+},
+{
+    "model": "equipment.userlistentry",
+    "pk": 2089,
+    "fields": {
+        "equipment": 111,
+        "user": 118,
+        "role": 1,
+        "hold": true,
+        "admin_hold": false,
+        "updated": "2025-01-05T17:46:06.807Z"
+    }
+},
+{
+    "model": "equipment.userlistentry",
+    "pk": 2090,
+    "fields": {
+        "equipment": 92,
+        "user": 119,
+        "role": 3,
+        "hold": true,
+        "admin_hold": false,
+        "updated": "2025-01-05T17:46:06.810Z"
+    }
+},
+{
+    "model": "equipment.userlistentry",
+    "pk": 2091,
+    "fields": {
+        "equipment": 90,
+        "user": 118,
+        "role": 3,
+        "hold": true,
+        "admin_hold": false,
+        "updated": "2025-01-05T17:46:06.814Z"
+    }
+},
+{
+    "model": "equipment.userlistentry",
+    "pk": 2092,
+    "fields": {
+        "equipment": 83,
+        "user": 113,
+        "role": 3,
+        "hold": true,
+        "admin_hold": false,
+        "updated": "2025-01-05T17:46:06.818Z"
+    }
+},
+{
+    "model": "equipment.userlistentry",
+    "pk": 2093,
+    "fields": {
+        "equipment": 98,
+        "user": 97,
+        "role": 3,
+        "hold": true,
+        "admin_hold": false,
+        "updated": "2025-01-05T17:46:06.821Z"
+    }
+},
+{
+    "model": "equipment.userlistentry",
+    "pk": 2094,
+    "fields": {
+        "equipment": 77,
+        "user": 118,
+        "role": 3,
+        "hold": true,
+        "admin_hold": false,
+        "updated": "2025-01-05T17:46:06.825Z"
+    }
+},
+{
+    "model": "equipment.userlistentry",
+    "pk": 2095,
+    "fields": {
+        "equipment": 94,
+        "user": 118,
+        "role": 3,
+        "hold": true,
+        "admin_hold": false,
+        "updated": "2025-01-05T17:46:06.829Z"
+    }
+},
+{
+    "model": "equipment.userlistentry",
+    "pk": 2096,
+    "fields": {
+        "equipment": 96,
+        "user": 118,
+        "role": 3,
+        "hold": true,
+        "admin_hold": false,
+        "updated": "2025-01-05T17:46:06.832Z"
+    }
+},
+{
+    "model": "equipment.userlistentry",
+    "pk": 2097,
+    "fields": {
+        "equipment": 109,
+        "user": 118,
+        "role": 1,
+        "hold": true,
+        "admin_hold": false,
+        "updated": "2025-01-05T17:46:06.836Z"
+    }
+},
+{
+    "model": "equipment.userlistentry",
+    "pk": 2098,
+    "fields": {
+        "equipment": 112,
+        "user": 118,
+        "role": 4,
+        "hold": true,
+        "admin_hold": false,
+        "updated": "2025-01-05T17:46:06.839Z"
+    }
+},
+{
+    "model": "equipment.userlistentry",
+    "pk": 2099,
+    "fields": {
+        "equipment": 110,
+        "user": 118,
+        "role": 1,
+        "hold": true,
+        "admin_hold": false,
+        "updated": "2025-01-05T17:46:06.843Z"
+    }
+},
+{
+    "model": "equipment.userlistentry",
+    "pk": 2100,
+    "fields": {
+        "equipment": 101,
+        "user": 118,
+        "role": 3,
+        "hold": true,
+        "admin_hold": false,
+        "updated": "2025-01-05T17:46:06.847Z"
+    }
+},
+{
+    "model": "equipment.userlistentry",
+    "pk": 2101,
+    "fields": {
+        "equipment": 109,
+        "user": 120,
+        "role": 1,
+        "hold": true,
+        "admin_hold": false,
+        "updated": "2025-01-05T17:46:06.851Z"
+    }
+},
+{
+    "model": "equipment.userlistentry",
+    "pk": 2102,
+    "fields": {
+        "equipment": 111,
+        "user": 120,
+        "role": 1,
+        "hold": true,
+        "admin_hold": false,
+        "updated": "2025-01-05T17:46:06.854Z"
+    }
+},
+{
+    "model": "equipment.userlistentry",
+    "pk": 2103,
+    "fields": {
+        "equipment": 112,
+        "user": 120,
+        "role": 1,
+        "hold": true,
+        "admin_hold": false,
+        "updated": "2025-01-05T17:46:06.858Z"
+    }
+},
+{
+    "model": "equipment.userlistentry",
+    "pk": 2104,
+    "fields": {
+        "equipment": 110,
+        "user": 120,
+        "role": 1,
+        "hold": true,
+        "admin_hold": false,
+        "updated": "2025-01-05T17:46:06.861Z"
+    }
+},
+{
+    "model": "equipment.userlistentry",
+    "pk": 2105,
+    "fields": {
+        "equipment": 90,
+        "user": 112,
+        "role": 3,
+        "hold": true,
+        "admin_hold": false,
+        "updated": "2025-01-05T17:46:06.865Z"
+    }
+},
+{
+    "model": "equipment.userlistentry",
+    "pk": 2106,
+    "fields": {
+        "equipment": 90,
+        "user": 111,
+        "role": 3,
+        "hold": true,
+        "admin_hold": false,
+        "updated": "2025-01-05T17:46:06.868Z"
+    }
+},
+{
+    "model": "equipment.userlistentry",
+    "pk": 2107,
+    "fields": {
+        "equipment": 92,
+        "user": 121,
+        "role": 3,
+        "hold": true,
+        "admin_hold": false,
+        "updated": "2025-01-05T17:46:06.872Z"
+    }
+},
+{
+    "model": "equipment.userlistentry",
+    "pk": 2108,
+    "fields": {
+        "equipment": 77,
+        "user": 121,
+        "role": 4,
+        "hold": true,
+        "admin_hold": false,
+        "updated": "2025-01-05T17:46:06.875Z"
+    }
+},
+{
+    "model": "equipment.userlistentry",
+    "pk": 2109,
+    "fields": {
+        "equipment": 94,
+        "user": 121,
+        "role": 4,
+        "hold": true,
+        "admin_hold": false,
+        "updated": "2025-01-05T17:46:06.879Z"
+    }
+},
+{
+    "model": "equipment.userlistentry",
+    "pk": 2110,
+    "fields": {
+        "equipment": 99,
+        "user": 113,
+        "role": 3,
+        "hold": true,
+        "admin_hold": false,
+        "updated": "2025-01-05T17:46:06.882Z"
+    }
+},
+{
+    "model": "equipment.userlistentry",
+    "pk": 2111,
+    "fields": {
+        "equipment": 101,
+        "user": 113,
+        "role": 3,
+        "hold": true,
+        "admin_hold": false,
+        "updated": "2025-01-05T17:46:06.885Z"
+    }
+},
+{
+    "model": "equipment.userlistentry",
+    "pk": 2112,
+    "fields": {
+        "equipment": 81,
+        "user": 113,
+        "role": 1,
+        "hold": true,
+        "admin_hold": false,
+        "updated": "2025-01-05T17:46:06.889Z"
+    }
+},
+{
+    "model": "equipment.userlistentry",
+    "pk": 2113,
+    "fields": {
+        "equipment": 88,
+        "user": 113,
+        "role": 3,
+        "hold": true,
+        "admin_hold": false,
+        "updated": "2025-01-05T17:46:06.892Z"
+    }
+},
+{
+    "model": "equipment.userlistentry",
+    "pk": 2114,
+    "fields": {
+        "equipment": 105,
+        "user": 113,
+        "role": 3,
+        "hold": true,
+        "admin_hold": false,
+        "updated": "2025-01-05T17:46:06.896Z"
+    }
+},
+{
+    "model": "equipment.userlistentry",
+    "pk": 2115,
+    "fields": {
+        "equipment": 106,
+        "user": 99,
+        "role": 3,
+        "hold": true,
+        "admin_hold": false,
+        "updated": "2025-01-05T17:46:06.899Z"
+    }
+},
+{
+    "model": "equipment.userlistentry",
+    "pk": 2116,
+    "fields": {
+        "equipment": 84,
+        "user": 113,
+        "role": 3,
+        "hold": true,
+        "admin_hold": false,
+        "updated": "2025-01-05T17:46:06.903Z"
+    }
+},
+{
+    "model": "equipment.userlistentry",
+    "pk": 2117,
+    "fields": {
+        "equipment": 89,
+        "user": 113,
+        "role": 3,
+        "hold": true,
+        "admin_hold": false,
+        "updated": "2025-01-05T17:46:06.906Z"
+    }
+},
+{
+    "model": "equipment.userlistentry",
+    "pk": 2118,
+    "fields": {
+        "equipment": 90,
+        "user": 114,
+        "role": 3,
+        "hold": true,
+        "admin_hold": false,
+        "updated": "2025-01-05T17:46:06.910Z"
+    }
+},
+{
+    "model": "equipment.userlistentry",
+    "pk": 2119,
+    "fields": {
+        "equipment": 90,
+        "user": 113,
+        "role": 3,
+        "hold": true,
+        "admin_hold": false,
+        "updated": "2025-01-05T17:46:06.913Z"
+    }
+},
+{
+    "model": "equipment.userlistentry",
+    "pk": 2120,
+    "fields": {
+        "equipment": 101,
+        "user": 114,
+        "role": 4,
+        "hold": true,
+        "admin_hold": false,
+        "updated": "2025-01-05T17:46:06.916Z"
+    }
+},
+{
+    "model": "equipment.userlistentry",
+    "pk": 2121,
+    "fields": {
+        "equipment": 99,
+        "user": 114,
+        "role": 4,
+        "hold": true,
+        "admin_hold": false,
+        "updated": "2025-01-05T17:46:06.920Z"
+    }
+},
+{
+    "model": "equipment.userlistentry",
+    "pk": 2122,
+    "fields": {
+        "equipment": 90,
+        "user": 119,
+        "role": 3,
+        "hold": true,
+        "admin_hold": false,
+        "updated": "2025-01-05T17:46:06.923Z"
+    }
+},
+{
+    "model": "equipment.userlistentry",
+    "pk": 2123,
+    "fields": {
+        "equipment": 99,
+        "user": 118,
+        "role": 3,
+        "hold": true,
+        "admin_hold": false,
+        "updated": "2025-01-05T17:46:06.927Z"
+    }
+},
+{
+    "model": "equipment.userlistentry",
+    "pk": 2124,
+    "fields": {
+        "equipment": 79,
+        "user": 118,
+        "role": 4,
+        "hold": true,
+        "admin_hold": false,
+        "updated": "2025-01-05T17:46:06.930Z"
+    }
+},
+{
+    "model": "equipment.userlistentry",
+    "pk": 2125,
+    "fields": {
+        "equipment": 96,
+        "user": 112,
+        "role": 4,
+        "hold": true,
+        "admin_hold": false,
+        "updated": "2025-01-05T17:46:06.934Z"
+    }
+},
+{
+    "model": "equipment.userlistentry",
+    "pk": 2126,
+    "fields": {
+        "equipment": 106,
+        "user": 86,
+        "role": 1,
+        "hold": true,
+        "admin_hold": false,
+        "updated": "2025-01-05T17:46:06.937Z"
+    }
+},
+{
+    "model": "equipment.userlistentry",
+    "pk": 2127,
+    "fields": {
+        "equipment": 100,
+        "user": 119,
+        "role": 1,
+        "hold": true,
+        "admin_hold": false,
+        "updated": "2025-01-05T17:46:06.941Z"
+    }
+},
+{
+    "model": "equipment.userlistentry",
+    "pk": 2128,
+    "fields": {
+        "equipment": 89,
+        "user": 115,
+        "role": 1,
+        "hold": true,
+        "admin_hold": false,
+        "updated": "2025-01-05T17:46:06.944Z"
+    }
+},
+{
+    "model": "equipment.userlistentry",
+    "pk": 2129,
+    "fields": {
+        "equipment": 101,
+        "user": 115,
+        "role": 1,
+        "hold": true,
+        "admin_hold": false,
+        "updated": "2025-01-05T17:46:06.948Z"
+    }
+},
+{
+    "model": "equipment.userlistentry",
+    "pk": 2130,
+    "fields": {
+        "equipment": 99,
+        "user": 119,
+        "role": 1,
+        "hold": true,
+        "admin_hold": false,
+        "updated": "2025-01-05T17:46:06.951Z"
+    }
+},
+{
+    "model": "equipment.userlistentry",
+    "pk": 2131,
+    "fields": {
+        "equipment": 92,
+        "user": 120,
+        "role": 3,
+        "hold": true,
+        "admin_hold": false,
+        "updated": "2025-01-05T17:46:06.954Z"
+    }
+},
+{
+    "model": "equipment.userlistentry",
+    "pk": 2132,
+    "fields": {
+        "equipment": 98,
+        "user": 120,
+        "role": 3,
+        "hold": true,
+        "admin_hold": false,
+        "updated": "2025-01-05T17:46:06.958Z"
+    }
+},
+{
+    "model": "equipment.userlistentry",
+    "pk": 2133,
+    "fields": {
+        "equipment": 79,
+        "user": 97,
+        "role": 2,
+        "hold": true,
+        "admin_hold": false,
+        "updated": "2025-01-05T17:46:06.961Z"
+    }
+},
+{
+    "model": "equipment.userlistentry",
+    "pk": 2134,
+    "fields": {
+        "equipment": 96,
+        "user": 97,
+        "role": 2,
+        "hold": true,
+        "admin_hold": false,
+        "updated": "2025-01-05T17:46:06.965Z"
+    }
+},
+{
+    "model": "equipment.userlistentry",
+    "pk": 2135,
+    "fields": {
+        "equipment": 111,
+        "user": 119,
+        "role": 3,
+        "hold": true,
+        "admin_hold": false,
+        "updated": "2025-01-05T17:46:06.968Z"
+    }
+},
+{
+    "model": "equipment.userlistentry",
+    "pk": 2136,
+    "fields": {
+        "equipment": 98,
+        "user": 119,
+        "role": 3,
+        "hold": true,
+        "admin_hold": false,
+        "updated": "2025-01-05T17:46:06.972Z"
+    }
+},
+{
+    "model": "equipment.userlistentry",
+    "pk": 2137,
+    "fields": {
+        "equipment": 96,
+        "user": 119,
+        "role": 2,
+        "hold": true,
+        "admin_hold": false,
+        "updated": "2025-01-05T17:46:06.975Z"
+    }
+},
+{
+    "model": "equipment.userlistentry",
+    "pk": 2138,
+    "fields": {
+        "equipment": 101,
+        "user": 119,
+        "role": 3,
+        "hold": true,
+        "admin_hold": false,
+        "updated": "2025-01-05T17:46:06.979Z"
+    }
+},
+{
+    "model": "equipment.userlistentry",
+    "pk": 2139,
+    "fields": {
+        "equipment": 92,
+        "user": 114,
+        "role": 3,
+        "hold": true,
+        "admin_hold": false,
+        "updated": "2025-01-05T17:46:06.982Z"
+    }
+},
+{
+    "model": "equipment.userlistentry",
+    "pk": 2140,
+    "fields": {
+        "equipment": 109,
+        "user": 114,
+        "role": 3,
+        "hold": true,
+        "admin_hold": false,
+        "updated": "2025-01-05T17:46:06.986Z"
+    }
+},
+{
+    "model": "equipment.userlistentry",
+    "pk": 2141,
+    "fields": {
+        "equipment": 81,
+        "user": 114,
+        "role": 3,
+        "hold": true,
+        "admin_hold": false,
+        "updated": "2025-01-05T17:46:06.989Z"
+    }
+},
+{
+    "model": "equipment.userlistentry",
+    "pk": 2142,
+    "fields": {
+        "equipment": 93,
+        "user": 123,
+        "role": 2,
+        "hold": true,
+        "admin_hold": false,
+        "updated": "2025-01-05T17:46:06.993Z"
+    }
+},
+{
+    "model": "equipment.userlistentry",
+    "pk": 2143,
+    "fields": {
+        "equipment": 90,
+        "user": 123,
+        "role": 3,
+        "hold": true,
+        "admin_hold": false,
+        "updated": "2025-01-05T17:46:06.996Z"
+    }
+},
+{
+    "model": "equipment.userlistentry",
+    "pk": 2144,
+    "fields": {
+        "equipment": 101,
+        "user": 123,
+        "role": 2,
+        "hold": true,
+        "admin_hold": false,
+        "updated": "2025-01-05T17:46:06.999Z"
+    }
+},
+{
+    "model": "equipment.userlistentry",
+    "pk": 2145,
+    "fields": {
+        "equipment": 99,
+        "user": 123,
+        "role": 2,
+        "hold": true,
+        "admin_hold": false,
+        "updated": "2025-01-05T17:46:07.003Z"
+    }
+},
+{
+    "model": "equipment.userlistentry",
+    "pk": 2146,
+    "fields": {
+        "equipment": 97,
+        "user": 124,
+        "role": 4,
+        "hold": true,
+        "admin_hold": false,
+        "updated": "2025-01-05T17:46:07.006Z"
+    }
+},
+{
+    "model": "equipment.userlistentry",
+    "pk": 2147,
+    "fields": {
+        "equipment": 102,
+        "user": 124,
+        "role": 4,
+        "hold": true,
+        "admin_hold": false,
+        "updated": "2025-01-05T17:46:07.010Z"
+    }
+},
+{
+    "model": "equipment.userlistentry",
+    "pk": 2148,
+    "fields": {
+        "equipment": 90,
+        "user": 124,
+        "role": 3,
+        "hold": true,
+        "admin_hold": false,
+        "updated": "2025-01-05T17:46:07.013Z"
+    }
+},
+{
+    "model": "equipment.userlistentry",
+    "pk": 2149,
+    "fields": {
+        "equipment": 77,
+        "user": 126,
+        "role": 2,
+        "hold": true,
+        "admin_hold": false,
+        "updated": "2025-01-05T17:46:07.017Z"
+    }
+},
+{
+    "model": "equipment.userlistentry",
+    "pk": 2150,
+    "fields": {
+        "equipment": 94,
+        "user": 126,
+        "role": 2,
+        "hold": true,
+        "admin_hold": false,
+        "updated": "2025-01-05T17:46:07.020Z"
+    }
+},
+{
+    "model": "equipment.userlistentry",
+    "pk": 2151,
+    "fields": {
+        "equipment": 92,
+        "user": 123,
+        "role": 3,
+        "hold": true,
+        "admin_hold": false,
+        "updated": "2025-01-05T17:46:07.024Z"
+    }
+},
+{
+    "model": "equipment.userlistentry",
+    "pk": 2152,
+    "fields": {
+        "equipment": 92,
+        "user": 124,
+        "role": 3,
+        "hold": true,
+        "admin_hold": false,
+        "updated": "2025-01-05T17:46:07.027Z"
+    }
+},
+{
+    "model": "equipment.userlistentry",
+    "pk": 2153,
+    "fields": {
+        "equipment": 79,
+        "user": 124,
+        "role": 3,
+        "hold": true,
+        "admin_hold": false,
+        "updated": "2025-01-05T17:46:07.031Z"
+    }
+},
+{
+    "model": "equipment.userlistentry",
+    "pk": 2154,
+    "fields": {
+        "equipment": 92,
+        "user": 125,
+        "role": 3,
+        "hold": true,
+        "admin_hold": false,
+        "updated": "2025-01-05T17:46:07.035Z"
+    }
+},
+{
+    "model": "equipment.userlistentry",
+    "pk": 2155,
+    "fields": {
+        "equipment": 92,
+        "user": 126,
+        "role": 3,
+        "hold": true,
+        "admin_hold": false,
+        "updated": "2025-01-05T17:46:07.038Z"
+    }
+},
+{
+    "model": "equipment.userlistentry",
+    "pk": 2156,
+    "fields": {
+        "equipment": 112,
+        "user": 127,
+        "role": 3,
+        "hold": true,
+        "admin_hold": false,
+        "updated": "2025-01-05T17:46:07.042Z"
+    }
+},
+{
+    "model": "equipment.userlistentry",
+    "pk": 2157,
+    "fields": {
+        "equipment": 92,
+        "user": 127,
+        "role": 3,
+        "hold": true,
+        "admin_hold": false,
+        "updated": "2025-01-05T17:46:07.045Z"
+    }
+},
+{
+    "model": "equipment.userlistentry",
+    "pk": 2158,
+    "fields": {
+        "equipment": 83,
+        "user": 120,
+        "role": 4,
+        "hold": true,
+        "admin_hold": false,
+        "updated": "2025-01-05T17:46:07.049Z"
+    }
+},
+{
+    "model": "equipment.userlistentry",
+    "pk": 2159,
+    "fields": {
+        "equipment": 83,
+        "user": 86,
+        "role": 1,
+        "hold": true,
+        "admin_hold": false,
+        "updated": "2025-01-05T17:46:07.052Z"
+    }
+},
+{
+    "model": "equipment.userlistentry",
+    "pk": 2160,
+    "fields": {
+        "equipment": 83,
+        "user": 125,
+        "role": 2,
+        "hold": true,
+        "admin_hold": false,
+        "updated": "2025-01-05T17:46:07.056Z"
+    }
+},
+{
+    "model": "equipment.userlistentry",
+    "pk": 2161,
+    "fields": {
+        "equipment": 114,
+        "user": 120,
+        "role": 1,
+        "hold": true,
+        "admin_hold": false,
+        "updated": "2025-01-05T17:46:07.059Z"
+    }
+},
+{
+    "model": "equipment.userlistentry",
+    "pk": 2162,
+    "fields": {
+        "equipment": 114,
+        "user": 118,
+        "role": 4,
+        "hold": true,
+        "admin_hold": false,
+        "updated": "2025-01-05T17:46:07.063Z"
+    }
+},
+{
+    "model": "equipment.userlistentry",
+    "pk": 2163,
+    "fields": {
+        "equipment": 114,
+        "user": 117,
+        "role": 3,
+        "hold": true,
+        "admin_hold": false,
+        "updated": "2025-01-05T17:46:07.066Z"
+    }
+},
+{
+    "model": "equipment.userlistentry",
+    "pk": 2164,
+    "fields": {
+        "equipment": 114,
+        "user": 127,
+        "role": 3,
+        "hold": true,
+        "admin_hold": false,
+        "updated": "2025-01-05T17:46:07.069Z"
+    }
+},
+{
+    "model": "equipment.userlistentry",
+    "pk": 2165,
+    "fields": {
+        "equipment": 114,
+        "user": 89,
+        "role": 2,
+        "hold": true,
+        "admin_hold": false,
+        "updated": "2025-01-05T17:46:07.073Z"
+    }
+},
+{
+    "model": "equipment.userlistentry",
+    "pk": 2166,
+    "fields": {
+        "equipment": 114,
+        "user": 106,
+        "role": 2,
+        "hold": true,
+        "admin_hold": false,
+        "updated": "2025-01-05T17:46:07.076Z"
+    }
+},
+{
+    "model": "equipment.userlistentry",
+    "pk": 2167,
+    "fields": {
+        "equipment": 97,
+        "user": 125,
+        "role": 3,
+        "hold": true,
+        "admin_hold": false,
+        "updated": "2025-01-05T17:46:07.080Z"
+    }
+},
+{
+    "model": "equipment.userlistentry",
+    "pk": 2168,
+    "fields": {
+        "equipment": 114,
+        "user": 126,
+        "role": 3,
+        "hold": true,
+        "admin_hold": false,
+        "updated": "2025-01-05T17:46:07.083Z"
+    }
+},
+{
+    "model": "equipment.userlistentry",
+    "pk": 2169,
+    "fields": {
+        "equipment": 114,
+        "user": 114,
+        "role": 2,
+        "hold": true,
+        "admin_hold": false,
+        "updated": "2025-01-05T17:46:07.087Z"
+    }
+},
+{
+    "model": "equipment.userlistentry",
+    "pk": 2170,
+    "fields": {
+        "equipment": 94,
+        "user": 113,
+        "role": 2,
+        "hold": true,
+        "admin_hold": false,
+        "updated": "2025-01-05T17:46:07.090Z"
+    }
+},
+{
+    "model": "equipment.userlistentry",
+    "pk": 2171,
+    "fields": {
+        "equipment": 94,
+        "user": 123,
+        "role": 2,
+        "hold": true,
+        "admin_hold": false,
+        "updated": "2025-01-05T17:46:07.094Z"
+    }
+},
+{
+    "model": "equipment.userlistentry",
+    "pk": 2172,
+    "fields": {
+        "equipment": 98,
+        "user": 114,
+        "role": 3,
+        "hold": true,
+        "admin_hold": false,
+        "updated": "2025-01-05T17:46:07.097Z"
+    }
+},
+{
+    "model": "equipment.userlistentry",
+    "pk": 2173,
+    "fields": {
+        "equipment": 96,
+        "user": 126,
+        "role": 3,
+        "hold": true,
+        "admin_hold": false,
+        "updated": "2025-01-05T17:46:07.100Z"
+    }
+},
+{
+    "model": "equipment.userlistentry",
+    "pk": 2174,
+    "fields": {
+        "equipment": 94,
+        "user": 119,
+        "role": 2,
+        "hold": true,
+        "admin_hold": false,
+        "updated": "2025-01-05T17:46:07.104Z"
+    }
+},
+{
+    "model": "equipment.userlistentry",
+    "pk": 2175,
+    "fields": {
+        "equipment": 77,
+        "user": 128,
+        "role": 2,
+        "hold": true,
+        "admin_hold": false,
+        "updated": "2025-01-05T17:46:07.107Z"
+    }
+},
+{
+    "model": "equipment.userlistentry",
+    "pk": 2176,
+    "fields": {
+        "equipment": 94,
+        "user": 128,
+        "role": 2,
+        "hold": true,
+        "admin_hold": false,
+        "updated": "2025-01-05T17:46:07.111Z"
+    }
+},
+{
+    "model": "equipment.userlistentry",
+    "pk": 2177,
+    "fields": {
+        "equipment": 93,
+        "user": 128,
+        "role": 2,
+        "hold": true,
+        "admin_hold": false,
+        "updated": "2025-01-05T17:46:07.114Z"
+    }
+},
+{
+    "model": "equipment.userlistentry",
+    "pk": 2178,
+    "fields": {
+        "equipment": 101,
+        "user": 128,
+        "role": 3,
+        "hold": true,
+        "admin_hold": false,
+        "updated": "2025-01-05T17:46:07.118Z"
+    }
+},
+{
+    "model": "equipment.userlistentry",
+    "pk": 2179,
+    "fields": {
+        "equipment": 99,
+        "user": 128,
+        "role": 3,
+        "hold": true,
+        "admin_hold": false,
+        "updated": "2025-01-05T17:46:07.121Z"
+    }
+},
+{
+    "model": "equipment.userlistentry",
+    "pk": 2180,
+    "fields": {
+        "equipment": 97,
+        "user": 115,
+        "role": 2,
+        "hold": true,
+        "admin_hold": false,
+        "updated": "2025-01-05T17:46:07.124Z"
+    }
+},
+{
+    "model": "equipment.userlistentry",
+    "pk": 2181,
+    "fields": {
+        "equipment": 97,
+        "user": 113,
+        "role": 2,
+        "hold": true,
+        "admin_hold": false,
+        "updated": "2025-01-05T17:46:07.128Z"
+    }
+},
+{
+    "model": "equipment.userlistentry",
+    "pk": 2182,
+    "fields": {
+        "equipment": 98,
+        "user": 125,
+        "role": 3,
+        "hold": true,
+        "admin_hold": false,
+        "updated": "2025-01-05T17:46:07.131Z"
+    }
+},
+{
+    "model": "equipment.userlistentry",
+    "pk": 2183,
+    "fields": {
+        "equipment": 98,
+        "user": 127,
+        "role": 2,
+        "hold": true,
+        "admin_hold": false,
+        "updated": "2025-01-05T17:46:07.135Z"
+    }
+},
+{
+    "model": "equipment.userlistentry",
+    "pk": 2184,
+    "fields": {
+        "equipment": 83,
+        "user": 92,
+        "role": 3,
+        "hold": true,
+        "admin_hold": false,
+        "updated": "2025-01-05T17:46:07.138Z"
+    }
+},
+{
+    "model": "equipment.userlistentry",
+    "pk": 2185,
+    "fields": {
+        "equipment": 81,
+        "user": 125,
+        "role": 3,
+        "hold": true,
+        "admin_hold": false,
+        "updated": "2025-01-05T17:46:07.142Z"
+    }
+},
+{
+    "model": "equipment.userlistentry",
+    "pk": 2186,
+    "fields": {
+        "equipment": 112,
+        "user": 126,
+        "role": 3,
+        "hold": true,
+        "admin_hold": false,
+        "updated": "2025-01-05T17:46:07.145Z"
+    }
+},
+{
+    "model": "equipment.userlistentry",
+    "pk": 2187,
+    "fields": {
+        "equipment": 83,
+        "user": 124,
+        "role": 2,
+        "hold": true,
+        "admin_hold": false,
+        "updated": "2025-01-05T17:46:07.149Z"
+    }
+},
+{
+    "model": "equipment.userlistentry",
+    "pk": 2188,
+    "fields": {
+        "equipment": 90,
+        "user": 128,
+        "role": 3,
+        "hold": true,
+        "admin_hold": false,
+        "updated": "2025-01-05T17:46:07.152Z"
+    }
+},
+{
+    "model": "equipment.userlistentry",
+    "pk": 2189,
+    "fields": {
+        "equipment": 90,
+        "user": 121,
+        "role": 3,
+        "hold": true,
+        "admin_hold": false,
+        "updated": "2025-01-05T17:46:07.155Z"
+    }
+},
+{
+    "model": "equipment.userlistentry",
+    "pk": 2190,
+    "fields": {
+        "equipment": 94,
+        "user": 114,
+        "role": 2,
+        "hold": true,
+        "admin_hold": false,
+        "updated": "2025-01-05T17:46:07.159Z"
+    }
+},
+{
+    "model": "equipment.userlistentry",
+    "pk": 2191,
+    "fields": {
+        "equipment": 98,
+        "user": 124,
+        "role": 2,
+        "hold": true,
+        "admin_hold": false,
+        "updated": "2025-01-05T17:46:07.162Z"
+    }
+},
+{
+    "model": "equipment.userlistentry",
+    "pk": 2192,
+    "fields": {
+        "equipment": 79,
+        "user": 123,
+        "role": 2,
+        "hold": true,
+        "admin_hold": false,
+        "updated": "2025-01-05T17:46:07.166Z"
+    }
+},
+{
+    "model": "equipment.userlistentry",
+    "pk": 2193,
+    "fields": {
+        "equipment": 109,
+        "user": 125,
+        "role": 3,
+        "hold": true,
+        "admin_hold": false,
+        "updated": "2025-01-05T17:46:07.169Z"
+    }
+},
+{
+    "model": "equipment.userlistentry",
+    "pk": 2194,
+    "fields": {
+        "equipment": 100,
+        "user": 114,
+        "role": 3,
+        "hold": true,
+        "admin_hold": false,
+        "updated": "2025-01-05T17:46:07.173Z"
+    }
+},
+{
+    "model": "equipment.userlistentry",
+    "pk": 2195,
+    "fields": {
+        "equipment": 88,
+        "user": 114,
+        "role": 3,
+        "hold": true,
+        "admin_hold": false,
+        "updated": "2025-01-05T17:46:07.176Z"
+    }
+},
+{
+    "model": "equipment.userlistentry",
+    "pk": 2196,
+    "fields": {
+        "equipment": 81,
+        "user": 124,
+        "role": 2,
+        "hold": true,
+        "admin_hold": false,
+        "updated": "2025-01-05T17:46:07.180Z"
+    }
+},
+{
+    "model": "equipment.userlistentry",
+    "pk": 2197,
+    "fields": {
+        "equipment": 92,
+        "user": 128,
+        "role": 3,
+        "hold": true,
+        "admin_hold": false,
+        "updated": "2025-01-05T17:46:07.183Z"
+    }
+},
+{
+    "model": "equipment.userlistentry",
+    "pk": 2198,
+    "fields": {
+        "equipment": 97,
+        "user": 127,
+        "role": 2,
+        "hold": true,
+        "admin_hold": false,
+        "updated": "2025-01-05T17:46:07.186Z"
+    }
+},
+{
+    "model": "equipment.userlistentry",
+    "pk": 2199,
+    "fields": {
+        "equipment": 102,
+        "user": 115,
+        "role": 3,
+        "hold": true,
+        "admin_hold": false,
+        "updated": "2025-01-05T17:46:07.190Z"
+    }
+},
+{
+    "model": "equipment.userlistentry",
+    "pk": 2200,
+    "fields": {
+        "equipment": 113,
+        "user": 129,
+        "role": 2,
+        "hold": true,
+        "admin_hold": false,
+        "updated": "2025-01-05T17:46:07.193Z"
+    }
+},
+{
+    "model": "equipment.userlistentry",
+    "pk": 2201,
+    "fields": {
+        "equipment": 77,
+        "user": 129,
+        "role": 2,
+        "hold": true,
+        "admin_hold": false,
+        "updated": "2025-01-05T17:46:07.197Z"
+    }
+},
+{
+    "model": "equipment.userlistentry",
+    "pk": 2202,
+    "fields": {
+        "equipment": 94,
+        "user": 129,
+        "role": 2,
+        "hold": true,
+        "admin_hold": false,
+        "updated": "2025-01-05T17:46:07.200Z"
+    }
+},
+{
+    "model": "equipment.userlistentry",
+    "pk": 2203,
+    "fields": {
+        "equipment": 110,
+        "user": 129,
+        "role": 2,
+        "hold": true,
+        "admin_hold": false,
+        "updated": "2025-01-05T17:46:07.204Z"
+    }
+},
+{
+    "model": "equipment.userlistentry",
+    "pk": 2204,
+    "fields": {
+        "equipment": 109,
+        "user": 130,
+        "role": 2,
+        "hold": true,
+        "admin_hold": false,
+        "updated": "2025-01-05T17:46:07.207Z"
+    }
+},
+{
+    "model": "equipment.userlistentry",
+    "pk": 2205,
+    "fields": {
+        "equipment": 92,
+        "user": 130,
+        "role": 3,
+        "hold": true,
+        "admin_hold": false,
+        "updated": "2025-01-05T17:46:07.210Z"
+    }
+},
+{
+    "model": "equipment.userlistentry",
+    "pk": 2206,
+    "fields": {
+        "equipment": 98,
+        "user": 130,
+        "role": 2,
+        "hold": true,
+        "admin_hold": false,
+        "updated": "2025-01-05T17:46:07.214Z"
+    }
+},
+{
+    "model": "equipment.userlistentry",
+    "pk": 2207,
+    "fields": {
+        "equipment": 101,
+        "user": 121,
+        "role": 3,
+        "hold": true,
+        "admin_hold": false,
+        "updated": "2025-01-05T17:46:07.217Z"
+    }
+},
+{
+    "model": "equipment.userlistentry",
+    "pk": 2208,
+    "fields": {
+        "equipment": 88,
+        "user": 111,
+        "role": 3,
+        "hold": true,
+        "admin_hold": false,
+        "updated": "2025-01-05T17:46:07.221Z"
+    }
+},
+{
+    "model": "equipment.userlistentry",
+    "pk": 2209,
+    "fields": {
+        "equipment": 88,
+        "user": 109,
+        "role": 3,
+        "hold": true,
+        "admin_hold": false,
+        "updated": "2025-01-05T17:46:07.224Z"
+    }
+},
+{
+    "model": "equipment.userlistentry",
+    "pk": 2210,
+    "fields": {
+        "equipment": 106,
+        "user": 109,
+        "role": 3,
+        "hold": true,
+        "admin_hold": false,
+        "updated": "2025-01-05T17:46:07.228Z"
+    }
+},
+{
+    "model": "equipment.userlistentry",
+    "pk": 2211,
+    "fields": {
+        "equipment": 97,
+        "user": 130,
+        "role": 2,
+        "hold": true,
+        "admin_hold": false,
+        "updated": "2025-01-05T17:46:07.231Z"
+    }
+},
+{
+    "model": "equipment.userlistentry",
+    "pk": 2212,
+    "fields": {
+        "equipment": 109,
+        "user": 119,
+        "role": 2,
+        "hold": true,
+        "admin_hold": false,
+        "updated": "2025-01-05T17:46:07.235Z"
+    }
+},
+{
+    "model": "equipment.userlistentry",
+    "pk": 2213,
+    "fields": {
+        "equipment": 90,
+        "user": 130,
+        "role": 2,
+        "hold": true,
+        "admin_hold": false,
+        "updated": "2025-01-05T17:46:07.238Z"
+    }
+},
+{
+    "model": "equipment.userlistentry",
+    "pk": 2214,
+    "fields": {
+        "equipment": 101,
+        "user": 130,
+        "role": 2,
+        "hold": true,
+        "admin_hold": false,
+        "updated": "2025-01-05T17:46:07.242Z"
+    }
+},
+{
+    "model": "equipment.userlistentry",
+    "pk": 2215,
+    "fields": {
+        "equipment": 99,
+        "user": 130,
+        "role": 2,
+        "hold": true,
+        "admin_hold": false,
+        "updated": "2025-01-05T17:46:07.245Z"
+    }
+},
+{
+    "model": "equipment.userlistentry",
+    "pk": 2216,
+    "fields": {
+        "equipment": 92,
+        "user": 129,
+        "role": 3,
+        "hold": true,
+        "admin_hold": false,
+        "updated": "2025-01-05T17:46:07.249Z"
+    }
+},
+{
+    "model": "equipment.userlistentry",
+    "pk": 2217,
+    "fields": {
+        "equipment": 81,
+        "user": 130,
+        "role": 2,
+        "hold": true,
+        "admin_hold": false,
+        "updated": "2025-01-05T17:46:07.252Z"
+    }
+},
+{
+    "model": "equipment.userlistentry",
+    "pk": 2218,
+    "fields": {
+        "equipment": 111,
+        "user": 90,
+        "role": 2,
+        "hold": true,
+        "admin_hold": false,
+        "updated": "2025-01-05T17:46:07.256Z"
+    }
+},
+{
+    "model": "equipment.userlistentry",
+    "pk": 2219,
+    "fields": {
+        "equipment": 96,
+        "user": 129,
+        "role": 2,
+        "hold": true,
+        "admin_hold": false,
+        "updated": "2025-01-05T17:46:07.259Z"
+    }
+},
+{
+    "model": "equipment.userlistentry",
+    "pk": 2220,
+    "fields": {
+        "equipment": 90,
+        "user": 129,
+        "role": 3,
+        "hold": true,
+        "admin_hold": false,
+        "updated": "2025-01-05T17:46:07.263Z"
+    }
+},
+{
+    "model": "equipment.userlistentry",
+    "pk": 2221,
+    "fields": {
+        "equipment": 92,
+        "user": 132,
+        "role": 3,
+        "hold": true,
+        "admin_hold": false,
+        "updated": "2025-01-05T17:46:07.266Z"
+    }
+},
+{
+    "model": "equipment.userlistentry",
+    "pk": 2222,
+    "fields": {
+        "equipment": 114,
+        "user": 135,
+        "role": 3,
+        "hold": true,
+        "admin_hold": false,
+        "updated": "2025-01-05T17:46:07.269Z"
+    }
+},
+{
+    "model": "equipment.userlistentry",
+    "pk": 2223,
+    "fields": {
+        "equipment": 114,
+        "user": 131,
+        "role": 2,
+        "hold": true,
+        "admin_hold": false,
+        "updated": "2025-01-05T17:46:07.273Z"
+    }
+},
+{
+    "model": "equipment.userlistentry",
+    "pk": 2224,
+    "fields": {
+        "equipment": 92,
+        "user": 135,
+        "role": 3,
+        "hold": true,
+        "admin_hold": false,
+        "updated": "2025-01-05T17:46:07.276Z"
+    }
+},
+{
+    "model": "equipment.userlistentry",
+    "pk": 2225,
+    "fields": {
+        "equipment": 92,
+        "user": 131,
+        "role": 2,
+        "hold": true,
+        "admin_hold": false,
+        "updated": "2025-01-05T17:46:07.280Z"
+    }
+},
+{
+    "model": "equipment.userlistentry",
+    "pk": 2226,
+    "fields": {
+        "equipment": 114,
+        "user": 132,
+        "role": 2,
+        "hold": true,
+        "admin_hold": false,
+        "updated": "2025-01-05T17:46:07.283Z"
+    }
+},
+{
+    "model": "equipment.userlistentry",
+    "pk": 2227,
+    "fields": {
+        "equipment": 92,
+        "user": 136,
+        "role": 2,
+        "hold": true,
+        "admin_hold": false,
+        "updated": "2025-01-05T17:46:07.287Z"
+    }
+},
+{
+    "model": "equipment.userlistentry",
+    "pk": 2228,
+    "fields": {
+        "equipment": 94,
+        "user": 136,
+        "role": 2,
+        "hold": true,
+        "admin_hold": false,
+        "updated": "2025-01-05T17:46:07.290Z"
+    }
+},
+{
+    "model": "equipment.userlistentry",
+    "pk": 2229,
+    "fields": {
+        "equipment": 99,
+        "user": 125,
+        "role": 3,
+        "hold": true,
+        "admin_hold": false,
+        "updated": "2025-01-05T17:46:07.294Z"
+    }
+},
+{
+    "model": "equipment.userlistentry",
+    "pk": 2230,
+    "fields": {
+        "equipment": 96,
+        "user": 136,
+        "role": 3,
+        "hold": true,
+        "admin_hold": false,
+        "updated": "2025-01-05T17:46:07.297Z"
+    }
+},
+{
+    "model": "equipment.userlistentry",
+    "pk": 2231,
+    "fields": {
+        "equipment": 112,
+        "user": 135,
+        "role": 2,
+        "hold": true,
+        "admin_hold": false,
+        "updated": "2025-01-05T17:46:07.301Z"
+    }
+},
+{
+    "model": "equipment.userlistentry",
+    "pk": 2232,
+    "fields": {
+        "equipment": 97,
+        "user": 129,
+        "role": 2,
+        "hold": true,
+        "admin_hold": false,
+        "updated": "2025-01-05T17:46:07.304Z"
+    }
+},
+{
+    "model": "equipment.userlistentry",
+    "pk": 2233,
+    "fields": {
+        "equipment": 96,
+        "user": 132,
+        "role": 2,
+        "hold": true,
+        "admin_hold": false,
+        "updated": "2025-01-05T17:46:07.308Z"
+    }
+},
+{
+    "model": "equipment.userlistentry",
+    "pk": 2234,
+    "fields": {
+        "equipment": 96,
+        "user": 135,
+        "role": 2,
+        "hold": true,
+        "admin_hold": false,
+        "updated": "2025-01-05T17:46:07.311Z"
+    }
+}
+]
