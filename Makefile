@@ -24,8 +24,8 @@ _commit: isort black check
 	git push origin
 
 restart:
-	sudo systemctl restart gunicorn
-	sudo systemctl restart celery
-	sudo systemctl restart celery_beat
+	sudo systemctl restart labman
+#	sudo systemctl restart celery
+#	sudo systemctl restart celery_beat
 
 FORCE:
