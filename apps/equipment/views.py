@@ -40,7 +40,7 @@ class SignOffFormSetView(IsAuthenticaedViewMixin, FormSetView):
         """Get initial data for the document sign-off formset."""
         equipment_id = int(self.kwargs["equipment"])
         equipment = Equipment.objects.get(pk=equipment_id)
-        docs = equipment.files.filter(category__in=["ra", "sop"])
+        docs = equipment.all_files.filter(category__in=["ra", "sop"])
         dataset = []
         for doc in docs:
             try:

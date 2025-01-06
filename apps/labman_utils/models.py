@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 # Python imports
 from datetime import date, datetime as dt, time, timedelta as td
+from functools import reduce
 
 # Django imports
 from django.conf import settings
@@ -117,6 +118,21 @@ class Document(dsfh.BaseMixin, dsfh.TitledMixin, dsfh.PublicMixin, dsfh.RenameMi
         """Returns the document category as a human readable string."""
         return self.CATAGORIES_DICT[self.category]
 
+    @property
+    def all_locations(self):
+        if not hasattr(self, "location"):
+            return None
+        q_obs = []
+        for location in self.location.all():
+            q_obs.append(models.Q(code__startswith=location.code))
+        if not q_obs:
+            return None
+        return (
+            self.location.model.objects.filter(reduce(lambda left, right: left | right, q_obs))
+            .order_by("code")
+            .distinct()
+        )
+
     def __str__(self):
         """Return a user friendly name for the file."""
         return f"{self.title} ({self.CATAGORIES_DICT[self.category]})"
@@ -128,9 +144,11 @@ class Document(dsfh.BaseMixin, dsfh.TitledMixin, dsfh.PublicMixin, dsfh.RenameMi
             if old.version != self.version:
                 with transaction.atomic():
                     for equipment in self.equipment.all():
-                        for entry in equipment.users.all():
-                            entry.hold = True
-                            entry.save()
+                        equipment.users.all().update(hold=True)
+                    for location in self.location.all():
+                        for equipment in self.equipment.model.objects.filter(location__in=location.children):
+                            equipment.users.all().update(hold=True)
+
         super().save(force_insert=force_insert, force_update=force_update, using=using, update_fields=update_fields)
 
 

@@ -159,21 +159,6 @@ class Equipment(ResourceedObject):
         return f"{self.name}"
 
     @property
-    def ras(self):
-        """Return the risk assessment documents."""
-        return self.files.filter(category="ra")
-
-    @property
-    def sops(self):
-        """Return the standard operating process documents."""
-        return self.files.filter(categories="sop")
-
-    @property
-    def manuals(self):
-        """Return the documents that are listed as manuals."""
-        return self.files.filter(category="manual")
-
-    @property
     def thumbnail(self):
         """Return an html IMG tag with a thumbnail of the equipment."""
         if self.photos.all().count() == 0:
@@ -210,7 +195,19 @@ class Equipment(ResourceedObject):
             return self.users.filter(role__level__gte=role.level)
         except Role.DoesNotExist:
             pass
-        raise AttributeError(f"{name} is not a Role or an attribute.")
+        if name in ["ras", "sops", "manuals", "others", "all_files"]:
+            category = name[:-1]
+        else:
+            raise AttributeError(f"Didn't know what to do about {name}")
+        if category == "all_file":
+            my_docs = models.Q(equipment=self)
+            location_docs = models.Q(location__in=self.location.all_parents)
+        else:
+            my_docs = models.Q(category=category, equipment=self)
+            location_docs = models.Q(category=category, location__in=self.location.all_parents)
+        return (
+            Document.objects.filter(my_docs | location_docs).order_by().order_by("title", "-version").distinct("title")
+        )
 
     def get_shift(self, time):
         """Return the shift object for the datetime specified."""
@@ -269,7 +266,7 @@ class UserListEntry(models.Model):
     @property
     def documents(self):
         """Pull the documents from the equipment."""
-        return self.equipment.files.all()
+        return self.equipment.all_files.all()
 
     @property
     def sign_off_docs(self):
@@ -309,7 +306,12 @@ class DocumentSignOff(models.Model):
     def save(self, force_insert=False, force_update=False, using=None, update_fields=None):
         """Hook into save to see if we can set a userlist off hold."""
         super().save(force_insert=force_insert, force_update=force_update, using=using, update_fields=update_fields)
-        userlists = self.user.user_of.filter(equipment__files=self.document)
+        # Find all items of equipment for which this is a file.
+        search_Q = models.Q(equipment__files=self.document)
+        # If this document is attached to a location, find all equipment in this and child locations.
+        if self.document.all_locations:
+            search_Q |= models.Q(equipment__location__in=self.document.all_locations)
+        userlists = self.user.user_of.filter(search_Q)
         for userlist in userlists.all():
             userlist.hold = userlist.check_for_hold()
             userlist.save()
