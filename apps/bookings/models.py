@@ -233,6 +233,13 @@ class BookingEntry(models.Model):
         return self.equipment.users.get(user=self.user).role
 
     @property
+    def calendar_css(self):
+        """Get CSS classes to use in the calendar."""
+        if self.user_role:
+            return self.user_role.css
+        return "bg-gradient bg-danger text-white"
+
+    @property
     def user_hold(self):
         """Get the user hold status of the userlist entry."""
         if self.equipment.users.filter(user=self.user).count() == 0:
@@ -264,18 +271,18 @@ class BookingEntry(models.Model):
         """Workout a project for this booking."""
         if self.user.project.count() == 0:
             return None
+        if not hasattr(self, "project"):
+            self.project = self.user.default_project
         if self.project not in self.user.project.all() and not self.user.is_superuser:
             return self.user.default_project
 
     def clean(self):
         """Rearrange the slot and check for conflicts."""
-        if not getattr(self, "project", None):  # No project set
-            self.project = self.user.default_project
-        self.project = self.fix_project()
+        self.fix_project()
         # Swap start and end times to ensure positive duration
         if not self.slot.isempty and self.slot.lower > self.slot.upper:
             self.slot = DateTimeTZRange(self.slot.upper, self.slot.lower)
-        if not self.slot.isempty:  # Can't do the custom cleaning if slot is blank
+        if not self.slot.isempty and self.user.username != "service":  # Can't do the custom cleaning if slot is blank
             policy = BookingPolicy.get_policy(self)
             self.rationalise(policy)
             if not policy.permitted(self):
@@ -287,6 +294,8 @@ class BookingEntry(models.Model):
                 raise ValidationError(
                     "Unable to save the booking entry due to overlapping entry for the same equipment"
                 )
+        elif self.user.username == "service":  # Special case, service user always booked!
+            pass
         else:
             raise ValidationError("No booking slot defined!")
         return super().clean()

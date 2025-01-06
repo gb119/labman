@@ -21,21 +21,21 @@
             </li>
             <li class="nav-item" role="presentation">
                 <button class="nav-link" id="project-tab"
-                        hx-get="{{ request.build_absolute_uri }}" hx-target="#project"
+                        hx-get="{{ request.get_full_path }}" hx-target="#project"
                         data-bs-toggle="tab" data-bs-target="#project"
                         type="button" role="tab" aria-controls="project"
                         aria-selected="false">Project</button>
             </li>
             <li class="nav-item" role="presentation">
                 <button class="nav-link" id="underlings-tab"
-                        hx-get="{{ request.build_absolute_uri }}" hx-target="#underlings"
+                        hx-get="{{ request.get_full_path }}" hx-target="#underlings"
                         data-bs-toggle="tab" data-bs-target="#underlings"
                         type="button" role="tab" aria-controls="underlings"
                         aria-selected="false">Manages</button>
             </li>
             <li class="nav-item" role="presentation">
                 <button class="nav-link" id="userlist-tab"
-                        hx-get="{{ request.build_absolute_uri }}" hx-target="#userlist"
+                        hx-get="{{ request.get_full_path }}" hx-target="#userlist"
                         data-bs-toggle="tab" data-bs-target="#userlist"
                         type="button" role="tab" aria-controls="userlist"
                         aria-selected="false">Userlist</button>

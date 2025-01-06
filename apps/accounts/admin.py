@@ -194,6 +194,7 @@ class AccountrAdmin(ImportExportMixin, UserAdmin):
         "is_superuser",
         "research_group",
     )
+    suit_list_filter_horizontal = list_filter
     search_fields = (
         "username",
         "first_name",
@@ -213,11 +214,11 @@ class AccountrAdmin(ImportExportMixin, UserAdmin):
 
     def photo_tag(self, obj):
         """Provide a phoot in the admin list view."""
-        if hasattr(obj, "photos") and obj.photos.all().count() > 0:
+        if obj.mugshot:
             return format_html(
-                f"<img src='{obj.photos.first().get_thumbnail_url()}' alt='Picture of {obj.display_name}' />"
+                f"<img src='{obj.mugshot.get_admin_thumbnail_url()}' alt='Picture of {obj.display_name}' />"
             )
-        return "&nbsp;"
+        return format_html("&nbsp;")
 
     photo_tag.short_description = "Image"
     photo_tag.allow_tags = True

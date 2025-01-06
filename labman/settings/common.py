@@ -37,6 +37,15 @@ STATICFILES_DIRS = [
     str(PROJECT_ROOT_PATH / "static"),
 ]
 
+STORAGES = {
+    "default": {
+        "BACKEND": "django.core.files.storage.FileSystemStorage",
+    },
+    "staticfiles": {
+        "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
+    },
+}
+
 # look for templates here
 # This is an internal setting, used in the TEMPLATES directive
 PROJECT_TEMPLATES = [
@@ -68,12 +77,6 @@ print("#" * 80)
 
 # these are the apps
 DEFAULT_APPS = [
-    "dal",
-    "dal_select2",
-    # "grappelli",
-    "photologue",
-    "sortedm2m",
-    "constance",
     "django_bootstrap5",
     "bootstrap_datepicker_plus",
     "django.contrib.postgres",
@@ -86,6 +89,11 @@ DEFAULT_APPS = [
     "django.contrib.sites",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    "dal",
+    "dal_select2",
+    "photologue",
+    "sortedm2m",
+    "constance",
     "django_extensions",
     "django_htmx",
     "rest_framework",
@@ -98,6 +106,7 @@ DEFAULT_APPS = [
 # Middlewares
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
+    "whitenoise.middleware.WhiteNoiseMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
@@ -175,7 +184,15 @@ except socket.gaierror:
     DNS_NAME = "loxcalhost"
     IP_ADDR = "127.0.0.1"
 
-ALLOWED_HOSTS = [DNS_NAME, IP_ADDR, "localhost", "127.0.0.1", "localhost:8443", "stoner-intranet-dev.leeds.ac.uk"]
+ALLOWED_HOSTS = [
+    DNS_NAME,
+    IP_ADDR,
+    "localhost",
+    "127.0.0.1",
+    "127.0.0.1:8443",
+    "localhost:8443",
+    "stoner-intranet-dev.leeds.ac.uk",
+]
 CSRF_TRUSTED_ORIGINS = [f"https://{x}" for x in ALLOWED_HOSTS]
 
 # #### Session Settings
@@ -264,10 +281,50 @@ EMAIL_USE_TLS = True
 DEFAULT_FROM_EMAIL = f"no-reply@{DNS_NAME}"
 
 
-###### Authentication stuff ##############################
-
+##########################################################################
 AUTH_USER_MODEL = "accounts.Account"
 
+LOGIN_URL = "django_auth_adfs:login"
+LOGIN_REDIRECT_URL = "/"
+
+# Only allow manual creation of new users
+AUTH_LDAP_CREATE_USER_ON_FLY = False
+
+AUTHENTICATION_BACKENDS = [
+    # "labman_utils.backend.LeedsAdfsBaseBackend",
+    # "django_auth_ldap_ad.backend.LDAPBackend",
+    "django.contrib.auth.backends.ModelBackend",
+]
+
+AUTH_LDAP_USE_SASL = False
+
+AUTH_LDAP_BIND_TRANSFORM = "{}@ds.leeds.ac.uk"
+
+AUTH_LDAP_SERVER_URI = ["ldaps://ds.leeds.ac.uk:636", "ldaps://admin.ds.leeds.ac.uk:636"]
+AUTH_LDAP_SEARCH_DN = "DC=ds,DC=leeds,DC=ac,DC=uk"
+AUTH_LDAP_USER_ATTR_MAP = {"first_name": "givenName", "last_name": "sn", "email": "mail", "number": "employeeID"}
+
+AUTH_LDAP_TRACE_LEVEL = 0
+AUTH_LDAP_USER_FLAGS_BY_GROUP = {
+    # Groups on left side are memberOf key values. If all the groups are found in single entry, then the flag is set to
+    # True. If no entry contains all required groups then the flag is set False.
+    "is_superuser": [],
+    # Above example will match on entry "CN=WebAdmin,DC=mydomain,OU=People,OU=Users"
+    # Above will NOT match "CN=WebAdmin,OU=People,OU=Users" (missing DC=mydomain).
+    "is_staff": [
+        "CN=PHY_Academic_Staff,OU=Groups,OU=Physics and Astronomy,OU=MAPS,OU=Resources,DC=ds,DC=leeds,DC=ac,DC=uk"
+    ],
+    # True if one of the conditions is true.
+}
+
+# All people that are to be staff are also to belong to this group
+AUTH_LDAP_USER_GROUPS_BY_GROUP = {"Instructor": AUTH_LDAP_USER_FLAGS_BY_GROUP["is_staff"]}
+
+AUTH_ADFS = {
+    # "RELYING_PARTY_ID": "your-adfs-RPT-name",
+    # "CA_BUNDLE": "/path/to/ca-bundle.pem",
+    "CLAIM_MAPPING": {"first_name": "given_name", "last_name": "family_name", "email": "email"},
+}
 
 ###### REST framework settings ###########################
 

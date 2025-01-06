@@ -21,28 +21,28 @@
             </li>
             <li class="nav-item" role="presentation">
                 <button class="nav-link" id="accounts-tab"
-                        hx-get="{{ request.build_absolute_uri }}" hx-target="#accounts"
+                        hx-get="{{ request.get_full_path }}" hx-target="#accounts"
                         data-bs-toggle="tab" data-bs-target="#accounts"
                         type="button" role="tab" aria-controls="accounts"
                         aria-selected="false">Accounts</button>
             </li>
             <li class="nav-item" role="presentation">
                 <button class="nav-link" id="equipment-tab"
-                        hx-get="{{ request.build_absolute_uri }}" hx-target="#equipment"
+                        hx-get="{{ request.get_full_path }}" hx-target="#equipment"
                         data-bs-toggle="tab" data-bs-target="#equipment"
                         type="button" role="tab" aria-controls="equipment"
                         aria-selected="false">Equipment</button>
             </li>
             <li class="nav-item" role="presentation">
                 <button class="nav-link" id="locations-tab"
-                        hx-get="{{ request.build_absolute_uri }}" hx-target="#locations"
+                        hx-get="{{ request.get_full_path }}" hx-target="#locations"
                         data-bs-toggle="tab" data-bs-target="#locations"
                         type="button" role="tab" aria-controls="locations"
                         aria-selected="false">Locations</button>
             </li>
             <li class="nav-item" role="presentation">
                 <button class="nav-link" id="projects-tab"
-                        hx-get="{{ request.build_absolute_uri }}" hx-target="#projects"
+                        hx-get="{{ request.get_full_path }}" hx-target="#projects"
                         data-bs-toggle="tab" data-bs-target="#projects"
                         type="button" role="tab" aria-controls="projects"
                         aria-selected="false">Projects</button>

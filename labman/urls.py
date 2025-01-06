@@ -19,7 +19,12 @@ from django.views.static import serve
 # Django REST Framework launcher import
 from . import api
 from .settings.production import DEBUG, MEDIA_ROOT, PROJECT_ROOT
+from .views import E403View, E404View, E500View
 
+# Set Error handlers
+handler404 = E404View.as_view()
+handler403 = E403View.as_view()
+handler500 = E500View.as_view()
 # ... the rest of your URLconf goes here ...
 
 

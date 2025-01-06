@@ -107,7 +107,10 @@ class Account(AbstractUser):
         """Return the first photo object associated with this account."""
         if self.photos.all().count() > 0:
             return self.photos.first()
-        return None
+        try:
+            return Photo.objects.get(slug="generic-profile-image")
+        except Photo.DoesNotExist:
+            return None
 
     @cached_property
     def formal_name(self):
@@ -171,6 +174,7 @@ class Role(ResourceedObject):
         constraints = [models.UniqueConstraint(fields=["name"], name="Unique Role Name")]
 
     level = models.IntegerField(default=TRAINEE)
+    css = models.CharField(max_length=40, default="bg-gradient bg-success text-white", verbose_name="CSS class")
 
     def __str__(self):
         """String conversion just uses the name."""

@@ -26,28 +26,28 @@
             </li>
             <li class="nav-item" role="presentation">
                 <button class="nav-link" id="pages-tab"
-                        hx-get="{{ request.build_absolute_uri }}" hx-target="#pages"
+                        hx-get="{{ request.get_full_path }}" hx-target="#pages"
                         data-bs-toggle="tab" data-bs-target="#pages"
                         type="button" role="tab" aria-controls="pages"
                         aria-selected="false">Information</button>
             </li>
             <li class="nav-item" role="presentation">
                 <button class="nav-link" id="resources-tab"
-                        hx-get="{{ request.build_absolute_uri }}" hx-target="#resources"
+                        hx-get="{{ request.get_full_path }}" hx-target="#resources"
                         data-bs-toggle="tab" data-bs-target="#resources"
                         type="button" role="tab" aria-controls="resources"
                         aria-selected="false">Files</button>
             </li>
             <li class="nav-item" role="presentation">
                 <button class="nav-link" id="userlist-tab"
-                        hx-get="{{ request.build_absolute_uri }}" hx-target="#userlist"
+                        hx-get="{{ request.get_full_path }}" hx-target="#userlist"
                         data-bs-toggle="tab" data-bs-target="#userlist"
                         type="button" role="tab" aria-controls="userlist"
                         aria-selected="false">Userlist</button>
             </li>
             <li class="nav-item" role="presentation">
                 <button class="nav-link" id="schedule-tab"
-                        hx-get="{{ request.build_absolute_uri }}" hx-target="#schedule"
+                        hx-get="{{ request.get_full_path }}" hx-target="#schedule"
                         data-bs-toggle="tab" data-bs-target="#schedule_container"
                         type="button" role="tab" aria-controls="schedule_container"
                         aria-selected="false">Schedule</button>

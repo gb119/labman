@@ -29,9 +29,9 @@ class UserListAutoComplete(ModelAutocomplete):
         base_qs = cls.get_queryset()
         if equipment := context.request.GET.get("equipment", None):
             try:
-                equipment = int(equipment[0])
+                equipment = int(equipment)
                 entries = UserListEntry.objects.filter(hold=False, admin_hold=False, equipment__pk=equipment)
-                base_qs = base_qs.filter(user_of__in=entries)
+                base_qs = base_qs.filter(Q(user_of__in=entries) | Q(username="service"))
             except (ValueError, TypeError):
                 pass
         conditions = [Q(**{f"{attr}__icontains": search}) for attr in cls.get_search_attrs()]
