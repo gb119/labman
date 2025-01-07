@@ -249,7 +249,8 @@ class EquipmentAdmin(ImportExportModelAdmin):
             {
                 "classes": ("suit-tab", "suit-tab-basic"),
                 "fields": [
-                    ("name", "location"),
+                    ("name", "offline"),
+                    ("category", "location"),
                     "owner",
                     "description",
                 ],

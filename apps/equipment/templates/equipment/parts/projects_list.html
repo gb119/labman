@@ -20,8 +20,14 @@
         <div class="col col-md-2">
             <span>{{ project.code }}</span>
         </div>
-        <div class="col col-md-4">
-            <div>{{ project.description|safe }}</div>
+        <div class="col col-md-4" id="project_description_{{ project.id }}">
+            {{ project.description|safe|truncatewords_html:10 }}
+            {% if project.description|safe|truncatewords_html:10 != project.description|safe %}
+                <a href="/" hx-get="/accounts/lookups/projects/"
+                   hx-target="#project_description_{{ project.id }}"
+                   hx-vars='{"project_id":"{{ project.id }}"}'
+                   id="full_description"> more...</a>
+            {% endif %}
         </div>
         <div class="col col-md-3">
             {% for person in project.researchers.all %}

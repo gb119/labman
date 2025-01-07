@@ -145,6 +145,16 @@ class Shift(NamedObject):
 class Equipment(ResourceedObject):
     """Class for representing an Equipment item."""
 
+    CATEGORIES = {
+        "cryostat": "Cryostat",
+        "deposition": "Thin fil;m growth",
+        "magnetometer": "Magnetic Characterisation",
+        "furnace": "Furnace",
+        "transport": "Electrical Transport",
+        "characterisation": "Material Characterisation",
+        "other": "Other",
+    }
+
     class Meta:
         verbose_name_plural = "Equipment Items"
         verbose_name = "Equipment Item"
@@ -154,6 +164,8 @@ class Equipment(ResourceedObject):
     owner = models.ForeignKey(Account, on_delete=models.CASCADE, related_name="equipment")
     shifts = SortedManyToManyField(Shift, related_name="equipment", blank=True)
     policies = SortedManyToManyField("bookings.BookingPolicy", related_name="equipment", blank=True)
+    offline = models.BooleanField(default=False)
+    category = models.CharField(max_length=20, null=True, blank=True, choices=list(CATEGORIES.items()))
 
     def __str__(self):
         return f"{self.name}"
@@ -188,17 +200,34 @@ class Equipment(ResourceedObject):
             ret.append(shift.start_time)
         return ret
 
+    @property
+    def all_files_dict(self):
+        """Get all the files, but arranged in a dictionary by category name."""
+        ret = {}
+        for key, name in Document.CATAGORIES_DICT.items():
+            ret[name] = getattr(self, f"{key}s")
+        return ret
+
+    @property
+    def userlist_dict(self):
+        """Get the user list grouped by role."""
+        ret = {}
+        users = self.users.all().prefetch_related("role")
+        for role in [x["role__name"] for x in users.order_by("-role__level").values("role__name").distinct()]:
+            ret[role] = users.filter(role__name=role)
+        return ret
+
     def __getattr__(self, name):
-        """Deal with Role's."""
+        """Deal with Role's and file types."""
         try:
             role = Role.objects.get(name=name)
             return self.users.filter(role__level__gte=role.level)
         except Role.DoesNotExist:
             pass
-        if name in ["ras", "sops", "manuals", "others", "all_files"]:
+        if name in [f"{x}s" for x in Document.CATAGORIES_DICT.keys()] + ["all_files"]:
             category = name[:-1]
         else:
-            raise AttributeError(f"Didn't know what to do about {name}")
+            return self.__getattribute__(name)
         if category == "all_file":
             my_docs = models.Q(equipment=self)
             location_docs = models.Q(location__in=self.location.all_parents)

@@ -45,7 +45,9 @@ class MyAccountView(UserAccountView):
 class ProjectView(IsAuthenticaedViewMixin, HTMXProcessMixin, TemplateView):
     """Make a list of user projects."""
 
-    template_name = "accounts/parts/projects_options.html"
+    template_name_id_project = "accounts/parts/projects_options.html"
+    template_name_full_description = "accounts/parts/project_description_full.html"
+    template_name_short_description = "accounts/parts/project_description_short.html"
 
     def get_context_data_id_project(self, **kwargs):
         """Add the projects for this yser."""
@@ -59,3 +61,17 @@ class ProjectView(IsAuthenticaedViewMixin, HTMXProcessMixin, TemplateView):
             projects = Project.objects.none()
         context["projects"] = projects
         return context
+
+    def get_context_data_full_description(self, **kwargs):
+        """Add the projects for this yser."""
+        context = super().get_context_data(_context=True, **kwargs)
+        if project_id := self.request.GET.get("project_id", None):
+            try:
+                project = Project.objects.get(pk=int(project_id))
+                context["project"] = project
+            except (ValueError, TypeError, Project.DoesNotExist):
+                context["project"] = None
+
+        return context
+
+    get_context_data_short_description = get_context_data_full_description

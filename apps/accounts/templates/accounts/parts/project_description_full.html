@@ -1,0 +1,5 @@
+{{ project.description|safe }}
+<a href="/" hx-get="/accounts/lookups/projects/"
+   hx-target="#project_description_{{ project.id }}"
+   hx-vars='{"project_id":"{{ project.id }}"}'
+   id="short_description"> less...</a>

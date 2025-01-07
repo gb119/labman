@@ -1,11 +1,51 @@
-{% for document in equipment.all_files.all %}
-    <div class="row">
-        <div class="col col-md-6">
-            <h5><a href="{{ document.file_url }}" target=_NEW>{{ document.title }}</a></h5>
-            <p>{{ document.catagory_name }}</p>
-        </div>
-        <div class="col col-md-6">
-            {{ document.extra_text|safe }}
-        </div>
-    </div>
-{% endfor %}
+<div class="accordion" id="FilesList">
+    {% for category,file_list in equipment.all_files_dict.items %}
+        {% if file_list.count > 0 %}
+            <div class="accordion-item">
+                <h2 class="accordion-header" id="{{ category|slugify }}">
+                    <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapse_{{ category|slugify }}"
+                            aria-expanded="{% if forloop.first %}true{% else %}false{% endif%}" aria-controls="collapse_{{ category|slugify }}">
+                        {{ category }}
+                    </button>
+                </h2>
+                <div id="collapse_{{ category|slugify }}" class="accordion-collapse collapse{% if forloop.first %} show{% endif %}"
+                     aria-labelledby="{{ category|slugify }}" data-bs-parent="#FilesList">
+                    <div class="accordion-body">
+                        {% for document in file_list %}
+                            {% if forloop.first %}
+                                <div class="row bg-secondary">
+                                    <div class="col col-md-4">
+                                        <h5>Filename</h5>
+                                    </div>
+                                    <div class="col col-md-4">
+                                        <h5>Description</h5>
+                                    </div>
+                                    <div class="col col-md-2">
+                                        <h5>Location</h5>
+                                    </div>
+                                    <div class="col col-md-2">
+                                        <h5>Equipment</h5>
+                                    </div>
+                                </div>
+                            {% endif %}
+                            <div class="row">
+                                <div class="col col-md-4">
+                                    <span><a href="{{ document.file_url }}" target=_NEW>{{ document.title }}</a></span>
+                                </div>
+                                <div class="col col-md-4">
+                                    {{ document.extra_text|safe }}
+                                </div>
+                                <div class="col col-md-2">
+                                    <span>{{ document.location.all|join:"<br/>" }}</span>
+                                </div>
+                                <div class="col col-md-2">
+                                    <span>{{ document.equipment.all|join:"<br/>" }}</span>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+    {% endfor %}
+</div>

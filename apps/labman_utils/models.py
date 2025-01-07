@@ -104,7 +104,7 @@ class Document(dsfh.BaseMixin, dsfh.TitledMixin, dsfh.PublicMixin, dsfh.RenameMi
     ]
     CATAGORIES_DICT = dict(CATEGORIES)
 
-    version = models.IntegerField(default=0)  # Manual version number used to determine if users need to re-ack docs
+    version = models.FloatField(default=0)  # Manual version number used to determine if users need to re-ack docs
     category = models.CharField(max_length=20, choices=CATEGORIES, default="other")
 
     subdirectory_path = dsfh.custom_subdirectory("documents/equipment/")
