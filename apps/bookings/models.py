@@ -124,6 +124,7 @@ class BookingPolicy(NamedObject):
 
     def permitted(self, booking):
         """Returns True is the booking is permitted under the current policy."""
+        superuser = booking.booker.is_superuser
         if not self.applies(booking):  # Role doesn't apply
             raise PolicyDoesNotApply(f"This policy does not apply for {booking.user} or {booking.equipment}")
 
@@ -139,10 +140,10 @@ class BookingPolicy(NamedObject):
         if not getattr(self, start_day, False):  # Day outside policy day ranges
             raise PolicyDoesNotApply(f"The start day {start.date().strftime('%A')} is not covered by this policy")
 
-        if self.immutable and tz.now() - self.immutable > start:  # Booking outside immutable time
+        if not superuser and self.immutable and tz.now() - self.immutable > start:  # Booking outside immutable time
             raise PolicyDoesNotApply("Start time is blocked by booking immutable time")
 
-        if self.max_forward and tz.now() + self.max_forward < end:  # Booking  to far in advance
+        if not superuser and self.max_forward and tz.now() + self.max_forward < end:  # Booking  to far in advance
             raise PolicyDoesNotApply("End time is blocked by booking max_forward time")
 
         entries = BookingEntry.objects.filter(
@@ -150,7 +151,7 @@ class BookingPolicy(NamedObject):
         ).values_list("slot")
         total = np.sum([(x[0].upper - x[0].lower).total_seconds() for x in entries])
 
-        if self.quota and total > self.quota.total_seconds():  # Too much time booked already
+        if not superuser and self.quota and total > self.quota.total_seconds():  # Too much time booked already
             raise PolicyDoesNotApply("Too much time {total[0]['total']} already booked.")
 
         return True
@@ -189,6 +190,8 @@ class BookingPolicy(NamedObject):
                     return policy
             except (PolicyDoesNotApply, PolicyNotFound):
                 continue
+        if booking.booker.is_superuser:  # Allow superusers to override policies
+            return None
         raise PolicyNotFound(
             f"No policy permits booking of {booking.equipment} by {booking.user} at {booking.slot.lower}"
         )
@@ -256,12 +259,18 @@ class BookingEntry(models.Model):
     @property
     def policy(self):
         """Return the effective policy for this booking."""
-        return BookingPolicy.get_policy(self)
+        try:
+            return BookingPolicy.get_policy(self)
+        except PolicyNotFound:
+            return "Unable to ddetermin effective policy"
+        except UserBookingHeld:
+            if self.user.username == "service":
+                return "System Booked for Service"
+            return "User Bookings are currently blocked."
 
     def rationalise(self, policy):
         """Apply quantisation to the booking."""
-        irug = self.__dict__.copy()
-        if self.slot.isempty:  # Bugout for the empty slot
+        if self.slot.isempty or policy is None:  # Bugout for the empty slot or no policy
             return self
         start, end = policy.fix_times(self)
         self.slot = DateTimeTZRange(start, end)
@@ -285,7 +294,7 @@ class BookingEntry(models.Model):
         if not self.slot.isempty and self.user.username != "service":  # Can't do the custom cleaning if slot is blank
             policy = BookingPolicy.get_policy(self)
             self.rationalise(policy)
-            if not policy.permitted(self):
+            if not self.booker.is_superuser and not policy.permitted(self):
                 raise ValidationError("Booking is unable to be made after quantising the booking period")
             conflicts = BookingEntry.objects.filter(slot__overlap=self.slot, equipment=self.equipment).exclude(
                 pk=self.pk

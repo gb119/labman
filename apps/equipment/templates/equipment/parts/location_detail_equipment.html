@@ -3,22 +3,25 @@
         <h5>Name</h5>
     </div>
     <div class="col col-md-2">
+        <h5>Category</h5>
+    </div>
+    <div class="col col-md-2">
         <h5>Thumbnail</h5>
     </div>
     <div class="col col-md-4">
         <h5>Descriptions</h5>
     </div>
     <div class="col col-md-2">
-        <h5>Location</h5>
-    </div>
-    <div class="col col-md-2">
-        <h5>Schedule</h5>
+        <h5>Echedule</h5>
     </div>
 </div>
-{% for item in equipment %}
+{% for item in location.equipment.all %}
     <div class="row">
         <div class="col col-md-2">
             <span><a href="{{ item.url }}">{{ item.name }}</a></span>
+        </div>
+        <div class="col col-md-2">
+            {{ item.category }}
         </div>
         <div class="col col-md-2">
             {{ item.thumbnail }}
@@ -27,11 +30,7 @@
             <div>{{ item.description|safe }}</div>
         </div>
         <div class="col col-md-2">
-            <span><a href="{{ location.url }}">{{ item.location.name }}</a></span>
-        </div>
-        <div class="col col-md-2">
             <span><a href="{{ item.schedule }}">Schedule</a></span>
         </div>
-
     </div>
 {% endfor %}

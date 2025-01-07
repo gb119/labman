@@ -64,10 +64,16 @@ def datetime_to_coord(
     match mode:
         case "start":  # Looking for a ts that is == or < target
             delta[delta > 0] = np.nan
-            ix = np.nanargmax(delta)
+            try:
+                ix = np.nanargmax(delta)
+            except ValueError:
+                ix = 0
         case "end":  # looking for a ts that is == to > target and then back of 1 on the ix
             delta[delta < 0] = np.nan
-            ix = np.nanargmin(delta) - 1
+            try:
+                ix = np.nanargmin(delta) - 1
+            except ValueError:
+                ix = len(delta) - 1
         case "nearest":  # Looking for the ts that is closest in any direction.
             delta = np.abs(delta)
             ix = np.nanargmin(delta)

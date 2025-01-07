@@ -69,7 +69,9 @@
                         <div class="col col-md-3">Description :</div><div class="col col-md-9">{{ equipment.description|safe }}</div>
                     </div>
                     <div class="row">
-                        <div class="col col-md-3">Location :</div><div class="col col-med-9">{{ equipment.location }}</div>
+                        <div class="col col-md-3">Location :</div><div class="col col-med-9">
+                            <a href="{{ equipment.location.url }}">{{ equipment.location.name }}</a>
+                        </div>
                     </div>
                     <div class="row">
                         <div class="col col-md-3">Owner :</div><div class="col col-md-9">
