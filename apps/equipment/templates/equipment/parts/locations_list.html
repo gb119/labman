@@ -18,7 +18,9 @@
             <span>{{ location.code }}</span>
         </div>
         <div class="col col-md-3">
-            <span style="margin-left: {{ location.level }}em;">{{ location.name }}</span>
+            <span style="margin-left: {{ location.level }}em;">
+                <a href="{{ location.url }}">{{ location.name }}</a>
+            </span>
         </div>
         <div class="col col-md-4">
             <div>{{ location.description|safe }}</div>

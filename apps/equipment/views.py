@@ -150,6 +150,21 @@ class EquipmentDetailView(HTMXProcessMixin, IsAuthenticaedViewMixin, views.gener
     get_context_data_cal_forward = get_context_data_scheduletab
 
 
+class LocationDetailView(HTMXProcessMixin, IsAuthenticaedViewMixin, views.generic.DetailView):
+    """Templated view for Equipment detail."""
+
+    template_name = "equipment/location_detail.html"
+    template_name_resourcestab = "equipment/parts/location_detail_resources.html"
+    template_name_pagestab = "equipment/parts/location_detail_pages.html"
+    template_name_equipmenttab = "equipment/parts/location_detail_equipment.html"
+
+    model = Location
+
+    def get_context_data_locationtab(self, **kwargs):
+        """Build the context for the calendar display."""
+        context = super().get_context_data(_context=True, **kwargs)
+
+
 class ModelListView(HTMXProcessMixin, IsAuthenticaedViewMixin, views.generic.ListView):
     """Setup a tabbed view of lists of various things."""
 

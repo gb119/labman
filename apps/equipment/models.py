@@ -13,7 +13,6 @@ import django.utils.timezone as tz
 from django.contrib.flatpages.models import FlatPage
 from django.db import models
 from django.db.models.constraints import CheckConstraint
-from django.utils.html import format_html
 from django.utils.text import slugify
 
 # external imports
@@ -81,6 +80,8 @@ class Location(ResourceedObject):
     @property
     def all_parents(self):
         """Return a set of all locations that contain this location."""
+        if self.level == 0:
+            return self.__class__.objects.filter(code=self.code)
         return self.__class__.objects.filter(code__regex=self._code_regexp).order_by("-code")
 
     @property
@@ -102,6 +103,11 @@ class Location(ResourceedObject):
     def all_pages(self):
         """Return all the files that are attached to this location and it's parents."""
         return self.pages.model.objects.filter(location__in=self.all_parents)
+
+    @property
+    def url(self):
+        """Return a URL for the detail page of this location."""
+        return f"/equipment/location_detail/{self.pk}/"
 
     def save(self, force_insert=False, force_update=False, using=None, update_fields=None):
         """Force the location code to be calculated and then upodate any sub_locations."""
@@ -171,13 +177,6 @@ class Equipment(ResourceedObject):
         return f"{self.name}"
 
     @property
-    def thumbnail(self):
-        """Return an html IMG tag with a thumbnail of the equipment."""
-        if self.photos.all().count() == 0:
-            return ""
-        return format_html(f"<img src='{self.photos.first().get_thumbnail_url()}' alt='Picture of {self.name}'/>")
-
-    @property
     def url(self):
         """Rreturn a URL for the detail page."""
         return f"/equipment/equipment_detail/{self.pk}/"
@@ -198,14 +197,6 @@ class Equipment(ResourceedObject):
         ret = []
         for shift in self.shifts.all():
             ret.append(shift.start_time)
-        return ret
-
-    @property
-    def all_files_dict(self):
-        """Get all the files, but arranged in a dictionary by category name."""
-        ret = {}
-        for key, name in Document.CATAGORIES_DICT.items():
-            ret[name] = getattr(self, f"{key}s")
         return ret
 
     @property

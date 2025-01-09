@@ -7,6 +7,7 @@ from functools import reduce
 from django.conf import settings
 from django.contrib.flatpages.models import FlatPage
 from django.db import models, transaction
+from django.utils.html import format_html
 
 # external imports
 import pytz
@@ -161,3 +162,39 @@ class ResourceedObject(NamedObject):
 
     class Meta:
         abstract = True
+
+    @property
+    def thumbnail(self):
+        """Return an html IMG tag with a thumbnail of the equipment."""
+        if self.photos.all().count() == 0:
+            return ""
+        return format_html(f"<img src='{self.photos.first().get_thumbnail_url()}' alt='Picture of {self.name}'/>")
+
+    @property
+    def photo(self):
+        """Return an html IMG tag with a thumbnail of the equipment."""
+        if self.photos.all().count() == 0:
+            return ""
+        return format_html(f"<img src='{self.photos.first().get_display_url()}' alt='Picture of {self.name}'/>")
+
+    @property
+    def all_files_dict(self):
+        """Get all the files, but arranged in a dictionary by category name."""
+        ret = {}
+        for key, name in Document.CATAGORIES_DICT.items():
+            ret[name] = getattr(self, f"{key}s")
+            if ret[name].count() == 0:
+                del ret[name]
+        return ret
+
+    def __getattr__(self, name):
+        """Deal with Role's and file types."""
+        if name in [f"{x}s" for x in Document.CATAGORIES_DICT.keys()] + ["all_files"]:
+            category = name[:-1]
+        else:
+            return self.__getattribute__(name)
+        if category == "all_file":
+            my_docs = models.Q(**{self.__class__.__name__.lower(): self})
+        else:
+            my_docs = models.Q(**{self.__class__.__name__.lower(): self, "category": category})
+        return Document.objects.filter(my_docs).order_by().order_by("title", "-version").distinct("title")
