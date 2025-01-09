@@ -292,7 +292,7 @@ AUTH_LDAP_CREATE_USER_ON_FLY = False
 
 AUTHENTICATION_BACKENDS = [
     # "labman_utils.backend.LeedsAdfsBaseBackend",
-    # "django_auth_ldap_ad.backend.LDAPBackend",
+    "django_auth_ldap_ad.backend.LDAPBackend",
     "django.contrib.auth.backends.ModelBackend",
 ]
 
@@ -318,7 +318,7 @@ AUTH_LDAP_USER_FLAGS_BY_GROUP = {
 }
 
 # All people that are to be staff are also to belong to this group
-AUTH_LDAP_USER_GROUPS_BY_GROUP = {"Instructor": AUTH_LDAP_USER_FLAGS_BY_GROUP["is_staff"]}
+AUTH_LDAP_USER_GROUPS_BY_GROUP = {}
 
 AUTH_ADFS = {
     # "RELYING_PARTY_ID": "your-adfs-RPT-name",
