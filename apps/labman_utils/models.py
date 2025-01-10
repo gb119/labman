@@ -5,6 +5,7 @@ from functools import reduce
 
 # Django imports
 from django.conf import settings
+from django.contrib.admin import widgets as admin_widgets
 from django.contrib.flatpages.models import FlatPage
 from django.db import models, transaction
 from django.utils.html import format_html
@@ -16,7 +17,24 @@ from photologue.models import Photo
 from sortedm2m.fields import SortedManyToManyField
 from tinymce.models import HTMLField
 
+# app imports
+from .forms import ObfuscatedCharField
+from .widgets import AdminObfuscatedTinyMCE, ObfuscatedTinyMCE
+
 DEFAULT_TZ = pytz.timezone(settings.TIME_ZONE)
+
+
+class ObfuscatedHTMLField(HTMLField):
+    def formfield(self, **kwargs):
+        """Replicate TinyMCE's HTMLFIeld but force a custom subfield."""
+        defaults = {"form_class": ObfuscatedCharField, "widget": ObfuscatedTinyMCE}
+        defaults.update(kwargs)
+
+        # As an ugly hack, we override the admin widget
+        if defaults["widget"] == admin_widgets.AdminTextareaWidget:
+            defaults["widget"] = AdminObfuscatedTinyMCE
+
+        return super().formfield(**defaults)
 
 
 def to_seconds(value):
@@ -87,7 +105,7 @@ class NamedObject(models.Model):
         abstract = True
 
     name = models.CharField(max_length=80, null=True, blank=True)
-    description = HTMLField()
+    description = ObfuscatedHTMLField()
 
     def __str__(self):
         return f"{self.__class__.__name__}:{self.name}"
