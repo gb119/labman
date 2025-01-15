@@ -6,6 +6,18 @@
             color: white;
             margin: 8px;
         }
+/* Custom CSS to change the appearance of the closed accordion button */
+        .accordion-button.collapsed {
+            background-color: #f0f0f0; /* Change background color */
+            color: #333; /* Change text color */
+            border: 1px solid #ccc; /* Add border */
+        }
+
+/* Optional: Change the appearance when the button is hovered */
+        .accordion-button.collapsed:hover {
+            background-color: #e0e0e0; /* Change hover background color */
+        }
+
     </style>}
 {% endblock css %}
 {% block title %}{{ block.super }}: Detail on {{ location.name }}{% endblock %}
@@ -32,6 +44,13 @@
                         data-bs-toggle="tab" data-bs-target="#resources"
                         type="button" role="tab" aria-controls="resources"
                         aria-selected="false">Files</button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="images-tab"
+                        hx-get="{{ request.get_full_path }}" hx-target="#images"
+                        data-bs-toggle="tab" data-bs-target="#images"
+                        type="button" role="tab" aria-controls="images"
+                        aria-selected="false">Gallery</button>
             </li>
             <li class="nav-item" role="presentation">
                 <button class="nav-link" id="equipment-tab"
@@ -84,6 +103,8 @@
                 </div>
             </div>
             <div class="tab-pane" id="resources" role="tabpanel" aria-labelledby="resources-tab">
+            </div>
+            <div class="tab-pane" id="images" role="tabpanel" aria-labelledby="images-tab">
             </div>
             <div class="tab-pane" id="pages" role="tabpanel" aria-labelledby="pages-tab">
             </div>

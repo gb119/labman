@@ -1,17 +1,20 @@
-<div class="row bg-secondary">
-    <div class="col col-md-3"><h5>Equipment</h5></div>
-    <div class="col col-md-3"><h5>Role</h5></div>
-    <div class="col col-md-3"><h5>Signed</h5></div>
-    <div class="col col-md-3"><h5>Bookings</h5></div>
-</div>
 {% for entry in account.user_of.all %}
+    {% if forloop.first %}
+        <div class="row bg-secondary">
+            <div class="col col-md-4"><h5>Equipment</h5></div>
+            <div class="col col-md-2"><h5>Role</h5></div>
+            <div class="col col-md-3"><h5>Signed</h5></div>
+            <div class="col col-md-3"><h5>Bookings</h5></div>
+        </div>
+    {%endif %}
     <div class="row">
-        <div class="col col-md-3">
+        <div class="col col-md-2">                {{ entry.equipment.thumbnail }}
+        </div>
+        <div class="col col-md-2">
             <a href="/equipment/equipment_detail/{{ entry.equipment.pk }}/">
-                {{ entry.equipment.thumbnail }}
                 {{ entry.equipment }}
             </a>
-        </div><div class="col col-md-3">{{ entry.role }}</div>
+        </div><div class="col col-md-2">{{ entry.role }}</div>
         <div class="col col-md-3">
             {% if entry.hold %}
                 {% if request.user == account %}

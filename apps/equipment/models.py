@@ -177,6 +177,11 @@ class Equipment(ResourceedObject):
         return f"{self.name}"
 
     @property
+    def bookable(self):
+        """Return True if there are applicable policies."""
+        return self.policies.count() > 0
+
+    @property
     def url(self):
         """Rreturn a URL for the detail page."""
         return f"/equipment/equipment_detail/{self.pk}/"

@@ -4,7 +4,7 @@
     {% if request.user.is_anonymous %}
         {% get_flatpages '/home/index/' as pages %}
     {% else %}
-        <h2>Placeholder - uyser is logged in</h2>
+        {% get_flatpages '/home/logged_in/' as pages %}
     {% endif %}
     {{ pages.first.content|safe }}
 {% endblock content %}

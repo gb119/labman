@@ -156,6 +156,7 @@ class LocationDetailView(HTMXProcessMixin, IsAuthenticaedViewMixin, views.generi
 
     template_name = "equipment/location_detail.html"
     template_name_resourcestab = "equipment/parts/location_detail_resources.html"
+    template_name_imagestab = "equipment/parts/location_detail_images.html"
     template_name_pagestab = "equipment/parts/location_detail_pages.html"
     template_name_equipmenttab = "equipment/parts/location_detail_equipment.html"
 

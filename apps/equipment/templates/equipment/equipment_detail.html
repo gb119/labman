@@ -65,13 +65,15 @@
                         type="button" role="tab" aria-controls="userlist"
                         aria-selected="false">Users</button>
             </li>
-            <li class="nav-item" role="presentation">
-                <button class="nav-link" id="schedule-tab"
-                        hx-get="{{ request.get_full_path }}" hx-target="#schedule"
-                        data-bs-toggle="tab" data-bs-target="#schedule_container"
-                        type="button" role="tab" aria-controls="schedule_container"
-                        aria-selected="false">Schedule</button>
-            </li>
+            {% if equipment.bookable %}
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="schedule-tab"
+                            hx-get="{{ request.get_full_path }}" hx-target="#schedule"
+                            data-bs-toggle="tab" data-bs-target="#schedule_container"
+                            type="button" role="tab" aria-controls="schedule_container"
+                            aria-selected="false">Schedule</button>
+                </li>
+            {% endif %}
         </ul>
 
         <div class="tab-content">
@@ -113,13 +115,14 @@
             </div>
             <div class="tab-pane" id="userlist" role="tabpanel" aria-labelledby="userlist-tab">
             </div>
-            <div class="tab-pane" id="schedule_container" role="tabpanel" aria-labelledby="schedule-tab"
-                 hx-trigger="refreshSchedule from:body"
-                 hx-get="{% url 'equipment:equipment_detail' equipment.pk %}"
-                 hx-target="#schedule">
-                <div id="schedule"></div>
-            </div>
-
+            {% if equipment.bookable %}
+                <div class="tab-pane" id="schedule_container" role="tabpanel" aria-labelledby="schedule-tab"
+                     hx-trigger="refreshSchedule from:body"
+                     hx-get="{% url 'equipment:equipment_detail' equipment.pk %}"
+                     hx-target="#schedule">
+                    <div id="schedule"></div>
+                </div>
+            {% endif %}
         </div>
         <div id="modal"
              class="modal modal-blur fade"
