@@ -153,7 +153,7 @@ class Equipment(ResourceedObject):
 
     CATEGORIES = {
         "cryostat": "Cryostat",
-        "deposition": "Thin fil;m growth",
+        "deposition": "Thin film growth",
         "magnetometer": "Magnetic Characterisation",
         "furnace": "Furnace",
         "transport": "Electrical Transport",

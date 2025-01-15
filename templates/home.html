@@ -1,2 +1,10 @@
 {% extends "base.html" %}
-{% block content %}{% lorem 3 p %}{% endblock content %}
+{% load flatpages %}
+{% block content %}
+    {% if request.user.is_anonymous %}
+        {% get_flatpages '/home/index/' as pages %}
+    {% else %}
+        <h2>Placeholder - uyser is logged in</h2>
+    {% endif %}
+    {{ pages.first.content|safe }}
+{% endblock content %}

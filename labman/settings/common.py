@@ -138,6 +138,7 @@ TEMPLATES = [
             "builtins": [
                 "django.templatetags.static",
                 "mathfilters.templatetags.mathfilters",
+                "labman_utils.templatetags.labman_tags",
             ],
         },
     }

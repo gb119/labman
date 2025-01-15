@@ -13,6 +13,10 @@ from django.urls import reverse
 from sitetree.admin import TreeItemAdmin
 from tinymce.widgets import TinyMCE
 
+# app imports
+from .forms import ObfuscatedCharField
+from .widgets import AdminObfuscatedTinyMCE
+
 # Monkey-patch sitetree admin for django-suit v2
 
 
@@ -61,8 +65,8 @@ class TinyMCEFlatPageAdmin(FlatPageAdmin):
     def formfield_for_dbfield(self, db_field, request, **kwargs):
         """Replace the widget for the content with TinyMCE editor."""
         if db_field.name == "content":
-            ret = db_field.formfield(
-                widget=TinyMCE(
+            ret = ObfuscatedCharField(
+                widget=AdminObfuscatedTinyMCE(
                     attrs={"cols": 80, "rows": 30},
                     mce_attrs={"external_link_list_url": reverse("tinymce-linklist")},
                 )

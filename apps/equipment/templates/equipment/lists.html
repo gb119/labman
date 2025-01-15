@@ -6,6 +6,19 @@
             color: white;
             margin: 8px;
         }
+/* Custom CSS to change the appearance of the closed accordion button */
+        .accordion-button.collapsed {
+            background-color: #f0f0f0; /* Change background color */
+            color: #333; /* Change text color */
+            border: 1px solid #ccc; /* Add border */
+        }
+
+/* Optional: Change the appearance when the button is hovered */
+        .accordion-button.collapsed:hover {
+            background-color: #e0e0e0; /* Change hover background color */
+        }
+
+
     </style>}
 {% endblock css %}
 {% block title %}{{ block.super }}: Lists{% endblock %}

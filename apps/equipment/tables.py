@@ -25,7 +25,7 @@ DEFAULT_TZ = pytz.timezone(settings.TIME_ZONE)
 
 def calendar_date_vector(date: Union[Date, dt]) -> List[Date]:
     """Get the dates for a weekly calendar that includes date."""
-    start_day = config.CALENDAR_START_DAY
+    start_day = int(config.CALENDAR_START_DAY)
     if isinstance(date, Date):
         date = dt.combine(date, Time(), tzinfo=DEFAULT_TZ)
     dow = date.weekday()

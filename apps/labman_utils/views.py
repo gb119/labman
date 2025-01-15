@@ -6,6 +6,10 @@ Created on Tue Jul 18 14:56:26 2023
 """
 # Django imports
 from django.contrib.auth.mixins import UserPassesTestMixin
+from django.views.generic import DetailView
+
+# external imports
+from photologue.models import Photo
 
 
 class IsAuthenticaedViewMixin(UserPassesTestMixin):
@@ -23,3 +27,11 @@ class IsSuperuserViewMixin(IsAuthenticaedViewMixin):
 class IsStaffViewMixin(IsSuperuserViewMixin):
     def test_func(self):
         return IsAuthenticaedViewMixin.test_func(self) and (self.request.user.is_staff or super().test_finc())
+
+
+class PhotoDisplay(DetailView):
+    """Return just the image tag for an image."""
+
+    model = Photo
+    template_name = "labman_utils/photo_tag.html"
+    context_obkect_name = "photo"

@@ -13,3 +13,13 @@ register = template.Library()
 @register.filter(name="zip")
 def zip_lists(a, b):
     return zip(a, b)
+
+
+@register.filter
+def item(mapping, key):
+    if key.isnumeric():
+        key = int(key)
+    try:
+        return mapping[key]
+    except KeyError:
+        return ""

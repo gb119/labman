@@ -4,8 +4,14 @@ Created on Sun Aug  6 16:31:16 2023
 
 @author: phygbu
 """
+# Python imports
+from os.path import basename, dirname
+
 # Django imports
 from django.urls import path, register_converter
+
+# app imports
+from . import views
 
 
 class FloatUrlParameterConverter:
@@ -18,6 +24,10 @@ class FloatUrlParameterConverter:
         return str(value)
 
 
+app_name = basename(dirname(__file__))
+
 register_converter(FloatUrlParameterConverter, "float")
 
-urlpatterns = []
+urlpatterns = [
+    path("photo_tag/<slug:slug>/", views.PhotoDisplay.as_view(), name="photo_tag"),
+]

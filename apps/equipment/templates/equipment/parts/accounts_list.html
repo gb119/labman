@@ -3,7 +3,7 @@
         {% if account_list.count > 0 %}
             <div class="accordion-item">
                 <h2 class="accordion-header" id="{{ group }}">
-                    <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapse_{{ group }}"
+                    <button class="accordion-button {% if   not forloop.first %}collapsed{% endif %}" type="button" data-bs-toggle="collapse" data-bs-target="#collapse_{{ group }}"
                             aria-expanded="{% if forloop.first %}true{% else %}false{% endif%}" aria-controls="collapse_{{ group }}">
                         {{ group }}
                     </button>

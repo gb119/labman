@@ -26,11 +26,16 @@ $(document).ready(function() {
             var rot13Text = rot13(base64EncodedText);
             $(this).val(rot13Text);
             $(this).attr({"encoded":"True"})
+            console.log("Original text"+originalText);
+            console.log("New text:"+$(this).val());
+            return false;
         });
     }
 
     // Intercept form submission
     $('form').on('submit', function(event) {
-        obfuscateHtmlContent();
+        setTimeout(function() {
+            obfuscateHtmlContent();
+        },0);
     });
 });

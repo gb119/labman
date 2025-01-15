@@ -216,3 +216,10 @@ class ResourceedObject(NamedObject):
         else:
             my_docs = models.Q(**{self.__class__.__name__.lower(): self, "category": category})
         return Document.objects.filter(my_docs).order_by().order_by("title", "-version").distinct("title")
+
+
+@patch_model(Photo)
+def displaY_tag(self, size):
+    """Return a complete image tag for the current image."""
+    url = getattr(self, f"get_{size}_url", lambda: "")()
+    return f'<img src="{url}" alt="self.caption" class="photo-display" id="{self.slug}" />'

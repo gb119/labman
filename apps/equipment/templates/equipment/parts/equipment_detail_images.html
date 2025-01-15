@@ -1,0 +1,15 @@
+{% for image in equipment.photos.all %}
+    {% if forloop.counter0|divisibleby:3 %}
+        </div class="row">
+    {% endif %}
+    <div class="col-md-4">
+        <a hx-get="{% url 'labman_utils:photo_tag' image.slug %}" hx-target="#dialog" data-toggle="modal" data-target="#modal">
+            <img src="{{ image.get_medium_url }}" alt="{{ image.caption }}" />
+        </a>
+    </div>
+    {% if forloop.counter|divisibleby:3 %}
+        </div>
+    {% elif forloop.last %}
+        </div>
+    {% endif %}
+{% endfor %}

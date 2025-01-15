@@ -83,6 +83,7 @@ class EquipmentDetailView(HTMXProcessMixin, IsAuthenticaedViewMixin, views.gener
 
     template_name = "equipment/equipment_detail.html"
     template_name_resourcestab = "equipment/parts/equipment_detail_resources.html"
+    template_name_imagestab = "equipment/parts/equipment_detail_images.html"
     template_name_pagestab = "equipment/parts/equipment_detail_pages.html"
     template_name_userlisttab = "equipment/parts/equipment_detail_userlist.html"
     template_name_scheduletab = "equipment/parts/equipment_detail_schedule.html"
@@ -188,7 +189,7 @@ class ModelListView(HTMXProcessMixin, IsAuthenticaedViewMixin, views.generic.Lis
             return ret
         match getattr(self.request.htmx, "trigger", ""):
             case "equipment-tab":
-                qs = Equipment.objects.all().order_by("name")
+                qs = Equipment.objects.all().order_by("category", "name")
             case "locations-tab":
                 qs = Location.objects.all().order_by("code", "name")
             case "projects-tab":
@@ -198,3 +199,13 @@ class ModelListView(HTMXProcessMixin, IsAuthenticaedViewMixin, views.generic.Lis
                 for grp in ["Academic", "Staff", "PDRA", "PostGrad", "Visitor", "Project"]:
                     qs[grp] = Account.objects.filter(groups__name__icontains=grp).order_by("last_name", "first_name")
         return qs
+
+    def get_context_data_equipmenttab(self, **kwargs):
+        """Extra context for equipment list."""
+        context = super().get_context_data(_context=True, **kwargs)
+        data = {}
+        for category in Equipment.CATEGORIES:
+            data[category] = context["equipment"].filter(category=category)
+        context["equipment"] = data
+        context["categories"] = Equipment.CATEGORIES
+        return context
