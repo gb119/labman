@@ -8,20 +8,28 @@
         <form method="POST" action="{{ request.path }}" role="form" aria-label="Document Sign-off Form">
             {% csrf_token %}
             {{ formset.management_form }}
-            <div class="col-md-8">
-                {% for form,doc in formset|zip:docs %}
+            {% if form.errors %}
+                <div class="row">
+                    <div class="col-md-12 bg-warning">{{ form.errors }}</div>
+                </div>
+            {% endif %}
+            {% for form,doc in formset|zip:docs %}
+                {% if form.errors %}
                     <div class="row">
-                        <div class="col-md-4">{% bootstrap_form form layput="inline" %}</div>
-                        <div class="col-md-8">
-                            <div class="row">
-                                <div class="col-sm-6"><a href="{{ doc.file_url }}" target=_NEW >{{ doc.title }}</a></div>
-                                <div class="col-sm-6">(v{{ doc.version }}) {{ doc.updated }}</div>
-                            </div>
-                            <div class="row">{{ doc.extra_text }}</div>
-                        </div>
+                        <div class="col-md-12 bg-warning">{{ form.errors }}</div>
                     </div>
-                {% endfor %}
-            </div>
+                {% endif %}
+                <div class="row">
+                    <div class="col-md-4">{% bootstrap_form form layput="inline" %}</div>
+                    <div class="col-md-8">
+                        <div class="row">
+                            <div class="col-sm-6"><a href="{{ doc.file_url }}" target=_NEW >{{ doc.title }}</a></div>
+                            <div class="col-sm-6">(v{{ doc.version }}) {{ doc.updated }}</div>
+                        </div>
+                        <div class="row">{{ doc.extra_text }}</div>
+                    </div>
+                </div>
+            {% endfor %}
             <div class="row justify-content-center">
                 <div class="col-2">
                     {% bootstrap_button "Cancel" button_type="reset"  %}

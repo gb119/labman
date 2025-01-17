@@ -18,7 +18,7 @@ from sortedm2m.fields import SortedManyToManyField
 from tinymce.models import HTMLField
 
 # app imports
-from .forms import ObfuscatedCharField
+from .fields import ObfuscatedCharField
 from .widgets import AdminObfuscatedTinyMCE, ObfuscatedTinyMCE
 
 DEFAULT_TZ = pytz.timezone(settings.TIME_ZONE)

@@ -1,0 +1,51 @@
+{% load django_bootstrap5 %}
+{% load labman_tags %}
+{{ form.media }}
+<style>.bootstrap-datetimepicker-widget {z-order:1600!important; }</style>
+<div class="modal-content">
+    <div class="modal-header">
+        <h5 class="modal-title">Manage Document</h5>
+    </div>
+    <div class="modal-body">
+        <form id="document" method="POST"
+              {% if this.pk %}
+                  hx-post="{% url 'labman_utils:edit_equipment_document' equipment_id this_id %}"
+              {% else %}
+                  hx-post="{% url 'labman_utils:new_equipment_document' equipment_id %}"
+              {% endif %}
+              hx-encoding='multipart/form-data'
+              hx-target="#dialog">
+            {% csrf_token %}
+            {% bootstrap_form form layout="horizontal" %}
+            <div class="row justify-content-between">
+                <div class="col-md-6">
+                    <button type="reset"
+                            class="btn-secondary bi bi-x"
+                            data-bs-dismiss="modal"
+                            name="cancel">Cancel</button>
+                    {% if edit %}
+                        <button type="submit"
+                                class="btn-primary bi bi-pencil"
+                                id = "submit_document"
+                                value = {{ this.pk }}
+                                name="book">Edit</button>
+                    {% else %}
+                        <button type="submit"
+                                class="btn-primary bi bi-bookmark-plus"
+                                id = "submit_document"
+                                name="book">Save</button>
+                    {% endif %}
+                </div>
+                <div class="col-md-3">
+                    {% if edit and request.user.is_superuser %}
+                        <button type="button"
+                                id ="delete_document"
+                                class="btn-danger bi bi-trash"
+                                hx-delete="{% url 'labman_utils:edit_equipment_document' equipment_id this_id %}"
+                                name="document" value={{ this.pk }}>Delete</button>
+                    {% endif %}
+                </div>
+            </div>
+        </form>
+    </div>
+</div>

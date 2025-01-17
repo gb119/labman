@@ -43,13 +43,14 @@ class SignOffFormSetView(IsAuthenticaedViewMixin, FormSetView):
         docs = equipment.all_files.filter(category__in=["ra", "sop"])
         dataset = []
         for doc in docs:
+            row = {"document": doc, "user": self.request.user, "version": doc.version}
             try:
                 dso = DocumentSignOff.objects.get(user=self.request.user, document=doc, version=doc.version)
+                row["id"] = dso.id
+                row["signed"] = True
             except ObjectDoesNotExist:
                 dso = DocumentSignOff(user=self.request.user, document=doc, version=doc.version)
-            row = {"document": doc, "user": self.request.user, "version": doc.version, "signed": dso.pk is not None}
-            if dso.pk:
-                row["id"] = dso.id
+                row["signed"] = False
             dataset.append(row)
         return dataset
 

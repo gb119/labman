@@ -19,5 +19,5 @@ class SignOffForm(forms.Form):
 
     user = forms.ModelChoiceField(Account.objects.all(), widget=forms.HiddenInput)
     document = forms.ModelChoiceField(Document.objects.all(), widget=forms.HiddenInput)
-    version = forms.IntegerField(widget=forms.HiddenInput)
+    version = forms.FloatField(widget=forms.HiddenInput)
     signed = forms.BooleanField()

@@ -29,9 +29,21 @@
                                 </div>
                             {% endif %}
                             <div class="row">
-                                <div class="col col-md-4">
-                                    <span><a href="{{ document.file_url }}" target=_NEW>{{ document.title }}</a></span>
-                                </div>
+                                {% if equipment|can_edit:request.user %}
+                                    <div class="col col-md-1">
+                                        <a hx-get="{% url 'labman_utils:edit_equipment_document' equipment.pk document.pk %}"
+                                           hx-target="#dialog">
+                                            <i class="bi bi-pencil"></i>
+                                        </a>
+                                    </div>
+                                    <div class="col col-md-3">
+                                        <span><a href="{{ document.file_url }}" target=_NEW>{{ document.title }}</a></span>
+                                    </div>
+                                {% else %}
+                                    <div class="col col-md-4">
+                                        <span><a href="{{ document.file_url }}" target=_NEW>{{ document.title }}</a></span>
+                                    </div>
+                                {% endif %}
                                 <div class="col col-md-4">
                                     {{ document.extra_text|safe }}
                                 </div>
@@ -49,3 +61,20 @@
         {% endif %}
     {% endfor %}
 </div>
+{% if equipment|can_edit:request.user %}
+
+    <style>
+        nav.navbar-dark { color: white; }
+        nav a {cursor: pointer; }
+    </style>
+    <nav class="navbar navbar-dark bg-dark">
+        <div class="container-fluid">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                <li><a hx-get="{% url 'labman_utils:new_equipment_document' equipment.pk %}" hx-target="#dialog">
+                    <i class="bi bi-file-earmark-arrow-up"></i>Upload New File...
+                </a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+{% endif %}

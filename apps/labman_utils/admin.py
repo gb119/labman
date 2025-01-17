@@ -14,7 +14,7 @@ from sitetree.admin import TreeItemAdmin
 from tinymce.widgets import TinyMCE
 
 # app imports
-from .forms import ObfuscatedCharField
+from .fields import ObfuscatedCharField
 from .widgets import AdminObfuscatedTinyMCE
 
 # Monkey-patch sitetree admin for django-suit v2

@@ -10,6 +10,7 @@ from datetime import (
 
 # Django imports
 import django.utils.timezone as tz
+from django.apps import apps
 from django.contrib.flatpages.models import FlatPage
 from django.db import models
 from django.db.models.constraints import CheckConstraint
@@ -18,7 +19,6 @@ from django.utils.text import slugify
 # external imports
 import numpy as np
 import pytz
-from accounts.models import Account, Role
 from labman_utils.models import (
     DEFAULT_TZ,
     Document,
@@ -167,7 +167,7 @@ class Equipment(ResourceedObject):
         constraints = [models.UniqueConstraint(fields=["name"], name="Unique Equipment Name")]
 
     location = models.ForeignKey(Location, on_delete=models.CASCADE, related_name="equipment")
-    owner = models.ForeignKey(Account, on_delete=models.CASCADE, related_name="equipment")
+    owner = models.ForeignKey("accounts.Account", on_delete=models.CASCADE, related_name="equipment")
     shifts = SortedManyToManyField(Shift, related_name="equipment", blank=True)
     policies = SortedManyToManyField("bookings.BookingPolicy", related_name="equipment", blank=True)
     offline = models.BooleanField(default=False)
@@ -215,6 +215,8 @@ class Equipment(ResourceedObject):
 
     def __getattr__(self, name):
         """Deal with Role's and file types."""
+        Role = apps.get_model(app_label="accounts", model_name="role")
+
         try:
             role = Role.objects.get(name=name)
             return self.users.filter(role__level__gte=role.level)
@@ -255,6 +257,10 @@ class Equipment(ResourceedObject):
                 return shift
         return None
 
+    def can_edit(self, target):
+        """Return True if target is a superuser, owner or manager."""
+        return (target.is_superuser) or (self.owner == target) or (target in self.manager)
+
 
 class UserListEntry(models.Model):
     """A single entry of a user list - a through table for a many to many field."""
@@ -266,8 +272,8 @@ class UserListEntry(models.Model):
         verbose_name_plural = "User List Entries"
 
     equipment = models.ForeignKey(Equipment, on_delete=models.CASCADE, related_name="users")
-    user = models.ForeignKey(Account, on_delete=models.CASCADE, related_name="user_of")
-    role = models.ForeignKey(Role, on_delete=models.SET_NULL, null=True, blank=True)
+    user = models.ForeignKey("accounts.Account", on_delete=models.CASCADE, related_name="user_of")
+    role = models.ForeignKey("accounts.Role", on_delete=models.SET_NULL, null=True, blank=True)
     hold = models.BooleanField(default=True, verbose_name="User clearable hold")
     admin_hold = models.BooleanField(default=False, verbose_name="Management hold")
     updated = models.DateTimeField(auto_now=True)
@@ -318,8 +324,8 @@ class DocumentSignOff(models.Model):
     """Records the user signing off that they have read a document."""
 
     document = models.ForeignKey(Document, on_delete=models.CASCADE, related_name="signatures")
-    version = models.IntegerField()
-    user = models.ForeignKey(Account, on_delete=models.CASCADE, related_name="signatures")
+    version = models.FloatField()
+    user = models.ForeignKey("accounts.Account", on_delete=models.CASCADE, related_name="signatures")
     created = models.DateTimeField(auto_now_add=True)
 
     class Meta:

@@ -101,6 +101,7 @@ DEFAULT_APPS = [
     "sitetree",
     "tinymce",
     "django_simple_file_handler",
+    "floppyforms",
 ] + CUSTOM_APPS
 
 # Middlewares
@@ -179,7 +180,7 @@ MEDIA_URL = "/media/"
 
 # ##### Settings for CSRF protection
 try:
-    DNS_NAME = f"{SITE_NAME}.your.domain.name"
+    DNS_NAME = f"{SITE_NAME}.leeds.ac.uk"
     IP_ADDR = socket.gethostbyname(DNS_NAME)
 except socket.gaierror:
     DNS_NAME = "loxcalhost"
@@ -357,7 +358,26 @@ CONSTANCE_ADDITIONAL_FIELDS = {
         },
     ]
 }
+###### Tinymce Settings ##################################
 
+TINYMCE_DEFAULT_CONFIG = {
+    "height": "640px",
+    "width": "800px",
+    "menubar": "file edit view insert format tools table help",
+    "plugins": "advlist autolink lists link image charmap print preview anchor searchreplace visualblocks code "
+    "fullscreen insertdatetime media table paste code help wordcount spellchecker",
+    "toolbar": "undo redo | bold italic underline strikethrough | fontselect fontsizeselect formatselect | alignleft "
+    "aligncenter alignright alignjustify | outdent indent |  numlist bullist checklist | forecolor "
+    "backcolor casechange permanentpen formatpainter removeformat | pagebreak | charmap emoticons | "
+    "fullscreen  preview save print | insertfile image media pageembed template link anchor codesample | "
+    "a11ycheck ltr rtl | showcomments addcomment code",
+    "custom_undo_redo_levels": 10,
+    "document_base_url": f"https://{DNS_NAME}",
+    "relative_urls": True,
+    "language": "en_GB",  # To force a specific language instead of the Django current language.
+}
+# TINYMCE_SPELLCHECKER = True
+# TINYMCE_COMPRESSOR = True
 ###### Django Suit Menu ##################################
 
 # Import Applicaton-specific Settings

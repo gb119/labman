@@ -23,3 +23,9 @@ def item(mapping, key):
         return mapping[key]
     except KeyError:
         return ""
+
+
+@register.filter
+def can_edit(equipment, target):
+    """Proxy through to the edit."""
+    return equipment.can_edit(target)
