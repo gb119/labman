@@ -36,4 +36,16 @@ urlpatterns = [
         views.DocumentDIalog.as_view(),
         name="edit_equipment_document",
     ),
+    path("new_document/location/<int:location>/", views.DocumentDIalog.as_view(), name="new_location_document"),
+    path(
+        "edit_document/location/<int:location>/<int:pk>/",
+        views.DocumentDIalog.as_view(),
+        name="edit_location_document",
+    ),
+    path(
+        ";ink_documents/equipment/<int:equipment>/",
+        views.DocumentLinkDIalog.as_view(),
+        name="link_document_equipment",
+    ),
+    path("link_documents/location/<int:location>/", views.DocumentLinkDIalog.as_view(), name="link_document_location"),
 ]

@@ -8,11 +8,7 @@
     </div>
     <div class="modal-body">
         <form id="document" method="POST"
-              {% if this.pk %}
-                  hx-post="{% url 'labman_utils:edit_equipment_document' equipment_id this_id %}"
-              {% else %}
-                  hx-post="{% url 'labman_utils:new_equipment_document' equipment_id %}"
-              {% endif %}
+              hx-post="{{ post_url }}"
               hx-encoding='multipart/form-data'
               hx-target="#dialog">
             {% csrf_token %}
@@ -41,7 +37,7 @@
                         <button type="button"
                                 id ="delete_document"
                                 class="btn-danger bi bi-trash"
-                                hx-delete="{% url 'labman_utils:edit_equipment_document' equipment_id this_id %}"
+                                hx-delete="{{ post_url }}"
                                 name="document" value={{ this.pk }}>Delete</button>
                     {% endif %}
                 </div>

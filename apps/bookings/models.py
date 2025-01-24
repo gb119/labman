@@ -44,6 +44,10 @@ class UserBookingHeld(BookingError):
     """Subclass of ValidationError to signal that bookings are held by a user-clearanle status."""
 
 
+class AdminBookingHeld(BookingError):
+    """Subclass of ValidationError to signal that bookings are held by a user-clearanle status."""
+
+
 class BookingPolicy(NamedObject):
     """Represent a policy about booking equipment."""
 
@@ -182,7 +186,7 @@ class BookingPolicy(NamedObject):
             )
 
         if booking.admin_hold:
-            raise UserBookingHeld(f"Bookings for {booking.user} or {booking.equipment} are blocked by the Admin")
+            raise AdminBookingHeld(f"Bookings for {booking.user} or {booking.equipment} are blocked by the Admin")
 
         for policy in booking.equipment.policies.all():
             try:
@@ -212,6 +216,9 @@ class BookingEntry(models.Model):
     equipment = models.ForeignKey(Equipment, on_delete=models.PROTECT, related_name="bookings")
     slot = DateTimeRangeField(default_bounds="[)")
     project = models.ForeignKey(Project, on_delete=models.PROTECT, blank=True)
+    shifts = models.FloatField(
+        default=1.0,
+    )
 
     def __str__(self):
         return f"{self.user.display_name} on {self.equipment.name} @ {self.slot}"
@@ -259,8 +266,11 @@ class BookingEntry(models.Model):
     @property
     def policy(self):
         """Return the effective policy for this booking."""
+        return self.get_policy()
+
+    def get_policy(self, no_holds=False):
         try:
-            return BookingPolicy.get_policy(self)
+            return BookingPolicy.get_policy(self, no_holds)
         except PolicyNotFound:
             return "Unable to ddetermin effective policy"
         except UserBookingHeld:
@@ -285,14 +295,31 @@ class BookingEntry(models.Model):
         if self.project not in self.user.project.all() and not self.user.is_superuser:
             return self.user.default_project
 
-    def clean(self):
+    def count_shifts(self):
+        """Return a weighted sum of the number of shifts for this booking."""
+        start, end = self.get_policy(no_holds=True).fix_times(self)
+        end = end - td(seconds=0.1)  # knock the end back inside a shift
+        start_shift = self.equipment.get_shift(start)
+        shifts = [x for x in self.equipment.shifts.all()]
+        ix = shifts.index(start_shift)
+        current = start
+        total = 0
+        while (end - current).total_seconds() >= 0:
+            current = current + shifts[ix].duration
+            total += shifts[ix].weighting
+            ix = (ix + 1) % len(shifts)
+        return total
+
+    def clean(self, no_holds=False):
         """Rearrange the slot and check for conflicts."""
         self.fix_project()
         # Swap start and end times to ensure positive duration
-        if not self.slot.isempty and self.slot.lower > self.slot.upper:
+        if self.slot and not self.slot.isempty and self.slot.lower > self.slot.upper:
             self.slot = DateTimeTZRange(self.slot.upper, self.slot.lower)
-        if not self.slot.isempty and self.user.username != "service":  # Can't do the custom cleaning if slot is blank
-            policy = BookingPolicy.get_policy(self)
+        if (
+            self.slot and not self.slot.isempty and self.user.username != "service"
+        ):  # Can't do the custom cleaning if slot is blank
+            policy = BookingPolicy.get_policy(self, no_holds=no_holds)
             self.rationalise(policy)
             if not self.booker.is_superuser and not policy.permitted(self):
                 raise ValidationError("Booking is unable to be made after quantising the booking period")
@@ -303,15 +330,17 @@ class BookingEntry(models.Model):
                 raise ValidationError(
                     "Unable to save the booking entry due to overlapping entry for the same equipment"
                 )
-        elif self.user.username == "service":  # Special case, service user always booked!
+            if policy:
+                self.shifts = self.count_shifts()
+        elif self.user and self.user.username == "service":  # Special case, service user always booked!
             pass
         else:
             raise ValidationError("No booking slot defined!")
         return super().clean()
 
-    def save(self, force_insert=False, force_update=False, using=None, update_fields=None):
+    def save(self, force_insert=False, force_update=False, using=None, update_fields=None, force_clean=False):
         """Force model.clean to be called."""
-        self.clean()
+        self.clean(no_holds=force_clean)
         super().save(force_insert=force_insert, force_update=force_update, using=using, update_fields=update_fields)
 
     def delete(self, using=None, keep_parents=False, force=True):

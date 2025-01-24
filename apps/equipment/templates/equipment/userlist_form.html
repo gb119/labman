@@ -1,0 +1,47 @@
+{% load django_bootstrap5 %}
+{% load labman_tags %}
+{{ form.media }}
+<style>.bootstrap-datetimepicker-widget {z-order:1600!important; }</style>
+<div class="modal-content">
+    <div class="modal-header">
+        <h5 class="modal-title">Manage Userlist</h5>
+    </div>
+    <div class="modal-body">
+        <form id="userlistentry" method="POST"
+              hx-post="{{ post_url }}"
+              hx-encoding='multipart/form-data'
+              hx-target="#dialog">
+            {% csrf_token %}
+            {% bootstrap_form form layout="horizontal" %}
+            <div class="row justify-content-between">
+                <div class="col-md-6">
+                    <button type="reset"
+                            class="btn-secondary bi bi-x"
+                            data-bs-dismiss="modal"
+                            name="cancel">Cancel</button>
+                    {% if edit %}
+                        <button type="submit"
+                                class="btn-primary bi bi-pencil"
+                                id = "submit_userlistentry"
+                                value = {{ this.pk }}
+                                name="edit_userlistentry">Edit</button>
+                    {% else %}
+                        <button type="submit"
+                                class="btn-primary bi bi-bookmark-plus"
+                                id = "submit_userlistentry"
+                                name="add_userlistenytu">Add</button>
+                    {% endif %}
+                </div>
+                <div class="col-md-3">
+                    {% if edit and this.equipment|can_edit:request.user %}
+                        <button type="button"
+                                id ="delete_userlist"
+                                class="btn-danger bi bi-trash"
+                                hx-delete="{{ post_url }}"
+                                name="userlistentry" value={{ this.pk }}>Delete</button>
+                    {% endif %}
+                </div>
+            </div>
+        </form>
+    </div>
+</div>

@@ -48,10 +48,20 @@
                                     {{ document.extra_text|safe }}
                                 </div>
                                 <div class="col col-md-2">
-                                    <span>{{ document.location.all|join:"<br/>" }}</span>
+                                    <span>
+                                        {% for loc in document.location.all %}
+                                            {% if forloop.counter != 1 %}<br />{% endif %}
+                                            <a href="{{ loc.url }}">{{ loc.name }}</a>
+                                        {% endfor %}
+                                    </span>
                                 </div>
                                 <div class="col col-md-2">
-                                    <span>{{ document.equipment.all|join:"<br/>" }}</span>
+                                    <span>
+                                        {% for item in document.equipment.all %}
+                                            {% if forloop.counter != 1 %}<br />{% endif %}
+                                            <a href="{{ item.url }}">{{ item.name }}</a>
+                                        {% endfor %}
+                                    </span>
                                 </div>
                             </div>
                         {% endfor %}
@@ -64,15 +74,22 @@
 {% if equipment|can_edit:request.user %}
 
     <style>
-        nav.navbar-dark { color: white; }
-        nav a {cursor: pointer; }
+        nav#resourcenav.navbar-dark { color: white; }
+        nav#resourcenav a {cursor: pointer; }
+        nav#resourcenav li.nav-item a {color: white; }
     </style>
-    <nav class="navbar navbar-dark bg-dark">
+    <nav id="resourcenav" class="navbar navbar-dark bg-dark  .navbar-expand-ms">
         <div class="container-fluid">
-            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                <li><a hx-get="{% url 'labman_utils:new_equipment_document' equipment.pk %}" hx-target="#dialog">
-                    <i class="bi bi-file-earmark-arrow-up"></i>Upload New File...
-                </a>
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0 list-group list-group-horizontal">
+                <li class="nav-item">
+                    <a hx-get="{% url 'labman_utils:new_equipment_document' equipment.pk %}" hx-target="#dialog">
+                        <i class="bi bi-file-earmark-arrow-up"></i>Upload New File...
+                    </a>
+                </li>
+                <li  class="nav-item">
+                    <a hx-get="{% url 'labman_utils:link_document_equipment' equipment.pk %}" hx-target="#dialog">
+                        <i class="bi bi-link"></i>Link Files...
+                    </a>
                 </li>
             </ul>
         </div>

@@ -9,18 +9,25 @@ from django import views
 from django.conf import settings
 from django.core.exceptions import ObjectDoesNotExist
 from django.db.models import Count
+from django.http import (
+    HttpResponse,
+    HttpResponseForbidden,
+    HttpResponseNotFound,
+)
+from django.urls import reverse
+from django.views.generic import UpdateView
 
 # external imports
 import pytz
 from accounts.models import Account, Project
 from bookings.forms import BookinngDialogForm
 from extra_views import FormSetView
-from htmx_views.views import HTMXProcessMixin
+from htmx_views.views import HTMXFormMixin, HTMXProcessMixin
 from labman_utils.views import IsAuthenticaedViewMixin
 
 # app imports
-from .forms import SignOffForm
-from .models import DocumentSignOff, Equipment, Location
+from .forms import SignOffForm, UserListEnryForm
+from .models import DocumentSignOff, Equipment, Location, UserListEntry
 from .tables import CalTable
 
 DEFAULT_TZ = pytz.timezone(settings.TIME_ZONE)
@@ -211,3 +218,75 @@ class ModelListView(HTMXProcessMixin, IsAuthenticaedViewMixin, views.generic.Lis
         context["equipment"] = data
         context["categories"] = Equipment.CATEGORIES
         return context
+
+
+class UserlisttDialog(IsAuthenticaedViewMixin, HTMXFormMixin, UpdateView):
+    """Prdoce the html for a booking form in the dialog."""
+
+    model = UserListEntry
+    template_name = "equipment/userlist_form.html"
+    context_object_name = "this"
+    form_class = UserListEnryForm
+
+    def get_context_data_dialog(self, **kwargs):
+        """Create the context for HTMX calls to open the booking dialog."""
+        context = super().get_context_data(_context=True, **kwargs)
+        context["current_url"] = self.request.htmx.current_url
+        context["this"] = self.get_object()
+        verb = "edit" if context["this"] else "new"
+        if "equipment" in self.kwargs:
+            context["equipment"] = Equipment.objects.get(pk=self.kwargs.get("equipment", None))
+        if "user" in self.kwargs:
+            context["user"] = Account.objects.get(pk=self.kwargs.get("user", None))
+        args = (context["equipment"].pk, context["user"].pk) if verb == "edit" else (context["equipment"].pk,)
+        context["post_url"] = reverse(f"equipment:userlist_{verb}", args=args)
+
+        context["edit"] = self.get_object() is not None
+        return context
+
+    def get_object(self, queryset=None):
+        """Either get the UserList entry or None."""
+        try:
+            return UserListEntry.objects.get(equipment=self.kwargs["equipment"], user=self.kwargs["user"])
+        except (UserListEntry.DoesNotExist, AttributeError, KeyError):
+            return None
+
+    def get_initial(self):
+        """Make initial entry."""
+        equipment = Equipment.objects.get(pk=self.kwargs.get("equipment", None))
+        if "user" in self.kwargs:
+            dd = self.kwargs
+            user = Account.objects.get(pk=self.kwargs["user"])
+            return {"equipment": equipment, "user": user}
+        return {"equipment": equipment}
+
+    def htmx_form_valid_userlistentry(self, form):
+        """Handle the HTMX submitted booking form if it's all ok."""
+        entry = form.instance
+        if not entry.equipment.can_edit(self.request.user):
+            return HttpResponseForbidden("You must be a manager, owner or superuser to rfiy the user entry.")
+        entry.save()
+        return HttpResponse(
+            status=204,
+            headers={
+                "HX-Trigger": "refreshUserList",
+            },
+        )
+
+    def htmx_delete_userlistentry(self, request, *args, **kwargs):
+        """Handle the HTMX call that deletes a booking."""
+        if not (entry := self.get_object()):
+            return HttpResponseNotFound("Unable to locate userlist entry.")
+        self.object = entry
+        # Now check I actually have permission to do this...
+        if not entry.equipment.can_edit(self.request.user):
+            return HttpResponseForbidden("You must be a manager, owner or superuser to delete the user entry.")
+
+        self.object.delete()
+
+        return HttpResponse(
+            status=204,
+            headers={
+                "HX-Trigger": "refreshUserList",
+            },
+        )

@@ -14,6 +14,7 @@ from accounts.autocomplete import UserListAutoComplete
 from autocomplete import AutocompleteWidget
 from bootstrap_datepicker_plus.widgets import DateTimePickerInput
 from dateutil.parser import ParserError, parse
+from labman_utils.forms import DateTimeCustomInput
 from psycopg2.extras import DateTimeTZRange
 from pytz import timezone as tz
 
@@ -27,10 +28,10 @@ class CustomSlotWidget(RangeWidget):
     def __init__(self, *args, **kargs):
         """Construct the widget, forcing it to use the correct sub-widgets."""
         if len(args) < 1:
-            args = (DateTimePickerInput,)
-        if not issubclass(args[0], DateTimePickerInput):
+            args = (DateTimeCustomInput,)
+        if not issubclass(args[0], DateTimeCustomInput):
             args = list(args)
-            args[0] = DateTimePickerInput
+            args[0] = DateTimeCustomInput
         super().__init__(*args, **kargs)
 
     def decompress(self, value):
@@ -70,7 +71,7 @@ class BookinngDialogForm(forms.ModelForm):
 
     class Meta:
         model = BookingEntry
-        exclude = []
+        exclude = ["shifts"]
         widgets = {
             "user": AutocompleteWidget(ac_class=UserListAutoComplete),
             "equipment": forms.HiddenInput(),

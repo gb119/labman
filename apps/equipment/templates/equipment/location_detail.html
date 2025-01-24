@@ -1,4 +1,9 @@
 {% extends "base.html" %}
+{% block javascript %}
+    {{ block.super }}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.12.0/moment.js"></script>
+    <script src="{% static '/js/htmx_dialog.js' %}"></script>
+{% endblock javascript %}
 {% block css %}
     {{ block.super }}
     <style>
@@ -41,6 +46,7 @@
             <li class="nav-item" role="presentation">
                 <button class="nav-link" id="resources-tab"
                         hx-get="{{ request.get_full_path }}" hx-target="#resources"
+                        hx-trigger="click, refreshFiles from:body consume"
                         data-bs-toggle="tab" data-bs-target="#resources"
                         type="button" role="tab" aria-controls="resources"
                         aria-selected="false">Files</button>
@@ -109,6 +115,14 @@
             <div class="tab-pane" id="pages" role="tabpanel" aria-labelledby="pages-tab">
             </div>
             <div class="tab-pane" id="equipment" role="tabpanel" aria-labelledby="equipment-tab">
+            </div>
+        </div>
+        <div id="modal"
+             class="modal modal-blur fade"
+             style="display: none"
+             tabindex="-1">
+            <div class="modal-dialog modal-lg modal-dialog-centered" role="document" id="dialog">
+                <div class="modal-content"></div>
             </div>
         </div>
     </main>

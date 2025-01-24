@@ -118,6 +118,7 @@ class Document(dsfh.BaseMixin, dsfh.TitledMixin, dsfh.PublicMixin, dsfh.RenameMi
     CATEGORIES = [
         ("ra", "Risk Assessment"),
         ("sop", "Standard Operator Procedure"),
+        ("coshh", "COSHH Forms"),
         ("manual", "Manual/Instructions"),
         ("other", "Other"),
     ]
@@ -125,6 +126,7 @@ class Document(dsfh.BaseMixin, dsfh.TitledMixin, dsfh.PublicMixin, dsfh.RenameMi
 
     version = models.FloatField(default=0)  # Manual version number used to determine if users need to re-ack docs
     category = models.CharField(max_length=20, choices=CATEGORIES, default="other")
+    review_date = models.DateField(blank=True, null=True, help_text="Date document should be reviewed on.")
 
     subdirectory_path = dsfh.custom_subdirectory("documents/equipment/")
 

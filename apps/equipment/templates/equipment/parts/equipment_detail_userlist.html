@@ -5,7 +5,7 @@
                 <h2 class="accordion-header" id="{{ role|slugify }}">
                     <button class="accordion-button {% if not forloop.first %}collapsed{% endif %}" type="button" data-bs-toggle="collapse" data-bs-target="#collapse_{{ role|slugify }}"
                             aria-expanded="{% if forloop.first %}true{% else %}false{% endif%}" aria-controls="collapse_{{ role|slugify }}">
-                        {{ role }} ({{ userlist.count }} {{ role }}s)
+                        {{ role }} ({{ userlist.count }} {{ role }}{% if userlist.role.count > 1 %}s{% endif %})
                     </button>
                 </h2>
                 <div id="collapse_{{ role|slugify }}" class="accordion-collapse collapse{% if forloop.first %} show{% endif %}"
@@ -14,7 +14,7 @@
                         {% for entry in userlist.all %}
                             {% if forloop.first %}
                                 <div class="row bg-secondary">
-                                    <div class="col col-md-3">
+                                    <div class="col col-md-5">
                                         <h5>User</h5>
                                     </div>
                                     <div class="col col-md-3">
@@ -26,21 +26,29 @@
                                 </div>
                             {% endif %}
                             <div class="row">
-                                <div class="col col-md-3">
+                                <div class="col col-md-5 d-flex align-items-center">
                                     <a href="/accounts/user/{{ entry.user.username }}">
                                         {% if entry.user.mugshot %}
                                             <img src="{{ entry.user.mugshot.get_thumbnail_url }}" alt="Picture of {{ entry.user.display_name" />
                                         {% endif %}
                                         {{ entry.user.display_name }}
                                     </a>
-                                </div><div class="col col-md-3">{{ entry.role }}</div>
-                                <div class="col col-md-3">
+                                </div><div class="col col-md-3 d-flex align-items-center">{{ entry.role }}</div>
+                                <div class="col col-md-3 d-flex align-items-center">
                                     {% if entry.hold %}
                                         Sign off required
                                     {% else %}
                                         {{ entry.updated }}
                                     {% endif %}
                                 </div>
+                                {% if equipment|can_edit:request.user %}
+                                    <div class="col col-md-1 d-flex justify-content-end align-items-center">
+                                        <a hx-get="{% url 'equipment:userlist_edit' equipment.pk entry.user.pk %}"
+                                           hx-target="#dialog">
+                                            <i class="bi bi-pencil"></i>
+                                        </a>
+                                    </div>
+                                {% endif %}
                             </div>
                         {% endfor %}
                     </div>
@@ -49,3 +57,22 @@
         {% endif %}
     {% endfor %}
 </div>
+{% if equipment|can_edit:request.user %}
+
+    <style>
+        nav#resourcenav.navbar-dark { color: white; }
+        nav#resourcenav a {cursor: pointer; }
+        nav#resourcenav li.nav-item a {color: white; }
+    </style>
+    <nav id="resourcenav" class="navbar navbar-dark bg-dark  .navbar-expand-ms">
+        <div class="container-fluid">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0 list-group list-group-horizontal">
+                <li class="nav-item">
+                    <a hx-get="{% url 'equipment:userlist_new' equipment.pk %}" hx-target="#dialog">
+                        <i class="bi bi-file-person-add"></i>Add New User...
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+{% endif %}

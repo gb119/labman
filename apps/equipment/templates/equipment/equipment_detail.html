@@ -24,6 +24,13 @@
             background-color: #e0e0e0; /* Change hover background color */
         }
 
+        .ui-datepicker {
+            z-index: 1600 !important;
+        }
+    /* Optional: in case your body is less than datapicker height */
+        .modal-body {
+            min-height: 200px;
+        }
     </style>}
 {% endblock css %}
 {% block title %}{{ block.super }}: Detail on {{ equipment.name }}{% endblock %}
@@ -62,6 +69,7 @@
             <li class="nav-item" role="presentation">
                 <button class="nav-link" id="userlist-tab"
                         hx-get="{{ request.get_full_path }}" hx-target="#userlist"
+                        hx-trigger="click, refreshUserList from:body consume"
                         data-bs-toggle="tab" data-bs-target="#userlist"
                         type="button" role="tab" aria-controls="userlist"
                         aria-selected="false">Users</button>

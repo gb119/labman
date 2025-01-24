@@ -139,8 +139,8 @@ class BookingPolicyResource(resources.ModelResource):
 class BookingtEntryAdmin(ImportExportModelAdmin):
     """Admin interface definition for BookingEntry objects."""
 
-    list_display = ("user", "equipment", "project", "slot_display")
-    list_filter = ("user", "equipment", "project")
+    list_display = ("user", "equipment", "project", "shifts", "slot_display")
+    list_filter = ("user", "equipment", "project", "shifts")
     suit_list_filter_horizontal = list_filter
     search_fields = (
         "user__first_name",

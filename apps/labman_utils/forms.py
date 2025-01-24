@@ -13,6 +13,24 @@ Location = apps.get_model(app_label="equipment", model_name="location")
 Document = apps.get_model(app_label="labman_utils", model_name="document")
 
 
+class DateTimeCustomInput(forms.DateTimeInput):
+    """JTML5 DatetimePicker Widget"""
+
+    input_type = "datetime-local"
+
+
+class DateCustomInput(forms.DateInput):
+    """JTML5 DatePicker Widget"""
+
+    input_type = "date"
+
+
+class TimeCustomInput(forms.TimeInput):
+    """JTML5 TimePicker Widget"""
+
+    input_type = "time"
+
+
 class DocumentDialogForm(forms.ModelForm):
     """Form for adding a document to a location of item of equipment."""
 
@@ -21,4 +39,8 @@ class DocumentDialogForm(forms.ModelForm):
 
     class Meta:
         model = Document
-        fields = ["title", "extra_text", "category", "version", "saved_file"]
+        fields = ["title", "extra_text", "category", "version", "review_date", "saved_file"]
+        widgets = {"review_date": DateCustomInput()}
+
+    class Media:
+        js: ["/static/bootstrap_datepick_plus/js/datepicker-widget.js"]

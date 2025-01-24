@@ -78,7 +78,6 @@ print("#" * 80)
 # these are the apps
 DEFAULT_APPS = [
     "django_bootstrap5",
-    "bootstrap_datepicker_plus",
     "django.contrib.postgres",
     "labman_suit.SuitConfig",
     "django.contrib.admin",

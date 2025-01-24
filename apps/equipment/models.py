@@ -135,6 +135,7 @@ class Shift(NamedObject):
 
     start_time = models.TimeField(default=Time(9, 0))
     end_time = models.TimeField(default=Time(18, 0))
+    weighting = models.FloatField(default=1.0)
 
     def __str__(self):
         return f"{self.name} {self.start_time}-{self.end_time}"

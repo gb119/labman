@@ -38,3 +38,12 @@ class UserListAutoComplete(ModelAutocomplete):
         condition_filter = reduce(operator.or_, conditions)
         queryset = base_qs.filter(condition_filter)
         return queryset
+
+
+class AllUsersComplete(ModelAutocomplete):
+    """An Autocomplete class for Accounts that are users of a piece of equipment.
+
+    The Equipment item must be in a field called equipment in the form."""
+
+    model = Account
+    search_attrs = ["first_name", "last_name", "username"]

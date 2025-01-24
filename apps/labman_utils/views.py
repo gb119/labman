@@ -17,6 +17,7 @@ from django.http import (
     HttpResponseNotFound,
     HttpResponseNotModified,
 )
+from django.urls import reverse
 from django.views.generic import DetailView, UpdateView
 
 # external imports
@@ -25,6 +26,9 @@ from photologue.models import Photo
 
 # app imports
 from .models import Document
+
+# from sortedm2m.admin import OrderedAutocomplete
+
 
 Equipment = apps.get_model(app_label="equipment", model_name="equipment")
 Location = apps.get_model(app_label="equipment", model_name="location")
@@ -71,14 +75,22 @@ class DocumentDIalog(IsAuthenticaedViewMixin, HTMXFormMixin, UpdateView):
         """Create the context for HTMX calls to open the booking dialog."""
         context = super().get_context_data(_context=True, **kwargs)
         context["current_url"] = self.request.htmx.current_url
+        context["this"] = self.get_object()
+        verb = "edit" if context["this"] else "new"
         if "equipment" in self.kwargs:
             context["equipment"] = Equipment.objects.get(pk=self.kwargs.get("equipment", None))
             context["equipment_id"] = self.kwargs.get("equipment", None)
+            subject = "equipment"
         if "location" in self.kwargs:
             context["location"] = Location.objects.get(pk=self.kwargs.get("location", None))
             context["location_id"] = self.kwargs.get("location", None)
-
-        context["this"] = self.get_object()
+            subject = "location"
+        args = (
+            (self.kwargs.get(subject, None),)
+            if verb == "new"
+            else (self.kwargs.get(subject, None), context["this"].pk)
+        )
+        context["post_url"] = reverse(f"labman_utils:{verb}_{subject}_document", args=args)
 
         context["this_id"] = getattr(context["this"], "pk", None)
         context["edit"] = self.get_object() is not None
@@ -133,6 +145,82 @@ class DocumentDIalog(IsAuthenticaedViewMixin, HTMXFormMixin, UpdateView):
 
         self.object.delete()
 
+        return HttpResponse(
+            status=204,
+            headers={
+                "HX-Trigger": "refreshFiles",
+            },
+        )
+
+
+class DocumentLinkDIalog(IsAuthenticaedViewMixin, HTMXFormMixin, UpdateView):
+    """Prdoce the html for a booking form in the dialog."""
+
+    template_name = "labman_utils/link_document_form.html"
+    context_object_name = "this"
+
+    def get_form_class(self):
+        """Delay the import of the form class until we need it."""
+        if "equipment" in self.kwargs:
+            model = Equipment
+        elif "location" in self.kwargs:
+            model = Location
+        else:
+            model = None
+        frmcls = forms.modelform_factory(
+            model,
+            fields=["id", "files"],
+            widgets={
+                "id": forms.HiddenInput(),
+            },
+        )
+        output = frmcls().as_div()
+        return frmcls
+
+    def get_context_data_dialog(self, **kwargs):
+        """Create the context for HTMX calls to open the booking dialog."""
+        context = super().get_context_data(_context=True, **kwargs)
+        context["current_url"] = self.request.htmx.current_url
+        if "equipment" in self.kwargs:
+            context["equipment"] = Equipment.objects.get(pk=self.kwargs.get("equipment", None))
+            context["equipment_id"] = self.kwargs.get("equipment", None)
+            context["post_url"] = reverse(
+                "labman_utils:link_document_equipment", args=(self.kwargs.get("equipment", None),)
+            )
+        if "location" in self.kwargs:
+            context["location"] = Location.objects.get(pk=self.kwargs.get("location", None))
+            context["location_id"] = self.kwargs.get("location", None)
+            context["post_url"] = reverse(
+                "labman_utils:link_document_location", args=(self.kwargs.get("location", None),)
+            )
+
+        context["this"] = self.get_object()
+
+        context["this_id"] = getattr(context["this"], "pk", None)
+        return context
+
+    def get_object(self, queryset=None):
+        """Either get the BookingEntry or None."""
+        if equipment := self.kwargs.get("equipment", None):
+            return Equipment.objects.get(pk=equipment)
+        if location := self.kwargs.get("location", None):
+            return Location.objects.get(pk=location)
+        return None
+
+    def get_initial(self):
+        """Make initial entry."""
+        if "equipment" in self.kwargs:
+            thing = Equipment.objects.get(pk=self.kwargs.get("equipment", None))
+        elif "location" in self.kwargs:
+            thing = Location.objects.get(pk=self.kwargs.get("location", None))
+        else:
+            return {}
+        ret = {}  # {"id": thing.pk, "files": thing.files.all()}
+        return ret
+
+    def htmx_form_valid_document(self, form):
+        """Handle the HTMX submitted booking form if it's all ok."""
+        self.object = form.save()
         return HttpResponse(
             status=204,
             headers={

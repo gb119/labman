@@ -207,18 +207,18 @@ class LocationAdmin(ImportExportModelAdmin):
 @register(Shift)
 class ShiftAdmin(ImportExportModelAdmin):
 
-    list_display = ["name", "start_time", "end_time"]
+    list_display = ["name", "start_time", "end_time", "weighting"]
     list_filter = list_display
     suit_list_filter_horizontal = list_display
     search_fields = ["name", "description"]
 
     def get_export_resource_class(self):
         """Return import-export admin resource class."""
-        return ShiftResource
+        return ShiftReource
 
     def get_import_resource_class(self):
         """Return import-export admin resource class."""
-        return ShiftResource
+        return ShiftReource
 
 
 @register(Equipment)
