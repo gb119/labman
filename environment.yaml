@@ -1,8 +1,11 @@
+name: django
 channels:
+  - phygbu
+  - conda-forge
   - defaults
 dependencies:
   - python=3.13
-  - django=4.2
+  - django
   - mamba
   - ipython
   - django-mathfilters
@@ -24,7 +27,7 @@ dependencies:
   - django-picklefield
   - django-ical
   - django-autocomplete-light
-  - django-bootstrap-datepicker-plus
+  - django-bootstrap-datepicker-plus=5.0.5
   - django-floppyforms
   - ca-certificates
   - certifi
@@ -34,4 +37,15 @@ dependencies:
   - black
   - isort
   - codespell
+  - django-htmx
+  - celery
+  - django-extensions
+  - djhtml
+  - whitenoise=6.6.0
+  - django-auth-adfs
+  - pyjwt
+  - anaconda-client
+  - nh3
+  - django-easy-pdf3
+  - pygraphviz
 prefix: /usr/lib/miniconda3/envs/django
