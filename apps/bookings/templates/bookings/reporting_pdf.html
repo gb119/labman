@@ -1,0 +1,13 @@
+{% extends "easy_pdf/base.html" %}
+
+{% block content %}
+    <style>
+        td,th {
+            padding-top: 5pt;
+        }
+    </style>
+    <div id="content">
+        <h1>LabMan Reporting</h1>
+        {{ data|safe }}
+    </div>
+{% endblock %}

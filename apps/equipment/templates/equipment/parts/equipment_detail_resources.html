@@ -1,3 +1,6 @@
+<style>
+    div#buttons a {cursor: pointer; font-size: xx-large; }
+</style>
 <div class="accordion" id="FilesList">
     {% for category,file_list in equipment.all_files_dict.items %}
         {% if file_list.count > 0 %}
@@ -14,7 +17,7 @@
                         {% for document in file_list %}
                             {% if forloop.first %}
                                 <div class="row bg-secondary">
-                                    <div class="col col-md-4">
+                                    <div class="col {% if equipment|can_edit:request.user %}col-md-3{% else %}col-md-4{% endif %}">
                                         <h5>Filename</h5>
                                     </div>
                                     <div class="col col-md-4">
@@ -30,12 +33,6 @@
                             {% endif %}
                             <div class="row">
                                 {% if equipment|can_edit:request.user %}
-                                    <div class="col col-md-1">
-                                        <a hx-get="{% url 'labman_utils:edit_equipment_document' equipment.pk document.pk %}"
-                                           hx-target="#dialog">
-                                            <i class="bi bi-pencil"></i>
-                                        </a>
-                                    </div>
                                     <div class="col col-md-3">
                                         <span><a href="{{ document.file_url }}" target=_NEW>{{ document.title }}</a></span>
                                     </div>
@@ -63,6 +60,14 @@
                                         {% endfor %}
                                     </span>
                                 </div>
+                                {% if equipment|can_edit:request.user %}
+                                    <div class="col col-md-1" id="buttons">
+                                        <a hx-get="{% url 'labman_utils:edit_equipment_document' equipment.pk document.pk %}"
+                                           hx-target="#dialog">
+                                            <i class="bi bi-pencil"></i>
+                                        </a>
+                                    </div>
+                                {% endif %}
                             </div>
                         {% endfor %}
                     </div>

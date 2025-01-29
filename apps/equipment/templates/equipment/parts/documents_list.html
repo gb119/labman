@@ -1,0 +1,117 @@
+<style>
+  span#buttons a {cursor: pointer; font-size: xx-large;}
+</style>
+<div class="accordion" id="FilesList">
+  {% for category,file_list in documents.items %}
+    {% if file_list.count > 0 %}
+      <div class="accordion-item">
+        <h2 class="accordion-header" id="{{ category|slugify }}">
+          <button class="accordion-button {% if not forloop.first %}collapsed{% endif %}" type="button" data-bs-toggle="collapse" data-bs-target="#collapse_{{ category|slugify }}"
+                  aria-expanded="{% if forloop.first %}true{% else %}false{% endif%}" aria-controls="collapse_{{ category|slugify }}">
+            {{ categories|item:category }}
+          </button>
+        </h2>
+        <div id="collapse_{{ category|slugify }}" class="accordion-collapse collapse{% if forloop.first %} show{% endif %}"
+             aria-labelledby="{{ category|slugify }}" data-bs-parent="#FilesList">
+          <div class="accordion-body">
+            {% for document in file_list %}
+              {% if forloop.first %}
+                <div class="row bg-secondary">
+                  {% if request.user.is_superuser %}
+                    <div class="col col-md-2">
+                      <h5>Filename</h5>
+                    </div>
+                  {% else %}
+                    <div class="col col-md-3">
+                      <h5>Filename</h5>
+                    </div>
+                  {% endif %}
+                  <div class="col col-md-3">
+                    <h5>Description</h5>
+                  </div>
+                  <div class="col col-md-2">
+                    <h5>Review Date</h5>
+                  </div>
+                  <div class="col col-md-2">
+                    <h5>Location</h5>
+                  </div>
+                  <div class="col col-md-2">
+                    <h5>Equipment</h5>
+                  </div>
+                  {% if request.user.is_superuser %}
+                    <div class="col col-md-1">
+                      &nbsp;
+                    </div>
+                  {% endif %}
+
+                </div>
+              {% endif %}
+              <div class="row">
+                <div class="col {% if request.user.is_superuser %}col-md-2{% else %}col-md-3{% endif %}">
+                  <span><a href="{{ document.file_url }}" target=_NEW>{{ document.title }}</a></span>
+                </div>
+                <div class="col col-md-3">
+                  {{ document.extra_text|safe }}
+                </div>
+                <div class="col col-md-2 {% if document.needs_review %}
+                              bg-danger text-white
+                            {% elif document.review_soon %}
+                              bg-warning
+                            {% endif %}">{{ document.review_date }}
+                </div>
+                <div class="col col-md-2">
+                  <span>
+                    {% for loc in document.location.all %}
+                      {% if forloop.counter != 1 %}<br />{% endif %}
+                      <a href="{{ loc.url }}">{{ loc.name }}</a>
+                    {% endfor %}
+                  </span>
+                </div>
+                <div class="col col-md-2">
+                  <span>
+                    {% for item in document.equipment.all %}
+                      {% if forloop.counter != 1 %}<br />{% endif %}
+                      <a href="{{ item.url }}">{{ item.name }}</a>
+                    {% endfor %}
+                  </span>
+                </div>
+                {% if request.user.is_superuser %}
+                  <div class="col col-md-1">
+                    <span id="buttons">
+                      <a hx-get="{% url 'labman_utils:edit_document' document.pk %}"
+                         hx-target="#dialog">
+                        <i class="bi bi-pencil"></i>
+                      </a>
+                      <a hx-get="{% url 'labman_utils:link_document' document.pk %}"
+                         hx-target="#dialog">
+                        <i class="bi bi-link"></i>
+                      </a>
+                    </span>
+                {% endif %}
+
+              </div>
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+    {% endif %}
+  {% endfor %}
+</div>
+{% if request.user.is_superuser %}
+  <style>
+    nav#resourcenav.navbar-dark { color: white; }
+    nav#resourcenav a {cursor: pointer; }
+    nav#resourcenav li.nav-item a {color: white; }
+  </style>
+  <nav id="resourcenav" class="navbar navbar-dark bg-dark  .navbar-expand-ms">
+    <div class="container-fluid">
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0 list-group list-group-horizontal">
+        <li class="nav-item">
+          <a hx-get="{% url 'labman_utils:new_document' %}" hx-target="#dialog">
+            <i class="bi bi-file-earmark-arrow-up"></i>Upload New File...
+          </a>
+        </li>
+      </ul>
+    </div>
+  </nav>
+{% endif %}

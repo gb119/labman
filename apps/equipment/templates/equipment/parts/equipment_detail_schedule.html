@@ -38,10 +38,37 @@
                 </div>
             </div>
         </div>
-        <div class="row">
-            <div class="mt-4 d-flex justify-content-center table-responsive-lg" hx-target="#dialog">
-                {{ cal.render|safe }}
+        {% if mode == "single" %}
+            <div class="row">
+                <div class="mt-4 d-flex justify-content-center table-responsive-lg" hx-target="#dialog">
+
+                    {{ cal.render|safe }}
+                </div>
             </div>
-        </div>
+        {% elif mode == "all" %}
+            <div class="accordion" id="schedules">
+
+                {% for cat,label in categories.items %}
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="{{ cat|slugify }}">
+                            <button class="accordion-button {% if not cat|slugify == opentab %}collapsed{% endif %}" type="button" data-bs-toggle="collapse" data-bs-target="#collapse_{{ cat|slugify }}"
+                                    aria-expanded="{% if cat|slugify == opentab %}true{% else %}false{% endif%}" aria-controls="collapse_{{ cat|slugify }}">
+                                {{ label }}
+                            </button>
+                        </h2>
+                        <div id="collapse_{{ cat|slugify }}" class="accordion-collapse collapse{% if cat|slugify == opentab %} show{% endif %}"
+                             aria-labelledby="{{ cat|slugify }}" data-bs-parent="#schedules">
+                            <div class="accordion-body">
+                                <div class="mt-4 d-flex justify-content-center table-responsive-lg" hx-target="#dialog">
+                                    {% with cat_cal=cal|item:cat %}
+                                        {{ cat_cal.render|safe }}
+                                    {% endwith %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
     </div>
 </div>

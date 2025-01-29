@@ -10,7 +10,12 @@ from django.contrib.flatpages.models import FlatPage
 from django.urls import reverse
 
 # external imports
-from sitetree.admin import TreeItemAdmin
+from sitetree.admin import (
+    TreeAdmin,
+    TreeItemAdmin,
+    override_item_admin,
+    override_tree_admin,
+)
 from tinymce.widgets import TinyMCE
 
 # app imports
@@ -20,21 +25,67 @@ from .widgets import AdminObfuscatedTinyMCE
 # Monkey-patch sitetree admin for django-suit v2
 
 
-def _patchTreeAdmin():
-    """Wrap patching code into function to avoid polluting module namespace."""
-    tabs = []
-    for fieldset in TreeItemAdmin.fieldsets:
-        data = fieldset[1]
-        name = fieldset[0]
-        name_class = name.replace(" ", "").replace(".", "")
-        classes = data.get("classes", ())
-        classes = ("suit-tab suit-tab", f"suit-tab-{name_class}")
-        data["classes"] = classes
-        tabs.append((name_class, name))
-    TreeItemAdmin.suit_form_tabs = tabs
+# Register your models here.
 
 
-_patchTreeAdmin()
+# And our custom tree item admin model.
+class CustomTreeItemAdmin(TreeItemAdmin):
+    """Custom sitetree item admin to add ability to control display groups."""
+
+    fieldsets = (
+        (
+            "Basic settings",
+            {
+                "classes": (
+                    "baton-tabs-init",
+                    "baton-tab-fs-basic",
+                    "baton-tab-fs-access",
+                    "baton-tab-fs-display",
+                    "baton-tab-fs-extra",
+                ),
+                "fields": (
+                    "parent",
+                    "title",
+                    "url",
+                ),
+            },
+        ),
+        (
+            "Access settings",
+            {
+                "classes": ("tab-fs-access",),
+                "fields": (
+                    "access_loggedin",
+                    "access_guest",
+                    "access_restricted",
+                    ("access_staff", "access_superuser"),
+                    "access_permissions",
+                    "access_perm_type",
+                    "groups",
+                    "not_groups",
+                ),
+            },
+        ),
+        (
+            "Display settings",
+            {"classes": ("tab-fs-display",), "fields": ("hidden", "inmenu", "inbreadcrumbs", "insitetree")},
+        ),
+        (
+            "Additional settings",
+            {"classes": ("tab-fs-extra",), "fields": ("hint", "description", "alias", "urlaspattern")},
+        ),
+    )
+
+    filter_horizontal = ("access_permissions", "groups", "not_groups")
+
+
+class CustomTreeAdmin(TreeAdmin):
+    """Simple duplicate."""
+
+
+override_tree_admin(CustomTreeAdmin)
+override_item_admin(CustomTreeItemAdmin)
+
 
 admin.site.unregister(FlatPage)
 

@@ -63,6 +63,32 @@
                         {% endif %}
                     </div>
                 </div>
+                {% if account.management_holds.count > 0 %}
+                    <div class="row">
+                        <h3>Your Access to the Following Equipment has been suspended.</h3>
+                    </div>
+                    <div class="row bg-secondary">
+                        <div class="col-md-4"><h5>Equipment</h5></div><div class="col-md-4"><h5>Role</H5></div>
+                    </div>
+                    {% for entry in account.management_holds.all %}
+                        <div class="row">
+                            <div class="col-md-4">{{ entry.equipment.name }}</div><div class="col-md-4">{{ entry.role }}</div>
+                        </div>
+                    {% endfor %}
+                {% endif %}
+                {% if account.signoffs.count > 0 %}
+                    <div class="row">
+                        <h3>You have outstanding equipment sign offs to complete.</h3>
+                    </div>
+                    <div class="row bg-secondary">
+                        <div class="col-md-4"><h5>Equipment</h5></div><div class="col-md-4"><h5>Role</H5></div>
+                    </div>
+                    {% for entry in account.signoffs.all %}
+                        <div class="row">
+                            <div class="col-md-4">{{ entry.equipment.name }}</div><div class="col-md-4">{{ entry.role }}</div>
+                        </div>
+                    {% endfor %}
+                {% endif %}
             </div>
             <div class="tab-pane" id="project" role="tabpanel" aria-labelledby="project-tab"></div>
             <div class="tab-pane" id="underlings" role="tabpanel" aria-labelledby="underlings-tab"></div>

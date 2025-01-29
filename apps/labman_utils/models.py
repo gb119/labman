@@ -14,6 +14,7 @@ from django.utils.html import format_html
 import pytz
 from django_simple_file_handler import models as dsfh
 from photologue.models import Photo
+from sitetree.models import TreeBase, TreeItemBase
 from sortedm2m.fields import SortedManyToManyField
 from tinymce.models import HTMLField
 
@@ -154,6 +155,14 @@ class Document(dsfh.BaseMixin, dsfh.TitledMixin, dsfh.PublicMixin, dsfh.RenameMi
             .distinct()
         )
 
+    @property
+    def needs_review(self):
+        return self.review_date and self.review_date < dt.today().date()
+
+    @property
+    def review_soon(self):
+        return self.review_date and (self.review_date - dt.today().date()) < td(days=30)
+
     def __str__(self):
         """Return a user friendly name for the file."""
         return f"{self.title} ({self.CATAGORIES_DICT[self.category]})"
@@ -218,6 +227,58 @@ class ResourceedObject(NamedObject):
         else:
             my_docs = models.Q(**{self.__class__.__name__.lower(): self, "category": category})
         return Document.objects.filter(my_docs).order_by().order_by("title", "-version").distinct("title")
+
+
+class GroupedTree(TreeBase):
+    """Just a placeholder."""
+
+
+class GroupedTreeItem(TreeItemBase):
+    """Add many to many field for reference to groups to control access."""
+
+    TRISTATE = [(0, "--"), (1, "Grant"), (2, "Block")]
+
+    groups = models.ManyToManyField(
+        "auth.Group", related_name="allowed_menu_items", verbose_name="Access Groups", blank=True
+    )
+    not_groups = models.ManyToManyField(
+        "auth.Group", related_name="blocked_menu_items", verbose_name="Blocked Groups", blank=True
+    )
+    access_staff = models.IntegerField(default=0, choices=TRISTATE, verbose_name="Staff Access")
+    access_superuser = models.IntegerField(default=0, choices=TRISTATE, verbose_name="Superuser Access")
+
+    def access_check(self, tree):
+        """Check whether access is ok."""
+        auth = tree.check_access_auth(self, tree.context)
+        user = tree.current_request.user
+
+        if auth and user.is_authenticated:  # Now check groups
+
+            # If access_superuser is 1 or 2, checker whether user is or is not superuser. Necessary but not sufficient
+            if (self.access_superuser == 2 and user.is_superuser) or (
+                self.access_superuser == 1 and not user.is_superuser
+            ):
+                return False
+            elif self.access_restricted and self.access_perm_type == self.PERM_TYPE_ANY:
+                return True
+
+            # If access_staff is 1 or 2, check whether user is or ir not staff. Necessary but not sufficient
+            if (self.access_staff == 2 and user.is_staff) or (self.access_staff == 1 and not user.is_staff):
+                return False
+            elif self.access_restricted and self.access_perm_type == self.PERM_TYPE_ANY:
+                return True
+
+            user_groups = set([x[0] for x in user.groups.all().values_list("name")])
+            if self.groups.all().count() > 0:  # If no groups defined, then don't test
+                item_groups = set([x[0] for x in self.groups.all().values_list("name")])
+                if len(item_groups & user_groups) == 0:  # User not in allowed groups - block
+                    return False
+            if self.not_groups.all().count() > 0:  # If no groups defined, then don't test
+                item_groups = set([x[0] for x in self.not_groups.all().values_list("name")])
+                if len(item_groups & user_groups) > 0:  # User in at least 1 blocked group - block
+                    return False
+
+        return None  # If we can't make a decision based on groups, don't take a decision at all.
 
 
 @patch_model(Photo)

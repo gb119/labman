@@ -34,4 +34,5 @@ urlpatterns = [
     path("cal/all/<int:date>/", views.AllCalendarView.as_view(), name="all_equipment_calendar"),
     path("cal/all/", views.AllCalendarView.as_view(), name="all_equipment_calendar"),
     path("book/<int:equipment>/<float:ts>/", views.BookingDialog.as_view(), name="equipment_booking"),
+    path("reporting/", views.BookingRecordsView.as_view(), name="reporting"),
 ]

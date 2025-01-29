@@ -5,8 +5,10 @@ import base64
 import codecs
 from copy import deepcopy
 
+# Django imports
+from django import forms
+
 # external imports
-import floppyforms.__future__ as forms
 import nh3
 
 

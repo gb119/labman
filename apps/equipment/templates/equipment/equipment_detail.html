@@ -71,6 +71,7 @@
                         hx-get="{{ request.get_full_path }}" hx-target="#userlist"
                         hx-trigger="click, refreshUserList from:body consume"
                         data-bs-toggle="tab" data-bs-target="#userlist"
+                        hx-vars="{}"
                         type="button" role="tab" aria-controls="userlist"
                         aria-selected="false">Users</button>
             </li>
@@ -143,5 +144,19 @@
         </div>
 
     </main>
+    <script>
+    // Function to merge additional data into the existing hx-vars attribute
+        function mergeHxVars(divId, newData) {
+            const button = document.getElementById(divId);
+            const existingVars = JSON.parse(button.getAttribute('hx-vars') || '{}');
+            const mergedVars = { ...existingVars, ...newData };
+            button.setAttribute('hx-vars', JSON.stringify(mergedVars));
+        }
 
+
+        document.body.addEventListener("refreshUserList", function(evt){
+        // Set the hx-headers attribute dynamically
+            mergeHxVars('userlist-tab', { 'opentab': evt.detail.value});
+        })
+    </script>
 {% endblock content %}

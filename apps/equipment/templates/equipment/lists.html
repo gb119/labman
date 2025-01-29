@@ -1,4 +1,9 @@
 {% extends "base.html" %}
+{% block javascript %}
+    {{ block.super }}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.12.0/moment.js"></script>
+    <script src="{% static '/js/htmx_dialog.js' %}"></script>
+{% endblock javascript %}
 {% block css %}
     {{ block.super }}
     <style>
@@ -18,7 +23,7 @@
             background-color: #e0e0e0; /* Change hover background color */
         }
 
-
+        }
     </style>}
 {% endblock css %}
 {% block title %}{{ block.super }}: Lists{% endblock %}
@@ -55,6 +60,14 @@
             </li>
             {% if request.user.is_superuser %}
                 <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="documents-tab"
+                            hx-get="{{ request.get_full_path }}" hx-target="#documents"
+                            hx-trigger="click, refreshFiles from:body consume"
+                            data-bs-toggle="tab" data-bs-target="#documents"
+                            type="button" role="tab" aria-controls="documents"
+                            aria-selected="false">Documents</button>
+                </li>
+                <li class="nav-item" role="presentation">
                     <button class="nav-link" id="projects-tab"
                             hx-get="{{ request.get_full_path }}" hx-target="#projects"
                             data-bs-toggle="tab" data-bs-target="#projects"
@@ -75,11 +88,20 @@
             <div class="tab-pane" id="equipment" role="tabpanel" aria-labelledby="equipment-tab">
             </div>
             {% if request.user.is_superuser %}
+                <div class="tab-pane" id="documents" role="tabpanel" aria-labelledby="documents-tab">
+                </div>
                 <div class="tab-pane" id="projects" role="tabpanel" aria-labelledby="projects-tab">
                 </div>
             {% endif %}
         </div>
-
+        <div id="modal"
+             class="modal modal-blur fade"
+             style="display: none"
+             tabindex="-1">
+            <div class="modal-dialog modal-lg modal-dialog-centered" role="document" id="dialog">
+                <div class="modal-content"></div>
+            </div>
+        </div>
 
     </main>
 

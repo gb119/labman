@@ -1,22 +1,20 @@
 # -*- coding: utf-8 -*-
-"""
-Bookings related form definitions.
-"""
+"""Bookings related form definitions."""
 # Django imports
 from django import forms
-from django.contrib.admin import widgets as admin_widgets
-from django.contrib.postgres.forms import DateTimeRangeField, RangeWidget
-from django.core.exceptions import ValidationError
-from django.db.models import Q
+from django.contrib.postgres.forms import RangeWidget
 
 # external imports
-from accounts.autocomplete import UserListAutoComplete
+from accounts.autocomplete import (
+    AllUsersComplete,
+    ProjectsAutocomplete,
+    UserListAutoComplete,
+)
+from accounts.models import Account, Project
 from autocomplete import AutocompleteWidget
-from bootstrap_datepicker_plus.widgets import DateTimePickerInput
-from dateutil.parser import ParserError, parse
-from labman_utils.forms import DateTimeCustomInput
-from psycopg2.extras import DateTimeTZRange
-from pytz import timezone as tz
+from equipment.autocomplete import EquipmentAutocomplete
+from equipment.models import Equipment
+from labman_utils.forms import DateCustomInput, DateTimeCustomInput
 
 # app imports
 from .models import BookingEntry
@@ -24,6 +22,8 @@ from .models import BookingEntry
 
 class CustomSlotWidget(RangeWidget):
     """Widget class to provide two Bootstrap DateTimePickers for entering a booking slot."""
+
+    input_type = DateTimeCustomInput.input_type
 
     def __init__(self, *args, **kargs):
         """Construct the widget, forcing it to use the correct sub-widgets."""
@@ -40,10 +40,6 @@ class CustomSlotWidget(RangeWidget):
             start, end = value.lower, value.upper
             return ([start.date(), start.time()], [end.date(), end.time()])
         return [[None, None], [None, None]]
-
-    @property
-    def media(self):
-        return DateTimePickerInput().media
 
 
 class BookingEntryAdminForm(forms.ModelForm):
@@ -77,3 +73,48 @@ class BookinngDialogForm(forms.ModelForm):
             "equipment": forms.HiddenInput(),
             "slot": CustomSlotWidget(),
         }
+
+
+class BookingEntryFilterForm(forms.Form):
+    """A form to filter booking entries for reporting."""
+
+    from_date = forms.DateField(required=True, widget=DateCustomInput())
+    to_date = forms.DateField(required=True, widget=DateCustomInput())
+    user = forms.ModelMultipleChoiceField(
+        Account.objects.all(),
+        required=False,
+        widget=AutocompleteWidget(options={"multiselect": True}, ac_class=AllUsersComplete),
+    )
+    equipment = forms.ModelMultipleChoiceField(
+        Equipment.objects.all(),
+        required=False,
+        widget=AutocompleteWidget(options={"multiselect": True}, ac_class=EquipmentAutocomplete),
+    )
+
+    project = forms.ModelMultipleChoiceField(
+        Project.objects.all(),
+        required=False,
+        widget=AutocompleteWidget(options={"multiselect": True}, ac_class=ProjectsAutocomplete),
+    )
+    order = forms.ChoiceField(
+        choices=[
+            ("user,equipment,project", "User,Equipment & Project"),
+            ("user,project,equipment", "User, Project & Equipment"),
+            ("project,user,equipment", "Project, User & Equipment"),
+            ("user,equipment", "User & Equipment"),
+            ("user,project", "User & Project"),
+            ("equipment,project", "Equipment & Project"),
+        ],
+        help_text="Select the levels to sub-total usage",
+    )
+    reverse = forms.BooleanField(help_text="Reverse the order for subtotals", required=False)
+    output = forms.ChoiceField(
+        choices=[
+            ("html", "Web page"),
+            ("csv", "CSV File"),
+            ("xlsx", "Excel Spreadsheet"),
+            ("pdf", "PDF file"),
+            ("raw", "Raw csv records"),
+        ],
+        help_text="Output Format",
+    )

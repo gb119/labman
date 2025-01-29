@@ -1,23 +1,32 @@
 # -*- coding: utf-8 -*-
 """View definitions for the bookings app."""
 # Python imports
+import io
+import json
 from datetime import datetime as dt, time as Time, timedelta as td
 
 # Django imports
 from django import views
 from django.conf import settings
 from django.core.exceptions import ObjectDoesNotExist
+from django.db.backends.postgresql.psycopg_any import DateTimeTZRange
 from django.http import (
     HttpResponse,
     HttpResponseNotFound,
     HttpResponseNotModified,
+    StreamingHttpResponse,
 )
+from django.utils.text import slugify
 
 # external imports
+import numpy as np
+import pandas as pd
 import pytz
+from accounts.models import Account, Project
+from easy_pdf.rendering import render_to_pdf_response
 from equipment.models import Equipment
 from htmx_views.views import HTMXFormMixin
-from labman_utils.views import IsAuthenticaedViewMixin
+from labman_utils.views import FormListView, IsAuthenticaedViewMixin
 from psycopg2.extras import DateTimeTZRange
 
 # app imports
@@ -143,10 +152,11 @@ class BookingDialog(IsAuthenticaedViewMixin, HTMXFormMixin, views.generic.Update
     def htmx_form_valid_booking(self, form):
         """Handle the HTMX submitted booking form if it's all ok."""
         self.object = form.save()
+        equipment = self.object.equipment
         return HttpResponse(
             status=204,
             headers={
-                "HX-Trigger": "refreshSchedule",
+                "HX-Trigger": json.dumps({"refreshSchedule": slugify(equipment.category)}),
             },
         )
 
@@ -161,7 +171,8 @@ class BookingDialog(IsAuthenticaedViewMixin, HTMXFormMixin, views.generic.Update
             self.object = booking
         except models.BookingEntry.DoesNotExist:
             return HttpResponseNotFound("No booking found!")
-        force = self.request.user.is_superuser
+        equipment = booking.equipment
+        force = booking.equipment.can_edit(self.request.user)
         if booking.user != self.request.user:  # Not our booking so make use th Booker
             booking.booker = self.request.user
         try:
@@ -171,6 +182,97 @@ class BookingDialog(IsAuthenticaedViewMixin, HTMXFormMixin, views.generic.Update
         return HttpResponse(
             status=204,
             headers={
-                "HX-Trigger": "refreshSchedule",
+                "HX-Trigger": json.dumps({"refreshSchedule": slugify(equipment.category)}),
             },
         )
+
+
+class BookingRecordsView(IsAuthenticaedViewMixin, FormListView):
+    """Filter the list of records by the form data."""
+
+    form_class = forms.BookingEntryFilterForm
+    template_name = "bookings/reporting.html"
+    model = models.BookingEntry
+    context_object_name = "entries"
+
+    def get(self, request, *args, **kwargs):
+        """Handle GET requests and instantiates a blank version of the form before passing to ListView.get."""
+        form_class = self.get_form_class()
+        if not getattr(self, "form", None):
+            self.form = self.get_form(form_class)
+            return super().get(request, *args, **kwargs)
+        # form is defined, so we're here via POST
+        context = self.get_context_data()
+        fmt = getattr(self.form, "cleaned_data", {}).get("output", "html").lower()
+        match fmt:
+            case "csv":
+                response = HttpResponse(content_type="text/csv")
+                response["Content-Disposition"] = 'attachment; filename="report.csv"'
+                self.data.to_csv(response)
+            case "xlsx":
+                response = HttpResponse(
+                    content_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+                )
+                response["Content-Disposition"] = 'attachment; filename="report.xlsx"'
+                self.data.to_excel(response)
+            case "pdf":
+                response = render_to_pdf_response(
+                    request, "bookings/reporting_pdf.html", context, filename="report.pdf", encoding="utf-8"
+                )
+            case "raw":
+                response = HttpResponse(content_type="text/csv")
+                response["Content-Disposition"] = 'attachment; filename="records.csv"'
+                self.df.to_csv(response)
+            case _:
+                return super().get(request, *args, **kwargs)
+        return response
+
+    def get_queryset(self):
+        """Get a queryset after we've filtered the data."""
+        if not self.form.is_valid():
+            return self.model.objects.none()
+        data = self.form.cleaned_data
+        qs = super().get_queryset()
+
+        start = DEFAULT_TZ.localize(dt.combine(data["from_date"], dt.min.time()))
+        end = DEFAULT_TZ.localize(dt.combine(data["to_date"], dt.max.time()))
+        qs = qs.filter(slot__overlap=DateTimeTZRange(start, end))
+
+        if data["equipment"]:
+            qs = qs.filter(equipment__in=data["equipment"])
+        if data["user"]:
+            qs = qs.filter(user__in=data["user"])
+        if data["project"]:
+            qs = qs.filter(project__in=data["project"])
+        return qs
+
+    def map_row(self, row):
+        """Data renamer to undo FK ids."""
+        row.equipment = str(Equipment.objects.get(pk=row.equipment))
+        row.user = str(Account.objects.get(pk=row.user).display_name)
+        row.project = str(Project.objects.get(pk=row.project).short_name)
+        return row
+
+    def get_context_data(self, **kwargs):
+        """Call the parent get_context_data before adding the current form as context."""
+        context = super().get_context_data(**kwargs)
+        entries = context["entries"]
+        df = pd.DataFrame(entries.values("user", "project", "equipment", "shifts", "slot"))
+        df = df.apply(self.map_row, axis=1)
+        data = getattr(self.form, "cleaned_data", {})
+        groupby = getattr(self.form, "cleaned_data", {}).get("order", "user,equipment,project").split(",")
+        if getattr(self.form, "cleaned_data", {}).get("reverse", False):
+            groupby.reverse()
+        if groupby and len(df):
+            data = []
+            for ix, _ in enumerate(groupby):
+                grp = groupby[:-ix] if ix > 0 else groupby
+                data.append(df.groupby(grp)["shifts"].sum().reset_index())
+            self.data = pd.concat(data, ignore_index=True).sort_values(groupby)
+            self.data.replace(np.nan, "subtotal", inplace=True)
+            self.data.set_index(groupby, inplace=True)
+        else:
+            self.data = df
+        self.df = df
+        context["data"] = self.data.to_html(classes="table table-striped table-hover tabel-responsive")
+        return context

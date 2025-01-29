@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 """View classes for the equipment app - including showing booking tables."""
 # Python imports
+import json
 from datetime import datetime as dt, timedelta as td
 from itertools import chain
 
@@ -15,6 +16,7 @@ from django.http import (
     HttpResponseNotFound,
 )
 from django.urls import reverse
+from django.utils.text import slugify
 from django.views.generic import UpdateView
 
 # external imports
@@ -23,6 +25,7 @@ from accounts.models import Account, Project
 from bookings.forms import BookinngDialogForm
 from extra_views import FormSetView
 from htmx_views.views import HTMXFormMixin, HTMXProcessMixin
+from labman_utils.models import Document
 from labman_utils.views import IsAuthenticaedViewMixin
 
 # app imports
@@ -118,45 +121,65 @@ class EquipmentDetailView(HTMXProcessMixin, IsAuthenticaedViewMixin, views.gener
             case "single":
                 equipment = context["equipment"]
                 equip_vec = None
+                table = CalTable(
+                    date=self.kwargs.get("date", date),
+                    request=self.request,
+                    equipment=equipment,
+                    equip_vec=equip_vec,
+                    table_contents="&nbsp;",
+                )
+                table.classes += " table-bordered"
+                entries = table.fill_entries(equipment)
+                context["start"] = table.date_vec[0]
+                context["end"] = table.date_vec[-1]
+                context["start_date"] = table.date_vec[0].strftime("%Y%m%d")
             case "all":
                 equipment = None
-                equip_vec = (
-                    Equipment.objects.all()
-                    .annotate(policy_count=Count("policies"))
-                    .filter(policy_count__gt=0)
-                    .order_by("location__code", "name")
-                )
+                table = {}
+                entries = {}
+                for cat in Equipment.CATEGORIES:
+                    equip_vec = (
+                        Equipment.objects.filter(category=cat)
+                        .annotate(policy_count=Count("policies"))
+                        .filter(policy_count__gt=0)
+                        .order_by("name")
+                    )
+                    if equip_vec.count() == 0:
+                        continue
+                    table[cat] = CalTable(
+                        date=self.kwargs.get("date", date),
+                        request=self.request,
+                        equipment=equipment,
+                        equip_vec=equip_vec,
+                        table_contents="&nbsp;",
+                    )
+                    table[cat].classes += " table-bordered"
+                    entries[cat] = chain(*(table[cat].fill_entries(equipment) for equipment in equip_vec))
+                context["start"] = table["cryostat"].date_vec[0]
+                context["end"] = table["cryostat"].date_vec[-1]
+                context["start_date"] = table["cryostat"].date_vec[0].strftime("%Y%m%d")
+                context["categories"] = {x: Equipment.CATEGORIES[x] for x in table}
             case _:
                 raise ValueError(f"Unknow mode {mode} in scedule detail.")
 
-        table = CalTable(
-            date=self.kwargs.get("date", date),
-            request=self.request,
-            equipment=equipment,
-            equip_vec=equip_vec,
-            table_contents="&nbsp;",
-        )
-        table.classes += " table-bordered"
-        match mode:
-            case "single":
-                entries = table.fill_entries(equipment)
-            case "all":
-                entries = chain(*(table.fill_entries(equipment) for equipment in equip_vec))
-            case _:
-                raise ValueError(f"How did we get here with {mode}?")
-
         context["cal"] = table
-        context["start"] = table.date_vec[0]
-        context["end"] = table.date_vec[-1]
-        context["start_date"] = table.date_vec[0].strftime("%Y%m%d")
         context["entries"] = entries
         context["form"] = BookinngDialogForm()
+
+        opentab = self.request.GET.get("opentab", list(Equipment.CATEGORIES.keys())[0])
+        context["opentab"] = opentab
 
         return context
 
     get_context_data_schedule_container = get_context_data_scheduletab
     get_context_data_cal_back = get_context_data_scheduletab
     get_context_data_cal_forward = get_context_data_scheduletab
+
+    def get_context_data_userlisttab(self, **kwargs):
+        """Build the context for the userlist display."""
+        context = super().get_context_data(_context=True, **kwargs)
+        context["opentab"] = slugify(self.request.GET.get("opentab", "Manager"))
+        return context
 
 
 class LocationDetailView(HTMXProcessMixin, IsAuthenticaedViewMixin, views.generic.DetailView):
@@ -182,11 +205,13 @@ class ModelListView(HTMXProcessMixin, IsAuthenticaedViewMixin, views.generic.Lis
     template_name_equipmenttab = "equipment/parts/equipment_list.html"
     template_name_locationstab = "equipment/parts/locations_list.html"
     template_name_projectstab = "equipment/parts/projects_list.html"
+    template_name_documentstab = "equipment/parts/documents_list.html"
     template_name_accountstab = "equipment/parts/accounts_list.html"
 
     context_object_equipmenttab = "equipment"
     context_object_locationstab = "locations"
     context_object_projectstab = "projects"
+    context_object_documentstab = "documents"
     context_object_accountstab = "accounts"
 
     def get_queryset(self):
@@ -203,6 +228,10 @@ class ModelListView(HTMXProcessMixin, IsAuthenticaedViewMixin, views.generic.Lis
                 qs = Location.objects.all().order_by("code", "name")
             case "projects-tab":
                 qs = Project.objects.all().order_by("name")
+            case "documents-tab":
+                qs = {}
+                for category in dict(Document.CATEGORIES):
+                    qs[category] = Document.objects.filter(category=category)
             case _:
                 qs = {}
                 for grp in ["Academic", "Staff", "PDRA", "PostGrad", "Visitor", "Project"]:
@@ -217,6 +246,12 @@ class ModelListView(HTMXProcessMixin, IsAuthenticaedViewMixin, views.generic.Lis
             data[category] = context["equipment"].filter(category=category)
         context["equipment"] = data
         context["categories"] = Equipment.CATEGORIES
+        return context
+
+    def get_context_data_documentstab(self, **kwargs):
+        """Extra context for equipment list."""
+        context = super().get_context_data(_context=True, **kwargs)
+        context["categories"] = dict(Document.CATEGORIES)
         return context
 
 
@@ -269,7 +304,7 @@ class UserlisttDialog(IsAuthenticaedViewMixin, HTMXFormMixin, UpdateView):
         return HttpResponse(
             status=204,
             headers={
-                "HX-Trigger": "refreshUserList",
+                "HX-Trigger": json.dumps({"refreshUserList": slugify(entry.role.name)}),
             },
         )
 
@@ -287,6 +322,6 @@ class UserlisttDialog(IsAuthenticaedViewMixin, HTMXFormMixin, UpdateView):
         return HttpResponse(
             status=204,
             headers={
-                "HX-Trigger": "refreshUserList",
+                "HX-Trigger": json.dumps({"refreshUserList": slugify(entry.role.name)}),
             },
         )

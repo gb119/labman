@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+{% load django_bootstrap5 %}
+{% load labman_tags %}
+{% block content %}
+    <h2>Usage Reporting</h2>
+    <form id="reporting" method="POST"
+          action="{% url 'bookings:reporting' %}"
+          encoding='multipart/form-data'>
+        {% csrf_token %}
+        {% bootstrap_form_errors form %}
+        <div class="row">
+            <div class="col-md-6">
+                {% bootstrap_field form.from_date layout="horizontal" %}
+            </div>
+            <div class="col-md-6">
+                {% bootstrap_field form.to_date layout="horizontal" %}
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                {% bootstrap_field form.user layout="horizontal" %}
+            </div>
+            <div class="col-md-6">
+                {% bootstrap_field form.project layout="horizontal" %}
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                {% bootstrap_field form.equipment layout="horizontal" %}
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-4">
+                {% bootstrap_field form.order layout="horizontal" %}
+            </div>
+            <div class="col-md-4">
+                {% bootstrap_field form.reverse layout="horizontal" %}
+            </div>
+            <div class="col-md-4">
+                {% bootstrap_field form.output layout="horizontal" %}
+            </div>
+        </div>
+        <div class="row justify-content-between">
+            <div class="col-md-6">
+                <button type="reset"
+                        class="btn-secondary bi bi-x"
+                        data-bs-dismiss="modal"
+                        name="cancel">Cancel</button>
+                <button type="submit"
+                        class="btn-primary bi bi-pencil"
+                        id = "submit_booking"
+                        name="search">Filter</button>
+            </div>
+        </div>
+    </form>
+    <div class="table table-striped table-hover tabel-responsive">
+        {{ data|safe }}
+    </div>
+{% endblock content %}

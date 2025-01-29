@@ -9,6 +9,30 @@
 {% block css %}
     {{ block.super }}
     <style>
+        div.bg-secondary h5 {
+            color: white;
+            margin: 8px;
+        }
+
+/* Custom CSS to change the appearance of the closed accordion button */
+        .accordion-button.collapsed {
+            background-color: #f0f0f0; /* Change background color */
+            color: #333; /* Change text color */
+            border: 1px solid #ccc; /* Add border */
+        }
+
+/* Optional: Change the appearance when the button is hovered */
+        .accordion-button.collapsed:hover {
+            background-color: #e0e0e0; /* Change hover background color */
+        }
+
+        .ui-datepicker {
+            z-index: 1600 !important;
+        }
+    /* Optional: in case your body is less than datapicker height */
+        .modal-body {
+            min-height: 200px;
+        }
         td.html_td {cursor: pointer; }
     </style>
 {% endblock css %}
@@ -19,6 +43,7 @@
          hx-trigger="refreshSchedule from:body consume, revealed consume"
          hx-vals='{"date":"{{ start_date }}", "mode":"{{ mode }}" }'
          hx-get="{% url 'equipment:equipment_detail' equipment.pk %}"
+         hx-headers=''
          hx-target="#schedule_container"      hx-swap="outerHTML">
         <div id="schedule">
             Lazy Loaded
@@ -31,4 +56,20 @@
         <div class="modal-dialog modal-lg modal-dialog-centered" role="document" id="dialog">
             <div class="modal-content"></div>
         </div>
-    </div>{% endblock content %}
+    </div>
+    <script>
+    // Function to merge additional data into the existing hx-vars attribute
+        function mergeHxVars(divId, newData) {
+            const button = document.getElementById(divId);
+            const existingVars = JSON.parse(button.getAttribute('hx-vars') || '{}');
+            const mergedVars = { ...existingVars, ...newData };
+            button.setAttribute('hx-vars', JSON.stringify(mergedVars));
+        }
+
+
+        document.body.addEventListener("refreshSchedule", function(evt){
+        // Set the hx-headers attribute dynamically
+            mergeHxVars('schedule_container', { 'opentab': evt.detail.value});
+        })
+    </script>
+{% endblock content %}

@@ -198,18 +198,22 @@ class CalTable(Table):
             if col_end < 0:  # Finished before first slot
                 continue
             if col_start == col_end:  # single day
-                self[row_start, col_start].rowspan = max(row_end - row_start + 1, 1)
+                if max(row_end - row_start + 1, 1) > 1:
+                    self[row_start, col_start].rowspan = max(row_end - row_start + 1, 1)
                 self[row_start, col_start].content = entry.user.display_name
                 self[row_start, col_start].classes += f" {entry.calendar_css}"
             else:  # spans day boundaries
-                self[row_start, col_start].rowspan = len(time_vec) - row_start + 1
+                if len(time_vec) - row_start + 1 > 1:
+                    self[row_start, col_start].rowspan = len(time_vec) - row_start + 1
                 self[row_start, col_start].content = entry.user.display_name
                 self[row_start, col_start].classes += f" {entry.calendar_css}"
                 for col in range(col_start + 1, col_end):
-                    self[1 + row_base, col].rowspan = len(time_vec)
+                    if len(time_vec) > 1:
+                        self[1 + row_base, col].rowspan = len(time_vec)
                     self[1 + row_base, col].content = entry.user.display_name
                     self[1 + row_base, col].classes += f" {entry.calendar_css}"
-                self[1 + row_base, col_end].rowspan = max(1, row_end - row_base)
+                if max(1, row_end - row_base) > 1:
+                    self[1 + row_base, col_end].rowspan = max(1, row_end - row_base)
                 self[1 + row_base, col_end].content = entry.user.display_name
                 self[1 + row_base, col_end].classes += f" {entry.calendar_css}"
         return entries

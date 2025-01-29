@@ -3,14 +3,22 @@
 # Python imports
 
 # Django imports
+from django import forms
 from django.apps import apps
 
 # external imports
-import floppyforms.__future__ as forms
+from sortedm2m.forms import (
+    SortedCheckboxSelectMultiple,
+    SortedMultipleChoiceField,
+)
 
 Equipment = apps.get_model(app_label="equipment", model_name="equipment")
 Location = apps.get_model(app_label="equipment", model_name="location")
 Document = apps.get_model(app_label="labman_utils", model_name="document")
+
+
+class SortedCheckboxMultipleChoiceField(SortedMultipleChoiceField):
+    widget = SortedCheckboxSelectMultiple
 
 
 class DateTimeCustomInput(forms.DateTimeInput):
@@ -44,3 +52,15 @@ class DocumentDialogForm(forms.ModelForm):
 
     class Media:
         js: ["/static/bootstrap_datepick_plus/js/datepicker-widget.js"]
+
+
+class DocumentLinksForm(forms.ModelForm):
+    """A form to manage lihking documents."""
+
+    class Meta:
+        model = Document
+        fields = ["id"]
+        widgets = {"id": forms.HiddenInput()}
+
+    equipment = SortedCheckboxMultipleChoiceField(Equipment.objects.all().order_by("category", "name"), required=False)
+    location = SortedCheckboxMultipleChoiceField(Location.objects.all().order_by("location", "name"), required=False)

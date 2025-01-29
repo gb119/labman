@@ -19,6 +19,7 @@ from django.utils.text import slugify
 # external imports
 import numpy as np
 import pytz
+from accounts.models import Account
 from labman_utils.models import (
     DEFAULT_TZ,
     Document,
@@ -153,12 +154,12 @@ class Equipment(ResourceedObject):
     """Class for representing an Equipment item."""
 
     CATEGORIES = {
-        "cryostat": "Cryostat",
         "deposition": "Thin film growth",
-        "magnetometer": "Magnetic Characterisation",
-        "furnace": "Furnace",
-        "transport": "Electrical Transport",
         "characterisation": "Material Characterisation",
+        "magnetometer": "Magnetic Characterisation",
+        "cryostat": "Cryostat",
+        "transport": "Electrical Transport",
+        "furnace": "Furnace",
         "other": "Other",
     }
 
@@ -353,3 +354,15 @@ class DocumentSignOff(models.Model):
 def slug(self):
     """Return the title in a slug format."""
     return slugify(self.title)
+
+
+@patch_model(Account, prep=property)
+def signoffs(self):
+    """Return a queryset of signoffs that are outstanding."""
+    return self.user_of.filter(hold=True)
+
+
+@patch_model(Account, prep=property)
+def management_holds(self):
+    """Return a queryset of signoffs that are outstanding."""
+    return self.user_of.filter(admin_hold=True)

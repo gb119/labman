@@ -99,8 +99,8 @@ DEFAULT_APPS = [
     "import_export",
     "sitetree",
     "tinymce",
+    "easy_pdf",
     "django_simple_file_handler",
-    "floppyforms",
 ] + CUSTOM_APPS
 
 # Middlewares
@@ -336,9 +336,13 @@ REST_FRAMEWORK = {
 }
 
 
-###### Sitetree ##########################################
+# ### SITETREE Customisation ##############################
 
 SITETREE_ITEMS_FIELD_ROOT_ID = -1
+
+SITETREE_CLS = "labman_utils.tree.CustomSiteTree"
+SITETREE_MODEL_TREE = "labman_utils.GroupedTree"
+SITETREE_MODEL_TREE_ITEM = "labman_utils.GroupedTreeItem"
 
 ###### Constance Settings ################################
 
