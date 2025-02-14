@@ -1,15 +1,49 @@
 {% for image in equipment.photos.all %}
-    {% if forloop.counter0|divisibleby:3 %}
-        </div class="row">
+    {% if forloop.counter0|modulus:3 == 0 %}
+        <div class="row">
     {% endif %}
-    <div class="col-md-4">
-        <a hx-get="{% url 'labman_utils:photo_tag' image.slug %}" hx-target="#dialog" data-toggle="modal" data-target="#modal">
-            <img src="{{ image.get_medium_url }}" alt="{{ image.caption }}" />
-        </a>
+    <div class="col-md-4 p-3 justify-content-center">
+        <h5>{{ image.title|safe }}</h5>
+        <div class="position-relative">
+            <a hx-get="{% url 'labman_utils:photo_tag' image.slug %}" hx-target="#dialog" data-toggle="modal" data-target="#modal">
+                <img src="{{ image.get_medium_url }}" alt="{{ image.caption }}" style="width: 100%;"/>
+            </a>
+            {% if equipment|can_edit:request.user %}
+                <a hx-get="{% url 'labman_utils:edit_equipment_photo' equipment.pk image.pk %}"
+                   hx-target="#dialog"
+                   class="position-absolute bottom-0 end-0 edit_image" id="mugshot_link">
+                    <i class="bi bi-pencil"></i>
+                </a>
+            {% endif %}
+        </div>
     </div>
-    {% if forloop.counter|divisibleby:3 %}
+    {% if forloop.counter|modulus:3 == 0 %}
         </div>
     {% elif forloop.last %}
         </div>
     {% endif %}
 {% endfor %}
+{% if equipment|can_edit:request.user %}
+
+    <style>
+        nav#resourcenav.navbar-dark { color: white; }
+        nav#resourcenav a {cursor: pointer; }
+        nav#resourcenav li.nav-item a {color: white; }
+    </style>
+    <nav id="resourcenav" class="navbar navbar-dark bg-dark  .navbar-expand-ms">
+        <div class="container-fluid">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0 list-group list-group-horizontal">
+                <li class="nav-item">
+                    <a hx-get="{% url 'labman_utils:new_equipment_photo' equipment.pk %}" hx-target="#dialog">
+                        <i class="bi bi-file-earmark-arrow-up"></i>Upload New Photo...
+                    </a>
+                </li>
+                <li  class="nav-item">
+                    <a hx-get="{% url 'labman_utils:link_photo_equipment' equipment.pk %}" hx-target="#dialog">
+                        <i class="bi bi-link"></i>Link Images...
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+{% endif %}

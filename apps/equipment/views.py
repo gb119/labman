@@ -29,7 +29,7 @@ from labman_utils.models import Document
 from labman_utils.views import IsAuthenticaedViewMixin
 
 # app imports
-from .forms import SignOffForm, UserListEnryForm
+from .forms import EquipmentForm, SignOffForm, UserListEnryForm
 from .models import DocumentSignOff, Equipment, Location, UserListEntry
 from .tables import CalTable
 
@@ -141,7 +141,7 @@ class EquipmentDetailView(HTMXProcessMixin, IsAuthenticaedViewMixin, views.gener
                     equip_vec = (
                         Equipment.objects.filter(category=cat)
                         .annotate(policy_count=Count("policies"))
-                        .filter(policy_count__gt=0)
+                        .filter(policy_count__gt=0, offline=False)
                         .order_by("name")
                     )
                     if equip_vec.count() == 0:
@@ -324,4 +324,38 @@ class UserlisttDialog(IsAuthenticaedViewMixin, HTMXFormMixin, UpdateView):
             headers={
                 "HX-Trigger": json.dumps({"refreshUserList": slugify(entry.role.name)}),
             },
+        )
+
+
+class EquipmentDialog(IsAuthenticaedViewMixin, HTMXFormMixin, UpdateView):
+    """Prdoce the html for a booking form in the dialog."""
+
+    model = Equipment
+    template_name = "equipment/equipment_form.html"
+    context_object_name = "this"
+    form_class = EquipmentForm
+
+    def get_context_data_dialog(self, **kwargs):
+        """Create the context for HTMX calls to open the booking dialog."""
+        context = super().get_context_data(_context=True, **kwargs)
+        context["current_url"] = self.request.htmx.current_url
+        context["this"] = self.get_object()
+        args = (context["this"].pk,)
+        context["post_url"] = reverse(f"equipment:edit_equipment", args=args)
+
+        return context
+
+    def get_object(self, queryset=None):
+        """Either get the UserList entry or None."""
+        try:
+            return Equipment.objects.get(pk=self.kwargs.get("pk"))
+        except (Equipment.DoesNotExist, AttributeError, KeyError):
+            return None
+
+    def htmx_form_valid_equipment(self, form):
+        """Handle the HTMX submitted booking form if it's all ok."""
+        form.save()
+        return HttpResponse(
+            status=204,
+            headers={"HX-Trigger": "refreshEquipment"},
         )

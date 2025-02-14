@@ -174,6 +174,7 @@ class Equipment(ResourceedObject):
     policies = SortedManyToManyField("bookings.BookingPolicy", related_name="equipment", blank=True)
     offline = models.BooleanField(default=False)
     category = models.CharField(max_length=20, null=True, blank=True, choices=list(CATEGORIES.items()))
+    users = models.ManyToManyField("accounts.Account", related_name="user_of", through="equipment.UserListEntry")
 
     def __str__(self):
         return f"{self.name}"
@@ -181,7 +182,7 @@ class Equipment(ResourceedObject):
     @property
     def bookable(self):
         """Return True if there are applicable policies."""
-        return self.policies.count() > 0
+        return self.policies.count() > 0 and not self.offline
 
     @property
     def url(self):
@@ -210,7 +211,7 @@ class Equipment(ResourceedObject):
     def userlist_dict(self):
         """Get the user list grouped by role."""
         ret = {}
-        users = self.users.all().prefetch_related("role")
+        users = self.userlist.all().prefetch_related("role")
         for role in [x["role__name"] for x in users.order_by("-role__level").values("role__name").distinct()]:
             ret[role] = users.filter(role__name=role)
         return ret
@@ -220,8 +221,9 @@ class Equipment(ResourceedObject):
         Role = apps.get_model(app_label="accounts", model_name="role")
 
         try:
-            role = Role.objects.get(name=name)
-            return self.users.filter(role__level__gte=role.level)
+            role = Role.objects.get(name__iexact=name)
+            data = self.userlist.filter(role__level__gte=role.level)
+            return Account.objects.filter(equipmentlist__in=data)
         except Role.DoesNotExist:
             pass
         if name in [f"{x}s" for x in Document.CATAGORIES_DICT.keys()] + ["all_files"]:
@@ -273,8 +275,8 @@ class UserListEntry(models.Model):
         verbose_name = "User List Entry"
         verbose_name_plural = "User List Entries"
 
-    equipment = models.ForeignKey(Equipment, on_delete=models.CASCADE, related_name="users")
-    user = models.ForeignKey("accounts.Account", on_delete=models.CASCADE, related_name="user_of")
+    equipment = models.ForeignKey(Equipment, on_delete=models.CASCADE, related_name="userlist")
+    user = models.ForeignKey("accounts.Account", on_delete=models.CASCADE, related_name="equipmentlist")
     role = models.ForeignKey("accounts.Role", on_delete=models.SET_NULL, null=True, blank=True)
     hold = models.BooleanField(default=True, verbose_name="User clearable hold")
     admin_hold = models.BooleanField(default=False, verbose_name="Management hold")
@@ -344,7 +346,7 @@ class DocumentSignOff(models.Model):
         # If this document is attached to a location, find all equipment in this and child locations.
         if self.document.all_locations:
             search_Q |= models.Q(equipment__location__in=self.document.all_locations)
-        userlists = self.user.user_of.filter(search_Q)
+        userlists = self.user.equipmentlist.filter(search_Q)
         for userlist in userlists.all():
             userlist.hold = userlist.check_for_hold()
             userlist.save()

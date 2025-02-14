@@ -8,6 +8,7 @@ The `urlpatterns` list routes URLs to views. For more information please see:
 from pathlib import Path
 
 # Django imports
+from django.conf import settings
 from django.conf.urls import include
 from django.contrib import admin
 from django.contrib.auth import views as auth_views
@@ -19,7 +20,7 @@ from django.views.static import serve
 # Django REST Framework launcher import
 from . import api
 from .settings.production import DEBUG, MEDIA_ROOT, PROJECT_ROOT
-from .views import E403View, E404View, E500View
+from .views import E403View, E404View, E500View, FileServeView
 
 # Set Error handlers
 handler404 = E404View.as_view()
@@ -39,6 +40,7 @@ urlpatterns = [
     path("private-file-pseudo-directory-path/", include("django_simple_file_handler.urls")),
     path("api/", include(api)),  # main api module exports a urlpatterns
     path("api-auth/", include("rest_framework.urls")),  # Needed by REST framework for user authentication
+    path("oauth2/", include("django_auth_adfs.urls")),  # Autrhentication via Duo
     path("admin/", admin.site.urls),
 ]
 
@@ -49,13 +51,13 @@ for f in (Path(PROJECT_ROOT) / "apps").iterdir():
     if (f / "urls.py").exists():
         urlpatterns.append(path(f"{f.name}/", include(f"{f.name}.urls")))
 
-if DEBUG:
-    urlpatterns += [
-        re_path(
-            r"^media/(?P<path>.*)$",
-            serve,
-            {
-                "document_root": MEDIA_ROOT,
-            },
-        ),
-    ]
+urlpatterns += [
+    re_path(
+        r"^media/(?P<path>.*)$",
+        FileServeView.as_view(),
+        {
+            "document_root": MEDIA_ROOT,
+        },
+        name="media_files",
+    ),
+]

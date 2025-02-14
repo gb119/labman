@@ -1,0 +1,48 @@
+{% load django_bootstrap5 %}
+{% load labman_tags %}
+{{ form.media }}
+<style>.bootstrap-datetimepicker-widget {z-order:1600!important; }</style>
+<div class="modal-content">
+    <div class="modal-header">
+        <h5 class="modal-title">Manage Photo</h5>
+    </div>
+    <div class="modal-body">
+        {% bootstrap_form_errors form %}
+        <form id="document" method="POST"
+              hx-post="{{ post_url }}"
+              hx-encoding='multipart/form-data'
+              hx-target="#dialog">
+            {% csrf_token %}
+            {% bootstrap_form form layout="horizontal" %}
+            <div class="row justify-content-between">
+                <div class="col-md-6">
+                    <button type="reset"
+                            class="btn-secondary bi bi-x"
+                            data-bs-dismiss="modal"
+                            name="cancel">Cancel</button>
+                    {% if edit %}
+                        <button type="submit"
+                                class="btn-primary bi bi-pencil"
+                                id = "submit_photo"
+                                value = {{ this.pk }}
+                                name="submit_photo">Edit</button>
+                    {% else %}
+                        <button type="submit"
+                                class="btn-primary bi bi-bookmark-plus"
+                                id = "submit_photo"
+                                name="submit_photo">Save</button>
+                    {% endif %}
+                </div>
+                <div class="col-md-3">
+                    {% if edit and request.user.is_superuser %}
+                        <button type="button"
+                                id ="delete_photo"
+                                class="btn-danger bi bi-trash"
+                                hx-delete="{{ post_url }}"
+                                name="photo" value={{ this.pk }}>Delete</button>
+                    {% endif %}
+                </div>
+            </div>
+        </form>
+    </div>
+</div>

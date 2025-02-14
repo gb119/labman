@@ -2,11 +2,14 @@
 """View support classes and functions for htmx-views."""
 
 # Python imports
+import logging
 import re
 
 # Django imports
 from django.conf import settings
 from django.views import View
+
+logger = logging.getLogger(__name__)
 
 
 def dispatch(self, request, *args, **kwargs):
@@ -49,7 +52,7 @@ class HTMXProcessMixin:
             if elem := getattr(self.request.htmx, attr, None):
                 elem = re.sub(r"[^A-Za-z0-9_]", "", elem).lower()
                 if settings.DEBUG:
-                    print(elem)
+                    logger.debug(elem)
                 yield elem
 
     def get_context_data(self, **kwargs):
@@ -80,7 +83,7 @@ class HTMXProcessMixin:
             if sub_name := getattr(self, f"context_object_{elem}", False):
                 return sub_name
 
-        print("Super")
+        logger.debug("Super")
 
         return super().get_context_object_name(object_list)
 
@@ -94,12 +97,12 @@ class HTMXProcessMixin:
             handler = getattr(self, f"get_template_names_{elem}", False)
             if handler:
                 if settings.DEBUG:
-                    print(f"Template_handl;er: {handler.__name__}")
+                    logger.debug(f"Template_handl;er: {handler.__name__}")
                 return handler()
             sub_name = getattr(self, f"template_name_{elem}", False)
             if sub_name:
                 if settings.DEBUG:
-                    print(f"Template_name: {sub_name}")
+                    logger.debug(f"Template_name: {sub_name}")
                 return sub_name
         return super().get_template_names()
 
@@ -117,7 +120,7 @@ class HTMXProcessMixin:
         else:
             handler = getattr(self, "delete", self.http_method_not_allowed)
         if settings.DEBUG:
-            print(f"HTMX Method handler: {handler.__name__}")
+            logger.debug(f"HTMX Method handler: {handler.__name__}")
         return handler(request, *args, **kwargs)
 
     def htmx_get(self, request, *args, **kwargs):
@@ -134,7 +137,7 @@ class HTMXProcessMixin:
         else:
             handler = getattr(self, "get", self.http_method_not_allowed)
         if settings.DEBUG:
-            print(f"HTMX Method handler: {handler.__name__}")
+            logger.debug(f"HTMX Method handler: {handler.__name__}")
         return handler(request, *args, **kwargs)
 
     def htmx_patch(self, request, *args, **kwargs):
@@ -151,7 +154,7 @@ class HTMXProcessMixin:
         else:
             handler = getattr(self, "patch", self.http_method_not_allowed)
         if settings.DEBUG:
-            print(f"HTMX Method handler: {handler.__name__}")
+            logger.debug(f"HTMX Method handler: {handler.__name__}")
         return handler(request, *args, **kwargs)
 
     def htmx_post(self, request, *args, **kwargs):
@@ -168,7 +171,7 @@ class HTMXProcessMixin:
         else:
             handler = getattr(self, "post", self.http_method_not_allowed)
         if settings.DEBUG:
-            print(f"HTMX Method handler: {handler.__name__}")
+            logger.debug(f"HTMX Method handler: {handler.__name__}")
         return handler(request, *args, **kwargs)
 
     def htmx_put(self, request, *args, **kwargs):
@@ -185,7 +188,7 @@ class HTMXProcessMixin:
         else:
             handler = getattr(self, "put", self.http_method_not_allowed)
         if settings.DEBUG:
-            print(f"HTMX Method handler: {handler.__name__}")
+            logger.debug(f"HTMX Method handler: {handler.__name__}")
         return handler(request, *args, **kwargs)
 
 
@@ -206,7 +209,7 @@ class HTMXFormMixin(HTMXProcessMixin):
             return super().form_valid(form)
         for elem in self.htmx_elements():
             if settings.DEBUG:
-                print(f"Looking for htmx_form_valid_{elem}")
+                logger.debug(f"Looking for htmx_form_valid_{elem}")
             handler = getattr(self, f"htmx_form_valid_{elem}", False)
             if handler:
                 return handler(form)
@@ -229,7 +232,7 @@ class HTMXFormMixin(HTMXProcessMixin):
         for elem in self.htmx_elements():
             handler = getattr(self, f"htmx_form_invalid_{elem}", False)
             if settings.DEBUG:
-                print(f"Looking for htmx_form_invalid_{elem}")
+                logger.debug(f"Looking for htmx_form_invalid_{elem}")
             if handler:
                 return handler(form)
         if handler := getattr(self, "htmx_form_invalid", False):

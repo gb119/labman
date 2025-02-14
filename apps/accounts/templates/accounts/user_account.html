@@ -1,11 +1,21 @@
 {% extends 'base.html' %}
 {% block title %}{{ block.super }}{{ account.display_name }} Account{% endblock title %}
+{% block javascript %}
+    {{ block.super }}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.12.0/moment.js"></script>
+    <script src="{% static 'js/htmx_dialog.js' %}"></script>
+    <script>htmx.on("refreshPhotos", function () {window.location.reload();});</script>
+{% endblock javascript %}
 {% block css %}
     {{ block.super }}
     <style>
         div.bg-secondary h5 {
             color: white;
             margin: 8px;
+        }
+        #mugshot_link > i {
+            background:rgba(255.0, 255.0, 255.0, 0.65);
+            padding: 5px;
         }
     </style>}
 {% endblock css %}
@@ -45,7 +55,16 @@
             <div class="tab-pane active" id="details" role="tabpanel" aria-labelledby="details-tab">
                 <div class="float-end">
                     {% if account.mugshot %}
-                        <img src="{{account.mugshot.get_thumbnail_url }}" alt="Picture of {{ account.display_name" />
+                        <div class="position-relative">
+                            <img src="{{account.mugshot.get_thumbnail_url }}" alt="Picture of {{ account.display_name" />
+                            {% if account|can_edit:request.user %}
+                                <a hx-get="{{ account.mugshot_edit_link }}"
+                                   hx-target="#dialog"
+                                   class="position-absolute bottom-0 end-0" id="mugshot_link">
+                                    <i class="bi bi-pencil"></i>
+                                </a>
+                            {% endif %}
+                        </div>
                     {% endif %}
                 </div>
                 <div class="row">
@@ -63,10 +82,46 @@
                         {% endif %}
                     </div>
                 </div>
+                {% if bookings.count > 0 %}
+                    <div class="row">
+                        <h3>Future Bookings</h3>
+                        <div class="table table-responsive">
+                            <table>
+                                {% for booking in bookings.all %}
+                                    {% if forloop.first %}
+                                        <thead>
+                                            <tr>
+                                                <th>Equipment</th><th>Start</th><th>End<th><th>Project</th>
+                                                </tr>
+                                                </thead>
+                                                <tbody>
+                                    {% endif %}
+                                    <tr>
+                                        <td><a href="{{ booking.equipment.url }}">{{ booking.equipment.name }}</a></td>
+                                        <td>{{ booking.slot.lower }}</td><td>{{ booking.slot.upper }}</td>
+                                        <td>{{ booking.project.short_name }}</td>
+                                    </tr>
+                                    {% if forloop.last %}
+                                        </tbody>
+                                    {% endif %}
+                                {% endfor %}
+                            </table>
+                        </div>
+                    </div>
+                {% endif %}
             </div>
             <div class="tab-pane" id="project" role="tabpanel" aria-labelledby="project-tab"></div>
             <div class="tab-pane" id="underlings" role="tabpanel" aria-labelledby="underlings-tab"></div>
             <div class="tab-pane" id="userlist" role="tabpanel" aria-labelledby="userlist-tab"></div>
         </div>
+        <div id="modal"
+             class="modal modal-blur fade"
+             style="display: none"
+             tabindex="-1">
+            <div class="modal-dialog modal-lg modal-dialog-centered" role="document" id="dialog">
+                <div class="modal-content"></div>
+            </div>
+        </div>
     </main>
+
 {% endblock content %}

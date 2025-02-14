@@ -1,96 +1,96 @@
+<!DOCTYPE html>
 {% load static %}
 {% load sitetree %}
 {% load django_htmx %}
-<DOCTYPE html>
-    <html lang="en">
-        <head>
-            {% block meta %}
-                <meta charset="utf-8">
-                <meta name="viewport" content="width=device-width, initial-scale=1">
-            {% endblock meta %}
-            <title>{% block title %}LabMAN: {% endblock %}</title>
-            {% block javascript %}
-                <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
-                <script src="https://unpkg.com/htmx.org@2.0.4" integrity="sha384-HGfztofotfshcF7+8n44JQL2oJmowVChPTg48S+jvZoztPfvwD79OC/LTtG6dMp+" crossorigin="anonymous"></script>
-                <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>                <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.min.js"></script>
-                <script src="https://code.jquery.com/ui/1.14.1/jquery-ui.min.js" integrity="sha256-AlTido85uXPlSyyaZNsjJXeCs07eSv3r43kyCVc8ChI=" crossorigin="anonymous"></script>                {% django_htmx_script %}
-                <script>
-                    $(document).ready(function() {
-                        $("#searchbutton").on("click", function(event) {
-                            $("#searchbutton").toggleClass("bi-search").toggleClass("bi-chevron-double-up");
-                        });
+<html lang="en">
+    <head>
+        {% block meta %}
+            <meta charset="utf-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1">
+        {% endblock meta %}
+        <title>{% block title %}LabMAN: {% endblock %}</title>
+        {% block javascript %}
+            <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+            <script src="https://unpkg.com/htmx.org@2.0.4" integrity="sha384-HGfztofotfshcF7+8n44JQL2oJmowVChPTg48S+jvZoztPfvwD79OC/LTtG6dMp+" crossorigin="anonymous"></script>
+            <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>                <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.min.js"></script>
+            <script src="https://code.jquery.com/ui/1.14.1/jquery-ui.min.js" integrity="sha256-AlTido85uXPlSyyaZNsjJXeCs07eSv3r43kyCVc8ChI=" crossorigin="anonymous"></script>                {% django_htmx_script %}
+            <script>
+                $(document).ready(function() {
+                    $("#searchbutton").on("click", function(event) {
+                        $("#searchbutton").toggleClass("bi-search").toggleClass("bi-chevron-double-up");
                     });
-                </script>
-            {% endblock javascript %}
-            {% block css %}
-                <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+                });
+            </script>
+        {% endblock javascript %}
+        {% block css %}
+            <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
         <!-- Option 1: Include in HTML -->
-                <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.3.0/font/bootstrap-icons.css">
-                <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-                <link rel="stylesheet" href="https://code.jquery.com/ui/1.14.1/themes/base/jquery-ui.css">
-                <link rel="stylesheet" href="https://code.jquery.com/ui/1.14.1/themes/smoothness/jquery-ui.css">
-                <link href="https://cdn.jsdelivr.net/gh/monim67/django-bootstrap-datepicker-plus@5.0.2/src/bootstrap_datepicker_plus/static/bootstrap_datepicker_plus/css/datepicker-widget.css" media="all" rel="stylesheet">
-                <link href="{% static 'css/labman.css' %}" rel="stylesheet">
-            {%endblock css %}
-        </head>
-        <body hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}' hx-swap="innerHTML" hx-history="false">
-            <header id="masthead" role="banner" class="container-lg">
-                {% block header %}
-                    <div class="float-start menu-button">
-                        <button id="btn__nav" class="fas fa-bars fa-lg" type="button" data-bs-toggle="offcanvas" data-bs-target="#sitemenu" aria-controls="sitemenu">
-                            <span>Menu</span>
-                        </button>
-                    </div>
-                    <div class="logo">
-                        <a class="logo-full float-end" title="University of Leeds homepage" href="//www.leeds.ac.uk/">
-                            <img class="js-png-svg-uri" data-uri="https://production2.leeds.ac.uk/jaducdn/themes/default/assets/dist/img/uol-logo.svg" src="https://production2.leeds.ac.uk/jaducdn/themes/default/assets/dist/img/uol-logo.svg" alt="University of Leeds logo">
-                        </a>
-                        <a class="logo-mark float-end" title="University of Leeds homepage" href="//www.leeds.ac.uk/">
-                            <img class="js-png-svg-uri" data-uri="https://production2.leeds.ac.uk/jaducdn/themes/default/assets/dist/img/uol-logo-mark.svg" src="https://production2.leeds.ac.uk/jaducdn/themes/default/assets/dist/img/uol-logo-mark.svg" alt="University of Leeds logo">
-                        </a>
-                    </div>
-                {% endblock header %}
-            </header>
-            <div class="container-lg collapse" id="sitesearch">
-                <div class="card card-body">
-                    Sorry - not implemented yet!
+            <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.3.0/font/bootstrap-icons.css">
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+            <link rel="stylesheet" href="https://code.jquery.com/ui/1.14.1/themes/base/jquery-ui.css">
+            <link rel="stylesheet" href="https://code.jquery.com/ui/1.14.1/themes/smoothness/jquery-ui.css">
+            <link href="https://cdn.jsdelivr.net/gh/monim67/django-bootstrap-datepicker-plus@5.0.2/src/bootstrap_datepicker_plus/static/bootstrap_datepicker_plus/css/datepicker-widget.css" media="all" rel="stylesheet">
+            <link href="{% static 'css/labman.css' %}" rel="stylesheet">
+        {%endblock css %}
+    </head>
+    <body hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}' hx-swap="innerHTML" hx-history="false">
+        <header id="masthead" role="banner" class="container-lg">
+            {% block header %}
+                <div class="float-start menu-button">
+                    <button id="btn__nav" class="fas fa-bars fa-lg" type="button" data-bs-toggle="offcanvas" data-bs-target="#sitemenu" aria-controls="sitemenu">
+                        <span>Menu</span>
+                    </button>
+                </div>
+                <div class="logo">
+                    <a class="logo-full float-end" title="University of Leeds homepage" href="//www.leeds.ac.uk/">
+                        <img class="js-png-svg-uri" data-uri="https://production2.leeds.ac.uk/jaducdn/themes/default/assets/dist/img/uol-logo.svg" src="https://production2.leeds.ac.uk/jaducdn/themes/default/assets/dist/img/uol-logo.svg" alt="University of Leeds logo">
+                    </a>
+                    <a class="logo-mark float-end" title="University of Leeds homepage" href="//www.leeds.ac.uk/">
+                        <img class="js-png-svg-uri" data-uri="https://production2.leeds.ac.uk/jaducdn/themes/default/assets/dist/img/uol-logo-mark.svg" src="https://production2.leeds.ac.uk/jaducdn/themes/default/assets/dist/img/uol-logo-mark.svg" alt="University of Leeds logo">
+                    </a>
+                </div>
+            {% endblock header %}
+        </header>
+        <div class="container-lg collapse" id="sitesearch">
+            <div class="card card-body">
+                Sorry - not implemented yet!
+            </div>
+        </div>
+        <div class="local-header container-lg">
+            <div class="local-header-inner d-flex justify-content-between">
+                <div class="local-header-title" role="navigation" aria-label="Home page link">
+                    <a href="/">Condensed Matter Physics Lab Management</a>
+                </div>
+                <div class="local-header-search text-end">
+                    <button id="searchbutton" class="bi bi-search" type="button" data-bs-toggle="collapse" data-bs-target="#sitesearch" role="button" aria-label="Open site search" aria-expanded="false" aria-controls="sitesearch">
+                        <span class="icon-font-text">Search</span>
+                    </button>
                 </div>
             </div>
-            <div class="local-header container-lg">
-                <div class="local-header-inner d-flex justify-content-between">
-                    <div class="local-header-title" role="navigation" aria-label="Home page link">
-                        <a href="/">Condensed Matter Physics Lab Management</a>
-                    </div>
-                    <div class="local-header-search text-end">
-                        <button id="searchbutton" class="bi bi-search" type="button" data-bs-toggle="collapse" data-bs-target="#sitesearch" role="button" aria-label="Open site search" aria-expanded="false" aria-controls="sitesearch">
-                            <span class="icon-font-text">Search</span>
-                        </button>
-                    </div>
-                </div>
+        </div>
+        <nav id="mainmenu" class="container-lg mainmenu navbar bg-light navbar-expand" role="navigation">
+            <div class="container-fluid navbar-inner">
+                {% sitetree_menu from "menu" include "trunk" template "sitetree/menu_bootstrap5.html" %}
             </div>
-            <nav id="mainmenu" class="container-lg mainmenu navbar bg-light navbar-expand" role="navigation">
-                <div class="container-fluid navbar-inner">
-                    {% sitetree_menu from "menu" include "trunk" template "sitetree/menu_bootstrap5.html" %}
-                </div>
-            </nav>
-            <div class="offcanvas offcanvas-start" tabindex="-1" id="sitemenu" aria-labelled-by="sitemenulabel">
-                <div class="offcanvas-header">
-                    <h5 class="offcanvas-title" id="sitemenulabel">Menu</h5>
-                    <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
-                </div>
-                <div class="offcanvas-body">
-                    {% sitetree_menu from "menu" include "trunk" template "sitetree/menu_bootstrap5.html" %}
-                </div>
+        </nav>
+        <div class="offcanvas offcanvas-start" tabindex="-1" id="sitemenu" aria-labelled-by="sitemenulabel">
+            <div class="offcanvas-header">
+                <h5 class="offcanvas-title" id="sitemenulabel">Menu</h5>
+                <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
             </div>
-            <main class="container-lg">
-                {% block content %}base.html{% endblock %}
-            </main>
-            <footer class="container-lg">
-                {% block footer %}
-                    {% with extra_class_ul="flex-wrap flex-row" %}
-                        {% sitetree_menu from "footer" include "trunk" template "sitetree/menu_bootstrap5.html" %}
-                    {% endwith %}
-                {% endblock footer %}
-            </footer>
-        </body>
-    </html>
+            <div class="offcanvas-body">
+                {% sitetree_menu from "menu" include "trunk" template "sitetree/menu_bootstrap5.html" %}
+            </div>
+        </div>
+        <main class="container-lg">
+            {% block content %}base.html{% endblock %}
+        </main>
+        <footer class="container-lg">
+            {% block footer %}
+                {% with extra_class_ul="flex-wrap flex-row" %}
+                    {% sitetree_menu from "footer" include "trunk" template "sitetree/menu_bootstrap5.html" %}
+                {% endwith %}
+            {% endblock footer %}
+        </footer>
+    </body>
+</html>

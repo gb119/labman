@@ -6,6 +6,7 @@
 from django.contrib.auth.models import AbstractUser, Group
 from django.contrib.flatpages.models import FlatPage
 from django.db import models
+from django.urls import reverse
 from django.utils.functional import cached_property, classproperty
 
 # external imports
@@ -85,7 +86,7 @@ class Account(AbstractUser):
         ResearchGroup, on_delete=models.SET_NULL, related_name="members", blank=True, null=True
     )
     manager = models.ForeignKey("Account", on_delete=models.SET_NULL, blank=True, null=True, related_name="managing")
-    photos = SortedManyToManyField(Photo, blank=True)
+    photos = SortedManyToManyField(Photo, blank=True, related_name="accounts")
     pages = SortedManyToManyField(FlatPage, blank=True)
 
     def natural_key(self):
@@ -112,6 +113,12 @@ class Account(AbstractUser):
         except Photo.DoesNotExist:
             return None
 
+    @property
+    def mugshot_edit_link(self):
+        if self.photos.all().count() > 0:
+            return reverse("labman_utils:edit_account_photo", args=(self.pk, self.mugshot.pk))
+        return reverse("labman_utils:new_account_photo", args=(self.pk,))
+
     @cached_property
     def formal_name(self):
         """Return a formal name for the account."""
@@ -121,6 +128,11 @@ class Account(AbstractUser):
             title = self.title
         initials = ".".join(self.initials[:-1])
         return f"{title} {initials} {self.last_name}".strip()
+
+    @cached_property
+    def name(self):
+        """Just an alias."""
+        return self.formal_name
 
     @cached_property
     def url(self):
@@ -164,6 +176,10 @@ class Account(AbstractUser):
         if self.project.all().count() > 0:
             return self.project.all().first()
         return None
+
+    def can_edit(self, other):
+        """Return True if other is me, my manager or a superuser."""
+        return other == self or other == self.menager or other.is_superuser
 
 
 class Role(ResourceedObject):

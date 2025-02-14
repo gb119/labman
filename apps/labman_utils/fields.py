@@ -40,7 +40,6 @@ class ObfuscatedCharField(forms.CharField):
             attributes["pre"] = {"class"}
 
             cleaned = nh3.clean(base64_decoded, attributes=attributes)
-            assert False
             return cleaned
         except (ValueError, base64.binascii.Error, TypeError, UnicodeDecodeError) as err:
             assert False

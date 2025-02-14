@@ -26,6 +26,19 @@ def item(mapping, key):
 
 
 @register.filter
-def can_edit(equipment, target):
+def can_edit(thing, target):
     """Proxy through to the edit."""
-    return equipment.can_edit(target)
+    try:
+        return thing.can_edit(target)
+    except AttributeError:
+        pass
+    try:
+        return target.is_superuser
+    except AttributeError:
+        raise
+
+
+@register.filter
+def modulus(number1, number2):
+    """Return number1 % number2."""
+    return int(number1) % int(number2)

@@ -4,12 +4,14 @@
 import io
 import json
 from datetime import datetime as dt, time as Time, timedelta as td
+from itertools import chain
 
 # Django imports
 from django import views
 from django.conf import settings
 from django.core.exceptions import ObjectDoesNotExist
 from django.db.backends.postgresql.psycopg_any import DateTimeTZRange
+from django.db.models import Count
 from django.http import (
     HttpResponse,
     HttpResponseNotFound,
@@ -25,6 +27,7 @@ import pytz
 from accounts.models import Account, Project
 from easy_pdf.rendering import render_to_pdf_response
 from equipment.models import Equipment
+from equipment.tables import CalTable
 from htmx_views.views import HTMXFormMixin
 from labman_utils.views import FormListView, IsAuthenticaedViewMixin
 from psycopg2.extras import DateTimeTZRange
@@ -93,6 +96,39 @@ class AllCalendarView(IsAuthenticaedViewMixin, views.generic.TemplateView):
         context["mode"] = "all"
         context["form"] = forms.BookinngDialogForm()
         context["equipment"] = Equipment.objects.first()
+        return context
+
+
+class CategoryCalendarView(IsAuthenticaedViewMixin, views.generic.TemplateView):
+    """Make a calendar display for an equipment category and date."""
+
+    template_name = "bookings/parts/equipment_calendar_category.html"
+
+    def get_context_data(self, **kwargs):
+        """Build the context for the calendar display."""
+        context = super().get_context_data(**kwargs)
+        # Build the calendar rows from the shifts.
+        date = self.kwargs.get("date", int(self.request.GET.get("date", dt.today().strftime("%Y%m%d"))))
+        cat = self.kwargs.get("cat", self.request.GET.get("cat", ""))
+        equip_vec = (
+            Equipment.objects.filter(category=cat)
+            .annotate(policy_count=Count("policies"))
+            .filter(policy_count__gt=0, offline=False)
+            .order_by("name")
+        )
+        equipment = Equipment.objects.filter(category=cat).first()
+        if equip_vec.count() == 0:
+            return context
+        table = CalTable(
+            date=self.kwargs.get("date", date),
+            request=self.request,
+            equipment=equipment,
+            equip_vec=equip_vec,
+            table_contents="&nbsp;",
+        )
+        table.classes += " table-bordered"
+        entries = chain(*(table.fill_entries(equipment) for equipment in equip_vec))
+        context["cal"] = table
         return context
 
 
@@ -220,9 +256,11 @@ class BookingRecordsView(IsAuthenticaedViewMixin, FormListView):
                     request, "bookings/reporting_pdf.html", context, filename="report.pdf", encoding="utf-8"
                 )
             case "raw":
-                response = HttpResponse(content_type="text/csv")
-                response["Content-Disposition"] = 'attachment; filename="records.csv"'
-                self.df.to_csv(response)
+                response = HttpResponse(
+                    content_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+                )
+                response["Content-Disposition"] = 'attachment; filename="records.xlsx"'
+                self.df.to_excel(response)
             case _:
                 return super().get(request, *args, **kwargs)
         return response
@@ -258,18 +296,28 @@ class BookingRecordsView(IsAuthenticaedViewMixin, FormListView):
         context = super().get_context_data(**kwargs)
         entries = context["entries"]
         df = pd.DataFrame(entries.values("user", "project", "equipment", "shifts", "slot"))
+        if len(df) == 0:
+            return context
+        bad = df["slot"]
         df = df.apply(self.map_row, axis=1)
+        df["start"] = (df["slot"].apply(lambda x: x.lower)).dt.tz_localize(None)
+        df["end"] = (df["slot"].apply(lambda x: x.upper)).dt.tz_localize(None)
+
+        df = df.drop(columns="slot")
+        df.rename(columns={x: x.title() for x in df.columns}, inplace=True)
         data = getattr(self.form, "cleaned_data", {})
-        groupby = getattr(self.form, "cleaned_data", {}).get("order", "user,equipment,project").split(",")
+        groupby = [
+            x.title() for x in getattr(self.form, "cleaned_data", {}).get("order", "user,equipment,project").split(",")
+        ]
         if getattr(self.form, "cleaned_data", {}).get("reverse", False):
             groupby.reverse()
         if groupby and len(df):
             data = []
             for ix, _ in enumerate(groupby):
                 grp = groupby[:-ix] if ix > 0 else groupby
-                data.append(df.groupby(grp)["shifts"].sum().reset_index())
+                data.append(df.groupby(grp)["Shifts"].sum().reset_index())
             self.data = pd.concat(data, ignore_index=True).sort_values(groupby)
-            self.data.replace(np.nan, "subtotal", inplace=True)
+            self.data.replace(np.nan, "Subtotal", inplace=True)
             self.data.set_index(groupby, inplace=True)
         else:
             self.data = df

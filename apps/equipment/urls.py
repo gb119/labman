@@ -19,4 +19,5 @@ urlpatterns = [
     path("lists/", views.ModelListView.as_view(), name="lists"),
     path("userlist/new/<int:equipment>/", views.UserlisttDialog.as_view(), name="userlist_new"),
     path("userlist/edit/<int:equipment>/<int:user>/", views.UserlisttDialog.as_view(), name="userlist_edit"),
+    path("equipment/edit/<int:pk>/", views.EquipmentDialog.as_view(), name="edit_equipment"),
 ]

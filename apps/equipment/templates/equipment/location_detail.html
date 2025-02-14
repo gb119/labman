@@ -2,7 +2,7 @@
 {% block javascript %}
     {{ block.super }}
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.12.0/moment.js"></script>
-    <script src="{% static '/js/htmx_dialog.js' %}"></script>
+    <script src="{% static 'js/htmx_dialog.js' %}"></script>
 {% endblock javascript %}
 {% block css %}
     {{ block.super }}
@@ -22,7 +22,10 @@
         .accordion-button.collapsed:hover {
             background-color: #e0e0e0; /* Change hover background color */
         }
-
+        .edit_image > i {
+            background:rgba(255.0, 255.0, 255.0, 0.65);
+            padding: 10px;
+        }
     </style>}
 {% endblock css %}
 {% block title %}{{ block.super }}: Detail on {{ location.name }}{% endblock %}
@@ -54,6 +57,7 @@
             <li class="nav-item" role="presentation">
                 <button class="nav-link" id="images-tab"
                         hx-get="{{ request.get_full_path }}" hx-target="#images"
+                        hx-trigger="click, refreshPhotos from:body consume"
                         data-bs-toggle="tab" data-bs-target="#images"
                         type="button" role="tab" aria-controls="images"
                         aria-selected="false">Gallery</button>

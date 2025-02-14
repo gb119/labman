@@ -231,16 +231,16 @@ class BookingEntry(models.Model):
     @property
     def booker_role(self):
         """Get the role of the specified user on this equipment - returns None if not on the userlist."""
-        if self.equipment.users.filter(user=self.booker).count() == 0:
+        if self.equipment.userlist.filter(user=self.booker).count() == 0:
             return None
-        return self.equipment.users.get(user=self.booker).role
+        return self.equipment.userlist.get(user=self.booker).role
 
     @property
     def user_role(self):
         """Get the role of the specified user on this equipment - returns None if not on the userlist."""
-        if self.equipment.users.filter(user=self.user).count() == 0:
+        if self.equipment.userlist.filter(user=self.user).count() == 0:
             return None
-        return self.equipment.users.get(user=self.user).role
+        return self.equipment.userlist.get(user=self.user).role
 
     @property
     def calendar_css(self):
@@ -252,16 +252,16 @@ class BookingEntry(models.Model):
     @property
     def user_hold(self):
         """Get the user hold status of the userlist entry."""
-        if self.equipment.users.filter(user=self.user).count() == 0:
+        if self.equipment.userlist.filter(user=self.user).count() == 0:
             return True
-        return self.equipment.users.get(user=self.user).hold
+        return self.equipment.userlist.get(user=self.user).hold
 
     @property
     def admin_hold(self):
         """Get the user hold status of the userlist entry."""
-        if self.equipment.users.filter(user=self.user).count() == 0:
+        if self.equipment.userlist.filter(user=self.user).count() == 0:
             return True
-        return self.equipment.users.get(user=self.user).admin_hold
+        return self.equipment.userlist.get(user=self.user).admin_hold
 
     @property
     def policy(self):

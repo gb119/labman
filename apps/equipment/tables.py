@@ -149,6 +149,8 @@ class CalTable(Table):
                         "hx-swap": "innerHTML",
                     }
                 )
+                if index_col in [1, 2]:
+                    self[idx_row, index_col].classes += " table-secondary"
 
         for idx_row, (time, label, equipment) in enumerate(
             zip(self.time_vec, self.row_label, self.equip_vec), start=1

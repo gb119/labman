@@ -1,0 +1,38 @@
+{% load django_bootstrap5 %}
+{% load labman_tags %}
+{{ form.media }}
+<style>.bootstrap-datetimepicker-widget {z-order:1600!important; }
+    ul.sortedm2m-items {
+        min-height: 160px!important;
+        max-height: 240px!important;
+        overflow-y: auto;
+    }
+</style>
+<div class="modal-content">
+    <div class="modal-header">
+        <h5 class="modal-title">Link Pages</h5>
+    </div>
+    <div class="modal-body">
+        <form id="flatpage" method="POST"
+              hx-post="{{ post_url }}"
+              hx-encoding='multipart/form-data'
+              hx-target="#dialog">
+
+            {{ form.errors }}
+            {% csrf_token %}
+            {% bootstrap_form form layout="horizontal" %}
+            <div class="row justify-content-between">
+                <div class="col-md-6">
+                    <button type="reset"
+                            class="btn-secondary bi bi-x"
+                            data-bs-dismiss="modal"
+                            name="cancel">Cancel</button>
+                    <button type="submit"
+                            class="btn-primary bi bi-bookmark-plus"
+                            id = "submit_flatpage"
+                            name="save">Save</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>

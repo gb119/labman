@@ -3,6 +3,8 @@
 """Views for the accounts apps."""
 # Django imports
 from django import views
+from django.db.backends.postgresql.psycopg_any import DateTimeTZRange
+from django.utils import timezone as tz
 from django.views.generic import TemplateView
 
 # external imports
@@ -27,6 +29,13 @@ class UserAccountView(IsAuthenticaedViewMixin, HTMXProcessMixin, views.generic.D
     slug_url_kwarg = "username"
     model = Account
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        me = context["account"]
+        future = DateTimeTZRange(tz.now(), None)
+        context["bookings"] = me.bookings.filter(slot__overlap=future)
+        return context
+
 
 class MyAccountView(UserAccountView):
     """A template detail view that gets the current logged in user."""
@@ -40,6 +49,13 @@ class MyAccountView(UserAccountView):
     def get_object(self, queryset=None):
         """Always return the current logged in user."""
         return self.request.user
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        me = context["account"]
+        future = DateTimeTZRange(tz.now(), None)
+        context["bookings"] = me.bookings.filter(slot__overlap=future)
+        return context
 
 
 class ProjectView(IsAuthenticaedViewMixin, HTMXProcessMixin, TemplateView):

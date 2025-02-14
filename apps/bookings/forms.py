@@ -114,7 +114,7 @@ class BookingEntryFilterForm(forms.Form):
             ("csv", "CSV File"),
             ("xlsx", "Excel Spreadsheet"),
             ("pdf", "PDF file"),
-            ("raw", "Raw csv records"),
+            ("raw", "Raw records (Excel)"),
         ],
         help_text="Output Format",
     )

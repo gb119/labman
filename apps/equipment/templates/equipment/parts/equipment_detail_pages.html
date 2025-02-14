@@ -1,14 +1,46 @@
 <ul class="nav nav-tabs" id="pages_tabs" role="tablist">
     {% for page in equipment.pages.all %}
         <li class="nav-item " role="presentation">
-            <button class="nav-link {% if forloop.first %}active{% endif %}" id="{{ page.slug }}-tab" data-bs-toggle="tab" data-bs-target="#{{ page.slug }}" type="button" role="tab" aria-controls="{{ page.slug }}" aria-selected="true">{{ page.title }}</button>
+            <h5>
+                <button class="nav-link {% if forloop.first %}active{% endif %}" id="{{ page.slug }}-tab" data-bs-toggle="tab" data-bs-target="#{{ page.slug }}" type="button" role="tab" aria-controls="{{ page.slug }}" aria-selected="true">
+                    {{ page.title|safe }}
+                </button>
+            </h5>
         </li>
     {% endfor %}
 </ul>
 <div class="tab-content">
     {% for page in equipment.pages.all %}
         <div class="tab-pane {% if forloop.first %}active{% endif %}" id="{{ page.slug }}" role="tabpanel" aria-labelledby="{{ page.slug }}-tab">
+            {% if equipment|can_edit:request.user %}
+                <a hx-get="{% url 'labman_utils:edit_equipment_flatpage' equipment.pk page.pk %}"
+                   hx-target="#dialog" class="float-end"><i class="bi bi-pencil"></i>
+                </a>{% endif %}
             {{ page.content| safe}}
         </div>
     {% endfor %}
 </div>
+{% if equipment|can_edit:request.user %}
+
+    <style>
+        nav#resourcenav.navbar-dark { color: white; }
+        nav#resourcenav a {cursor: pointer; }
+        nav#resourcenav li.nav-item a {color: white; }
+    </style>
+    <nav id="resourcenav" class="navbar navbar-dark bg-dark  .navbar-expand-ms">
+        <div class="container-fluid">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0 list-group list-group-horizontal">
+                <li class="nav-item">
+                    <a hx-get="{% url 'labman_utils:new_equipment_flatpage' equipment.pk %}" hx-target="#dialog">
+                        <i class="bi bi-file-earmark-arrow-up"></i>Create New Page...
+                    </a>
+                </li>
+                <li  class="nav-item">
+                    <a hx-get="{% url 'labman_utils:link_flatpage_equipment' equipment.pk %}" hx-target="#dialog">
+                        <i class="bi bi-link"></i>Link Pages...
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+{% endif %}

@@ -225,9 +225,10 @@ class ShiftAdmin(ImportExportModelAdmin):
 class EquipmentAdmin(ImportExportModelAdmin):
     """Admin interface definition for Equipment objects."""
 
-    list_display = ["name", "location", "owner"]
-    list_filter = ["name", LocationListFilter, "owner"]
-    suit_list_filter_horizontal = ["name", "location", "owner"]
+    list_display = ["name", "category", "location", "owner", "offline"]
+    list_filter = ["name", "category", LocationListFilter, "owner", "offline"]
+    list_editable = ["category", "offline"]
+    suit_list_filter_horizontal = ["name", "category", "location", "owner", "offline"]
 
     search_fields = (
         "name",

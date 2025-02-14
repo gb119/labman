@@ -11,6 +11,7 @@ from django.core.exceptions import PermissionDenied
 from django_auth_adfs import signals
 from django_auth_adfs.backend import AdfsAuthCodeBackend
 from django_auth_adfs.config import provider_config, settings
+from requests.exceptions import SSLError
 
 logger = logging.getLogger("django_auth_adfs")
 
@@ -82,10 +83,8 @@ class LeedsAdfsBaseBackend(AdfsAuthCodeBackend):
 
         try:
             user = usermodel.objects.get(**userdata)
-            if not user.is_active:
-                raise PermissionDenied
-        except (usermodel.DoesNotExist, PermissionDenied):  # No on the fly user creation here
-            logger.debug(f"User '{username}' doesn't exist or is inactive and creating users is disabled.")
+        except usermodel.DoesNotExist:  # No on the fly user creation here
+            logger.debug(f"User '{username}' doesn't exist and creating users is disabled.")
             raise PermissionDenied
         if not user.password:
             user.set_unusable_password()
@@ -107,9 +106,32 @@ class LeedsAdfsBaseBackend(AdfsAuthCodeBackend):
         actually talks to the MS Graph API to update the user account object.
         """
         obo_access_token = self.get_obo_access_token(self.access_token)
-        logger.debug(f"Calling account.update_user_from_graph task with {user.pk} - {user.username}")
-        # Hook here to update account
-        logger.debug("User update taks dispatched")
+        url = "https://graph.microsoft.com/v1.0/me?$select=employeeId"
+
+        headers = {"Authorization": "Bearer {}".format(obo_access_token)}
+        try:
+            response = provider_config.session.get(url, headers=headers, timeout=30, verify=False)
+
+            if response.status_code in [400, 401]:
+                logger.error(f"MS Graph server returned an error: {response.json()['message']}")
+                raise PermissionDenied
+
+            if response.status_code != 200:
+                logger.error("Unexpected MS Graph response: {response.content.decode()}")
+                raise PermissionDenied
+
+            payload = response.json()
+            user.number = int(payload["employeeId"])
+
+            user.save()
+        except PermissionDenied:
+            # non-fatal in this case
+            return
+        except SSLError:
+            assert False
+        except Exception as e:
+            eclass = type(e)
+            assert False
 
     def update_user_groups(self, user, claim_groups):
         """Stub method that eventually should do ldap lookup."""

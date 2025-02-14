@@ -2,10 +2,14 @@
 """Main site views."""
 # Python imports
 import logging
+import os
 import sys
 
 # Django imports
+from django.conf import settings
+from django.http import Http404, StreamingHttpResponse
 from django.utils.decorators import classonlymethod
+from django.views import View
 from django.views.debug import technical_500_response
 from django.views.generic import TemplateView
 
@@ -110,3 +114,26 @@ class E500View(ErrorView):
             return technical_500_response(request, *sys.exc_info())
         else:
             return super().get(request, *args, **kwargs)
+
+
+class FileServeView(View):
+    """Simple Streaming response class to serve the file."""
+
+    def get(self, request, *args, **kwargs):
+        """Respond to GET  requests."""
+        # Define the file path
+        if file_path := kwargs.get("path"):
+            file_path = os.path.join(settings.MEDIA_ROOT, file_path)
+            if not os.path.exists(file_path):
+                raise Http404(f"File {kwargs.get('path')} not found")
+
+            # Define a generator to read the file in chunks
+            def file_iterator(file_name, chunk_size=8192):
+                with open(file_name, "rb") as f:
+                    while chunk := f.read(chunk_size):
+                        yield chunk
+
+            # Create a streaming response
+            response = StreamingHttpResponse(file_iterator(file_path))
+            response["Content-Disposition"] = f'attachment; filename="{os.path.basename(file_path)}"'
+            return response

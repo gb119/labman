@@ -57,7 +57,8 @@
                               bg-danger text-white
                             {% elif document.review_soon %}
                               bg-warning
-                            {% endif %}">{{ document.review_date }}
+                            {% endif %}">
+                  {{ document.review_date }}
                 </div>
                 <div class="col col-md-2">
                   <span>
@@ -87,8 +88,8 @@
                         <i class="bi bi-link"></i>
                       </a>
                     </span>
+                  </div>
                 {% endif %}
-
               </div>
             {% endfor %}
           </div>

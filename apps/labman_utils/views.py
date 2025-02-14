@@ -7,6 +7,7 @@ from importlib import import_module
 from django import forms
 from django.apps import apps
 from django.contrib.auth.mixins import UserPassesTestMixin
+from django.contrib.flatpages.models import FlatPage
 from django.http import (
     HttpResponse,
     HttpResponseForbidden,
@@ -15,6 +16,7 @@ from django.http import (
     HttpResponseRedirect,
 )
 from django.urls import reverse
+from django.utils.text import slugify
 from django.views.generic import DetailView, ListView, UpdateView, View
 from django.views.generic.base import ContextMixin, TemplateResponseMixin
 from django.views.generic.edit import FormMixin, ProcessFormView
@@ -24,7 +26,12 @@ from htmx_views.views import HTMXFormMixin
 from photologue.models import Photo
 
 # app imports
-from .forms import DocumentLinksForm
+from .forms import (
+    DocumentLinksForm,
+    FlatPageForm,
+    FlatPagesLinksForm,
+    PhotoLinksForm,
+)
 from .models import Document
 
 # from sortedm2m.admin import OrderedAutocomplete
@@ -32,6 +39,7 @@ from .models import Document
 
 Equipment = apps.get_model(app_label="equipment", model_name="equipment")
 Location = apps.get_model(app_label="equipment", model_name="location")
+Account = apps.get_model(app_label="accounts", model_name="Account")
 
 
 class IsAuthenticaedViewMixin(UserPassesTestMixin):
@@ -334,7 +342,7 @@ class PhotoDisplay(DetailView):
     context_obkect_name = "photo"
 
 
-class DocumentDIalog(IsAuthenticaedViewMixin, HTMXFormMixin, UpdateView):
+class DocumentDialog(IsAuthenticaedViewMixin, HTMXFormMixin, UpdateView):
     """Prdoce the html for a booking form in the dialog."""
 
     model = Document
@@ -434,7 +442,7 @@ class DocumentDIalog(IsAuthenticaedViewMixin, HTMXFormMixin, UpdateView):
         )
 
 
-class DocumentLinkDIalog(IsAuthenticaedViewMixin, HTMXFormMixin, UpdateView):
+class DocumentLinkDialog(IsAuthenticaedViewMixin, HTMXFormMixin, UpdateView):
     """Prdoce the html for a booking form in the dialog."""
 
     template_name = "labman_utils/link_document_form.html"
@@ -528,5 +536,355 @@ class DocumentLinkDIalog(IsAuthenticaedViewMixin, HTMXFormMixin, UpdateView):
             status=204,
             headers={
                 "HX-Trigger": "refreshFiles",
+            },
+        )
+
+
+class PhotoDialog(IsAuthenticaedViewMixin, HTMXFormMixin, UpdateView):
+    """Prdoce the html for a booking form in the dialog."""
+
+    model = Photo
+    template_name = "labman_utils/photo_form.html"
+    context_object_name = "this"
+
+    def get_form_class(self):
+        """Delay the import of the form class until we need it."""
+        forms = import_module("labman_utils.forms")
+        return forms.PhotoDialogForm
+
+    def get_context_data_dialog(self, **kwargs):
+        """Create the context for HTMX calls to open the booking dialog."""
+        context = super().get_context_data(_context=True, **kwargs)
+        context["current_url"] = self.request.htmx.current_url
+        context["this"] = self.get_object()
+        verb = "edit" if context["this"] else "new"
+        context["edit"] = verb == "edit"
+        context["this_id"] = getattr(context["this"], "pk", None)
+        for name, model in {"equipment": Equipment, "location": Location, "account": Account}.items():
+            if name in self.kwargs:
+                context[name] = model.objects.get(pk=self.kwargs.get(name))
+                context[f"{name}_id"] = self.kwargs.get(name)
+                subject = name
+                args = (
+                    (self.kwargs.get(subject, None),)
+                    if verb == "new"
+                    else (self.kwargs.get(subject, None), context["this"].pk)
+                )
+                context["post_url"] = reverse(f"labman_utils:{verb}_{subject}_photo", args=args)
+                context["subject"] = subject
+                break
+        else:
+            args = tuple() if verb == "new" else (context["this"].pk,)
+            context["post_url"] = reverse(f"labman_utils:{verb}_photo", args=args)
+
+        return context
+
+    def get_object(self, queryset=None):
+        """Either get the BookingEntry or None."""
+        try:
+            return super().get_object(queryset)
+        except (Photo.DoesNotExist, AttributeError):
+            return None
+
+    def get_initial(self):
+        """Make initial entry."""
+        initial = {}
+        for arg, model in {"equipment": Equipment, "location": Location, "account": Account}.items():
+            if arg in self.kwargs:
+                initial[arg] = model.objects.get(pk=self.kwargs.get(arg, None))
+                initial["title"] = initial[arg].name
+            else:
+                initial[arg] = None
+        return initial
+
+    def htmx_form_valid_dialog(self, form):
+        """Handle the HTMX submitted booking form if it's all ok."""
+        self.object = form.save()
+        for objname in ["equipment", "location", "account"]:
+            if obj := form.cleaned_data.get(objname, None):
+                obj.photos.add(self.object)
+        return HttpResponse(
+            status=204,
+            headers={
+                "HX-Trigger": "refreshPhotos",
+            },
+        )
+
+    def htmx_delete_photo(self, request, *args, **kwargs):
+        """Handle the HTMX call that deletes a booking."""
+        if not (photo := self.get_object()):
+            return HttpResponseNotFound("Unable to locate photo.")
+        self.object = photo
+        # Now check I actually have permission to do this...
+        if not self.request.user.is_superuser and not self.object.account.first() != self.request.user:
+            return HttpResponseForbidden("You must be a superuser to delete the photo.")
+        for attr in ["equipment", "location", "account"]:
+            for obj in getattr(self.object, attr).all():
+                obj.photos.remove(self.object)
+
+        self.object.delete()
+
+        return HttpResponse(
+            status=204,
+            headers={
+                "HX-Trigger": "refreshPhotos",
+            },
+        )
+
+
+class PhotoLinkDialog(IsAuthenticaedViewMixin, HTMXFormMixin, UpdateView):
+    """Prdoce the html for a booking form in the dialog."""
+
+    template_name = "labman_utils/link_photo_form.html"
+    context_object_name = "this"
+
+    def get_form_class(self):
+        """Delay the import of the form class until we need it."""
+        for name, model in {"equipment": Equipment, "location": Location, "account": Account}.items():
+            if name in self.kwargs:
+                fields = ["id", "photos"]
+                frmcls = forms.modelform_factory(
+                    model,
+                    fields=fields,
+                    widgets={
+                        "id": forms.HiddenInput(),
+                    },
+                )
+                return frmcls
+        return PhotoLinksForm
+
+    def get_context_data_dialog(self, **kwargs):
+        """Create the context for HTMX calls to open the booking dialog."""
+        context = super().get_context_data(_context=True, **kwargs)
+        context["current_url"] = self.request.htmx.current_url
+        for name, model in {"equipment": Equipment, "location": Location, "account": Account}.items():
+            if name in self.kwargs:
+                context[name] = model.objects.get(pk=self.kwargs.get(name))
+                context[f"{name}_id"] = self.kwargs.get(name)
+                context["post_url"] = reverse(f"labman_utils:link_photo_{name}", args=(self.kwargs.get(name),))
+                break
+        else:
+            context["post_url"] = reverse("labman_utils:link_photo", args=(self.kwargs.get("pk", None),))
+
+        context["this"] = self.get_object()
+        context["this_id"] = getattr(context["this"], "pk", None)
+        return context
+
+    def get_object(self, queryset=None):
+        """Either get the BookingEntry or None."""
+        if equipment := self.kwargs.get("equipment", None):
+            return Equipment.objects.get(pk=equipment)
+        elif location := self.kwargs.get("location", None):
+            return Location.objects.get(pk=location)
+        elif account := self.kwargs.get("account", None):
+            return Account.objects.get(pk=account)
+        return Photo.objects.get(pk=self.kwargs.get("pk", None))
+
+    def get_initial(self):
+        """Make initial entry."""
+        for name, model in {"equipment": Equipment, "location": Location, "account": Account}.items():
+            if name in self.kwargs:
+                thing = model.objects.get(pk=self.kwargs.get(name))
+                return {"photos": thing.photos.all()}
+        this = self.get_object()
+        equipment = [x for x in this.equipment.all()]
+        location = [x for x in this.location.all()]
+        account = [x for x in this.account.all()]
+        return {"id": this.id, "equipment": equipment, "location": location, "account": account}
+
+    def htmx_form_valid_photo(self, form):
+        """Handle the HTMX submitted booking form if it's all ok."""
+        self.object = form.save()
+        this = self.object
+        if isinstance(this, Photo):  # Do the reverse linking.
+            for equipment in this.equipment.all():
+                if equipment not in form.cleaned_data["equipment"]:
+                    this.equipment.remove(equipment)
+            for equipment in form.cleaned_data["equipment"]:
+                if this not in equipment.photos.all():
+                    equipment.photos.add(this)
+            for location in this.location.all():
+                if location not in form.cleaned_data["location"]:
+                    this.location.remove(location)
+            for location in form.cleaned_data["location"]:
+                if this not in location.photos.all():
+                    location.photos.add(this)
+            for account in this.accounts.all():
+                if account not in form.cleaned_data["account"]:
+                    this.accounts.remove(account)
+            for account in form.cleaned_data["account"]:
+                if this not in account.photos.all():
+                    account.photos.add(this)
+
+        return HttpResponse(
+            status=204,
+            headers={
+                "HX-Trigger": "refreshPhotos",
+            },
+        )
+
+
+class FlatPageDialog(IsAuthenticaedViewMixin, HTMXFormMixin, UpdateView):
+    """Prdoce the html for a booking form in the dialog."""
+
+    model = FlatPage
+    template_name = "labman_utils/flatpage_form.html"
+    context_object_name = "this"
+    form_class = FlatPageForm
+
+    def get_context_data_dialog(self, **kwargs):
+        """Create the context for HTMX calls to open the booking dialog."""
+        context = super().get_context_data(_context=True, **kwargs)
+        context["current_url"] = self.request.htmx.current_url
+        context["this"] = self.get_object()
+        verb = "edit" if context["this"] else "new"
+        context["edit"] = verb == "edit"
+        context["this_id"] = getattr(context["this"], "pk", None)
+        for name, model in {"equipment": Equipment, "location": Location}.items():
+            if name in self.kwargs:
+                context[name] = model.objects.get(pk=self.kwargs.get(name))
+                context[f"{name}_id"] = self.kwargs.get(name)
+                subject = name
+                args = (
+                    (self.kwargs.get(subject, None),)
+                    if verb == "new"
+                    else (self.kwargs.get(subject, None), context["this"].pk)
+                )
+                context["post_url"] = reverse(f"labman_utils:{verb}_{subject}_flatpage", args=args)
+                context["subject"] = subject
+                break
+        else:
+            args = tuple() if verb == "new" else (context["this"].pk,)
+            context["post_url"] = reverse(f"labman_utils:{verb}_flatpage", args=args)
+
+        return context
+
+    def get_object(self, queryset=None):
+        """Either get the BookingEntry or None."""
+        try:
+            return super().get_object(queryset)
+        except (FlatPage.DoesNotExist, AttributeError):
+            return None
+
+    def get_initial(self):
+        """Make initial entry."""
+        initial = {}
+        for arg, model in {"equipment": Equipment, "location": Location}.items():
+            if arg in self.kwargs:
+                initial[arg] = model.objects.get(pk=self.kwargs.get(arg, None))
+            else:
+                initial[arg] = None
+        return initial
+
+    def htmx_form_valid_dialog(self, form):
+        """Handle the HTMX submitted booking form if it's all ok."""
+        self.object = form.save()
+        for objname in ["equipment", "location"]:
+            if obj := form.cleaned_data.get(objname, None):
+                obj.pages.add(self.object)
+        return HttpResponse(
+            status=204,
+            headers={
+                "HX-Trigger": "refreshPages",
+            },
+        )
+
+    def htmx_delete_flatpage(self, request, *args, **kwargs):
+        """Handle the HTMX call that deletes a booking."""
+        if not (flatpage := self.get_object()):
+            return HttpResponseNotFound("Unable to locate flatpage.")
+        self.object = flatpage
+        # Now check I actually have permission to do this...
+        if not self.request.user.is_superuser and not self.object.account.first() != self.request.user:
+            return HttpResponseForbidden("You must be a superuser to delete the flatpage.")
+        for attr in ["equipment", "location"]:
+            for obj in getattr(self.object, attr).all():
+                obj.pages.remove(self.object)
+
+        self.object.delete()
+
+        return HttpResponse(
+            status=204,
+            headers={
+                "HX-Trigger": "refreshPages",
+            },
+        )
+
+
+class FlatPageLinkDialog(IsAuthenticaedViewMixin, HTMXFormMixin, UpdateView):
+    """Link Pages to objects"""
+
+    template_name = "labman_utils/link_flatpage_form.html"
+    context_object_name = "this"
+    linked_objects = {"equipment": Equipment, "location": Location}
+
+    def get_form_class(self):
+        """Delay the import of the form class until we need it."""
+        for name, model in self.linked_objects.items():
+            if name in self.kwargs:
+                fields = ["id", "pages"]
+                frmcls = forms.modelform_factory(
+                    model,
+                    fields=fields,
+                    widgets={
+                        "id": forms.HiddenInput(),
+                    },
+                )
+                return frmcls
+        return FlatPagesLinksForm
+
+    def get_context_data_dialog(self, **kwargs):
+        """Create the context for HTMX calls to open the booking dialog."""
+        context = super().get_context_data(_context=True, **kwargs)
+        context["current_url"] = self.request.htmx.current_url
+        for name, model in self.linked_objects.items():
+            if name in self.kwargs:
+                context[name] = model.objects.get(pk=self.kwargs.get(name))
+                context[f"{name}_id"] = self.kwargs.get(name)
+                context["post_url"] = reverse(f"labman_utils:link_flatpage_{name}", args=(self.kwargs.get(name),))
+                break
+        else:
+            context["post_url"] = reverse("labman_utils:link_flatpage", args=(self.kwargs.get("pk", None),))
+
+        context["this"] = self.get_object()
+        context["this_id"] = getattr(context["this"], "pk", None)
+        return context
+
+    def get_object(self, queryset=None):
+        """Either get the BookingEntry or None."""
+        for name, model in self.linked_objects.items():
+            if thing := self.kwargs.get(name, None):
+                return model.objects.get(pk=thing)
+        return FlatPage.objects.get(pk=self.kwargs.get("pk", None))
+
+    def get_initial(self):
+        """Make initial entry."""
+        for name, model in self.linked_objects.items():
+            if name in self.kwargs:
+                thing = model.objects.get(pk=self.kwargs.get(name))
+                return {"flatpages": thing.pages.all()}
+        this = self.get_object()
+        equipment = [x for x in this.equipment.all()]
+        location = [x for x in this.location.all()]
+        account = [x for x in this.account.all()]
+        return {"id": this.id, "equipment": equipment, "location": location, "account": account}
+
+    def htmx_form_valid_flatpage(self, form):
+        """Handle the HTMX submitted booking form if it's all ok."""
+        self.object = form.save()
+        this = self.object
+        if isinstance(this, FlatPage):  # Do the reverse linking.
+            for field in self.linked_objects:
+                for thing in getattr(this, field).all():
+                    if thing not in form.cleaned_data[field]:
+                        getattr(this, field).remove(thing)
+                for thing in form.cleaned_data[field]:
+                    if this not in thing.pages.all():
+                        thing.pages.add(this)
+
+        return HttpResponse(
+            status=204,
+            headers={
+                "HX-Trigger": "refreshPagess",
             },
         )

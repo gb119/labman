@@ -199,12 +199,12 @@ CSRF_TRUSTED_ORIGINS = [f"https://{x}" for x in ALLOWED_HOSTS]
 # #### Session Settings
 
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True
-SESSION_COOKIE_AGE = 7200  # 2 hours before login again
+SESSION_COOKIE_AGE = 7 * 24 * 360  # keep sessions open all week
 
 # ##### Login settings
 
 HTTPS_SUPPORT = True
-SECURE_REQUIRED_PATHS = ("/login",)
+SECURE_REQUIRED_PATHS = ("/oauth2/login",)
 
 # ##### Default autofield type
 
@@ -254,6 +254,11 @@ LOGGING = {
             "class": "logging.FileHandler",
             "filename": str(PROJECT_ROOT_PATH / "logs" / "django.log"),
         },
+        "debugging": {
+            "level": "ERROR",  # reset to DEBUG to get full debugging
+            "class": "logging.FileHandler",
+            "filename": str(PROJECT_ROOT_PATH / "logs" / "debugging.log"),
+        },
         "file_info": {
             "class": "logging.FileHandler",
             "filename": str(PROJECT_ROOT_PATH / "logs" / "form_data.log"),
@@ -262,11 +267,11 @@ LOGGING = {
     },
     "formatters": {"verbose": {"format": "%(asctime)s %(levelname)-8s [%(name)s:%(lineno)s] %(message)s"}},
     "loggers": {
-        "": {"handlers": ["file"], "level": "DEBUG", "propagate": True},
+        "": {"handlers": ["file", "debugging"], "level": "DEBUG", "propagate": True},
         "auth": {"handlers": ["file"], "level": "INFO", "propagate": True},
         "django.request": {"handlers": ["mail_admins"], "level": "ERROR", "propagate": True},
         "django.security": {"handlers": ["mail_admins"], "level": "ERROR", "propagate": True},
-        "phys_utils.middleware": {
+        "labman_utils.middleware": {
             "handlers": ["file_info"],
             "propagate": False,
         },
@@ -292,7 +297,7 @@ LOGIN_REDIRECT_URL = "/"
 AUTH_LDAP_CREATE_USER_ON_FLY = False
 
 AUTHENTICATION_BACKENDS = [
-    # "labman_utils.backend.LeedsAdfsBaseBackend",
+    "labman_utils.backend.LeedsAdfsBaseBackend",
     "django_auth_ldap_ad.backend.LDAPBackend",
     "django.contrib.auth.backends.ModelBackend",
 ]
@@ -364,17 +369,18 @@ CONSTANCE_ADDITIONAL_FIELDS = {
 ###### Tinymce Settings ##################################
 
 TINYMCE_DEFAULT_CONFIG = {
-    "height": "640px",
+    "height": "480px",
     "width": "800px",
     "menubar": "file edit view insert format tools table help",
     "plugins": "advlist autolink lists link image charmap print preview anchor searchreplace visualblocks code "
-    "fullscreen insertdatetime media table paste code help wordcount spellchecker",
+    "fullscreen insertdatetime media table paste code help wordcount",
     "toolbar": "undo redo | bold italic underline strikethrough | fontselect fontsizeselect formatselect | alignleft "
     "aligncenter alignright alignjustify | outdent indent |  numlist bullist checklist | forecolor "
     "backcolor casechange permanentpen formatpainter removeformat | pagebreak | charmap emoticons | "
     "fullscreen  preview save print | insertfile image media pageembed template link anchor codesample | "
     "a11ycheck ltr rtl | showcomments addcomment code",
     "custom_undo_redo_levels": 10,
+    "highlight_on_focus": True,
     "document_base_url": f"https://{DNS_NAME}",
     "relative_urls": True,
     "language": "en_GB",  # To force a specific language instead of the Django current language.

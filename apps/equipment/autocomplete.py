@@ -30,3 +30,17 @@ class EquipmentAutocomplete(ModelAutocomplete):
         condition_filter = reduce(operator.or_, conditions)
         queryset = base_qs.filter(condition_filter)
         return queryset
+
+
+class LocationAutocomplete(ModelAutocomplete):
+    """An Autocomplete class for Equipment objects."""
+
+    model = Location
+
+    @classmethod
+    def get_query_filtered_queryset(cls, search, context):
+        base_qs = cls.get_queryset()
+        conditions = [Q(**{f"{attr}__icontains": search}) for attr in ["name", "description"]]
+        condition_filter = reduce(operator.or_, conditions)
+        queryset = base_qs.filter(condition_filter)
+        return queryset

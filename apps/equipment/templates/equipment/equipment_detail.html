@@ -2,7 +2,8 @@
 {% block javascript %}
     {{ block.super }}
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.12.0/moment.js"></script>
-    <script src="{% static '/js/htmx_dialog.js' %}"></script>
+    <script src="{% static 'js/htmx_dialog.js' %}"></script>
+    <script>htmx.on("refreshEquipment", function() {document.location.reload();};);</script>
 {% endblock javascript %}
 {% block css %}
     {{ block.super }}
@@ -11,6 +12,7 @@
             color: white;
             margin: 8px;
         }
+        i.bi { font-size: xx-large; }
 
 /* Custom CSS to change the appearance of the closed accordion button */
         .accordion-button.collapsed {
@@ -31,6 +33,11 @@
         .modal-body {
             min-height: 200px;
         }
+        .edit_image > i {
+            background:rgba(255.0, 255.0, 255.0, 0.65);
+            padding: 10px;
+        }
+
     </style>}
 {% endblock css %}
 {% block title %}{{ block.super }}: Detail on {{ equipment.name }}{% endblock %}
@@ -47,6 +54,7 @@
             <li class="nav-item" role="presentation">
                 <button class="nav-link" id="pages-tab"
                         hx-get="{{ request.get_full_path }}" hx-target="#pages"
+                        hx-trigger="click, refreshPages from:body consume"
                         data-bs-toggle="tab" data-bs-target="#pages"
                         type="button" role="tab" aria-controls="pages"
                         aria-selected="false">Information</button>
@@ -62,6 +70,7 @@
             <li class="nav-item" role="presentation">
                 <button class="nav-link" id="images-tab"
                         hx-get="{{ request.get_full_path }}" hx-target="#images"
+                        hx-trigger="click, refreshPhotos from:body consume"
                         data-bs-toggle="tab" data-bs-target="#images"
                         type="button" role="tab" aria-controls="images"
                         aria-selected="false">Gallery</button>
@@ -93,6 +102,14 @@
                         {{ equipment.thumbnail }}
                     {% endif %}
                 </div>
+                {% if equipment|can_edit:request.user %}
+                    <div class="float-end">
+                        <a hx-get="{% url 'equipment:edit_equipment' equipment.pk %}"
+                           hx-target="#dialog">
+                            <i class="bi bi-pencil"></i>
+                        </a>
+                    </div>
+                {% endif %}
                 <div class="col-md-9">
                     <div class="row">
                         <div class="col col-md-3">Equipment :</div><div class="col col-md-9">{{ equipment.name|safe }}</div>
@@ -138,7 +155,7 @@
              class="modal modal-blur fade"
              style="display: none"
              tabindex="-1">
-            <div class="modal-dialog modal-lg modal-dialog-centered" role="document" id="dialog">
+            <div class="modal-dialog modal-xl modal-dialog-centered" role="document" id="dialog">
                 <div class="modal-content"></div>
             </div>
         </div>
