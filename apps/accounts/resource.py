@@ -10,7 +10,7 @@ from django.contrib.auth.models import Group
 from import_export import fields, resources, widgets
 
 # app imports
-from .models import Account, Project, ResearchGroup, Role
+from .models import Account, ResearchGroup, Role
 
 
 class StrippedCharWidget(widgets.CharWidget):
@@ -185,14 +185,6 @@ class RoleResource(resources.ModelResource):
     class Meta:
         model = Role
         import_id_fields = ["name"]
-
-
-class ProjectResource(resources.ModelResource):
-    """Import-export resource for Project code objects."""
-
-    class Meta:
-        model = Project
-        import_id_fields = ["id"]
 
 
 class UserResource(resources.ModelResource):

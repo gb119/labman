@@ -5,13 +5,11 @@ from django import forms
 from django.contrib.postgres.forms import RangeWidget
 
 # external imports
-from accounts.autocomplete import (
-    AllUsersComplete,
-    ProjectsAutocomplete,
-    UserListAutoComplete,
-)
-from accounts.models import Account, Project
+from accounts.autocomplete import AllUsersComplete, UserListAutoComplete
+from accounts.models import Account
 from autocomplete import AutocompleteWidget
+from costings.autocomplete import CostCentreAutocomplete
+from costings.models import CostCentre
 from equipment.autocomplete import EquipmentAutocomplete
 from equipment.models import Equipment
 from labman_utils.forms import DateCustomInput, DateTimeCustomInput
@@ -67,10 +65,11 @@ class BookinngDialogForm(forms.ModelForm):
 
     class Meta:
         model = BookingEntry
-        exclude = ["shifts"]
+        fields = ["equipment", "id", "user", "booker", "slot", "cost_centre"]
         widgets = {
             "user": AutocompleteWidget(ac_class=UserListAutoComplete),
             "equipment": forms.HiddenInput(),
+            "id": forms.HiddenInput(),
             "slot": CustomSlotWidget(),
         }
 
@@ -91,19 +90,19 @@ class BookingEntryFilterForm(forms.Form):
         widget=AutocompleteWidget(options={"multiselect": True}, ac_class=EquipmentAutocomplete),
     )
 
-    project = forms.ModelMultipleChoiceField(
-        Project.objects.all(),
+    cost_centre = forms.ModelMultipleChoiceField(
+        CostCentre.objects.all(),
         required=False,
-        widget=AutocompleteWidget(options={"multiselect": True}, ac_class=ProjectsAutocomplete),
+        widget=AutocompleteWidget(options={"multiselect": True}, ac_class=CostCentreAutocomplete),
     )
     order = forms.ChoiceField(
         choices=[
-            ("user,equipment,project", "User,Equipment & Project"),
-            ("user,project,equipment", "User, Project & Equipment"),
-            ("project,user,equipment", "Project, User & Equipment"),
+            ("user,equipment,cost_Centre", "User,Equipment & Project"),
+            ("user,cost_centre,equipment", "User, Project & Equipment"),
+            ("cost_centre,user,equipment", "Project, User & Equipment"),
             ("user,equipment", "User & Equipment"),
-            ("user,project", "User & Project"),
-            ("equipment,project", "Equipment & Project"),
+            ("user,cost_centre", "User & Project"),
+            ("equipment,cost_centre", "Equipment & Project"),
         ],
         help_text="Select the levels to sub-total usage",
     )

@@ -13,7 +13,7 @@ from autocomplete import ModelAutocomplete, QuerysetMappedIterable
 from equipment.models import UserListEntry
 
 # app imports
-from .models import Account, Project
+from .models import Account
 
 
 class UserListAutoComplete(ModelAutocomplete):
@@ -47,10 +47,3 @@ class AllUsersComplete(ModelAutocomplete):
 
     model = Account
     search_attrs = ["first_name", "last_name", "username"]
-
-
-class ProjectsAutocomplete(ModelAutocomplete):
-    """An Autocomplete class for Project objects - searching by Project name, code and description."""
-
-    model = Project
-    search_attrs = ["name", "short_name", "code", "description"]

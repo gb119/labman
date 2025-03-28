@@ -1,0 +1,46 @@
+{% for account in account_list.all %}
+    {% if forloop.first %}
+        <div class="row bg-secondary">
+            <div class="col col-md-3">
+                <h5>Name & Username</h5>
+            </div>
+            <div class="col col-md-2">
+                <h5>Thumbnail</h5>
+            </div>
+            <div class="col col-md-2">
+                <h5>Status</h5>
+            </div>
+            <div class="col col-md-2">
+                <h5>Manager</h5>
+            </div>
+            <div class="col col-md-3">
+                <h5>Project</h5>
+            </div>
+        </div>
+    {% endif %}
+    <div class="row">
+        <div class="col col-md-2">
+            <span>{% if account.title %}{{ account.title }} {% endif %}
+                {{ account.first_name }} {{ account.last_name }}</span>
+        </div>
+        <div class="col col-md-1">
+            <a href="/accounts/user/{{ account.username }}">{{ account.username }}</a>
+        </div>
+        <div class="col col-md-2">
+            {% if account.mugshot %}
+                <img src="{{account.mugshot.get_thumbnail_url }}" alt="Picture of {{ account.display_name" style="margin-top:5px;"/>
+            {% endif %}
+        </div>
+        <div class="col col-md-2">
+            <span>{{ account.groups.first.name }} - {{ account.research_group.code }}</span>
+        </div>
+        <div class="col col-md-2">
+            {% if account.manager %}
+                <a href="/accounts/user/{{ account.manager.username }}">{{ account.manager.formal_name }}</a>
+            {% endif %}
+        </div>
+        <div class="col col-md-3">
+            <span>{% for project in account.project.all %}{{ project.name }}<br/>{% endfor %}</span>
+        </div>
+    </div>
+{% endfor %}

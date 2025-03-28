@@ -356,7 +356,7 @@ class DocumentDialog(IsAuthenticaedViewMixin, HTMXFormMixin, UpdateView):
 
     def get_context_data_dialog(self, **kwargs):
         """Create the context for HTMX calls to open the booking dialog."""
-        context = super().get_context_data(_context=True, **kwargs)
+        context = super().get_context_data(**kwargs)
         context["current_url"] = self.request.htmx.current_url
         context["this"] = self.get_object()
         subject = "none"
@@ -470,7 +470,7 @@ class DocumentLinkDialog(IsAuthenticaedViewMixin, HTMXFormMixin, UpdateView):
 
     def get_context_data_dialog(self, **kwargs):
         """Create the context for HTMX calls to open the booking dialog."""
-        context = super().get_context_data(_context=True, **kwargs)
+        context = super().get_context_data(**kwargs)
         context["current_url"] = self.request.htmx.current_url
         if "equipment" in self.kwargs:
             context["equipment"] = Equipment.objects.get(pk=self.kwargs.get("equipment", None))
@@ -554,7 +554,7 @@ class PhotoDialog(IsAuthenticaedViewMixin, HTMXFormMixin, UpdateView):
 
     def get_context_data_dialog(self, **kwargs):
         """Create the context for HTMX calls to open the booking dialog."""
-        context = super().get_context_data(_context=True, **kwargs)
+        context = super().get_context_data(**kwargs)
         context["current_url"] = self.request.htmx.current_url
         context["this"] = self.get_object()
         verb = "edit" if context["this"] else "new"
@@ -655,7 +655,7 @@ class PhotoLinkDialog(IsAuthenticaedViewMixin, HTMXFormMixin, UpdateView):
 
     def get_context_data_dialog(self, **kwargs):
         """Create the context for HTMX calls to open the booking dialog."""
-        context = super().get_context_data(_context=True, **kwargs)
+        context = super().get_context_data(**kwargs)
         context["current_url"] = self.request.htmx.current_url
         for name, model in {"equipment": Equipment, "location": Location, "account": Account}.items():
             if name in self.kwargs:
@@ -734,7 +734,7 @@ class FlatPageDialog(IsAuthenticaedViewMixin, HTMXFormMixin, UpdateView):
 
     def get_context_data_dialog(self, **kwargs):
         """Create the context for HTMX calls to open the booking dialog."""
-        context = super().get_context_data(_context=True, **kwargs)
+        context = super().get_context_data(**kwargs)
         context["current_url"] = self.request.htmx.current_url
         context["this"] = self.get_object()
         verb = "edit" if context["this"] else "new"
@@ -835,7 +835,7 @@ class FlatPageLinkDialog(IsAuthenticaedViewMixin, HTMXFormMixin, UpdateView):
 
     def get_context_data_dialog(self, **kwargs):
         """Create the context for HTMX calls to open the booking dialog."""
-        context = super().get_context_data(_context=True, **kwargs)
+        context = super().get_context_data(**kwargs)
         context["current_url"] = self.request.htmx.current_url
         for name, model in self.linked_objects.items():
             if name in self.kwargs:

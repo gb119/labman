@@ -16,6 +16,7 @@ from import_export.admin import ImportExportModelAdmin
 
 # app imports
 from .models import (
+    ChargingRate,
     Document,
     DocumentSignOff,
     Equipment,
@@ -24,6 +25,7 @@ from .models import (
     UserListEntry,
 )
 from .resource import (
+    ChargingRateResource,
     DocumentResource,
     DocumentSignOffResource,
     EquipmentResource,
@@ -87,6 +89,14 @@ class DocumentSignOffInlineAdmin(TabularInline):
     model = DocumentSignOff
     suit_classes = "suit-tab suit-tab-signoffs"
     extra = 0
+
+
+class ChargingRateInlineAdmin(TabularInline):
+    """Inline admin interface definition for ChargingRate Objects."""
+
+    model = ChargingRate
+    suit_classes = "suit-tab suit-tab-chargingrates"
+    extra = 1
 
 
 @register(DocumentSignOff)
@@ -243,6 +253,7 @@ class EquipmentAdmin(ImportExportModelAdmin):
         ("userlists", "Userlist"),
         ("shifts", "Shifts"),
         ("policies", "Booking Policies"),
+        ("chargingrates", "Charging Rates"),
     )
     fieldsets = (
         (
@@ -285,7 +296,7 @@ class EquipmentAdmin(ImportExportModelAdmin):
             },
         ),
     )
-    inlines = [UserListInlineAdmin]
+    inlines = [UserListInlineAdmin, ChargingRateInlineAdmin]
 
     def get_export_resource_class(self):
         """Return import-export admin resource class."""
@@ -320,6 +331,24 @@ class UserListAdmin(ImportExportModelAdmin):
     def get_import_resource_class(self):
         """Return import-export admin resource class."""
         return UserListEntryResource
+
+
+@register(ChargingRate)
+class ChargingRateAdmin(ImportExportModelAdmin):
+
+    list_display = ["equipment", "cost_rate", "charge_rate", "dates", "comment"]
+    list_filter = list_display
+    list_editable = ["charge_rate"]
+    suit_list_filter_horizontal = list_display
+    search_fields = ["equipment__name", "cost_rate_name", "comment"]
+
+    def get_export_resource_class(self):
+        """Return import-export admin resource class."""
+        return ChargingRateResource
+
+    def get_import_resource_class(self):
+        """Return import-export admin resource class."""
+        return ChargingRateResource
 
 
 # Monkey patch the extra inlines for user lists

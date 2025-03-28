@@ -174,7 +174,7 @@ class Document(dsfh.BaseMixin, dsfh.TitledMixin, dsfh.PublicMixin, dsfh.RenameMi
             if old.version != self.version:
                 with transaction.atomic():
                     for equipment in self.equipment.all():
-                        equipment.users.all().update(hold=True)
+                        equipment.userlist.all().update(hold=True)
                     for location in self.location.all():
                         for equipment in self.equipment.model.objects.filter(location__in=location.children):
                             equipment.users.all().update(hold=True)

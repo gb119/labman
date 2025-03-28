@@ -5,15 +5,16 @@
 from django import views
 from django.db.backends.postgresql.psycopg_any import DateTimeTZRange
 from django.utils import timezone as tz
-from django.views.generic import TemplateView
+from django.views.generic import ListView, TemplateView
 
 # external imports
 from bookings.forms import BookinngDialogForm
+from costings.models import CostCentre  # Hack for now
 from htmx_views.views import HTMXProcessMixin
 from labman_utils.views import IsAuthenticaedViewMixin
 
 # app imports
-from .models import Account, Project
+from .models import Account
 
 
 # Create your views here.
@@ -58,36 +59,14 @@ class MyAccountView(UserAccountView):
         return context
 
 
-class ProjectView(IsAuthenticaedViewMixin, HTMXProcessMixin, TemplateView):
-    """Make a list of user projects."""
+class AccountListByGroupView(IsAuthenticaedViewMixin, ListView):
+    """ListView for listing ccounts by group."""
 
-    template_name_id_project = "accounts/parts/projects_options.html"
-    template_name_full_description = "accounts/parts/project_description_full.html"
-    template_name_short_description = "accounts/parts/project_description_short.html"
+    template_name = "accounts/parts/account_list_by_group.html"
+    model = Account
+    context_object_name = "account_list"
 
-    def get_context_data_id_project(self, **kwargs):
-        """Add the projects for this yser."""
-        context = super().get_context_data(_context=True, **kwargs)
-        form = BookinngDialogForm(self.request.GET)
-        if form.is_valid() or getattr(form, "cleaned_data", {}).get("user", None):
-            projects = form.cleaned_data["user"].project.all()
-            context["selected"] = form.cleaned_data["project"]
-        else:
-            context["errors"] = form.errors
-            projects = Project.objects.none()
-        context["projects"] = projects
-        return context
-
-    def get_context_data_full_description(self, **kwargs):
-        """Add the projects for this yser."""
-        context = super().get_context_data(_context=True, **kwargs)
-        if project_id := self.request.GET.get("project_id", None):
-            try:
-                project = Project.objects.get(pk=int(project_id))
-                context["project"] = project
-            except (ValueError, TypeError, Project.DoesNotExist):
-                context["project"] = None
-
-        return context
-
-    get_context_data_short_description = get_context_data_full_description
+    def get_queryset(self):
+        """Get the queryset based on the groupname."""
+        grp = self.kwargs.get("group", "Project")
+        return self.model.objects.filter(groups__name=grp)

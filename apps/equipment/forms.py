@@ -11,11 +11,18 @@ from django import forms
 from accounts.autocomplete import AllUsersComplete
 from accounts.models import Account
 from autocomplete import AutocompleteWidget
+from labman_utils.forms import DateCustomInput
 from labman_utils.widgets import ObfuscatedTinyMCE
 
 # app imports
 from .autocomplete import LocationAutocomplete
 from .models import Document, Equipment, UserListEntry
+
+
+class SelectDatefForm(forms.Form):
+    """Supersimple form to select a date."""
+
+    date = forms.DateField(widget=DateCustomInput(attrs={"onChange": "this.form.submit();"}))
 
 
 class SignOffForm(forms.Form):

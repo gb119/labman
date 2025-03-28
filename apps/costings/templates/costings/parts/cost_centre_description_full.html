@@ -1,0 +1,5 @@
+{{ cost_centre.description|safe }}
+<a href="/" hx-get="/costings/lookups/cost_centres/"
+   hx-target="#cost_centre_description_{{ cost_centre.id }}"
+   hx-vars='{"cost_centre_id":"{{ cost_centre.id }}"}'
+   id="short_description"> less...</a>

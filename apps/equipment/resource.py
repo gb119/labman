@@ -4,10 +4,12 @@
 from accounts.models import Account, Role
 from accounts.resource import AccountWidget
 from bookings.models import BookingPolicy
+from costings.models import CostRate
 from import_export import fields, resources, widgets
 
 # app imports
 from .models import (
+    ChargingRate,
     Document,
     DocumentSignOff,
     Equipment,
@@ -104,3 +106,22 @@ class UserListEntryResource(resources.ModelResource):
 
     class Meta:
         model = UserListEntry
+
+
+class ChargingRateResource(resources.ModelResource):
+    """Resource Class for ChargingRate objects."""
+
+    equipment = fields.Field(
+        column_name="equipment",
+        attribute="equipment",
+        widget=widgets.ForeignKeyWidget(Equipment, "name"),
+    )
+    cost_rate = fields.Field(
+        column_name="cost_rate",
+        attribute="cost_rate",
+        widget=widgets.ForeignKeyWidget(CostRate, "name"),
+    )
+
+    class Meta:
+        model = ChargingRate
+        import_id_fields = ["equipment", "cost_rate"]

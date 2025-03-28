@@ -23,10 +23,9 @@ from photologue.models import Photo
 
 # app imports
 from .forms import UserAdminForm
-from .models import Account, Project, ResearchGroup, Role
+from .models import Account, ResearchGroup, Role
 from .resource import (
     GroupResource,
-    ProjectResource,
     ResearchGroupResource,
     RoleResource,
     UserResource,
@@ -71,23 +70,6 @@ class RoleAdmin(ImportExportModelAdmin):
     def get_import_resource_class(self):
         """Return the import-export resource object."""
         return RoleResource
-
-
-@register(Project)
-class ProjectAdmin(ImportExportModelAdmin):
-    """Admin interface definition for Project code objects."""
-
-    list_display = ("short_name", "name", "code")
-    list_filter = list_display
-    search_fields = ("short_name", "name", "code", "description")
-
-    def get_export_resource_class(self):
-        """Return the import-export resource object."""
-        return ProjectResource
-
-    def get_import_resource_class(self):
-        """Return the import-export resource object."""
-        return ProjectResource
 
 
 @register(ResearchGroup)
@@ -147,7 +129,7 @@ class AccountrAdmin(ImportExportMixin, UserAdmin):
                     ("username", "number"),
                     ("title", "first_name", "last_name"),
                     ("email", "research_group", "manager"),
-                    "project",
+                    ("project",),
                 ],
             },
         ),
@@ -173,7 +155,7 @@ class AccountrAdmin(ImportExportMixin, UserAdmin):
             _("Resources"),
             {
                 "classes": ("suit-tab", "suit-tab-resources"),
-                "fields": (("photos", "pages"),),
+                "fields": ("photos", "pages"),
             },
         ),
     )

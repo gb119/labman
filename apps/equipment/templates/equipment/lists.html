@@ -81,16 +81,31 @@
             <div class="tab-pane active" id="home" role="tabpanel" aria-labelledby="home-tab">
                 <p>Select the list you wish to see from the tabs above.</p>
             </div>
-            <div class="tab-pane active" id="accounts" role="tabpanel" aria-labelledby="accounts-tab">
+            <div class="tab-pane" id="accounts" role="tabpanel" aria-labelledby="accounts-tab">
+                <div class="spinner-border text-danger" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
             </div>
             <div class="tab-pane" id="locations" role="tabpanel" aria-labelledby="locations-tab">
+                <div class="spinner-border text-danger" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
             </div>
             <div class="tab-pane" id="equipment" role="tabpanel" aria-labelledby="equipment-tab">
+                <div class="spinner-border text-danger" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
             </div>
             {% if request.user.is_superuser %}
                 <div class="tab-pane" id="documents" role="tabpanel" aria-labelledby="documents-tab">
+                    <div class="spinner-border text-danger" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
                 </div>
                 <div class="tab-pane" id="projects" role="tabpanel" aria-labelledby="projects-tab">
+                    <div class="spinner-border text-danger" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
                 </div>
             {% endif %}
         </div>

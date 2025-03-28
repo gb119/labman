@@ -4,12 +4,35 @@
 # Python imports
 import logging
 import re
+from contextlib import contextmanager
 
 # Django imports
 from django.conf import settings
 from django.views import View
 
 logger = logging.getLogger(__name__)
+
+
+@contextmanager
+def temp_attr(obj, attr, value):
+    """Temporarily set the value of an attribute and restore it afterwards."""
+    # Check if the attribute originally exists on the object
+    has_attr = hasattr(obj, attr)
+    original_value = getattr(obj, attr, None)
+
+    # Set the attribute to the new value
+    setattr(obj, attr, value)
+
+    try:
+        # Yield control back to the caller
+        yield
+    finally:
+        if has_attr:
+            # Restore the original value if the attribute existed
+            setattr(obj, attr, original_value)
+        else:
+            # Delete the attribute if it didn't exist originally
+            delattr(obj, attr)
 
 
 def dispatch(self, request, *args, **kwargs):
@@ -46,6 +69,13 @@ class HTMXProcessMixin:
     on to the first matching method. If no match is foumd, the `http_method_not_allowed` method is used instead.
     """
 
+    def __init__(self, *args, **kwargs):
+        """Setup the _htmc_call attribute for later use."""
+        super().__init__(*args, **kwargs)
+        self._htmx_get_context_data = False
+        self._htmx_get_context_object_name = False
+        self._htmx_get_template_names = False
+
     def htmx_elements(self):
         """Iterate over possible htmx element sources."""
         for attr in ["trigger_name", "trigger", "target"]:
@@ -57,29 +87,31 @@ class HTMXProcessMixin:
 
     def get_context_data(self, **kwargs):
         """Get context data being aware of htmx views."""
-        if not getattr(self.request, "htmx", False) or kwargs.pop("_context", False):  # Default behaviour
+        if not getattr(self.request, "htmx", False) or self._htmx_get_context_data:  # Default behaviour
             return super().get_context_data(**kwargs)
 
         # Look for a request specifc to the element involved.
         for elem in self.htmx_elements():
             handler = getattr(self, f"get_context_data_{elem}", False)
             if handler:
-                return handler(**kwargs)
+                with temp_attr(self, "_htmx_get_context_data", True):
+                    return handler(**kwargs)
         return super().get_context_data(**kwargs)
 
-    def get_context_object_name(self, object_list, _default=False):
+    def get_context_object_name(self, object_list):
         """Get context object name being aware of htmx elements.
 
         If the get_context_name_<element> method needs to call usper, it shopuld set a keyword
         argument, _default to be True to avoid a recursive loop.
         """
-        if not getattr(self.request, "htmx", False) or _default:  # Default behaviour
+        if not getattr(self.request, "htmx", False) or self._htmx_get_context_object_name:  # Default behaviour
             return super().get_context_object_name(object_list)
 
         # Look for a request specifc to the element involved.
         for elem in self.htmx_elements():
             if handler := getattr(self, f"get_context_object_name{elem}", False):
-                return handler(object_list)
+                with temp_attr(self, "_htmx_get_context_object_name", True):
+                    return handler(object_list)
             if sub_name := getattr(self, f"context_object_{elem}", False):
                 return sub_name
 
@@ -89,7 +121,7 @@ class HTMXProcessMixin:
 
     def get_template_names(self):
         """Look for htmx specific templates."""
-        if not getattr(self.request, "htmx", False):  # Default behaviour
+        if not getattr(self.request, "htmx", False) or self._htmx_get_template_names:  # Default behaviour
             return super().get_template_names()
 
         # Look for a request specifc to the element involved.
@@ -98,7 +130,8 @@ class HTMXProcessMixin:
             if handler:
                 if settings.DEBUG:
                     logger.debug(f"Template_handl;er: {handler.__name__}")
-                return handler()
+                with temp_attr(self, "_htmx_get_template_names", True):
+                    return handler()
             sub_name = getattr(self, f"template_name_{elem}", False)
             if sub_name:
                 if settings.DEBUG:
@@ -195,6 +228,12 @@ class HTMXProcessMixin:
 class HTMXFormMixin(HTMXProcessMixin):
     """Provide additional methods to adapt FormView and friends for htmx requests as well."""
 
+    def __init__(self, *args, **kwargs):
+        """Setup the _htmc_call attribute for later use."""
+        super().__init__(*args, **kwargs)
+        self._htmx_form_valid = False
+        self._htmx_form_invalid = False
+
     def form_valid(self, form):
         """Look for HTMX form valid handlers.
 
@@ -205,16 +244,18 @@ class HTMXFormMixin(HTMXProcessMixin):
         Notes:
             htmx_form_valid* methods must not call super().form_valid - otherwise an infinite recursion happens!
         """
-        if not getattr(self.request, "htmx", False):  # Non HTMX requests
+        if not getattr(self.request, "htmx", False) or self._htmx_form_valid:  # Non HTMX requests
             return super().form_valid(form)
         for elem in self.htmx_elements():
             if settings.DEBUG:
                 logger.debug(f"Looking for htmx_form_valid_{elem}")
             handler = getattr(self, f"htmx_form_valid_{elem}", False)
             if handler:
-                return handler(form)
+                with temp_attr(self, "_htmx_form_valid", True):
+                    return handler(form)
         if handler := getattr(self, "htmx_form_valid", False):
-            return handler(form)
+            with temp_attr(self, "_htmx_form_valid", True):
+                return handler(form)
         return super().form_valid(form)
 
     def form_invalid(self, form):
@@ -227,16 +268,19 @@ class HTMXFormMixin(HTMXProcessMixin):
         Notes:
             htmx_inform_valid* methods must not call super().form_valid - otherwise an infinite recursion happens!
         """
-        if not getattr(self.request, "htmx", False):  # Non HTMX requests
+        if not getattr(self.request, "htmx", False) or self._htmx_form_invalid:  # Non HTMX requests
             return super().form_invalid(form)
+
         for elem in self.htmx_elements():
             handler = getattr(self, f"htmx_form_invalid_{elem}", False)
             if settings.DEBUG:
                 logger.debug(f"Looking for htmx_form_invalid_{elem}")
             if handler:
-                return handler(form)
+                with temp_attr(self, "_htmx_form_invalid", True):
+                    return handler(form)
         if handler := getattr(self, "htmx_form_invalid", False):
-            return handler(form)
+            with temp_attr(self, "_htmx_form_invalid", True):
+                return handler(form)
         return super().form_invalid(form)
 
 

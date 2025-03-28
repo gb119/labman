@@ -21,15 +21,21 @@ from django.views.generic import UpdateView
 
 # external imports
 import pytz
-from accounts.models import Account, Project
+from accounts.models import Account
 from bookings.forms import BookinngDialogForm
+from costings.models import CostCentre
 from extra_views import FormSetView
 from htmx_views.views import HTMXFormMixin, HTMXProcessMixin
 from labman_utils.models import Document
 from labman_utils.views import IsAuthenticaedViewMixin
 
 # app imports
-from .forms import EquipmentForm, SignOffForm, UserListEnryForm
+from .forms import (
+    EquipmentForm,
+    SelectDatefForm,
+    SignOffForm,
+    UserListEnryForm,
+)
 from .models import DocumentSignOff, Equipment, Location, UserListEntry
 from .tables import CalTable
 
@@ -105,7 +111,7 @@ class EquipmentDetailView(HTMXProcessMixin, IsAuthenticaedViewMixin, views.gener
 
     def get_context_data_scheduletab(self, **kwargs):
         """Build the context for the calendar display."""
-        context = super().get_context_data(_context=True, **kwargs)
+        context = super().get_context_data(**kwargs)
         # Build the calendar rows from the shifts.
         date = int(self.request.GET.get("date", dt.today().strftime("%Y%m%d")))
         mode = self.kwargs.get("mode", self.request.GET.get("mode", "single")).strip().lower()
@@ -165,6 +171,7 @@ class EquipmentDetailView(HTMXProcessMixin, IsAuthenticaedViewMixin, views.gener
         context["cal"] = table
         context["entries"] = entries
         context["form"] = BookinngDialogForm()
+        context["select_date"] = SelectDatefForm(data={"date": context["start"]})
 
         opentab = self.request.GET.get("opentab", list(Equipment.CATEGORIES.keys())[0])
         context["opentab"] = opentab
@@ -177,7 +184,7 @@ class EquipmentDetailView(HTMXProcessMixin, IsAuthenticaedViewMixin, views.gener
 
     def get_context_data_userlisttab(self, **kwargs):
         """Build the context for the userlist display."""
-        context = super().get_context_data(_context=True, **kwargs)
+        context = super().get_context_data(**kwargs)
         context["opentab"] = slugify(self.request.GET.get("opentab", "Manager"))
         return context
 
@@ -195,7 +202,7 @@ class LocationDetailView(HTMXProcessMixin, IsAuthenticaedViewMixin, views.generi
 
     def get_context_data_locationtab(self, **kwargs):
         """Build the context for the calendar display."""
-        context = super().get_context_data(_context=True, **kwargs)
+        context = super().get_context_data(**kwargs)
 
 
 class ModelListView(HTMXProcessMixin, IsAuthenticaedViewMixin, views.generic.ListView):
@@ -210,7 +217,7 @@ class ModelListView(HTMXProcessMixin, IsAuthenticaedViewMixin, views.generic.Lis
 
     context_object_equipmenttab = "equipment"
     context_object_locationstab = "locations"
-    context_object_projectstab = "projects"
+    context_object_projectstab = "cost_centres"
     context_object_documentstab = "documents"
     context_object_accountstab = "accounts"
 
@@ -227,7 +234,7 @@ class ModelListView(HTMXProcessMixin, IsAuthenticaedViewMixin, views.generic.Lis
             case "locations-tab":
                 qs = Location.objects.all().order_by("code", "name")
             case "projects-tab":
-                qs = Project.objects.all().order_by("name")
+                qs = CostCentre.objects.all().order_by("code")
             case "documents-tab":
                 qs = {}
                 for category in dict(Document.CATEGORIES):
@@ -235,12 +242,17 @@ class ModelListView(HTMXProcessMixin, IsAuthenticaedViewMixin, views.generic.Lis
             case _:
                 qs = {}
                 for grp in ["Academic", "Staff", "PDRA", "PostGrad", "Visitor", "Project"]:
-                    qs[grp] = Account.objects.filter(groups__name__icontains=grp).order_by("last_name", "first_name")
+                    if grp == "Academic":
+                        qs[grp] = Account.objects.filter(groups__name__icontains=grp).order_by(
+                            "last_name", "first_name"
+                        )
+                    else:
+                        qs[grp] = Account.objects.filter(groups__name__icontains=grp).count()
         return qs
 
     def get_context_data_equipmenttab(self, **kwargs):
         """Extra context for equipment list."""
-        context = super().get_context_data(_context=True, **kwargs)
+        context = super().get_context_data(**kwargs)
         data = {}
         for category in Equipment.CATEGORIES:
             data[category] = context["equipment"].filter(category=category)
@@ -250,7 +262,7 @@ class ModelListView(HTMXProcessMixin, IsAuthenticaedViewMixin, views.generic.Lis
 
     def get_context_data_documentstab(self, **kwargs):
         """Extra context for equipment list."""
-        context = super().get_context_data(_context=True, **kwargs)
+        context = super().get_context_data(**kwargs)
         context["categories"] = dict(Document.CATEGORIES)
         return context
 
@@ -265,7 +277,7 @@ class UserlisttDialog(IsAuthenticaedViewMixin, HTMXFormMixin, UpdateView):
 
     def get_context_data_dialog(self, **kwargs):
         """Create the context for HTMX calls to open the booking dialog."""
-        context = super().get_context_data(_context=True, **kwargs)
+        context = super().get_context_data(**kwargs)
         context["current_url"] = self.request.htmx.current_url
         context["this"] = self.get_object()
         verb = "edit" if context["this"] else "new"
@@ -337,7 +349,7 @@ class EquipmentDialog(IsAuthenticaedViewMixin, HTMXFormMixin, UpdateView):
 
     def get_context_data_dialog(self, **kwargs):
         """Create the context for HTMX calls to open the booking dialog."""
-        context = super().get_context_data(_context=True, **kwargs)
+        context = super().get_context_data(**kwargs)
         context["current_url"] = self.request.htmx.current_url
         context["this"] = self.get_object()
         args = (context["this"].pk,)

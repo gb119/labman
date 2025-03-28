@@ -21,8 +21,9 @@
          hx-get="{% url 'equipment:equipment_detail' equipment.pk %}"
          hx-target="#schedule_container"      hx-swap="outerHTML">
         <div id="schedule">
-            Lazy Loaded
-        </div>
+            <div class="spinner-border text-danger" role="status">
+                <span class="visually-hidden">Loading...</span>
+            </div>        </div>
     </div>
     <div id="modal"
          class="modal modal-blur fade"

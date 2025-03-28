@@ -113,7 +113,7 @@
                     <div class="row">
                         <h3>Future Bookings</h3>
                         <div class="table table-responsive">
-                            <table>
+                            <table class="col-md-9">
                                 {% for booking in bookings.all %}
                                     {% if forloop.first %}
                                         <thead>
@@ -126,7 +126,7 @@
                                     <tr>
                                         <td><a href="{{ booking.equipment.url }}">{{ booking.equipment.name }}</a></td>
                                         <td>{{ booking.slot.lower }}</td><td>{{ booking.slot.upper }}</td>
-                                        <td>{{ booking.project.short_name }}</td>
+                                        <td>{{ booking.cost_centre.short_name }}</td>
                                     </tr>
                                     {% if forloop.last %}
                                         </tbody>

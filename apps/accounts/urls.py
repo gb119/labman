@@ -17,5 +17,5 @@ urlpatterns = [
     path("me/", views.MyAccountView.as_view(), name="my_account"),
     path("user/<str:username>/", views.UserAccountView.as_view(), name="user_account"),
     path("lookups/userlist/", lookups.UserAutocomplete.as_view(), name="userlist_complete"),
-    path("lookups/projects/", views.ProjectView.as_view(), name="project_filter"),
+    path("list/collapse_<str:group>/", views.AccountListByGroupView.as_view(), name="list_accounts_by_group"),
 ]

@@ -135,19 +135,34 @@
                 </div>
             </div>
             <div class="tab-pane" id="resources" role="tabpanel" aria-labelledby="resources-tab">
+                <div class="spinner-border text-danger" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
             </div>
             <div class="tab-pane" id="images" role="tabpanel" aria-labelledby="images-tab">
+                <div class="spinner-border text-danger" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
             </div>
             <div class="tab-pane" id="pages" role="tabpanel" aria-labelledby="pages-tab">
+                <div class="spinner-border text-danger" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
             </div>
             <div class="tab-pane" id="userlist" role="tabpanel" aria-labelledby="userlist-tab">
+                <div class="spinner-border text-danger" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
             </div>
             {% if equipment.bookable %}
                 <div class="tab-pane" id="schedule_container" role="tabpanel" aria-labelledby="schedule-tab"
                      hx-trigger="refreshSchedule from:body"
                      hx-get="{% url 'equipment:equipment_detail' equipment.pk %}"
                      hx-target="#schedule">
-                    <div id="schedule"></div>
+                    <div id="schedule">
+                        <div class="spinner-border text-danger" role="status">
+                            <span class="visually-hidden">Loading...</span>
+                        </div></div>
                 </div>
             {% endif %}
         </div>

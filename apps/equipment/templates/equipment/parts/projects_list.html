@@ -12,25 +12,25 @@
         <h5>People</h5>
     </div>
 </div>
-{% for project in projects %}
+{% for cost_centre in cost_centres %}
     <div class="row">
         <div class="col col-md-3">
-            <span>{{ project.name }}</span>
+            <span style="margin-left: {{ cost_centre.level }}em; ">{{ cost_centre.name }}</span>
         </div>
         <div class="col col-md-2">
-            <span>{{ project.code }}</span>
+            <span>{{ cost_centre.account_code }}</span>
         </div>
-        <div class="col col-md-4" id="project_description_{{ project.id }}">
-            {{ project.description|safe|truncatewords_html:10 }}
-            {% if project.description|safe|truncatewords_html:10 != project.description|safe %}
-                <a href="/" hx-get="/accounts/lookups/projects/"
-                   hx-target="#project_description_{{ project.id }}"
-                   hx-vars='{"project_id":"{{ project.id }}"}'
+        <div class="col col-md-4" id="cost_centre_description_{{ cost_centre.id }}">
+            {{ cost_centre.description|safe|truncatewords_html:10 }}
+            {% if cost_centre.description|safe|truncatewords_html:10 != cost_centre.description|safe %}
+                <a href="/" hx-get="/costings/lookups/cost_centres/"
+                   hx-target="#cost_centre_description_{{ cost_centre.id }}"
+                   hx-vars='{"cost_centre_id":"{{ cost_centre.id }}"}'
                    id="full_description"> more...</a>
             {% endif %}
         </div>
         <div class="col col-md-3">
-            {% for person in project.researchers.all %}
+            {% for person in cost_centre.accounts.all %}
                 {% if forloop.first %}<ul>{% endif %}
                 <li><a href="{{ person.url }}">{{ person.formal_name }}</a></li>
                 {% if forloop.last %}</ul>{% endif %}

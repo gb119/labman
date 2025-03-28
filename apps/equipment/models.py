@@ -12,6 +12,7 @@ from datetime import (
 import django.utils.timezone as tz
 from django.apps import apps
 from django.contrib.flatpages.models import FlatPage
+from django.contrib.postgres.fields import DateRangeField
 from django.db import models
 from django.db.models.constraints import CheckConstraint
 from django.utils.text import slugify
@@ -20,6 +21,7 @@ from django.utils.text import slugify
 import numpy as np
 import pytz
 from accounts.models import Account
+from costings.models import CostCentre, CostRate
 from labman_utils.models import (
     DEFAULT_TZ,
     Document,
@@ -28,6 +30,7 @@ from labman_utils.models import (
     delta_t,
     patch_model,
 )
+from psycopg2.extras import DateRange
 from sortedm2m.fields import SortedManyToManyField
 
 
@@ -88,7 +91,8 @@ class Location(ResourceedObject):
     @property
     def children(self):
         """Return a set of all sub-locations of this location."""
-        return self.__class__.objects.filter(code__startswith=self.code).order_by("code")
+        query = models.Q(code__regex=f"^{self.code}[^0-9]") | models.Q(code=self.code)
+        return self.__class__.objects.filter(query).order_by("code")
 
     @property
     def all_files(self):
@@ -216,6 +220,10 @@ class Equipment(ResourceedObject):
             ret[role] = users.filter(role__name=role)
         return ret
 
+    @property
+    def default_charge_rate(self):
+        return self.charge_rates.get_or_create(cost_rate=CostRate.default())[0]
+
     def __getattr__(self, name):
         """Deal with Role's and file types."""
         Role = apps.get_model(app_label="accounts", model_name="role")
@@ -260,6 +268,44 @@ class Equipment(ResourceedObject):
             if (time - s).total_seconds() >= 0 and (e - time).total_seconds() > 0:
                 return shift
         return None
+
+    def get_charge_rate(self, other):
+        """Return the ChargingRate object that applies for other.
+
+        Args:
+            other (CostCentre, BookingEntry, Account): Thing to work out what ChargingRate applies.
+
+        Returns:
+            (ChargingRate object)
+        """
+        BookingEntry = self.bookings.model
+        match other:
+            case Account():
+                charge_centre = other.default_project
+                date = Date.today()
+            case BookingEntry():
+                charge_centre = other.cost_centre
+                date = other.slot.lower.date()
+            case CostCentre():
+                charge_centre = other
+                date = Date.today()
+            case _:
+                for attr in ["cost_centre", "project", "default_cost_centre", "default_project"]:
+                    if charge_centre := getattr(other, attr, None):
+                        break
+                else:
+                    raise TypeError(f"Can;'t get a cost centre from a {type(other)}")
+                date = Date.today()
+
+        try:
+            return self.charge_rates.get(cost_rate=charge_centre.rate, dates__contains=date)
+        except ChargingRate.DoesNotExist:
+            pass
+        try:
+            return self.charge_rates.get(cost_rate=CostRate.default(), dates__contains=date)
+        except ChargingRateDoesNotExist:
+            rate, _ = ChargingRate.objects.get_or_create(equipment=self, cost_rate=CostRate.default(), charge_rate=0)
+            return rate
 
     def can_edit(self, target):
         """Return True if target is a superuser, owner or manager."""
@@ -352,6 +398,49 @@ class DocumentSignOff(models.Model):
             userlist.save()
 
 
+class ChargingRate(models.Model):
+    """Represent a charging rate for an item of equipment and a CostRate."""
+
+    equipment = models.ForeignKey(Equipment, on_delete=models.CASCADE, related_name="charge_rates")
+    cost_rate = models.ForeignKey(CostRate, on_delete=models.CASCADE, related_name="equipment_rates")
+    charge_rate = models.FloatField(default=0.0, verbose_name="Cost per shift")
+    comment = models.CharField(max_length=80, blank=True, null=True)
+    dates = DateRangeField(blank=True, null=True, verbose_name="Applicable Dates")
+
+    class Meta:
+        unique_together = ["equipment", "cost_rate", "dates"]  # Enforce unique equipment, cost_rate, effective dates
+
+    def __str__(self):
+        return f"{self.cost_rate.name} for {self.equipment.name} £{self.charge_rate}/shift"
+
+    def save(self, force_insert=False, force_update=False, using=None, update_fields=None):
+        """Enforce setting up of effective dates."""
+        if not self.dates:
+            self.dates = DateRange(lower=Date.today(), upper=Date(2999, 12, 31))
+        if not self.dates.lower:
+            self.dates = DateRange(lower=Date.today(), upper=self.dates.upper)
+        if not self.dates.upper:
+            self.dates = DateRange(lower=self.dates.lower, upper=Date(2999, 12, 31))
+        try:
+            if not self.pk:
+                old = self.__class__.objects.get(
+                    equipment=self.equipment, cost_rate=self.cost_rate, dates__contains=self.dates.lower
+                )
+            else:
+                old = self.__class__.objects.exclude(pk=self.pk).get(
+                    equipment=self.equipment, cost_rate=self.cost_rate, dates__contains=self.dates.lower
+                )
+            old.dates = DateRange(lower=old.dates.lower, upper=self.dates.lower)
+        except self.__class__.DoesNotExist:  # No overlapping charge_)rate
+            return super().save(
+                force_insert=force_insert, force_update=force_update, using=using, update_fields=update_fields
+            )
+        old.save(old)
+        return super().save(
+            force_insert=force_insert, force_update=force_update, using=using, update_fields=update_fields
+        )
+
+
 @patch_model(FlatPage, prep=property)
 def slug(self):
     """Return the title in a slug format."""
@@ -361,7 +450,7 @@ def slug(self):
 @patch_model(Account, prep=property)
 def signoffs(self):
     """Return a queryset of signoffs that are outstanding."""
-    return self.user_of.filter(hold=True)
+    return self.equipmentlist.filter(hold=True)
 
 
 @patch_model(Account, prep=property)

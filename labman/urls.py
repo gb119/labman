@@ -33,15 +33,15 @@ urlpatterns = [
     # Examples:
     # url(r'^$', 'labman.views.home', name='home'),
     path("", TemplateView.as_view(template_name="home.html")),
-    path(r"login/", auth_views.LoginView.as_view(), name="core_login"),
-    path(r"logout", auth_views.LogoutView.as_view(next_page="/"), name="core_logout"),
+    path(r"isteach/", auth_views.LoginView.as_view(), name="core_login"),
+    path(r"scoir/", auth_views.LogoutView.as_view(next_page="/"), name="core_logout"),
     path("tinymce/", include("tinymce.urls")),
     path("photologue/", include("photologue.urls", namespace="photologue")),
     path("private-file-pseudo-directory-path/", include("django_simple_file_handler.urls")),
     path("api/", include(api)),  # main api module exports a urlpatterns
     path("api-auth/", include("rest_framework.urls")),  # Needed by REST framework for user authentication
     path("oauth2/", include("django_auth_adfs.urls")),  # Autrhentication via Duo
-    path("admin/", admin.site.urls),
+    path("riaradh/", admin.site.urls),
 ]
 
 # Add urls path for all the apps

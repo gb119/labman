@@ -11,7 +11,7 @@ from django import views
 from django.conf import settings
 from django.core.exceptions import ObjectDoesNotExist
 from django.db.backends.postgresql.psycopg_any import DateTimeTZRange
-from django.db.models import Count
+from django.db.models import Count, Q
 from django.http import (
     HttpResponse,
     HttpResponseNotFound,
@@ -24,7 +24,8 @@ from django.utils.text import slugify
 import numpy as np
 import pandas as pd
 import pytz
-from accounts.models import Account, Project
+from accounts.models import Account
+from costings.models import CostCentre
 from easy_pdf.rendering import render_to_pdf_response
 from equipment.models import Equipment
 from equipment.tables import CalTable
@@ -86,7 +87,12 @@ class AllCalendarView(IsAuthenticaedViewMixin, views.generic.TemplateView):
         """Build the context for the calendar display."""
         context = super().get_context_data(**kwargs)
         # Build the calendar rows from the shifts.
-        date = self.kwargs.get("date", int(self.request.GET.get("date", dt.today().strftime("%Y%m%d"))))
+        try:
+            date = self.kwargs.get("date", int(self.request.GET.get("date", dt.today().strftime("%Y%m%d"))))
+        except ValueError:
+            date = self.request.GET.get("date", dt.today().strftime("%Y-%m-%d"))
+            date = dt.strptime(str(date), "%Y-%m-%d")
+            date = int(date.strftime("%Y%m%d"))
         context["start_date"] = date
         date_obj = dt.strptime(str(date), "%Y%m%d")
         back_date = date_obj - td(days=7)
@@ -142,7 +148,7 @@ class BookingDialog(IsAuthenticaedViewMixin, HTMXFormMixin, views.generic.Update
 
     def get_context_data_dialog(self, **kwargs):
         """Create the context for HTMX calls to open the booking dialog."""
-        context = super().get_context_data(_context=True, **kwargs)
+        context = super().get_context_data(**kwargs)
         context["current_url"] = self.request.htmx.current_url
         context["ts"] = self.kwargs.get("ts", None)
         context["equipment"] = Equipment.objects.get(pk=self.kwargs.get("equipment", None))
@@ -170,7 +176,7 @@ class BookingDialog(IsAuthenticaedViewMixin, HTMXFormMixin, views.generic.Update
                 "slot": this.slot,
                 "user": this.user,
                 "booker": this.booker,
-                "project": this.project,
+                "cost_centre": this.cost_centre,
             }
         equipment = Equipment.objects.get(pk=self.kwargs.get("equipment"))
         start = dt.fromtimestamp(self.kwargs.get("ts"), DEFAULT_TZ)
@@ -280,22 +286,27 @@ class BookingRecordsView(IsAuthenticaedViewMixin, FormListView):
             qs = qs.filter(equipment__in=data["equipment"])
         if data["user"]:
             qs = qs.filter(user__in=data["user"])
-        if data["project"]:
-            qs = qs.filter(project__in=data["project"])
+        if data["cost_centre"]:
+            for ix, sqs in enumerate(data["cost_centre"].all()):
+                if ix == 0:
+                    query = Q(cost_centre__in=sqs.children)
+                else:
+                    query |= Q(cost_centre__in=sqs.children)
+            qs = qs.filter(query)
         return qs
 
     def map_row(self, row):
         """Data renamer to undo FK ids."""
         row.equipment = str(Equipment.objects.get(pk=row.equipment))
         row.user = str(Account.objects.get(pk=row.user).display_name)
-        row.project = str(Project.objects.get(pk=row.project).short_name)
+        row.cost_centre = str(CostCentre.objects.get(pk=row.cost_centre).short_name)
         return row
 
     def get_context_data(self, **kwargs):
         """Call the parent get_context_data before adding the current form as context."""
         context = super().get_context_data(**kwargs)
         entries = context["entries"]
-        df = pd.DataFrame(entries.values("user", "project", "equipment", "shifts", "slot"))
+        df = pd.DataFrame(entries.values("user", "cost_centre", "equipment", "shifts", "slot", "charge", "comment"))
         if len(df) == 0:
             return context
         bad = df["slot"]
@@ -307,7 +318,8 @@ class BookingRecordsView(IsAuthenticaedViewMixin, FormListView):
         df.rename(columns={x: x.title() for x in df.columns}, inplace=True)
         data = getattr(self.form, "cleaned_data", {})
         groupby = [
-            x.title() for x in getattr(self.form, "cleaned_data", {}).get("order", "user,equipment,project").split(",")
+            x.title()
+            for x in getattr(self.form, "cleaned_data", {}).get("order", "user,equipment,cost_Centre").split(",")
         ]
         if getattr(self.form, "cleaned_data", {}).get("reverse", False):
             groupby.reverse()
@@ -315,12 +327,12 @@ class BookingRecordsView(IsAuthenticaedViewMixin, FormListView):
             data = []
             for ix, _ in enumerate(groupby):
                 grp = groupby[:-ix] if ix > 0 else groupby
-                data.append(df.groupby(grp)["Shifts"].sum().reset_index())
+                data.append(df.groupby(grp)[["Shifts", "Charge"]].sum().reset_index())
             self.data = pd.concat(data, ignore_index=True).sort_values(groupby)
             self.data.replace(np.nan, "Subtotal", inplace=True)
             self.data.set_index(groupby, inplace=True)
         else:
-            self.data = df
-        self.df = df
+            self.data = df[["User", "Cost_Centre", "Equipment", "Start", "End", "Shifts", "Charge", "Comment"]]
+        self.df = df[["User", "Cost_Centre", "Equipment", "Start", "End", "Shifts", "Charge", "Comment"]]
         context["data"] = self.data.to_html(classes="table table-striped table-hover tabel-responsive")
         return context

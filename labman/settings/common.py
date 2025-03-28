@@ -89,6 +89,7 @@ DEFAULT_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "dal",
+    #    "corsheaders",
     "dal_select2",
     "photologue",
     "sortedm2m",
@@ -106,6 +107,8 @@ DEFAULT_APPS = [
 # Middlewares
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
+    #   "corsheaders.middleware.CorsMiddleware",
+    "django.middleware.clickjacking.XFrameOptionsMiddleware",
     "whitenoise.middleware.WhiteNoiseMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
@@ -291,7 +294,7 @@ DEFAULT_FROM_EMAIL = f"no-reply@{DNS_NAME}"
 AUTH_USER_MODEL = "accounts.Account"
 
 LOGIN_URL = "django_auth_adfs:login"
-LOGIN_REDIRECT_URL = "/"
+LOGIN_REDIRECT_URL = "/accounts/me/"
 
 # Only allow manual creation of new users
 AUTH_LDAP_CREATE_USER_ON_FLY = False

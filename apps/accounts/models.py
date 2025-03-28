@@ -10,6 +10,7 @@ from django.urls import reverse
 from django.utils.functional import cached_property, classproperty
 
 # external imports
+from costings.models import CostCentre
 from labman_utils.models import ResourceedObject
 from photologue.models import Photo
 from six import string_types
@@ -23,19 +24,6 @@ USER = 100
 ADVANCED_USER = 200
 INSTRUCTOR = 300
 MANAGER = 1000
-
-
-class Project(ResourceedObject):
-    """Represent a chargeable project."""
-
-    short_name = models.CharField(max_length=20)
-    code = models.CharField(max_length=20)
-
-    class Meta:
-        constraints = [models.UniqueConstraint(fields=["name"], name="Unique Project Name")]
-
-    def __str__(self):
-        return f"{self.short_name} ({self.code})"
 
 
 class ResearchGroup(ResourceedObject):
@@ -80,11 +68,11 @@ class Account(AbstractUser):
 
     number = models.IntegerField(blank=True, null=True)
     title = models.CharField(max_length=20, blank=True, null=True)
-    project = SortedManyToManyField(Project, blank=False, related_name="researchers")
     end_date = models.DateField(blank=True, null=True)
     research_group = models.ForeignKey(
         ResearchGroup, on_delete=models.SET_NULL, related_name="members", blank=True, null=True
     )
+    project = SortedManyToManyField(CostCentre, related_name="accounts", blank=True)
     manager = models.ForeignKey("Account", on_delete=models.SET_NULL, blank=True, null=True, related_name="managing")
     photos = SortedManyToManyField(Photo, blank=True, related_name="accounts")
     pages = SortedManyToManyField(FlatPage, blank=True)

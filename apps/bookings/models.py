@@ -14,7 +14,8 @@ from django.db import models
 
 # external imports
 import numpy as np
-from accounts.models import Account, Project, Role
+from accounts.models import Account, Role
+from costings.models import ChargeableItgem
 from equipment.models import Equipment
 from labman_utils.models import (
     DEFAULT_TZ,
@@ -185,7 +186,7 @@ class BookingPolicy(NamedObject):
                 f"Bookings for {booking.user} or {booking.equipment} are blocked - user action required"
             )
 
-        if booking.admin_hold:
+        if booking.admin_hold and not no_holds:
             raise AdminBookingHeld(f"Bookings for {booking.user} or {booking.equipment} are blocked by the Admin")
 
         for policy in booking.equipment.policies.all():
@@ -201,7 +202,7 @@ class BookingPolicy(NamedObject):
         )
 
 
-class BookingEntry(models.Model):
+class BookingEntry(ChargeableItgem):
     """Represent a single booking entry for a user against an equipment item."""
 
     class Meta:
@@ -215,7 +216,6 @@ class BookingEntry(models.Model):
     )
     equipment = models.ForeignKey(Equipment, on_delete=models.PROTECT, related_name="bookings")
     slot = DateTimeRangeField(default_bounds="[)")
-    project = models.ForeignKey(Project, on_delete=models.PROTECT, blank=True)
     shifts = models.FloatField(
         default=1.0,
     )
@@ -268,6 +268,19 @@ class BookingEntry(models.Model):
         """Return the effective policy for this booking."""
         return self.get_policy()
 
+    def calculate_charge(self):
+        """Calculate the charge for this booking. At the moment this is always 0.0"""
+        charge_rate = self.equipment.get_charge_rate(self)
+        self.comment = (
+            f"{self.shifts} shifts @ £{charge_rate.charge_rate:.2f}/shift ({charge_rate.cost_rate.name} rate)"
+        )
+        return self.shifts * charge_rate.charge_rate
+        return 0.0
+
+    def get_default_cost_centre(self):
+        """Get a default cost_centre - for now this will return None."""
+        return None
+
     def get_policy(self, no_holds=False):
         try:
             return BookingPolicy.get_policy(self, no_holds)
@@ -287,17 +300,19 @@ class BookingEntry(models.Model):
         return self
 
     def fix_project(self):
-        """Workout a project for this booking."""
+        """Workout a coist_centre for this booking."""
         if self.user.project.count() == 0:
             return None
-        if not hasattr(self, "project"):
-            self.project = self.user.default_project
-        if self.project not in self.user.project.all() and not self.user.is_superuser:
+        if not hasattr(self, "cost_centre") or self.cost_centre is None:
+            self.cost_centre = self.user.default_project
+        if self.cost_centre not in self.user.project.all() and not self.user.is_superuser:
             return self.user.default_project
 
     def count_shifts(self):
         """Return a weighted sum of the number of shifts for this booking."""
-        start, end = self.get_policy(no_holds=True).fix_times(self)
+        if not (policy := self.get_policy(no_holds=True)):
+            return None
+        start, end = policy.fix_times(self)
         end = end - td(seconds=0.1)  # knock the end back inside a shift
         start_shift = self.equipment.get_shift(start)
         shifts = [x for x in self.equipment.shifts.all()]
@@ -340,7 +355,8 @@ class BookingEntry(models.Model):
 
     def save(self, force_insert=False, force_update=False, using=None, update_fields=None, force_clean=False):
         """Force model.clean to be called."""
-        self.clean(no_holds=force_clean)
+        if force_clean is not None:
+            self.clean(no_holds=force_clean)
         super().save(force_insert=force_insert, force_update=force_update, using=using, update_fields=update_fields)
 
     def delete(self, using=None, keep_parents=False, force=True):

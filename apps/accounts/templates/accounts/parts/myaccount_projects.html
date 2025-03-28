@@ -1,15 +1,15 @@
-{% for project in account.project.all %}
+{% for cost_centre in account.project.all %}
     <div class="row">
         <div class="col col-md-6">
-            <h5>{{ project.name }}</h5>
-            <p>{{ project.short_name }} ({{ project.code }})</p>
+            <h5>{{ cost_centre.name }}</h5>
+            <p>{{ cost_centre.short_name }} ({{ cost_centre.account_code }})</p>
         </div>
-        <div class="col col-md-6" id="project_description_{{ project.id }}">
-            {{ project.description|safe|truncatewords_html:10 }}
-            {% if project.description|safe|truncatewords_html:10 != project.description|safe %}
-                <a href="/" hx-get="/accounts/lookups/projects/"
-                   hx-target="#project_description_{{ project.id }}"
-                   hx-vars='{"project_id":"{{ project.id }}"}'
+        <div class="col col-md-6" id="cost_centre_description_{{ cost_centre.id }}">
+            {{ cost_centre.description|safe|truncatewords_html:10 }}
+            {% if cost_centre.description|safe|truncatewords_html:10 != cost_centre.description|safe %}
+                <a href="/" hx-get="/costings/lookups/cost_centres/"
+                   hx-target="#cost_centre_description_{{ cost_centre.id }}"
+                   hx-vars='{"cost_centre_id":"{{ cost_centre.id }}"}'
                    id="full_description"> more...</a>
             {% endif %}
         </div>

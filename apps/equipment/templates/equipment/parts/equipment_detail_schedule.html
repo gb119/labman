@@ -1,3 +1,5 @@
+{% load django_bootstrap5 %}
+{% load labman_tags %}
 <style>
     td.html_td {cursor: pointer; }
     th.html_td > a {color: #f6aaa3; text-decoration: none; }
@@ -24,51 +26,60 @@
                     </button>
                     {{ start }}
                 </div>
-                <div class="col-md-2">{{ end }}
-                    <button type="button" class="btn btn-outline-secondary" id="cal_forward"
-                            hx-vals='{"date":{{ forward_date }}, "mode":"{{ mode }}" }'
-                            hx-get="{% url 'equipment:equipment_detail' equipment.pk %}"
-                            hx-target="#schedule_container"      hx-swap="outerHTML">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-fast-forward" viewBox="0 0 16 16">
-                            <path d="M6.804 8 1 4.633v6.734zm.792-.696a.802.802 0 0 1 0 1.392l-6.363 3.692C.713 12.69 0 12.345 0 11.692V4.308c0-.653.713-.998 1.233-.696z"></path>
-                            <path d="M14.804 8 9 4.633v6.734zm.792-.696a.802.802 0 0 1 0 1.392l-6.363 3.692C8.713 12.69 8 12.345 8 11.692V4.308c0-.653.713-.998 1.233-.696z"></path>
-                        </svg>
-                        <span class="visually-hidden">Button</span>
-                    </button>
-                </div>
-            </div>
-        </div>
-        {% if mode == "single" %}
-            <div class="row">
-                <div class="mt-4 d-flex justify-content-center table-responsive-lg" hx-target="#dialog">
-
-                    {{ cal.render|safe }}
-                </div>
-            </div>
-        {% elif mode == "all" %}
-            <div class="accordion" id="schedules">
-
-                {% for cat,label in categories.items %}
-                    <div class="accordion-item">
-                        <h2 class="accordion-header" id="{{ cat|slugify }}">
-                            <button class="accordion-button {% if not cat|slugify == opentab %}collapsed{% endif %}" type="button" data-bs-toggle="collapse" data-bs-target="#collapse_{{ cat|slugify }}"
-                                    aria-expanded="{% if cat|slugify == opentab %}true{% else %}false{% endif%}" aria-controls="collapse_{{ cat|slugify }}">
-                                {{ label }}
+                <div class="col-md-4 text-center">
+                    <form id="booking" method="GET"
+                          hx-vals='{"mode":"{{ mode }}" }'
+                          hx-get="{% url 'equipment:equipment_detail' equipment.pk %}"
+                          hx-target="#schedule_container"      hx-swap="outerHTML">
+                        {% csrf_token %}
+                        {% bootstrap_field select_date.date layout="floating" %}
+                        <M/form>
+                        </div>
+                        <div class="col-md-2">{{ end }}
+                            <button type="button" class="btn btn-outline-secondary" id="cal_forward"
+                                    hx-vals='{"date":{{ forward_date }}, "mode":"{{ mode }}" }'
+                                    hx-get="{% url 'equipment:equipment_detail' equipment.pk %}"
+                                    hx-target="#schedule_container"      hx-swap="outerHTML">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-fast-forward" viewBox="0 0 16 16">
+                                    <path d="M6.804 8 1 4.633v6.734zm.792-.696a.802.802 0 0 1 0 1.392l-6.363 3.692C.713 12.69 0 12.345 0 11.692V4.308c0-.653.713-.998 1.233-.696z"></path>
+                                    <path d="M14.804 8 9 4.633v6.734zm.792-.696a.802.802 0 0 1 0 1.392l-6.363 3.692C8.713 12.69 8 12.345 8 11.692V4.308c0-.653.713-.998 1.233-.696z"></path>
+                                </svg>
+                                <span class="visually-hidden">Button</span>
                             </button>
-                        </h2>
-                        <div id="collapse_{{ cat|slugify }}" class="accordion-collapse collapse{% if cat|slugify == opentab %} show{% endif %}"
-                             aria-labelledby="{{ cat|slugify }}" data-bs-parent="#schedules">
-                            <div class="accordion-body">
-                                <div class="mt-4 d-flex justify-content-center table-responsive-lg" hx-target="#dialog">
-                                    {% with cat_cal=cal|item:cat %}
-                                        {{ cat_cal.render|safe }}
-                                    {% endwith %}
-                                </div>
-                            </div>
                         </div>
                     </div>
-                {% endfor %}
+                </div>
+                {% if mode == "single" %}
+                    <div class="row">
+                        <div class="mt-4 d-flex justify-content-center table-responsive-lg" hx-target="#dialog">
+
+                            {{ cal.render|safe }}
+                        </div>
+                    </div>
+                {% elif mode == "all" %}
+                    <div class="accordion" id="schedules">
+
+                        {% for cat,label in categories.items %}
+                            <div class="accordion-item">
+                                <h2 class="accordion-header" id="{{ cat|slugify }}">
+                                    <button class="accordion-button {% if not cat|slugify == opentab %}collapsed{% endif %}" type="button" data-bs-toggle="collapse" data-bs-target="#collapse_{{ cat|slugify }}"
+                                            aria-expanded="{% if cat|slugify == opentab %}true{% else %}false{% endif%}" aria-controls="collapse_{{ cat|slugify }}">
+                                        {{ label }}
+                                    </button>
+                                </h2>
+                                <div id="collapse_{{ cat|slugify }}" class="accordion-collapse collapse{% if cat|slugify == opentab %} show{% endif %}"
+                                     aria-labelledby="{{ cat|slugify }}" data-bs-parent="#schedules">
+                                    <div class="accordion-body">
+                                        <div class="mt-4 d-flex justify-content-center table-responsive-lg" hx-target="#dialog">
+                                            {% with cat_cal=cal|item:cat %}
+                                                {{ cat_cal.render|safe }}
+                                            {% endwith %}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% endif %}
             </div>
-        {% endif %}
-    </div>
-</div>
+        </div>
