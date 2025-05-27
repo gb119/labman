@@ -303,7 +303,7 @@ class Equipment(ResourceedObject):
             pass
         try:
             return self.charge_rates.get(cost_rate=CostRate.default(), dates__contains=date)
-        except ChargingRateDoesNotExist:
+        except ChargingRate.DoesNotExist:
             rate, _ = ChargingRate.objects.get_or_create(equipment=self, cost_rate=CostRate.default(), charge_rate=0)
             return rate
 

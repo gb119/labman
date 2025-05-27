@@ -83,7 +83,7 @@ class SignOffFormSetView(IsAuthenticaedViewMixin, FormSetView):
                 )
                 dso.save()
         if data is None:  # Force userlist save if no docs to sign!
-            equipment.users.get(user=self.request.user).save()
+            equipment.userlist.get(user=self.request.user).save()
 
         return super().formset_valid(formset)
 
