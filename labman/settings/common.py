@@ -226,7 +226,6 @@ TIME_ZONE = "Europe/London"
 USE_I18N = True
 
 # Localisation
-USE_L10N = True
 
 # enable timezone awareness by default
 USE_TZ = True
