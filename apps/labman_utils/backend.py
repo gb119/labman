@@ -196,7 +196,7 @@ class LeedsAdfsBaseBackend(AdfsAuthCodeBackend):
 
         headers = {"Authorization": "Bearer {}".format(obo_access_token)}
         try:
-            response = provider_config.session.get(url, headers=headers, timeout=30, verify=False)
+            response = provider_config.session.get(url, headers=headers, timeout=30, verify=True)
 
             if response.status_code in [400, 401]:
                 logger.error(f"MS Graph server returned an error: {response.json()['message']}")
@@ -303,3 +303,4 @@ class LeedsAdfsBaseBackend(AdfsAuthCodeBackend):
 
             claim_groups.append(group_data["displayName"])
         return claim_groups
+
