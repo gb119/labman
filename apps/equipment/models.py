@@ -342,7 +342,8 @@ class Equipment(ResourceedObject):
         Returns:
             (dict):
                 Dictionary mapping role names (str) to lists of UserListEntry objects.
-                Roles are ordered by level (highest first).
+                Roles are ordered by level (highest first). Users without assigned roles
+                are excluded from the results.
 
         Notes:
             This method groups users in Python rather than using database filtering

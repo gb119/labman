@@ -1,15 +1,16 @@
 <div class="accordion" id="UserLists">
     {% for role,userlist in equipment.userlist_dict.items %}
-        {% if userlist|length > 0 %}
-            <div class="accordion-item">
-                <h2 class="accordion-header" id="{{ role|slugify }}">
-                    <button class="accordion-button {% if not opentab == role|slugify %}collapsed{% endif %}" type="button"
-                            data-bs-toggle="collapse" data-bs-target="#collapse_{{ role|slugify }}"
-                            aria-expanded="{% if opentab == role|slugify %}true{% else %}false{% endif%}"
-                            aria-controls="collapse_{{ role|slugify }}">
-                        {{ role }} ({{ userlist|length }} user{% if userlist|length != 1 %}s{% endif %})
-                    </button>
-                </h2>
+        {% with userlist_count=userlist|length %}
+            {% if userlist_count > 0 %}
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="{{ role|slugify }}">
+                        <button class="accordion-button {% if not opentab == role|slugify %}collapsed{% endif %}" type="button"
+                                data-bs-toggle="collapse" data-bs-target="#collapse_{{ role|slugify }}"
+                                aria-expanded="{% if opentab == role|slugify %}true{% else %}false{% endif%}"
+                                aria-controls="collapse_{{ role|slugify }}">
+                            {{ role }} ({{ userlist_count }} user{% if userlist_count != 1 %}s{% endif %})
+                        </button>
+                    </h2>
                 <div id="collapse_{{ role|slugify }}" class="accordion-collapse collapse{% if opentab == role|slugify %} show{% endif %}"
                      aria-labelledby="{{ role|slugify }}" data-bs-parent="#UserLists">
                     <div class="accordion-body">
@@ -57,6 +58,7 @@
                 </div>
             </div>
         {% endif %}
+        {% endwith %}
     {% endfor %}
 </div>
 {% if equipment|can_edit:request.user %}
