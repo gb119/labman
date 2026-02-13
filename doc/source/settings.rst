@@ -196,8 +196,14 @@ Database Configuration
 ^^^^^^^^^^^^^^^^^^^^^^
 
 ``DATABASES``
-    I use SQLite for development. The database file will be created in
-    ``[project_root]/run/dev.sqlite3``.
+    Database configuration is loaded from ``secrets.py`` if available. If
+    ``secrets.py`` does not exist, a default SQLite database will be used at
+    ``[project_root]/run/db.sqlite3``.
+
+    To configure a production database, copy
+    ``labman/settings/secrets.py.template`` to ``labman/settings/secrets.py``
+    and edit it with your database credentials. The ``secrets.py`` file is
+    excluded from version control via ``.gitignore``.
 
 Application Configuration
 ^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -265,11 +271,72 @@ production.py
 -------------
 
 *(modified in 1.2)*
-This file should contain production settings. Currently, it just reverts some
-development specific configuration values, ``DEBUG`` and ``ALLOWED_HOSTS``.
-Please note, that the behaviour of ``manage.py`` changed: It now uses the
-settings in ``development.py`` automatically, while ``[project_root]/wsgi.py``
-refers to the settings in ``production.py``.
+This file contains production settings with security hardening enabled. The
+settings in ``production.py`` extend those in ``common.py`` and add the
+following security enhancements required for production deployment:
+
+Security Configuration
+^^^^^^^^^^^^^^^^^^^^^^
+
+The following security settings are configured in ``production.py`` to meet
+Django's deployment security checklist:
+
+``CSRF_COOKIE_SECURE``
+    Set to ``True`` to ensure CSRF cookies are only sent over HTTPS connections.
+
+``CSRF_COOKIE_HTTPONLY``
+    Set to ``True`` to prevent JavaScript access to CSRF cookies.
+
+``CSRF_COOKIE_SAMESITE``
+    Set to ``"Strict"`` to prevent CSRF cookies from being sent with
+    cross-site requests.
+
+``SESSION_COOKIE_SECURE``
+    Set to ``True`` to ensure session cookies are only sent over HTTPS.
+
+``SESSION_COOKIE_SAMESITE``
+    Set to ``"Strict"`` to prevent session cookies from being sent with
+    cross-site requests.
+
+``SECURE_SSL_REDIRECT``
+    Set to ``True`` to redirect all HTTP requests to HTTPS.
+
+``SECURE_HSTS_SECONDS``
+    Set to ``3600`` to enable HTTP Strict Transport Security for 1 hour.
+
+``SECURE_HSTS_INCLUDE_SUBDOMAINS``
+    Set to ``True`` to apply HSTS to all subdomains.
+
+``SECURE_HSTS_PRELOAD``
+    Set to ``True`` to allow the site to be preloaded in browsers' HSTS lists.
+
+``SECURE_BROWSER_XSS_FILTER``
+    Set to ``True`` to enable the browser's XSS filtering protection.
+
+``SECURE_CONTENT_TYPE_NOSNIFF``
+    Set to ``True`` to prevent browsers from MIME-sniffing content types.
+
+``SECURE_PROXY_SSL_HEADER``
+    Set to ``("HTTP_X_FORWARDED_PROTO", "https")`` to support SSL termination
+    at a reverse proxy.
+
+``X_FRAME_OPTIONS``
+    Set to ``"DENY"`` to prevent the site from being displayed in frames.
+
+``DEBUG``
+    Set to ``False`` to disable debug mode in production.
+
+Database Configuration
+^^^^^^^^^^^^^^^^^^^^^^
+
+``DATABASES``
+    Database configuration is loaded from ``secrets.py`` if available. If
+    ``secrets.py`` does not exist, a default SQLite database will be used.
+    For production use, you should create ``labman/settings/secrets.py`` by
+    copying ``secrets.py.template`` and configuring your database credentials.
+
+Please note that ``manage.py`` uses the settings in ``development.py`` by
+default, while ``[project_root]/wsgi.py`` refers to ``production.py``.
 
 
 djangodefault.py
