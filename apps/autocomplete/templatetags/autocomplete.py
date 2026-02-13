@@ -32,10 +32,10 @@ def search_highlight(value, search):
         return value
     try:
         pos = value.lower().index(search.lower())
-        start = escape(value[:pos])
-        match = escape(value[pos : pos + len(search)])
-        end = escape(value[pos + len(search) :])
-        return mark_safe(f'{start}<span class="highlight">{match}</span>{end}')
+        start = value[:pos]
+        match = value[pos : pos + len(search)]
+        end = value[pos + len(search) :]
+        return format_html('{}<span class="highlight">{}</span>{}', start, match, end)
     except ValueError:
         pass
     return value

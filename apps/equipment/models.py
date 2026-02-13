@@ -106,22 +106,6 @@ class Location(ResourceedObject):
         return new
 
     @property
-    def _code_regexp(self):
-        """Create a regular expression pattern matching all parent location codes.
-
-        Returns:
-            (str):
-                A regex pattern that matches this location's code and all parent codes.
-        """
-        parts = self.code.split(",")
-        if len(parts) <= 1:
-            return self.code
-        pat = ""
-        for part in reversed(parts[1:]):
-            pat = f"(,{part}{pat})?"
-        return f"^{parts[0]}{pat}$"
-
-    @property
     def all_parents(self):
         """Retrieve all parent locations containing this location.
 
@@ -134,7 +118,10 @@ class Location(ResourceedObject):
         """
         if self.level == 0:
             return self.__class__.objects.filter(code=self.code)
-        return self.__class__.objects.filter(code__regex=self._code_regexp).order_by("-code")
+        # Generate list of all parent codes including self
+        parts = self.code.split(",")
+        parent_codes = [",".join(parts[:i]) for i in range(1, len(parts) + 1)]
+        return self.__class__.objects.filter(code__in=parent_codes).order_by("-code")
 
     @property
     def children(self):
@@ -147,7 +134,7 @@ class Location(ResourceedObject):
             (QuerySet):
                 QuerySet of Location objects representing this location and all children.
         """
-        query = models.Q(code__regex=f"^{self.code}[^0-9]") | models.Q(code=self.code)
+        query = models.Q(code__startswith=f"{self.code},") | models.Q(code=self.code)
         return self.__class__.objects.filter(query).order_by("code")
 
     @property
