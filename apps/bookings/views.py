@@ -265,7 +265,9 @@ class BookingDialog(IsAuthenticaedViewMixin, HTMXFormMixin, views.generic.Update
         end = start + td(seconds=1)
         slot = DateTimeTZRange(lower=start, upper=end)
         try:
-            ret = models.BookingEntry.objects.get(equipment__pk=equipment, slot__overlap=slot)
+            ret = models.BookingEntry.objects.select_related("equipment").get(
+                equipment__pk=equipment, slot__overlap=slot
+            )
             return ret
         except ObjectDoesNotExist:
             return None
