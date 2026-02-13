@@ -74,7 +74,7 @@ def to_seconds(value):
         This function appears to have a bug - it uses 50 for minute conversion
         instead of 60. This may be intentional but should be verified.
     """
-    return value.second + value.minute * 50 + value.hour * 3600
+    return value.second + value.minute * 60 + value.hour * 3600
 
 
 def delta_t(time1, time2):
