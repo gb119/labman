@@ -44,6 +44,11 @@ from . import forms, models
 
 DEFAULT_TZ = pytz.timezone(settings.TIME_ZONE)
 
+# Constants for handling missing/orphaned foreign key references
+UNKNOWN_EQUIPMENT = "[Unknown Equipment]"
+UNKNOWN_USER = "[Unknown User]"
+UNKNOWN_COST_CENTRE = "[Unknown Cost Centre]"
+
 
 def delta_time(time_1: Time, time_2: Time) -> int:
     """Return the number of seconds between time_1 and time_2.
@@ -193,6 +198,7 @@ class CategoryCalendarView(IsAuthenticaedViewMixin, views.generic.TemplateView):
             Equipment.objects.filter(category=cat)
             .annotate(policy_count=Count("policies"))
             .filter(policy_count__gt=0, offline=False)
+            .prefetch_related("shifts")
             .order_by("name")
         )
         equipment = Equipment.objects.filter(category=cat).first()
@@ -264,7 +270,9 @@ class BookingDialog(IsAuthenticaedViewMixin, HTMXFormMixin, views.generic.Update
         end = start + td(seconds=1)
         slot = DateTimeTZRange(lower=start, upper=end)
         try:
-            ret = models.BookingEntry.objects.get(equipment__pk=equipment, slot__overlap=slot)
+            ret = models.BookingEntry.objects.select_related("equipment").get(
+                equipment__pk=equipment, slot__overlap=slot
+            )
             return ret
         except ObjectDoesNotExist:
             return None
@@ -460,23 +468,6 @@ class BookingRecordsView(IsAuthenticaedViewMixin, FormListView):
             qs = qs.filter(query)
         return qs
 
-    def map_row(self, row):
-        """Data renamer to convert foreign key IDs to human-readable strings.
-
-        Converts equipment, user, and cost centre IDs to their string representations
-        for display and export purposes.
-
-        Args:
-            row: A pandas Series representing a booking record row.
-
-        Returns:
-            (Series): The row with foreign key fields replaced by strings.
-        """
-        row.equipment = str(Equipment.objects.get(pk=row.equipment))
-        row.user = str(Account.objects.get(pk=row.user).display_name)
-        row.cost_centre = str(CostCentre.objects.get(pk=row.cost_centre).short_name)
-        return row
-
     def get_context_data(self, **kwargs):
         """Build context data including processed booking records.
 
@@ -497,7 +488,21 @@ class BookingRecordsView(IsAuthenticaedViewMixin, FormListView):
             self.df = df
             return context
         bad = df["slot"]
-        df = df.apply(self.map_row, axis=1)
+
+        # Bulk load all related objects to avoid N+1 queries
+        equipment_ids = df["equipment"].unique()
+        user_ids = df["user"].unique()
+        cost_centre_ids = df["cost_centre"].unique()
+
+        equipment_map = {e.pk: str(e) for e in Equipment.objects.filter(pk__in=equipment_ids)}
+        user_map = {u.pk: str(u.display_name) for u in Account.objects.filter(pk__in=user_ids)}
+        cost_centre_map = {cc.pk: str(cc.short_name) for cc in CostCentre.objects.filter(pk__in=cost_centre_ids)}
+
+        # Map foreign keys to strings using dictionary lookups
+        # fillna handles any orphaned foreign keys gracefully
+        df["equipment"] = df["equipment"].map(equipment_map).fillna(UNKNOWN_EQUIPMENT)
+        df["user"] = df["user"].map(user_map).fillna(UNKNOWN_USER)
+        df["cost_centre"] = df["cost_centre"].map(cost_centre_map).fillna(UNKNOWN_COST_CENTRE)
         df["start"] = (df["slot"].apply(lambda x: x.lower)).dt.tz_localize(None)
         df["end"] = (df["slot"].apply(lambda x: x.upper)).dt.tz_localize(None)
 

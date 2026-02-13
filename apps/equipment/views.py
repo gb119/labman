@@ -220,6 +220,7 @@ class EquipmentDetailView(HTMXProcessMixin, IsAuthenticaedViewMixin, views.gener
                         Equipment.objects.filter(category=cat)
                         .annotate(policy_count=Count("policies"))
                         .filter(policy_count__gt=0, offline=False)
+                        .prefetch_related("shifts")
                         .order_by("name")
                     )
                     if equip_vec.count() == 0:

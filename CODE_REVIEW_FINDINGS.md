@@ -14,7 +14,7 @@
 This code review identified **17 new issues** across the Django 5.2 project, including:
 - **4 Critical security vulnerabilities** (all fixed)
 - **2 High-priority issues** (both fixed)
-- **5 Medium-priority issues** (documented)
+- **5 Medium-priority issues** (1 partially fixed, 4 documented)
 - **5 Low-priority code quality issues** (documented)
 - **1 Clarification** (unusual naming convention verified)
 
@@ -25,6 +25,7 @@ This code review identified **17 new issues** across the Django 5.2 project, inc
 4. ~~Print statements in settings~~ - **REVERTED** - These are intentional (see Issue #5 below)
 5. ✅ **XSS risk in search_highlight** - Changed from mark_safe() to format_html()
 6. ✅ **Regex injection risk** - Replaced regex queries with code__in and code__startswith for better performance and security
+7. ✅ **N+1 Query Issues** - Fixed major N+1 queries in BookingRecordsView, Equipment models, and Document.save()
 
 **Note on Print Statements:** The print statements in `settings/common.py` are intentional design decisions for verifying app loading during `./manage.py check`. They output to syslog in production and provide valuable diagnostics.
 
@@ -306,26 +307,57 @@ APPS = {
 
 ---
 
-### 9. Missing QuerySet Optimization (N+1 Queries)
+### 9. Missing QuerySet Optimization (N+1 Queries) ✅ PARTIALLY FIXED
 
 **Location:** Various models and views
 
 **Issue:** Some database queries lack `select_related()` or `prefetch_related()`.
 
-**Example from `apps/equipment/models.py:394+`:**
-```python
-users = self.userlist.all().prefetch_related("role")  # Good!
-# But other queries in the codebase may not prefetch
-```
-
 **Impact:** Performance degradation with many-to-one or many-to-many relationships.
 
-**Recommendation:** 
-- Run Django Debug Toolbar to identify N+1 queries
-- Add `select_related()` for ForeignKey relationships
-- Add `prefetch_related()` for ManyToMany relationships
+**Status:** ✅ **PARTIALLY FIXED** - Major N+1 queries optimized (2026-02-13)
 
-**Status:** ⚠️ **DOCUMENTED** - Needs performance profiling
+**Fixes Applied:**
+
+1. **BookingRecordsView.map_row()** (apps/bookings/views.py:475-477) - **FIXED**
+   - **Issue:** Severe N+1 - executed 3 database queries (Equipment, Account, CostCentre) per DataFrame row
+   - **Fix:** Replaced `df.apply(self.map_row, axis=1)` with bulk loading and dictionary mapping
+   - **Impact:** Reduces database queries from 3N to 3 (where N = number of booking records)
+
+2. **Equipment.calendar_time_vector property** (apps/equipment/models.py:329-335) - **FIXED**
+   - **Issue:** Loops through shifts without prefetch_related
+   - **Fix:** Added `.prefetch_related("shifts")` to equipment querysets in:
+     - `apps/bookings/views.py:192-197` (EquipmentCalendarCategoryView)
+     - `apps/equipment/views.py:219-224` (EquipmentCalendarView)
+   - **Impact:** Eliminates N+1 queries when displaying multi-equipment calendars
+
+3. **Equipment.userlist_dict property** (apps/equipment/models.py:338-350) - **FIXED**
+   - **Issue:** Filtered users multiple times in a loop: `users.filter(role__name=role)` for each role
+   - **Fix:** Replaced with Python-based grouping using defaultdict
+   - **Impact:** Reduces queries from M (number of roles) to 1 per equipment
+
+4. **Document.save()** (apps/labman_utils/models.py:328-332) - **FIXED**
+   - **Issue:** Nested loops causing multiple queries per document save
+   - **Fix:** Collect all equipment IDs first, then bulk update UserListEntry in single query
+   - **Impact:** Reduces queries from 2N + M (equipment + locations * child equipment) to 3
+
+5. **BookingDialog.get_object()** (apps/bookings/views.py:268) - **IMPROVED**
+   - **Issue:** Loading BookingEntry without prefetching equipment relationships
+   - **Fix:** Added `.select_related("equipment")` to reduce queries when loading booking for editing
+   - **Impact:** Reduces queries by 1 per booking dialog load
+
+**Remaining Optimizations:**
+
+The following N+1 patterns remain but have lower impact:
+- BookingPolicy validation loops (line 348 in bookings/models.py) - occurs once per booking save
+- Various admin list comprehensions - only affect admin interface
+- M2M relationship loops in views - mostly in form processing contexts
+
+**Recommendation:** 
+- Monitor production query patterns with Django Debug Toolbar
+- Profile critical views under realistic load
+- Add `select_related()` for ForeignKey relationships as needed
+- Add `prefetch_related()` for ManyToMany relationships as needed
 
 ---
 
@@ -608,6 +640,14 @@ These items are **already correctly implemented** in the codebase:
   - Eliminates potential ReDoS vulnerability
   - Improves query performance with better database index utilization
   - Net reduction: 32 lines of complex regex code
+
+- **2026-02-13 (Performance Optimization):** Fixed N+1 queries (Issue #9)
+  - **BookingRecordsView.map_row()**: Replaced per-row database queries with bulk loading (3N → 3 queries)
+  - **Equipment.calendar_time_vector**: Added prefetch_related('shifts') to equipment querysets
+  - **Equipment.userlist_dict**: Replaced repeated filter queries with Python grouping
+  - **Document.save()**: Replaced nested loops with bulk update operation
+  - **BookingDialog.get_object()**: Added select_related('equipment') for booking loads
+  - Significant performance improvement for booking records and calendar views
 
 ---
 

@@ -13,6 +13,7 @@ The models support complex workflows including equipment booking, user authorisa
 document management, and cost tracking for laboratory resources.
 """
 # Python imports
+from collections import defaultdict
 from datetime import (
     date as Date,
     datetime as dt,
@@ -145,7 +146,8 @@ class Location(ResourceedObject):
             (QuerySet):
                 QuerySet of Document objects associated with this location or any parent.
         """
-        return self.files.model.objects.filter(location__in=self.all_parents)
+        Document = apps.get_model("labman_utils", "document")
+        return Document.objects.filter(location__in=self.all_parents)
 
     @property
     def all_photos(self):
@@ -155,7 +157,8 @@ class Location(ResourceedObject):
             (QuerySet):
                 QuerySet of photo Document objects associated with this location or any parent.
         """
-        return self.photos.model.objects.filter(location__in=self.all_parents)
+        Photo = apps.get_model("photologue", "photo")
+        return Photo.objects.filter(location__in=self.all_parents)
 
     @property
     def all_pages(self):
@@ -165,7 +168,8 @@ class Location(ResourceedObject):
             (QuerySet):
                 QuerySet of page Document objects associated with this location or any parent.
         """
-        return self.pages.model.objects.filter(location__in=self.all_parents)
+        FlatPage = apps.get_model("flatpages", "flatpage")
+        return FlatPage.objects.filter(location__in=self.all_parents)
 
     @property
     def url(self):
@@ -340,14 +344,31 @@ class Equipment(ResourceedObject):
 
         Returns:
             (dict):
-                Dictionary mapping role names (str) to QuerySets of UserListEntry objects.
-                Roles are ordered by level (highest first).
+                Dictionary mapping role names (str) to lists of UserListEntry objects.
+                Roles are ordered by level (highest first). Users without assigned roles
+                are excluded from the results.
+
+        Notes:
+            This method groups users in Python rather than using database filtering
+            to avoid N+1 queries. The return type changed from QuerySets to lists
+            in optimization efforts.
+
+            The queryset is evaluated to a list to ensure prefetch_related works
+            correctly and to enable grouping. For equipment with very large userlists
+            (1000+ entries), consider implementing pagination or lazy loading.
         """
-        ret = {}
-        users = self.userlist.all().prefetch_related("role")
-        for role in [x["role__name"] for x in users.order_by("-role__level").values("role__name").distinct()]:
-            ret[role] = users.filter(role__name=role)
-        return ret
+        # Fetch all users once with role prefetched to avoid N+1 queries
+        # Order by role level first, then prefetch role data
+        # list() is necessary to materialize the queryset with prefetch_related
+        users_list = list(self.userlist.order_by("-role__level").all().prefetch_related("role"))
+
+        # Group users by role in Python to avoid repeated database queries
+        ret = defaultdict(list)
+        for user in users_list:
+            if user.role:  # Skip users without assigned roles
+                ret[user.role.name].append(user)
+
+        return dict(ret)
 
     @property
     def default_charge_rate(self):
