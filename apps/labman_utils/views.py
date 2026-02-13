@@ -85,7 +85,7 @@ class IsSuperuserViewMixin(IsAuthenticaedViewMixin):
             (bool):
                 True if the user is authenticated and is a superuser, False otherwise.
         """
-        return super().test_finc() and self.request.user.is_superuser
+        return super().test_func() and self.request.user.is_superuser
 
 
 class IsStaffViewMixin(IsSuperuserViewMixin):
@@ -101,7 +101,7 @@ class IsStaffViewMixin(IsSuperuserViewMixin):
             (bool):
                 True if the user is authenticated and is either staff or superuser, False otherwise.
         """
-        return IsAuthenticaedViewMixin.test_func(self) and (self.request.user.is_staff or super().test_finc())
+        return IsAuthenticaedViewMixin.test_func(self) and (self.request.user.is_staff or super().test_func())
 
 
 class RedirectView(View):
@@ -171,13 +171,13 @@ class RedirectView(View):
 
         Returns:
             (View or None):
-                The logged_in_view attribute if authenticated, otherwise the result of get_anonymouys_view.
+                The logged_in_view attribute if authenticated, otherwise the result of get_anonymous_view.
         """
         if self.request.user.is_authenticated:
             return getattr(self, "logged_in_view", None)
-        return self.get_anonymouys_view(request)
+        return self.get_anonymous_view(request)
 
-    def get_anonymouys_view(self, request):
+    def get_anonymous_view(self, request):
         """Return the contents of the anonymous_view.
 
         Args:
@@ -749,13 +749,13 @@ class PhotoDisplay(DetailView):
             The Photo model from photologue.
         template_name (str):
             Template path, defaults to "labman_utils/photo_tag.html".
-        context_obkect_name (str):
+        context_object_name (str):
             Context variable name for the photo object.
     """
 
     model = Photo
     template_name = "labman_utils/photo_tag.html"
-    context_obkect_name = "photo"
+    context_object_name = "photo"
 
 
 class DocumentDialog(IsAuthenticaedViewMixin, HTMXFormMixin, UpdateView):
