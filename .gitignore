@@ -26,3 +26,6 @@ coverage_html
 
 # Spyder project files
 .spyproject
+
+# Log files and directories
+logs/

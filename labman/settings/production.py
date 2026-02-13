@@ -1,6 +1,7 @@
-# for now fetch the development settings only
+# Production settings
 # app imports
-from .development import *
+from .common import *
+from .secrets import DATABASES
 
 CORS_ALLOW_CREDENTIALS = True
 CORS_ALLOWED_ORIGINS = [
