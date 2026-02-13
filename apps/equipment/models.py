@@ -355,7 +355,8 @@ class Equipment(ResourceedObject):
         # Group users by role in Python to avoid repeated database queries
         ret = defaultdict(list)
         for user in users_list:
-            ret[user.role.name].append(user)
+            if user.role:  # Skip users without assigned roles
+                ret[user.role.name].append(user)
 
         return dict(ret)
 
