@@ -340,14 +340,16 @@ class Equipment(ResourceedObject):
 
         Returns:
             (dict):
-                Dictionary mapping role names (str) to QuerySets of UserListEntry objects.
+                Dictionary mapping role names (str) to lists of UserListEntry objects.
                 Roles are ordered by level (highest first).
         """
-        ret = {}
-        users = self.userlist.all().prefetch_related("role")
-        for role in [x["role__name"] for x in users.order_by("-role__level").values("role__name").distinct()]:
-            ret[role] = users.filter(role__name=role)
-        return ret
+        from collections import defaultdict
+
+        ret = defaultdict(list)
+        users = list(self.userlist.all().prefetch_related("role").order_by("-role__level"))
+        for user in users:
+            ret[user.role.name].append(user)
+        return dict(ret)
 
     @property
     def default_charge_rate(self):

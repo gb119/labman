@@ -193,6 +193,7 @@ class CategoryCalendarView(IsAuthenticaedViewMixin, views.generic.TemplateView):
             Equipment.objects.filter(category=cat)
             .annotate(policy_count=Count("policies"))
             .filter(policy_count__gt=0, offline=False)
+            .prefetch_related("shifts")
             .order_by("name")
         )
         equipment = Equipment.objects.filter(category=cat).first()
@@ -460,23 +461,6 @@ class BookingRecordsView(IsAuthenticaedViewMixin, FormListView):
             qs = qs.filter(query)
         return qs
 
-    def map_row(self, row):
-        """Data renamer to convert foreign key IDs to human-readable strings.
-
-        Converts equipment, user, and cost centre IDs to their string representations
-        for display and export purposes.
-
-        Args:
-            row: A pandas Series representing a booking record row.
-
-        Returns:
-            (Series): The row with foreign key fields replaced by strings.
-        """
-        row.equipment = str(Equipment.objects.get(pk=row.equipment))
-        row.user = str(Account.objects.get(pk=row.user).display_name)
-        row.cost_centre = str(CostCentre.objects.get(pk=row.cost_centre).short_name)
-        return row
-
     def get_context_data(self, **kwargs):
         """Build context data including processed booking records.
 
@@ -497,7 +481,20 @@ class BookingRecordsView(IsAuthenticaedViewMixin, FormListView):
             self.df = df
             return context
         bad = df["slot"]
-        df = df.apply(self.map_row, axis=1)
+
+        # Bulk load all related objects to avoid N+1 queries
+        equipment_ids = df["equipment"].unique()
+        user_ids = df["user"].unique()
+        cost_centre_ids = df["cost_centre"].unique()
+
+        equipment_map = {e.pk: str(e) for e in Equipment.objects.filter(pk__in=equipment_ids)}
+        user_map = {u.pk: str(u.display_name) for u in Account.objects.filter(pk__in=user_ids)}
+        cost_centre_map = {cc.pk: str(cc.short_name) for cc in CostCentre.objects.filter(pk__in=cost_centre_ids)}
+
+        # Map foreign keys to strings using dictionary lookups
+        df["equipment"] = df["equipment"].map(equipment_map)
+        df["user"] = df["user"].map(user_map)
+        df["cost_centre"] = df["cost_centre"].map(cost_centre_map)
         df["start"] = (df["slot"].apply(lambda x: x.lower)).dt.tz_localize(None)
         df["end"] = (df["slot"].apply(lambda x: x.upper)).dt.tz_localize(None)
 

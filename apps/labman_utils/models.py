@@ -11,6 +11,7 @@ from datetime import date, datetime as dt, time, timedelta as td
 from functools import reduce
 
 # Django imports
+from django.apps import apps
 from django.conf import settings
 from django.contrib.admin import widgets as admin_widgets
 from django.contrib.flatpages.models import FlatPage
@@ -325,11 +326,23 @@ class Document(dsfh.BaseMixin, dsfh.TitledMixin, dsfh.PublicMixin, dsfh.RenameMi
             old = Document.objects.get(pk=self.pk)
             if old.version != self.version:
                 with transaction.atomic():
-                    for equipment in self.equipment.all():
-                        equipment.userlist.all().update(hold=True)
+                    # Collect all equipment IDs that need userlist updates
+                    equipment_ids = set()
+
+                    # Add equipment directly associated with this document
+                    equipment_ids.update(self.equipment.values_list("id", flat=True))
+
+                    # Add equipment at locations associated with this document
                     for location in self.location.all():
-                        for equipment in self.equipment.model.objects.filter(location__in=location.children):
-                            equipment.userlist.all().update(hold=True)
+                        child_equipment_ids = Equipment.objects.filter(
+                            location__in=location.children
+                        ).values_list("id", flat=True)
+                        equipment_ids.update(child_equipment_ids)
+
+                    # Bulk update all userlist entries for collected equipment
+                    if equipment_ids:
+                        UserListEntry = apps.get_model("equipment", "UserListEntry")
+                        UserListEntry.objects.filter(equipment_id__in=equipment_ids).update(hold=True)
 
         super().save(force_insert=force_insert, force_update=force_update, using=using, update_fields=update_fields)
 
