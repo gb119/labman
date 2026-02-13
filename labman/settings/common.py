@@ -1,5 +1,4 @@
 # Python imports
-import logging
 import socket
 import sys
 from pathlib import Path
@@ -13,9 +12,6 @@ from pathlib import Path
 
 major, minor = sys.version_info[0:2]
 sys.path.append(f"/usr/local/lib/python{major}.{minor}/site-packages")
-
-# Setup logging for settings configuration
-logger = logging.getLogger(__name__)
 
 # ##### PATH CONFIGURATION ################################
 
@@ -73,9 +69,10 @@ APPS = {
 CUSTOM_APPS = list(APPS.keys())
 # Autobuild all
 appdirs = list(APPS.items())
-# Log discovered apps for debugging
+print("#" * 80)
 for app in APPS:
-    logger.debug(f"Adding app: {app}")
+    print(f"Adding {app=}")
+print("#" * 80)
 
 
 # these are the apps

@@ -22,8 +22,10 @@ This code review identified **17 new issues** across the Django 5.2 project, inc
 1. ✅ **DEBUG=True in production** - Changed to `DEBUG=False`
 2. ✅ **f-string bug in error logging** - Added missing f-string prefix
 3. ✅ **Bare assert statements** - Replaced with DEBUG-aware exception handling (re-raises in DEBUG mode)
-4. ✅ **Print statements in settings** - Replaced with logger.debug()
+4. ~~Print statements in settings~~ - **REVERTED** - These are intentional (see Issue #5 below)
 5. ✅ **XSS risk in search_highlight** - Changed from mark_safe() to format_html()
+
+**Note on Print Statements:** The print statements in `settings/common.py` are intentional design decisions for verifying app loading during `./manage.py check`. They output to syslog in production and provide valuable diagnostics.
 
 ---
 
@@ -170,7 +172,7 @@ These `mark_safe()` calls build HTMX attribute values from controlled data:
 
 ## ⚠️ High Priority Issues
 
-### 5. Print Statements in Settings Module ✅ FIXED
+### 5. Print Statements in Settings Module ✅ INTENTIONAL DESIGN
 
 **Location:** `labman/settings/common.py:72-75`
 
@@ -184,23 +186,22 @@ for app in APPS:
 print("#" * 80)
 ```
 
-**Impact:**
-- Pollutes stdout in production
-- Not captured by logging infrastructure
-- Indicates development/debugging code in production
+**Initial Assessment:**
+- Appeared to pollute stdout in production
+- Seemed not to be captured by logging infrastructure
+- Looked like development/debugging code in production
 
-**Status:** ✅ **FIXED** - Replaced with logger.debug()
+**Status:** ✅ **INTENTIONAL DESIGN** - Reverted back to print statements
 
-**Code Changes:**
-```python
-# Added logging import at top of file
-import logging
-logger = logging.getLogger(__name__)
+**Rationale:**
+After review with the project maintainer, these print statements are **intentional** and serve a specific purpose:
 
-# Replaced print statements with logging
-for app in APPS:
-    logger.debug(f"Adding app: {app}")
-```
+1. **Diagnostic Tool:** Used to verify that apps are loading correctly when running `./manage.py check`
+2. **Logging Integration:** The output is captured by the server's syslog configuration, so it does end up in log files
+3. **No Better Alternative:** There's no easy way to detect when code is loading via `./manage.py check` versus as a WSGI application
+4. **Reasonable Compromise:** Given the constraints, print statements in settings.py are a reasonable solution
+
+**Design Decision:** This is working as intended and should remain unchanged.
 
 ---
 
@@ -506,11 +507,11 @@ These items are **already correctly implemented** in the codebase:
 
 ### Immediate Actions (Critical/High Priority)
 - ✅ All critical issues have been fixed
-- ⚠️ Verify the `ChargeableItgem` typo (issue #7)
+- ⚠️ Verify the `ChargeableItgem` typo (issue #7) - **VERIFIED as intentional**
 - ⚠️ Review N+1 query patterns with Django Debug Toolbar
 
 ### Short-term Improvements (Medium Priority)
-- Consider explicit app listing instead of dynamic discovery
+- Consider explicit app listing instead of dynamic discovery (or document rationale)
 - Audit all views for proper model validation
 - Update misleading code comments
 - Review custom `as_view()` implementation necessity
@@ -520,6 +521,10 @@ These items are **already correctly implemented** in the codebase:
 - Consider django-treebeard for hierarchical data
 - Establish consistent error handling patterns
 - Define constants for magic numbers
+
+### Design Decisions Confirmed
+- ✅ Print statements in settings/common.py are intentional for diagnostics
+- ✅ ChargeableItgem spelling is intentional (though unconventional)
 
 ---
 
@@ -564,7 +569,7 @@ These items are **already correctly implemented** in the codebase:
 ## 🔄 Review History
 
 - **2026-02-13 (Initial Review):** Comprehensive code review
-  - Fixed 5 critical/high priority issues
+  - Fixed 4 critical/high priority issues
   - Documented 12 additional issues for consideration
   - All critical security vulnerabilities addressed
 
@@ -573,6 +578,12 @@ These items are **already correctly implemented** in the codebase:
   - Exceptions now re-raised in DEBUG mode for full Django error pages
   - Production behavior unchanged (graceful error handling)
   - Updated docstrings to reflect new behavior
+
+- **2026-02-13 (Correction):** Reverted print statement changes
+  - Print statements in settings/common.py are intentional design decisions
+  - Used for app loading diagnostics during `./manage.py check`
+  - Output captured by syslog in production
+  - Restored original print statements
 
 ---
 
