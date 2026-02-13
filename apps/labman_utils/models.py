@@ -333,6 +333,7 @@ class Document(dsfh.BaseMixin, dsfh.TitledMixin, dsfh.PublicMixin, dsfh.RenameMi
                     equipment_ids.update(self.equipment.values_list("id", flat=True))
 
                     # Add equipment at locations associated with this document
+                    Equipment = apps.get_model("equipment", "Equipment")
                     for location in self.location.all():
                         child_equipment_ids = Equipment.objects.filter(
                             location__in=location.children

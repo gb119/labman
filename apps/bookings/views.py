@@ -494,9 +494,10 @@ class BookingRecordsView(IsAuthenticaedViewMixin, FormListView):
         cost_centre_map = {cc.pk: str(cc.short_name) for cc in CostCentre.objects.filter(pk__in=cost_centre_ids)}
 
         # Map foreign keys to strings using dictionary lookups
-        df["equipment"] = df["equipment"].map(equipment_map)
-        df["user"] = df["user"].map(user_map)
-        df["cost_centre"] = df["cost_centre"].map(cost_centre_map)
+        # fillna handles any orphaned foreign keys gracefully
+        df["equipment"] = df["equipment"].map(equipment_map).fillna("[Unknown Equipment]")
+        df["user"] = df["user"].map(user_map).fillna("[Unknown User]")
+        df["cost_centre"] = df["cost_centre"].map(cost_centre_map).fillna("[Unknown Cost Centre]")
         df["start"] = (df["slot"].apply(lambda x: x.lower)).dt.tz_localize(None)
         df["end"] = (df["slot"].apply(lambda x: x.upper)).dt.tz_localize(None)
 

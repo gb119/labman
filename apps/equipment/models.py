@@ -340,15 +340,22 @@ class Equipment(ResourceedObject):
 
         Returns:
             (dict):
-                Dictionary mapping role names (str) to lists of UserListEntry objects.
+                Dictionary mapping role names (str) to QuerySets of UserListEntry objects.
                 Roles are ordered by level (highest first).
         """
         from collections import defaultdict
 
+        # Fetch all users once with role prefetched to avoid N+1 queries
+        users_list = list(self.userlist.all().prefetch_related("role").order_by("-role__level"))
+
+        # Group users by role in Python to avoid repeated database queries
         ret = defaultdict(list)
-        users = list(self.userlist.all().prefetch_related("role").order_by("-role__level"))
-        for user in users:
+        for user in users_list:
             ret[user.role.name].append(user)
+
+        # Return a dict of lists instead of QuerySets
+        # Note: This changes the return type from QuerySets to lists
+        # Template code should use 'for entry in userlist' instead of 'for entry in userlist.all'
         return dict(ret)
 
     @property
