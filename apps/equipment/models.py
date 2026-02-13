@@ -146,7 +146,8 @@ class Location(ResourceedObject):
             (QuerySet):
                 QuerySet of Document objects associated with this location or any parent.
         """
-        return self.files.model.objects.filter(location__in=self.all_parents)
+        Document = apps.get_model("labman_utils", "Document")
+        return Document.objects.filter(location__in=self.all_parents)
 
     @property
     def all_photos(self):
@@ -156,7 +157,8 @@ class Location(ResourceedObject):
             (QuerySet):
                 QuerySet of photo Document objects associated with this location or any parent.
         """
-        return self.photos.model.objects.filter(location__in=self.all_parents)
+        Photo = apps.get_model("photologue", "Photo")
+        return Photo.objects.filter(location__in=self.all_parents)
 
     @property
     def all_pages(self):
@@ -166,7 +168,8 @@ class Location(ResourceedObject):
             (QuerySet):
                 QuerySet of page Document objects associated with this location or any parent.
         """
-        return self.pages.model.objects.filter(location__in=self.all_parents)
+        FlatPage = apps.get_model("flatpages", "FlatPage")
+        return FlatPage.objects.filter(location__in=self.all_parents)
 
     @property
     def url(self):
@@ -349,8 +352,13 @@ class Equipment(ResourceedObject):
             This method groups users in Python rather than using database filtering
             to avoid N+1 queries. The return type changed from QuerySets to lists
             in optimization efforts.
+
+            The queryset is evaluated to a list to ensure prefetch_related works
+            correctly and to enable grouping. For equipment with very large userlists
+            (1000+ entries), consider implementing pagination or lazy loading.
         """
         # Fetch all users once with role prefetched to avoid N+1 queries
+        # list() is necessary to materialize the queryset with prefetch_related
         users_list = list(self.userlist.all().prefetch_related("role").order_by("-role__level"))
 
         # Group users by role in Python to avoid repeated database queries

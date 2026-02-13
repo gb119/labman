@@ -274,8 +274,9 @@ class Document(dsfh.BaseMixin, dsfh.TitledMixin, dsfh.PublicMixin, dsfh.RenameMi
             q_obs.append(models.Q(code__startswith=location.code))
         if not q_obs:
             return None
+        Location = apps.get_model("equipment", "Location")
         return (
-            self.location.model.objects.filter(reduce(lambda left, right: left | right, q_obs))
+            Location.objects.filter(reduce(lambda left, right: left | right, q_obs))
             .order_by("code")
             .distinct()
         )
