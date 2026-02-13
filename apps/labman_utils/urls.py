@@ -43,8 +43,7 @@ urlpatterns = [
         name="edit_location_document",
     ),
     path("edit_document/<int:pk>/", views.DocumentDialog.as_view(), name="edit_document"),
-    path("new_document/<int:pk>", views.DocumentDialog.as_view(), name="new_document"),
-    path("new_document", views.DocumentDialog.as_view(), name="new_document"),
+    path("new_document/", views.DocumentDialog.as_view(), name="new_document"),
     path(
         "link_documents/equipment/<int:equipment>/",
         views.DocumentLinkDialog.as_view(),
@@ -71,7 +70,7 @@ urlpatterns = [
         name="edit_account_photo",
     ),
     path("edit_photo/<int:pk>/", views.PhotoDialog.as_view(), name="edit_photo"),
-    path("new_photo/<int:pk>", views.PhotoDialog.as_view(), name="new_photo"),
+    path("new_photo/", views.PhotoDialog.as_view(), name="new_photo"),
     path(
         "link_photos/equipment/<int:equipment>/",
         views.PhotoLinkDialog.as_view(),
@@ -92,7 +91,7 @@ urlpatterns = [
         name="edit_location_flatpage",
     ),
     path("edit_flatpage/<int:pk>/", views.FlatPageDialog.as_view(), name="edit_flatpage"),
-    path("new_flatpage/<int:pk>", views.FlatPageDialog.as_view(), name="new_flatpage"),
+    path("new_flatpage/", views.FlatPageDialog.as_view(), name="new_flatpage"),
     path(
         "link_flatpages/equipment/<int:equipment>/",
         views.FlatPageLinkDialog.as_view(),
