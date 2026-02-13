@@ -308,6 +308,7 @@ class BookingRecordsView(IsAuthenticaedViewMixin, FormListView):
         entries = context["entries"]
         df = pd.DataFrame(entries.values("user", "cost_centre", "equipment", "shifts", "slot", "charge", "comment"))
         if len(df) == 0:
+            self.df = df
             return context
         bad = df["slot"]
         df = df.apply(self.map_row, axis=1)

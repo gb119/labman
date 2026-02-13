@@ -177,7 +177,7 @@ class Document(dsfh.BaseMixin, dsfh.TitledMixin, dsfh.PublicMixin, dsfh.RenameMi
                         equipment.userlist.all().update(hold=True)
                     for location in self.location.all():
                         for equipment in self.equipment.model.objects.filter(location__in=location.children):
-                            equipment.users.all().update(hold=True)
+                            equipment.userlist.all().update(hold=True)
 
         super().save(force_insert=force_insert, force_update=force_update, using=using, update_fields=update_fields)
 

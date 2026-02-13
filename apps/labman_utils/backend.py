@@ -8,10 +8,12 @@ from django.contrib.auth import get_user_model
 from django.core.exceptions import PermissionDenied
 
 # external imports
-from django_auth_adfs import signals
 from django_auth_adfs.backend import AdfsAuthCodeBackend
 from django_auth_adfs.config import provider_config, settings
 from requests.exceptions import SSLError
+
+# app imports
+from django_auth_adfs import signals
 
 logger = logging.getLogger("django_auth_adfs")
 
