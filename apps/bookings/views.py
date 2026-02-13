@@ -1,5 +1,11 @@
 # -*- coding: utf-8 -*-
-"""View definitions for the bookings app."""
+"""View definitions for the bookings app.
+
+This module provides Django class-based views for managing equipment bookings,
+including calendar displays, booking creation/editing dialogs, and comprehensive
+reporting functionality. It handles both single equipment and multi-equipment
+booking views with HTMX support.
+"""
 # Python imports
 import io
 import json
@@ -40,7 +46,18 @@ DEFAULT_TZ = pytz.timezone(settings.TIME_ZONE)
 
 
 def delta_time(time_1: Time, time_2: Time) -> int:
-    """Return the number of seconds betweetn time_1 and time_2."""
+    """Return the number of seconds between time_1 and time_2.
+
+    Converts time objects to datetime objects on today's date and calculates
+    the difference in seconds. If datetime objects are provided, uses them directly.
+
+    Args:
+        time_1 (Time or datetime): The first time point.
+        time_2 (Time or datetime): The second time point.
+
+    Returns:
+        (int): The number of seconds between the two times.
+    """
     if not isinstance(time_1, dt):
         dtime_1 = dt.combine(dt.today(), time_1, tzinfo=DEFAULT_TZ)
     else:
@@ -54,7 +71,18 @@ def delta_time(time_1: Time, time_2: Time) -> int:
 
 
 class CalendarView(IsAuthenticaedViewMixin, views.generic.DetailView):
-    """Make a calendar display for an equipment item and date."""
+    """Calendar display view for a single equipment item.
+
+    Displays a weekly calendar view for booking a specific equipment item,
+    showing existing bookings and allowing users to create new bookings.
+
+    Attributes:
+        template_name (str): Template for the calendar display.
+        model: Equipment model class.
+        slug_url_kwarg (str): URL keyword argument for equipment lookup.
+        slug_field (str): Model field for equipment lookup.
+        context_object_name (str): Name for equipment object in context.
+    """
 
     template_name = "bookings/equipment_calendar.html"
     model = Equipment
@@ -63,7 +91,17 @@ class CalendarView(IsAuthenticaedViewMixin, views.generic.DetailView):
     context_object_name = "equipment"
 
     def get_context_data(self, **kwargs):
-        """Build the context for the calendar display."""
+        """Build the context for the calendar display.
+
+        Sets up date range for weekly calendar view with navigation dates.
+
+        Keyword Parameters:
+            **kwargs: Additional context data from parent classes.
+
+        Returns:
+            (dict): Context dictionary containing start_date, back_date, forward_date,
+                mode, and booking form.
+        """
         context = super().get_context_data(**kwargs)
         # Build the calendar rows from the shifts.
         date = self.kwargs.get("date", int(self.request.GET.get("date", dt.today().strftime("%Y%m%d"))))
@@ -79,12 +117,30 @@ class CalendarView(IsAuthenticaedViewMixin, views.generic.DetailView):
 
 
 class AllCalendarView(IsAuthenticaedViewMixin, views.generic.TemplateView):
-    """Make a calendar display for an equipment item and date."""
+    """Calendar display view for all equipment items.
+
+    Displays a consolidated calendar view showing bookings across all equipment
+    items, grouped by category, for a given date range.
+
+    Attributes:
+        template_name (str): Template for the all-equipment calendar display.
+    """
 
     template_name = "bookings/equipment_all_calendar.html"
 
     def get_context_data(self, **kwargs):
-        """Build the context for the calendar display."""
+        """Build the context for the all-equipment calendar display.
+
+        Sets up date range for weekly calendar view with navigation dates.
+        Handles multiple date formats for flexibility.
+
+        Keyword Parameters:
+            **kwargs: Additional context data from parent classes.
+
+        Returns:
+            (dict): Context dictionary containing start_date, back_date, forward_date,
+                mode, booking form, and first equipment object.
+        """
         context = super().get_context_data(**kwargs)
         # Build the calendar rows from the shifts.
         try:
@@ -106,12 +162,29 @@ class AllCalendarView(IsAuthenticaedViewMixin, views.generic.TemplateView):
 
 
 class CategoryCalendarView(IsAuthenticaedViewMixin, views.generic.TemplateView):
-    """Make a calendar display for an equipment category and date."""
+    """Calendar display view for equipment within a specific category.
+
+    Displays a calendar view filtered to show only equipment within a specified
+    category, useful for viewing related equipment bookings together.
+
+    Attributes:
+        template_name (str): Template for category-specific calendar display.
+    """
 
     template_name = "bookings/parts/equipment_calendar_category.html"
 
     def get_context_data(self, **kwargs):
-        """Build the context for the calendar display."""
+        """Build the context for the category calendar display.
+
+        Creates a calendar table for all equipment in the specified category
+        that has booking policies and is not offline.
+
+        Keyword Parameters:
+            **kwargs: Additional context data from parent classes.
+
+        Returns:
+            (dict): Context dictionary containing calendar table for the category.
+        """
         context = super().get_context_data(**kwargs)
         # Build the calendar rows from the shifts.
         date = self.kwargs.get("date", int(self.request.GET.get("date", dt.today().strftime("%Y%m%d"))))
@@ -139,7 +212,18 @@ class CategoryCalendarView(IsAuthenticaedViewMixin, views.generic.TemplateView):
 
 
 class BookingDialog(IsAuthenticaedViewMixin, HTMXFormMixin, views.generic.UpdateView):
-    """Prdoce the html for a booking form in the dialog."""
+    """HTMX dialog for creating and editing booking entries.
+
+    Provides an HTMX-powered dialog interface for booking equipment. Supports
+    both creating new bookings and editing existing ones with appropriate
+    permission checks.
+
+    Attributes:
+        model: BookingEntry model class.
+        template_name (str): Template for the booking form dialog.
+        form_class: Form class for booking entries.
+        context_object_name (str): Name for the booking object in context.
+    """
 
     model = models.BookingEntry
     template_name = "bookings/booking_form.html"
@@ -147,7 +231,15 @@ class BookingDialog(IsAuthenticaedViewMixin, HTMXFormMixin, views.generic.Update
     context_object_name = "this"
 
     def get_context_data_dialog(self, **kwargs):
-        """Create the context for HTMX calls to open the booking dialog."""
+        """Create the context for HTMX calls to open the booking dialog.
+
+        Keyword Parameters:
+            **kwargs: Additional context data from parent classes.
+
+        Returns:
+            (dict): Context dictionary containing current URL, timestamp, equipment,
+                equipment ID, and edit flag.
+        """
         context = super().get_context_data(**kwargs)
         context["current_url"] = self.request.htmx.current_url
         context["ts"] = self.kwargs.get("ts", None)
@@ -157,7 +249,16 @@ class BookingDialog(IsAuthenticaedViewMixin, HTMXFormMixin, views.generic.Update
         return context
 
     def get_object(self, queryset=None):
-        """Either get the BookingEntry or None."""
+        """Get the BookingEntry for the specified equipment and time slot.
+
+        Searches for an existing booking that overlaps with the specified timestamp.
+
+        Keyword Parameters:
+            queryset (QuerySet or None): Optional queryset to use for lookup.
+
+        Returns:
+            (BookingEntry or None): The booking entry if found, otherwise None.
+        """
         equipment = self.kwargs.get("equipment")
         start = dt.fromtimestamp(self.kwargs.get("ts"), DEFAULT_TZ)
         end = start + td(seconds=1)
@@ -169,7 +270,16 @@ class BookingDialog(IsAuthenticaedViewMixin, HTMXFormMixin, views.generic.Update
             return None
 
     def get_initial(self):
-        """Make initial entry."""
+        """Make initial entry.
+
+        Creates initial form data for a new booking or populates data from an
+        existing booking. Automatically sets time slot based on equipment shifts
+        or defaults to 3 hours. Non-superusers are set as both user and booker.
+
+        Returns:
+            (dict): Initial form data containing equipment, slot, user, booker,
+                and cost_centre.
+        """
         if (this := self.get_object()) is not None:
             return {
                 "equipment": this.equipment,
@@ -192,7 +302,16 @@ class BookingDialog(IsAuthenticaedViewMixin, HTMXFormMixin, views.generic.Update
         return ret
 
     def htmx_form_valid_booking(self, form):
-        """Handle the HTMX submitted booking form if it's all ok."""
+        """Handle the HTMX submitted booking form if valid.
+
+        Saves the booking entry and triggers a schedule refresh.
+
+        Args:
+            form: The validated form containing booking data.
+
+        Returns:
+            (HttpResponse): Empty response with HTMX trigger to refresh schedule.
+        """
         self.object = form.save()
         equipment = self.object.equipment
         return HttpResponse(
@@ -203,7 +322,23 @@ class BookingDialog(IsAuthenticaedViewMixin, HTMXFormMixin, views.generic.Update
         )
 
     def htmx_delete_booking(self, request, *args, **kwargs):
-        """Handle the HTMX call that deletes a booking."""
+        """Handle the HTMX call that deletes a booking.
+
+        Deletes a booking entry with appropriate permission checks. Users can delete
+        their own bookings, while equipment managers can force delete any booking.
+
+        Args:
+            request: The HTTP request object.
+            *args: Additional positional arguments.
+            **kwargs: Additional keyword arguments.
+
+        Returns:
+            (HttpResponse): Empty response with HTMX trigger to refresh schedule.
+
+        Raises:
+            HttpResponseNotFound: If the booking cannot be found or no valid ID provided.
+            HttpResponseNotModified: If deletion is not allowed.
+        """
         pk = self.request.GET.get("booking", None)
         if not pk or not pk.isnumeric():
             return HttpResponseNotFound("No booking primary key found!")
@@ -230,7 +365,18 @@ class BookingDialog(IsAuthenticaedViewMixin, HTMXFormMixin, views.generic.Update
 
 
 class BookingRecordsView(IsAuthenticaedViewMixin, FormListView):
-    """Filter the list of records by the form data."""
+    """View for filtering and reporting on booking records.
+
+    Provides a comprehensive reporting interface for booking records with filtering
+    by date, equipment, user, and cost centre. Supports multiple output formats
+    including HTML, CSV, Excel, and PDF.
+
+    Attributes:
+        form_class: Form class for filtering booking records.
+        template_name (str): Template for the reporting view.
+        model: BookingEntry model class.
+        context_object_name (str): Name for entries list in context.
+    """
 
     form_class = forms.BookingEntryFilterForm
     template_name = "bookings/reporting.html"
@@ -238,7 +384,19 @@ class BookingRecordsView(IsAuthenticaedViewMixin, FormListView):
     context_object_name = "entries"
 
     def get(self, request, *args, **kwargs):
-        """Handle GET requests and instantiates a blank version of the form before passing to ListView.get."""
+        """Handle GET requests and instantiate form before passing to ListView.get.
+
+        Handles both initial page load and export requests. Export format is determined
+        by the form's output field and can be CSV, Excel, PDF, or raw data.
+
+        Args:
+            request: The HTTP request object.
+            *args: Additional positional arguments.
+            **kwargs: Additional keyword arguments.
+
+        Returns:
+            (HttpResponse): Either the rendered template or a file download response.
+        """
         form_class = self.get_form_class()
         if not getattr(self, "form", None):
             self.form = self.get_form(form_class)
@@ -272,7 +430,14 @@ class BookingRecordsView(IsAuthenticaedViewMixin, FormListView):
         return response
 
     def get_queryset(self):
-        """Get a queryset after we've filtered the data."""
+        """Get a queryset after filtering the data.
+
+        Applies filters from the validated form including date range, equipment,
+        user, and cost centre filters.
+
+        Returns:
+            (QuerySet): Filtered queryset of booking entries.
+        """
         if not self.form.is_valid():
             return self.model.objects.none()
         data = self.form.cleaned_data
@@ -296,14 +461,35 @@ class BookingRecordsView(IsAuthenticaedViewMixin, FormListView):
         return qs
 
     def map_row(self, row):
-        """Data renamer to undo FK ids."""
+        """Data renamer to convert foreign key IDs to human-readable strings.
+
+        Converts equipment, user, and cost centre IDs to their string representations
+        for display and export purposes.
+
+        Args:
+            row: A pandas Series representing a booking record row.
+
+        Returns:
+            (Series): The row with foreign key fields replaced by strings.
+        """
         row.equipment = str(Equipment.objects.get(pk=row.equipment))
         row.user = str(Account.objects.get(pk=row.user).display_name)
         row.cost_centre = str(CostCentre.objects.get(pk=row.cost_centre).short_name)
         return row
 
     def get_context_data(self, **kwargs):
-        """Call the parent get_context_data before adding the current form as context."""
+        """Build context data including processed booking records.
+
+        Converts booking entries to a pandas DataFrame, applies data transformations,
+        and creates aggregated summaries based on grouping parameters. Stores both
+        aggregated and raw data for export purposes.
+
+        Keyword Parameters:
+            **kwargs: Additional context data from parent classes.
+
+        Returns:
+            (dict): Context dictionary with entries, processed data, and form.
+        """
         context = super().get_context_data(**kwargs)
         entries = context["entries"]
         df = pd.DataFrame(entries.values("user", "cost_centre", "equipment", "shifts", "slot", "charge", "comment"))
