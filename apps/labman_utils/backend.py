@@ -10,6 +10,7 @@ management.
 import logging
 
 # Django imports
+from django.conf import settings as django_settings
 from django.contrib.auth import get_user_model
 from django.core.exceptions import PermissionDenied
 
@@ -184,12 +185,21 @@ class LeedsAdfsBaseBackend(AdfsAuthCodeBackend):
             PermissionDenied:
                 If the Microsoft Graph API returns an error response (400, 401, or other
                 non-200 status codes).
+            SSLError:
+                If SSL verification fails when contacting MS Graph (only in DEBUG mode).
+            Exception:
+                Any unexpected error during the update process (only in DEBUG mode).
 
         Notes:
             This method uses an on-behalf-of token to access Microsoft Graph on behalf
-            of the authenticated user. SSL verification is disabled in the API call.
-            Errors are caught and handled, with some causing assertions for debugging
-            purposes.
+            of the authenticated user. SSL verification is enabled in the API call.
+            
+            Error Handling Behavior:
+            - In DEBUG mode (settings.DEBUG=True): Exceptions are re-raised to show the
+              full Django error page for debugging purposes.
+            - In production mode (settings.DEBUG=False): Errors are logged but not raised,
+              allowing the user authentication to continue without the employee ID update.
+              This makes the employee ID update non-fatal in production.
         """
         obo_access_token = self.get_obo_access_token(self.access_token)
         url = "https://graph.microsoft.com/v1.0/me?$select=employeeId"
@@ -215,11 +225,17 @@ class LeedsAdfsBaseBackend(AdfsAuthCodeBackend):
             return
         except SSLError as ssl_error:
             logger.error(f"SSL verification error when contacting MS Graph: {ssl_error}")
-            # This is non-fatal - user update continues without employeeId
+            if django_settings.DEBUG:
+                # Re-raise in DEBUG mode to show full Django error page
+                raise
+            # This is non-fatal in production - user update continues without employeeId
             return
         except Exception as e:
             logger.error(f"Unexpected error updating user from MS Graph: {type(e).__name__}: {e}")
-            # This is non-fatal - user update continues without employeeId
+            if django_settings.DEBUG:
+                # Re-raise in DEBUG mode to show full Django error page
+                raise
+            # This is non-fatal in production - user update continues without employeeId
             return
 
     def update_user_groups(self, user, claim_groups):

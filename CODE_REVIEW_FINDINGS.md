@@ -21,7 +21,7 @@ This code review identified **17 new issues** across the Django 5.2 project, inc
 ### Issues Fixed in This Review
 1. ✅ **DEBUG=True in production** - Changed to `DEBUG=False`
 2. ✅ **f-string bug in error logging** - Added missing f-string prefix
-3. ✅ **Bare assert statements** - Replaced with proper exception handling and logging
+3. ✅ **Bare assert statements** - Replaced with DEBUG-aware exception handling (re-raises in DEBUG mode)
 4. ✅ **Print statements in settings** - Replaced with logger.debug()
 5. ✅ **XSS risk in search_highlight** - Changed from mark_safe() to format_html()
 
@@ -76,7 +76,7 @@ logger.error(f"Unexpected MS Graph response: {response.content.decode()}")
 
 ---
 
-### 3. Bare Assert Statements in Production Code ✅ FIXED
+### 3. Bare Assert Statements in Production Code ✅ FIXED + IMPROVED
 
 **Location:** `apps/labman_utils/backend.py:217, 220`
 
@@ -96,19 +96,31 @@ except Exception as e:
 - Poor error visibility and debugging
 - Non-fatal errors treated incorrectly
 
-**Status:** ✅ **FIXED** - Replaced with proper exception handling
+**Status:** ✅ **FIXED** - Replaced with DEBUG-aware exception handling
 
 **Code Change:**
 ```python
 except SSLError as ssl_error:
     logger.error(f"SSL verification error when contacting MS Graph: {ssl_error}")
-    # This is non-fatal - user update continues without employeeId
+    if django_settings.DEBUG:
+        # Re-raise in DEBUG mode to show full Django error page
+        raise
+    # This is non-fatal in production - user update continues without employeeId
     return
 except Exception as e:
     logger.error(f"Unexpected error updating user from MS Graph: {type(e).__name__}: {e}")
-    # This is non-fatal - user update continues without employeeId
+    if django_settings.DEBUG:
+        # Re-raise in DEBUG mode to show full Django error page
+        raise
+    # This is non-fatal in production - user update continues without employeeId
     return
 ```
+
+**Improvement (2026-02-13):** Enhanced exception handling to be DEBUG-aware:
+- **In DEBUG mode** (`settings.DEBUG=True`): Exceptions are re-raised to display the full Django error page, making debugging much easier
+- **In production** (`settings.DEBUG=False`): Errors are logged but not raised, allowing authentication to continue gracefully
+
+This provides the best of both worlds: comprehensive error reporting during development and graceful degradation in production.
 
 ---
 
@@ -551,10 +563,16 @@ These items are **already correctly implemented** in the codebase:
 
 ## 🔄 Review History
 
-- **2026-02-13:** Initial comprehensive code review
+- **2026-02-13 (Initial Review):** Comprehensive code review
   - Fixed 5 critical/high priority issues
   - Documented 12 additional issues for consideration
   - All critical security vulnerabilities addressed
+
+- **2026-02-13 (Enhancement):** Improved exception handling
+  - Enhanced bare assert fix to be DEBUG-aware
+  - Exceptions now re-raised in DEBUG mode for full Django error pages
+  - Production behavior unchanged (graceful error handling)
+  - Updated docstrings to reflect new behavior
 
 ---
 
