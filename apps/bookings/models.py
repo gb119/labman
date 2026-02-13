@@ -19,7 +19,7 @@ from django.db import models
 # external imports
 import numpy as np
 from accounts.models import Account, Role
-from costings.models import ChargeableItgem
+from costings.models import ChargeableItem
 from equipment.models import Equipment
 from labman_utils.models import (
     DEFAULT_TZ,
@@ -358,7 +358,7 @@ class BookingPolicy(NamedObject):
         )
 
 
-class BookingEntry(ChargeableItgem):
+class BookingEntry(ChargeableItem):
     """Represent a single booking entry for a user against an equipment item.
 
     A BookingEntry records a reservation of equipment by a user for a specific time slot.

@@ -227,7 +227,7 @@ class CostCentre(NamedObject):
             sub.save()
 
 
-class ChargeableItgem(models.Model):
+class ChargeableItem(models.Model):
     """Base class for representing a single use of a chargeable resource.
 
     This abstract model provides common fields for tracking resource usage
@@ -244,7 +244,6 @@ class ChargeableItgem(models.Model):
     Notes:
         This is an abstract model. Concrete models should inherit from this
         class and add specific fields for the type of resource being charged.
-        The class name appears to have a typo ('Itgem' instead of 'Item').
     """
 
     class Meta:
