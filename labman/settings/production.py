@@ -1,7 +1,17 @@
 # Production settings
 # app imports
 from .common import *
-from .secrets import DATABASES
+
+try:
+    from .secrets import DATABASES
+except ImportError:
+    # Provide default DATABASES configuration if secrets.py is not available
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': str(PROJECT_ROOT_PATH / 'run' / 'db.sqlite3'),
+        }
+    }
 
 CORS_ALLOW_CREDENTIALS = True
 CORS_ALLOWED_ORIGINS = [
