@@ -146,7 +146,7 @@ class Location(ResourceedObject):
             (QuerySet):
                 QuerySet of Document objects associated with this location or any parent.
         """
-        Document = apps.get_model("labman_utils", "Document")
+        Document = apps.get_model("labman_utils", "document")
         return Document.objects.filter(location__in=self.all_parents)
 
     @property
@@ -157,7 +157,7 @@ class Location(ResourceedObject):
             (QuerySet):
                 QuerySet of photo Document objects associated with this location or any parent.
         """
-        Photo = apps.get_model("photologue", "Photo")
+        Photo = apps.get_model("photologue", "photo")
         return Photo.objects.filter(location__in=self.all_parents)
 
     @property
@@ -168,7 +168,7 @@ class Location(ResourceedObject):
             (QuerySet):
                 QuerySet of page Document objects associated with this location or any parent.
         """
-        FlatPage = apps.get_model("flatpages", "FlatPage")
+        FlatPage = apps.get_model("flatpages", "flatpage")
         return FlatPage.objects.filter(location__in=self.all_parents)
 
     @property
@@ -358,8 +358,9 @@ class Equipment(ResourceedObject):
             (1000+ entries), consider implementing pagination or lazy loading.
         """
         # Fetch all users once with role prefetched to avoid N+1 queries
+        # Order by role level first, then prefetch role data
         # list() is necessary to materialize the queryset with prefetch_related
-        users_list = list(self.userlist.all().prefetch_related("role").order_by("-role__level"))
+        users_list = list(self.userlist.order_by("-role__level").all().prefetch_related("role"))
 
         # Group users by role in Python to avoid repeated database queries
         ret = defaultdict(list)

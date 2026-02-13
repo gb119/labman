@@ -274,7 +274,7 @@ class Document(dsfh.BaseMixin, dsfh.TitledMixin, dsfh.PublicMixin, dsfh.RenameMi
             q_obs.append(models.Q(code__startswith=location.code))
         if not q_obs:
             return None
-        Location = apps.get_model("equipment", "Location")
+        Location = apps.get_model("equipment", "location")
         return (
             Location.objects.filter(reduce(lambda left, right: left | right, q_obs))
             .order_by("code")
@@ -334,7 +334,7 @@ class Document(dsfh.BaseMixin, dsfh.TitledMixin, dsfh.PublicMixin, dsfh.RenameMi
                     equipment_ids.update(self.equipment.values_list("id", flat=True))
 
                     # Add equipment at locations associated with this document
-                    Equipment = apps.get_model("equipment", "Equipment")
+                    Equipment = apps.get_model("equipment", "equipment")
                     for location in self.location.all():
                         child_equipment_ids = Equipment.objects.filter(
                             location__in=location.children
@@ -343,7 +343,7 @@ class Document(dsfh.BaseMixin, dsfh.TitledMixin, dsfh.PublicMixin, dsfh.RenameMi
 
                     # Bulk update all userlist entries for collected equipment
                     if equipment_ids:
-                        UserListEntry = apps.get_model("equipment", "UserListEntry")
+                        UserListEntry = apps.get_model("equipment", "userlistentry")
                         UserListEntry.objects.filter(equipment_id__in=equipment_ids).update(hold=True)
 
         super().save(force_insert=force_insert, force_update=force_update, using=using, update_fields=update_fields)

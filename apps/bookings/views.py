@@ -44,6 +44,11 @@ from . import forms, models
 
 DEFAULT_TZ = pytz.timezone(settings.TIME_ZONE)
 
+# Constants for handling missing/orphaned foreign key references
+UNKNOWN_EQUIPMENT = "[Unknown Equipment]"
+UNKNOWN_USER = "[Unknown User]"
+UNKNOWN_COST_CENTRE = "[Unknown Cost Centre]"
+
 
 def delta_time(time_1: Time, time_2: Time) -> int:
     """Return the number of seconds between time_1 and time_2.
@@ -495,9 +500,9 @@ class BookingRecordsView(IsAuthenticaedViewMixin, FormListView):
 
         # Map foreign keys to strings using dictionary lookups
         # fillna handles any orphaned foreign keys gracefully
-        df["equipment"] = df["equipment"].map(equipment_map).fillna("[Unknown Equipment]")
-        df["user"] = df["user"].map(user_map).fillna("[Unknown User]")
-        df["cost_centre"] = df["cost_centre"].map(cost_centre_map).fillna("[Unknown Cost Centre]")
+        df["equipment"] = df["equipment"].map(equipment_map).fillna(UNKNOWN_EQUIPMENT)
+        df["user"] = df["user"].map(user_map).fillna(UNKNOWN_USER)
+        df["cost_centre"] = df["cost_centre"].map(cost_centre_map).fillna(UNKNOWN_COST_CENTRE)
         df["start"] = (df["slot"].apply(lambda x: x.lower)).dt.tz_localize(None)
         df["end"] = (df["slot"].apply(lambda x: x.upper)).dt.tz_localize(None)
 
