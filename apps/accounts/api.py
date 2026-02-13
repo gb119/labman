@@ -1,7 +1,9 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""
-REST Framework endpiints for the accounts objects.
+"""REST Framework endpoints for the accounts app.
+
+This module defines serializers and viewsets for exposing Account, ResearchGroup,
+Role, and Group objects through the Django REST Framework API.
 """
 
 # Django imports
@@ -14,18 +16,23 @@ from rest_framework import serializers, viewsets
 from .models import Account, ResearchGroup, Role
 
 
-# Serializers define the API representation.
 class ResearchGroupSerializer(serializers.ModelSerializer):
-    """Serialise the  Research Group objects."""
+    """Serializer for ResearchGroup objects.
+
+    Serializes research group data including name and code fields for API responses.
+    """
 
     class Meta:
         model = ResearchGroup
         fields = ("name", "code")
 
 
-# Serializers define the API representation.
 class AccountSerializer(serializers.ModelSerializer):
-    """Serialise the Account objects."""
+    """Serializer for Account objects.
+
+    Serializes user account data including username, title, names, and email for
+    API responses.
+    """
 
     class Meta:
         model = Account
@@ -33,7 +40,10 @@ class AccountSerializer(serializers.ModelSerializer):
 
 
 class GroupSerializer(serializers.ModelSerializer):
-    """Serialise the Group objects."""
+    """Serializer for Django Group objects.
+
+    Serializes Django authentication group data for API responses.
+    """
 
     class Meta:
         model = Group
@@ -41,37 +51,79 @@ class GroupSerializer(serializers.ModelSerializer):
 
 
 class RoleSerializer(serializers.ModelSerializer):
-    """Serialise the Role objects."""
+    """Serializer for Role objects.
+
+    Serializes all role fields for API responses.
+    """
 
     class Meta:
         model = Role
         exclude = []
 
 
-# ViewSets define the view behavior.
 class ResearchGroupViewSet(viewsets.ReadOnlyModelViewSet):
-    """API views for Research Groups."""
+    """Read-only API viewset for ResearchGroup objects.
+
+    Provides list and detail views for research groups through the REST API.
+    Supports standard REST operations: GET (list and detail).
+
+    Attributes:
+        queryset (QuerySet):
+            All ResearchGroup objects.
+        serializer_class (class):
+            ResearchGroupSerializer for object serialization.
+    """
 
     queryset = ResearchGroup.objects.all()
     serializer_class = ResearchGroupSerializer
 
 
 class AccountViewSet(viewsets.ReadOnlyModelViewSet):
-    """API views for Accounts."""
+    """Read-only API viewset for Account objects.
+
+    Provides list and detail views for user accounts through the REST API.
+    Supports standard REST operations: GET (list and detail).
+
+    Attributes:
+        queryset (QuerySet):
+            All Account objects.
+        serializer_class (class):
+            AccountSerializer for object serialization.
+    """
 
     queryset = Account.objects.all()
     serializer_class = AccountSerializer
 
 
 class GroupViewSet(viewsets.ReadOnlyModelViewSet):
-    """API views for Groups."""
+    """Read-only API viewset for Django Group objects.
+
+    Provides list and detail views for authentication groups through the REST API.
+    Supports standard REST operations: GET (list and detail).
+
+    Attributes:
+        queryset (QuerySet):
+            All Group objects.
+        serializer_class (class):
+            GroupSerializer for object serialization.
+    """
 
     queryset = Group.objects.all()
     serializer_class = GroupSerializer
 
 
 class RoleViewSet(viewsets.ReadOnlyModelViewSet):
-    """API views for Roles."""
+    """Read-only API viewset for Role objects.
+
+    Provides list and detail views for user roles through the REST API.
+    Supports standard REST operations: GET (list and detail).
+
+    Attributes:
+        queryset (QuerySet):
+            All Role objects.
+        serializer_class (class):
+            RoleSerializer for object serialization.
+    """
 
     queryset = Role.objects.all()
     serializer_class = RoleSerializer

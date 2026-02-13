@@ -1,5 +1,10 @@
 # -*- coding: utf-8 -*-
-"""Bookings related form definitions."""
+"""Bookings forms module.
+
+This module provides Django form classes for managing equipment bookings,
+including booking entry forms, filtering forms, and custom widgets for
+date-time range selection.
+"""
 # Django imports
 from django import forms
 from django.contrib.postgres.forms import RangeWidget
@@ -19,12 +24,31 @@ from .models import BookingEntry
 
 
 class CustomSlotWidget(RangeWidget):
-    """Widget class to provide two Bootstrap DateTimePickers for entering a booking slot."""
+    """A custom widget for entering booking time slots using date-time pickers.
+
+    This widget extends Django's RangeWidget to provide two Bootstrap
+    DateTimePickers for entering start and end times of booking slots.
+    It handles the decomposition of datetime ranges into separate date
+    and time components for display.
+
+    Attributes:
+        input_type (str): The HTML input type, inherited from DateTimeCustomInput.
+    """
 
     input_type = DateTimeCustomInput.input_type
 
     def __init__(self, *args, **kargs):
-        """Construct the widget, forcing it to use the correct sub-widgets."""
+        """Construct the widget with custom date-time input sub-widgets.
+
+        This constructor ensures that the widget uses DateTimeCustomInput
+        widgets for both the start and end of the range, even if different
+        widgets are specified.
+
+        Args:
+            *args: Variable length argument list, first argument should be
+                a widget class for the sub-widgets.
+            **kargs: Arbitrary keyword arguments passed to parent class.
+        """
         if len(args) < 1:
             args = (DateTimeCustomInput,)
         if not issubclass(args[0], DateTimeCustomInput):
@@ -33,7 +57,20 @@ class CustomSlotWidget(RangeWidget):
         super().__init__(*args, **kargs)
 
     def decompress(self, value):
-        """Convert the date-time range to a tuple of two lists of date,time."""
+        """Convert a date-time range to separate date and time components.
+
+        This method decomposes a datetime range into a format suitable for
+        display in the two DateTimePickers, splitting each datetime into
+        separate date and time values.
+
+        Args:
+            value: A datetime range object with lower and upper bounds, or None.
+
+        Returns:
+            (list): A list containing two sublists, each with [date, time]
+                for the start and end of the range. Returns [[None, None],
+                [None, None]] if value is None or empty.
+        """
         if value:
             start, end = value.lower, value.upper
             return ([start.date(), start.time()], [end.date(), end.time()])
@@ -41,7 +78,23 @@ class CustomSlotWidget(RangeWidget):
 
 
 class BookingEntryAdminForm(forms.ModelForm):
-    """A form for editing the booking slots in the admin interface."""
+    """A form for editing booking slots in the Django admin interface.
+
+    This ModelForm provides a comprehensive interface for administrators to
+    manage booking entries, including all fields from the BookingEntry model.
+    It uses the CustomSlotWidget for entering the time slot range and includes
+    necessary JavaScript and CSS resources for the date-time pickers.
+
+    Attributes:
+        Meta.model (BookingEntry): The model class for this form.
+        Meta.exclude (list): Fields excluded from the form (empty list, all
+            fields included).
+        Meta.widgets (dict): Custom widgets for form fields, specifically the
+            CustomSlotWidget for the slot field.
+        Media.js (list): JavaScript files required for the form functionality,
+            including jQuery and jQuery UI.
+        Media.css (dict): CSS files required for styling the date-time pickers.
+    """
 
     class Meta:
         model = BookingEntry
@@ -61,7 +114,21 @@ class BookingEntryAdminForm(forms.ModelForm):
 
 
 class BookinngDialogForm(forms.ModelForm):
-    """A form for editing the booking entries in the front end."""
+    """A form for creating and editing booking entries in the front-end interface.
+
+    This ModelForm provides a user-friendly interface for managing bookings
+    directly from the front-end application. It includes autocomplete for
+    user selection and uses the CustomSlotWidget for time slot entry. The
+    equipment and ID fields are hidden as they are typically pre-populated.
+
+    Attributes:
+        Meta.model (BookingEntry): The model class for this form.
+        Meta.fields (list): Fields included in the form (equipment, id, user,
+            booker, slot, cost_centre).
+        Meta.widgets (dict): Custom widgets for form fields, including
+            autocomplete for user selection, hidden fields for equipment and
+            id, and CustomSlotWidget for the time slot.
+    """
 
     class Meta:
         model = BookingEntry
@@ -75,7 +142,33 @@ class BookinngDialogForm(forms.ModelForm):
 
 
 class BookingEntryFilterForm(forms.Form):
-    """A form to filter booking entries for reporting."""
+    """A form for filtering and reporting on booking entries.
+
+    This form provides comprehensive filtering and output options for booking
+    entry reports. Users can filter by date range, users, equipment, and cost
+    centres, with options to control the ordering and output format of results.
+    Multiple selection is supported for user, equipment, and cost centre fields
+    using autocomplete widgets.
+
+    Attributes:
+        from_date (forms.DateField): The start date for the report period,
+            required field with custom date picker.
+        to_date (forms.DateField): The end date for the report period,
+            required field with custom date picker.
+        user (forms.ModelMultipleChoiceField): Optional filter for specific
+            users, supports multiple selection with autocomplete.
+        equipment (forms.ModelMultipleChoiceField): Optional filter for
+            specific equipment, supports multiple selection with autocomplete.
+        cost_centre (forms.ModelMultipleChoiceField): Optional filter for
+            specific cost centres, supports multiple selection with autocomplete.
+        order (forms.ChoiceField): Selection of grouping and sub-totalling
+            order for the report, with predefined combinations of user,
+            equipment, and project (cost centre).
+        reverse (forms.BooleanField): Optional flag to reverse the order of
+            sub-totals in the report.
+        output (forms.ChoiceField): Selection of output format, including
+            HTML, CSV, Excel, PDF, or raw Excel records.
+    """
 
     from_date = forms.DateField(required=True, widget=DateCustomInput())
     to_date = forms.DateField(required=True, widget=DateCustomInput())

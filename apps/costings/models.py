@@ -1,5 +1,9 @@
 # -*- coding: utf-8 -*-
-"""Models for representing objects related to lab equipment items - documents, locations, and so forth."""
+"""Models for cost centres and charging rates.
+
+This module defines models for managing financial aspects of laboratory equipment
+and resources, including cost centres, charging rates, and chargeable items.
+"""
 # Python imports
 # Django imports
 from django.db import models
@@ -11,11 +15,23 @@ from sortedm2m.fields import SortedManyToManyField
 
 
 class CostRate(NamedObject):
-    """A model class to identify charging schemes."""
+    """Model representing a charging scheme for equipment usage.
+
+    Cost rates define different pricing structures that can be applied to
+    equipment or resources. A default 'standard' rate is always available.
+    """
 
     @classmethod
     def default(cls):
-        """Ensure we have a costing rate called 'standard.'"""
+        """Get or create the default 'standard' cost rate.
+
+        Returns:
+            (CostRate): The standard cost rate object.
+
+        Notes:
+            Creates the 'standard' rate if it doesn't exist, and sets a default
+            description if the description is empty.
+        """
         std, _ = cls.objects.get_or_create(name="standard")
         if std.description == "":
             std.description = "A default costing rate."
@@ -23,12 +39,41 @@ class CostRate(NamedObject):
         return std
 
     def __str__(self):
-        """Just use self.name for the string representation."""
+        """Return a string representation of the cost rate.
+
+        Returns:
+            (str): The cost rate name.
+        """
         return self.name
 
 
 class CostCentre(NamedObject):
-    """Handles a physical location or room."""
+    """Model representing a cost centre for financial tracking and organisation.
+
+    Cost centres represent organisational units that can be charged for equipment
+    and resource usage. They support hierarchical structures and can be associated
+    with locations and equipment.
+
+    Attributes:
+        locations (SortedManyToManyField):
+            Physical locations associated with this cost centre.
+        equipment (SortedManyToManyField):
+            Equipment items associated with this cost centre.
+        short_name (CharField):
+            Abbreviated name for the cost centre (max 20 characters).
+        account_code (CharField):
+            Financial account code (max 20 characters).
+        rate (ForeignKey):
+            Charging rate applied to this cost centre.
+        contact (ForeignKey):
+            Account responsible for managing this cost centre.
+        super_cost_centre (ForeignKey):
+            Parent cost centre in the hierarchy.
+        code (CharField):
+            Hierarchical code automatically generated (max 80 characters).
+        level (IntegerField):
+            Depth in the cost centre hierarchy (automatically calculated).
+    """
 
     class Meta:
         constraints = [
@@ -53,7 +98,16 @@ class CostCentre(NamedObject):
 
     @property
     def next_code(self):
-        """Figure out a location code not based on pk."""
+        """Calculate the next available code for this cost centre.
+
+        Returns:
+            (str): The next available hierarchical code.
+
+        Notes:
+            Codes are hierarchical, separated by commas. For example, if the parent
+            has code "1,2", and siblings have codes "1,2,1" and "1,2,3", the next
+            code would be "1,2,2".
+        """
         peers = self.__class__.objects.filter(super_cost_centre=self.super_cost_centre).exclude(pk=self.pk)
         if peers.count() == 0:
             new = "1"
@@ -72,7 +126,11 @@ class CostCentre(NamedObject):
 
     @property
     def _code_regexp(self):
-        """Create a regexp that will match all parent locations."""
+        """Create a regular expression matching all parent cost centre codes.
+
+        Returns:
+            (str): Regular expression pattern for matching parent codes.
+        """
         parts = self.code.split(",")
         if len(parts) <= 1:
             return self.code
@@ -83,19 +141,39 @@ class CostCentre(NamedObject):
 
     @property
     def all_parents(self):
-        """Return a set of all locations that contain this location."""
+        """Return all cost centres that are parents of this cost centre.
+
+        Returns:
+            (QuerySet): Cost centres that contain this cost centre in the hierarchy.
+        """
         if self.level == 0:
             return self.__class__.objects.filter(code=self.code)
         return self.__class__.objects.filter(code__regex=self._code_regexp).order_by("-code")
 
     @property
     def children(self):
-        """Return a set of all sub-locations of this location."""
+        """Return all sub-cost centres of this cost centre.
+
+        Returns:
+            (QuerySet): All child cost centres in the hierarchy.
+        """
         query = models.Q(code__regex=f"^{self.code}[^0-9]") | models.Q(code=self.code)
         return self.__class__.objects.filter(query).order_by("code")
 
     def __getattr__(self, name):
-        """Code around all_* properties."""
+        """Provide dynamic access to all related objects in the hierarchy.
+
+        Args:
+            name (str):
+                Attribute name. If starting with 'all_', returns related objects
+                from this cost centre and all parent cost centres.
+
+        Returns:
+            (QuerySet): Related objects across the hierarchy.
+
+        Raises:
+            AttributeError: If the attribute doesn't exist or doesn't start with 'all_'.
+        """
         if not name.startswith("all_"):
             return super().__getrattr__(name)
         field = name[4:]
@@ -111,16 +189,40 @@ class CostCentre(NamedObject):
         return linked.objects.filter(**search)
 
     def __str__(self):
-        """Make a better string representation."""
+        """Return a string representation of the cost centre.
+
+        Returns:
+            (str): String in the format "ShortName:Name (AccountCode)".
+        """
         return f"{self.short_name}:{self.name} ({self.account_code})"
 
     @property
     def url(self):
-        """Return a URL for the detail page of this location."""
+        """Return the URL for the detail page of this cost centre.
+
+        Returns:
+            (str): URL path to the cost centre detail page.
+        """
         return f"/costings/cost_centre_detail/{self.pk}/"
 
     def save(self, force_insert=False, force_update=False, using=None, update_fields=None):
-        """Force the cost_centre code to be calculated and then upodate any sub_locations."""
+        """Save the cost centre, calculating code and updating sub-cost centres.
+
+        Keyword Parameters:
+            force_insert (bool):
+                Force an INSERT operation.
+            force_update (bool):
+                Force an UPDATE operation.
+            using (str):
+                Database alias to use.
+            update_fields (list):
+                List of field names to update.
+
+        Notes:
+            Automatically calculates the hierarchical code and level. If no rate
+            is specified, assigns the default rate. Updates all sub-cost centres
+            after saving to maintain code consistency.
+        """
         if self.pk is None:  # Update our pk
             super().save(
                 force_insert=force_insert,
@@ -138,7 +240,24 @@ class CostCentre(NamedObject):
 
 
 class ChargeableItgem(models.Model):
-    """Base class to represent a single use of a charable resource."""
+    """Base class for representing a single use of a chargeable resource.
+
+    This abstract model provides common fields for tracking resource usage
+    that should be charged to cost centres.
+
+    Attributes:
+        cost_centre (ForeignKey):
+            The cost centre to charge for this usage.
+        ledger_date (DateField):
+            Date when the charge was recorded (auto-set on creation).
+        charge (FloatField):
+            The amount to charge for this usage.
+
+    Notes:
+        This is an abstract model. Concrete models should inherit from this
+        class and add specific fields for the type of resource being charged.
+        The class name appears to have a typo ('Itgem' instead of 'Item').
+    """
 
     class Meta:
         abstract = True
