@@ -13,7 +13,7 @@
 
 This code review identified **17 new issues** across the Django 5.2 project, including:
 - **4 Critical security vulnerabilities** (all fixed)
-- **2 High-priority issues** (1 fixed, 1 documented)
+- **2 High-priority issues** (both fixed)
 - **5 Medium-priority issues** (documented)
 - **5 Low-priority code quality issues** (documented)
 - **1 Clarification** (unusual naming convention verified)
@@ -24,6 +24,7 @@ This code review identified **17 new issues** across the Django 5.2 project, inc
 3. ✅ **Bare assert statements** - Replaced with DEBUG-aware exception handling (re-raises in DEBUG mode)
 4. ~~Print statements in settings~~ - **REVERTED** - These are intentional (see Issue #5 below)
 5. ✅ **XSS risk in search_highlight** - Changed from mark_safe() to format_html()
+6. ✅ **Regex injection risk** - Replaced regex queries with code__in and code__startswith for better performance and security
 
 **Note on Print Statements:** The print statements in `settings/common.py` are intentional design decisions for verifying app loading during `./manage.py check`. They output to syslog in production and provide valuable diagnostics.
 
@@ -205,16 +206,20 @@ After review with the project maintainer, these print statements are **intention
 
 ---
 
-### 6. Regex Injection Risk in Model Queries ⚠️ DOCUMENTED
+### 6. Regex Injection Risk in Model Queries ✅ FIXED
 
 **Locations:**
 - `apps/equipment/models.py:137, 150`
-- `apps/costings/models.py:150`
+- `apps/costings/models.py:151, 160`
 
 **Issue:** User-controllable data could be interpolated into regex patterns.
 
-**Example Code:**
+**Original Code:**
 ```python
+# In all_parents property:
+return self.__class__.objects.filter(code__regex=self._code_regexp).order_by("-code")
+
+# In children property:
 query = models.Q(code__regex=f"^{self.code}[^0-9]") | models.Q(code=self.code)
 ```
 
@@ -224,17 +229,30 @@ query = models.Q(code__regex=f"^{self.code}[^0-9]") | models.Q(code=self.code)
 - ReDoS (Regular Expression Denial of Service) vulnerability
 - Regex pattern injection
 
-**Recommendation:**
-```python
-# Instead of regex:
-query = models.Q(code__startswith=self.code) | models.Q(code=self.code)
+**Status:** ✅ **FIXED** - Replaced with more efficient and secure alternatives
 
-# For hierarchical codes, use a proper tree library:
-# - django-mptt (Modified Preorder Tree Traversal)
-# - django-treebeard
+**Code Changes:**
+
+For the `all_parents` property:
+```python
+# Generate list of all parent codes including self
+parts = self.code.split(",")
+parent_codes = [",".join(parts[:i]) for i in range(1, len(parts) + 1)]
+return self.__class__.objects.filter(code__in=parent_codes).order_by("-code")
 ```
 
-**Status:** ⚠️ **DOCUMENTED** - Low risk currently, but should be addressed if code becomes user-editable
+For the `children` property:
+```python
+# Match children that start with this code followed by comma, or self
+query = models.Q(code__startswith=f"{self.code},") | models.Q(code=self.code)
+return self.__class__.objects.filter(query).order_by("code")
+```
+
+**Benefits:**
+1. **Security:** Eliminates regex injection risk entirely
+2. **Performance:** Database indexes work better with `code__in` and `code__startswith` than regex
+3. **Clarity:** Code is more readable and maintainable
+4. **Removed Code:** Deleted obsolete `_code_regexp` property (16 lines removed per model)
 
 ---
 
@@ -506,8 +524,7 @@ These items are **already correctly implemented** in the codebase:
 ## 📋 Recommendations Summary
 
 ### Immediate Actions (Critical/High Priority)
-- ✅ All critical issues have been fixed
-- ⚠️ Verify the `ChargeableItgem` typo (issue #7) - **VERIFIED as intentional**
+- ✅ All critical and high-priority issues have been fixed
 - ⚠️ Review N+1 query patterns with Django Debug Toolbar
 
 ### Short-term Improvements (Medium Priority)
@@ -518,13 +535,16 @@ These items are **already correctly implemented** in the codebase:
 
 ### Long-term Improvements (Low Priority)
 - Update test infrastructure for Django 5.2
-- Consider django-treebeard for hierarchical data
+- Consider django-treebeard for hierarchical data (though current solution now performant)
 - Establish consistent error handling patterns
 - Define constants for magic numbers
 
 ### Design Decisions Confirmed
 - ✅ Print statements in settings/common.py are intentional for diagnostics
 - ✅ ChargeableItgem spelling is intentional (though unconventional)
+
+### Performance Improvements Implemented
+- ✅ Replaced regex queries with indexed queries (Issue #6)
 
 ---
 
@@ -584,6 +604,13 @@ These items are **already correctly implemented** in the codebase:
   - Used for app loading diagnostics during `./manage.py check`
   - Output captured by syslog in production
   - Restored original print statements
+
+- **2026-02-13 (Performance & Security Fix):** Eliminated regex queries (Issue #6)
+  - Replaced regex-based queries with `code__in` and `code__startswith`
+  - Removed obsolete `_code_regexp` property from Location and CostCentre models
+  - Eliminates potential ReDoS vulnerability
+  - Improves query performance with better database index utilization
+  - Net reduction: 32 lines of complex regex code
 
 ---
 
