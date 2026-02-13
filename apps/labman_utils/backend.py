@@ -203,7 +203,7 @@ class LeedsAdfsBaseBackend(AdfsAuthCodeBackend):
                 raise PermissionDenied
 
             if response.status_code != 200:
-                logger.error("Unexpected MS Graph response: {response.content.decode()}")
+                logger.error(f"Unexpected MS Graph response: {response.content.decode()}")
                 raise PermissionDenied
 
             payload = response.json()
@@ -213,11 +213,14 @@ class LeedsAdfsBaseBackend(AdfsAuthCodeBackend):
         except PermissionDenied:
             # non-fatal in this case
             return
-        except SSLError:
-            assert False
+        except SSLError as ssl_error:
+            logger.error(f"SSL verification error when contacting MS Graph: {ssl_error}")
+            # This is non-fatal - user update continues without employeeId
+            return
         except Exception as e:
-            eclass = type(e)
-            assert False
+            logger.error(f"Unexpected error updating user from MS Graph: {type(e).__name__}: {e}")
+            # This is non-fatal - user update continues without employeeId
+            return
 
     def update_user_groups(self, user, claim_groups):
         """Update user group memberships based on LDAP or claim information.
