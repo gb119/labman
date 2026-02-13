@@ -1,4 +1,10 @@
-"""Subclass the standard django_auth_adfs backend for ourt purposes."""
+"""Custom ADFS authentication backend for Leeds University integration.
+
+This module provides a customised ADFS authentication backend that extends the standard
+django_auth_adfs backend to integrate with Leeds University's Microsoft ADFS infrastructure.
+It handles user authentication, attribute updates from Microsoft Graph, and group membership
+management.
+"""
 
 # Python imports
 import logging
@@ -19,10 +25,47 @@ logger = logging.getLogger("django_auth_adfs")
 
 
 class LeedsAdfsBaseBackend(AdfsAuthCodeBackend):
-    """Subclass of AdfsAuthCodeBackend to customise user creation."""
+    """Custom ADFS authentication backend for Leeds University integration.
+
+    This backend extends AdfsAuthCodeBackend to provide custom user authentication and
+    account management features. It validates access tokens, retrieves user information
+    from Microsoft Graph, and manages user groups and permissions.
+
+    Attributes:
+        access_token (str):
+            The current access token for the authenticated user.
+        claims (dict):
+            The claims extracted from the access token.
+    """
 
     def process_access_token(self, access_token, adfs_response=None):
-        """Check the user is ok by getting the Account object."""
+        """Process and validate an access token to authenticate a user.
+
+        This method validates the access token, extracts claims, checks tenant ID,
+        processes user groups, creates or retrieves the user account, and updates
+        user attributes and permissions.
+
+        Args:
+            access_token (str):
+                The ADFS access token to process.
+
+        Keyword Parameters:
+            adfs_response (dict):
+                Optional ADFS response data. The default is None.
+
+        Returns:
+            (django.contrib.auth.models.User):
+                The authenticated and updated user object.
+
+        Raises:
+            PermissionDenied:
+                If the access token is invalid, claims cannot be extracted, or the
+                user's tenant ID does not match the configured tenant.
+
+        Notes:
+            Guest users are explicitly blocked by checking the tenant ID in the claims.
+            The method sends a post_authenticate signal after successful authentication.
+        """
         if not access_token:
             raise PermissionDenied
 
@@ -49,28 +92,56 @@ class LeedsAdfsBaseBackend(AdfsAuthCodeBackend):
         return user
 
     def process_user_groups(self, claims, access_token):
-        """Check the user groups are in the claim or pulls them from MS Graph if applicable.
+        """Process user group memberships from claims or Microsoft Graph.
+
+        This method checks for user group information in the access token claims and,
+        if necessary, retrieves group memberships from Microsoft Graph using an
+        on-behalf-of authentication request.
 
         Args:
-            claims (dict): claims from the access token
-            access_token (str): Used to make an OBO authentication request if
-            groups must be obtained from Microsoft Graph
+            claims (dict):
+                Claims extracted from the access token.
+            access_token (str):
+                The access token used to make an OBO authentication request if
+                groups must be obtained from Microsoft Graph.
 
         Returns:
-            groups (list): Groups the user is a member of, taken from the access token or MS Graph
+            (list):
+                Groups the user is a member of, taken from the access token or MS Graph.
+                Currently returns an empty list as group processing is not fully implemented.
+
+        Notes:
+            This is a stub implementation that returns an empty list. Full group processing
+            functionality should be implemented by subclasses or in future updates.
         """
         groups = []
         logger.debug("Call to process_user_groups")
         return groups
 
     def create_user(self, claims):
-        """Create the user if it doesn't exist yet.
+        """Retrieve an existing user account based on access token claims.
+
+        This method extracts the username from the claims and retrieves the corresponding
+        user account. It does not create new users on-the-fly; users must already exist
+        in the database.
 
         Args:
-            claims (dict): claims from the access token
+            claims (dict):
+                Claims from the access token containing user identification information.
 
         Returns:
-            django.contrib.auth.models.User: A Django user
+            (django.contrib.auth.models.User):
+                The existing Django user account.
+
+        Raises:
+            PermissionDenied:
+                If the username claim is missing from the claims or if the user does not
+                exist in the database.
+
+        Notes:
+            The username claim is expected to be an email address, and only the portion
+            before the '@' symbol is used as the username. If the user does not have a
+            password set, an unusable password is assigned.
         """
         # Get the lookup detils for the user
         username_claim = settings.USERNAME_CLAIM
@@ -94,18 +165,31 @@ class LeedsAdfsBaseBackend(AdfsAuthCodeBackend):
 
     # https://github.com/snok/django-auth-adfs/issues/241
     def update_user_attributes(self, user, claims, claim_mapping=None):
-        """Update the user account with task that calls MS Graph.
+        """Update user account attributes by querying Microsoft Graph API.
 
-        Parameters:
-            user : Account
-                Account object of user logging in.
-            claims : dict
-                Oauth2 claims about the user account.
-            claim_mapping : dict,None, optional
+        This method obtains an on-behalf-of access token and queries the Microsoft Graph
+        API to retrieve the user's employee ID, which is then stored in the user account.
+
+        Args:
+            user (Account):
+                The user account object to update.
+            claims (dict):
+                OAuth2 claims about the user account.
+
+        Keyword Parameters:
+            claim_mapping (dict):
                 Optional mapping of claim values to user attributes. The default is None.
 
-        Obtains the correct on-behalf-of token and then hands to Celery taks in the accounts app that
-        actually talks to the MS Graph API to update the user account object.
+        Raises:
+            PermissionDenied:
+                If the Microsoft Graph API returns an error response (400, 401, or other
+                non-200 status codes).
+
+        Notes:
+            This method uses an on-behalf-of token to access Microsoft Graph on behalf
+            of the authenticated user. SSL verification is disabled in the API call.
+            Errors are caught and handled, with some causing assertions for debugging
+            purposes.
         """
         obo_access_token = self.get_obo_access_token(self.access_token)
         url = "https://graph.microsoft.com/v1.0/me?$select=employeeId"
@@ -136,21 +220,62 @@ class LeedsAdfsBaseBackend(AdfsAuthCodeBackend):
             assert False
 
     def update_user_groups(self, user, claim_groups):
-        """Stub method that eventually should do ldap lookup."""
+        """Update user group memberships based on LDAP or claim information.
+
+        Args:
+            user (django.contrib.auth.models.User):
+                The user account to update.
+            claim_groups (list):
+                List of group names from claims or external sources.
+
+        Notes:
+            This is a stub method that logs the request but does not perform any actual
+            updates. Full LDAP lookup and group synchronisation should be implemented
+            in the future.
+        """
         logger.debug(f"Groups update requested for {user} with {claim_groups}")
 
     def update_user_flags(self, user, claims, claim_groups):
-        """Stub to update User flag that eventually should be an ldap lookup."""
+        """Update user permission flags based on group membership.
+
+        Args:
+            user (django.contrib.auth.models.User):
+                The user account to update.
+            claims (dict):
+                OAuth2 claims about the user account.
+            claim_groups (list):
+                List of group names the user belongs to.
+
+        Notes:
+            This is a stub method that logs the request but does not perform any actual
+            updates. Future implementations should include LDAP lookup to determine
+            appropriate user permissions based on group memberships.
+        """
         logger.debug(f"User flags update requested for {user} with {claim_groups}")
 
     def get_group_memberships_from_ms_graph(self, obo_access_token):
-        """Look up a users group membership from the MS Graph API.
+        """Retrieve user group memberships from the Microsoft Graph API.
+
+        This method queries the Microsoft Graph API to obtain all transitive group
+        memberships for the authenticated user.
 
         Args:
-            obo_access_token (str): Access token obtained from the OBO authorization endpoint
+            obo_access_token (str):
+                On-behalf-of access token obtained from the OBO authorisation endpoint.
 
         Returns:
-            claim_groups (list): List of the users group memberships
+            (list):
+                List of group display names that the user is a member of.
+
+        Raises:
+            PermissionDenied:
+                If the MS Graph API returns an error, if the application lacks required
+                permissions (GroupMember.Read.All), or if the response is unexpected.
+
+        Notes:
+            The method uses the transitiveMemberOf endpoint to retrieve all groups,
+            including nested group memberships. The application must have the
+            GroupMember.Read.All permission configured in Azure AD.
         """
         graph_url = "https://{}/v1.0/me/transitiveMemberOf/microsoft.graph.group".format(
             provider_config.msgraph_endpoint
