@@ -1,6 +1,10 @@
 # -*- coding: utf-8 -*-
-"""
-Models for the bookings app to handle bokking entries and booking policies.
+"""Models for the bookings app to handle booking entries and booking policies.
+
+This module provides Django models for managing equipment bookings in the lab management system.
+It includes models for booking policies that define rules for who can book equipment and when,
+as well as booking entries that represent actual equipment reservations. The module also defines
+several exception classes for handling various booking-related error conditions.
 """
 # Python imports
 from datetime import date as date, datetime as dt, time, timedelta as td
@@ -30,27 +34,90 @@ from pytz import timezone
 
 
 class BookingError(ValidationError):
-    """Catchall exception for booking problems."""
+    """Catchall exception for booking problems.
+
+    This is the base exception class for all booking-related errors in the system.
+    It inherits from Django's ValidationError to integrate with Django's validation framework.
+    """
 
 
 class PolicyDoesNotApply(BookingError):
-    """Subclass of ValidationError to signal that the booking policy is not applicable here."""
+    """Subclass of ValidationError to signal that the booking policy is not applicable here.
+
+    This exception is raised when a booking policy exists but does not apply to the specific
+    booking being attempted, for example due to time restrictions, day restrictions, or
+    user role restrictions.
+    """
 
 
 class PolicyNotFound(BookingError):
-    """Subclass of ValidationError to signal that no booking policy for this user/equipment can be found."""
+    """Subclass of ValidationError to signal that no booking policy for this user/equipment can be found.
+
+    This exception is raised when no applicable booking policy can be located for a given
+    combination of user, equipment, and booking time. This indicates that the booking cannot
+    proceed because there are no rules that permit it.
+    """
 
 
 class UserBookingHeld(BookingError):
-    """Subclass of ValidationError to signal that bookings are held by a user-clearanle status."""
+    """Subclass of ValidationError to signal that bookings are held by a user-clearable status.
+
+    This exception is raised when a user attempts to make a booking but their booking
+    privileges are held pending some user action, such as completing training or
+    updating their account information.
+    """
 
 
 class AdminBookingHeld(BookingError):
-    """Subclass of ValidationError to signal that bookings are held by a user-clearanle status."""
+    """Subclass of ValidationError to signal that bookings are held by an admin-clearable status.
+
+    This exception is raised when a user attempts to make a booking but their booking
+    privileges are administratively held, requiring admin intervention to resolve.
+    """
 
 
 class BookingPolicy(NamedObject):
-    """Represent a policy about booking equipment."""
+    """Represent a policy about booking equipment.
+
+    A BookingPolicy defines the rules and constraints for booking equipment. This includes
+    which days and times bookings are allowed, time quantisation, booking quotas, and
+    role-based permissions. Policies are applied based on both the user's role and the
+    person making the booking (which may differ in proxy booking scenarios).
+
+    Attributes:
+        for_role (Role):
+            The role that the equipment user must have for this policy to apply.
+        booker_role (Role):
+            The role that the person making the booking must have for this policy to apply.
+        mondays (bool):
+            Whether bookings are allowed on Mondays.
+        tuesdays (bool):
+            Whether bookings are allowed on Tuesdays.
+        wednesdays (bool):
+            Whether bookings are allowed on Wednesdays.
+        thursdays (bool):
+            Whether bookings are allowed on Thursdays.
+        fridays (bool):
+            Whether bookings are allowed on Fridays.
+        saturdays (bool):
+            Whether bookings are allowed on Saturdays.
+        sundays (bool):
+            Whether bookings are allowed on Sundays.
+        start_time (time):
+            The earliest time of day that bookings can start.
+        end_time (time):
+            The latest time of day that bookings can end.
+        quantisation (timedelta):
+            The time quantum to which bookings are rounded.
+        immutable (timedelta):
+            How far in advance a booking becomes immutable (cannot be changed).
+        max_forward (timedelta):
+            The maximum time in advance that bookings can be made.
+        quota (timedelta):
+            The maximum total booking time a user can have pending.
+        use_shifts (bool):
+            Whether to use shift-based booking or time-based quantisation.
+    """
 
     class Meta:
         ordering = ["for_role"]
@@ -77,7 +144,16 @@ class BookingPolicy(NamedObject):
     use_shifts = models.BooleanField(default=True)
 
     def applies(self, booking):
-        """Returns True if booking policy applies for this user/equipment."""
+        """Returns True if booking policy applies for this user/equipment.
+
+        Args:
+            booking (BookingEntry):
+                The booking entry to check.
+
+        Returns:
+            (bool):
+                True if this policy applies to the given booking based on user and booker roles.
+        """
         role = booking.user_role
         if getattr(booking, "booker", None) is None or booking.booker.is_superuser:
             return role and role.level >= self.for_role.level
@@ -87,11 +163,38 @@ class BookingPolicy(NamedObject):
         )
 
     def rationalise(self, booking):
-        """Apply quantisation to the booking."""
+        """Apply quantisation to the booking.
+
+        Args:
+            booking (BookingEntry):
+                The booking entry to rationalise.
+
+        Returns:
+            (BookingEntry):
+                The rationalised booking entry with adjusted time slots.
+        """
         return booking.rationalise(self)
 
     def quantise(self, booking):
-        """Return start and end times that are quantised according to this policy."""
+        """Return start and end times that are quantised according to this policy.
+
+        Applies time quantisation to round the booking start and end times to the nearest
+        quantum as defined by the policy's quantisation field. Start times are rounded down
+        and end times are rounded up to ensure the booking covers the requested period.
+
+        Args:
+            booking (BookingEntry):
+                The booking entry whose times should be quantised.
+
+        Returns:
+            (tuple):
+                A tuple of (start, end) datetime objects representing the quantised booking times.
+
+        Notes:
+            Times are quantised relative to the policy's start_time. For example, with a
+            start_time of 09:00 and quantisation of 3 hours, valid times would be 09:00,
+            12:00, 15:00, etc.
+        """
         start, end = booking.slot.lower, booking.slot.upper
         if start.tzinfo is None:
             start = start.replace(tzinfo=timezone("Europe/London"))
@@ -109,7 +212,25 @@ class BookingPolicy(NamedObject):
         return start, end
 
     def fix_times(self, booking):
-        """Return new start and end datetimes that fit shifts or quantise the booking."""
+        """Return new start and end datetimes that fit shifts or quantise the booking.
+
+        If the policy uses shifts and the equipment has shift definitions, aligns the
+        booking times to shift boundaries. Otherwise, applies time quantisation based
+        on the policy's quantisation field.
+
+        Args:
+            booking (BookingEntry):
+                The booking entry whose times should be fixed.
+
+        Returns:
+            (tuple):
+                A tuple of (start, end) timezone-aware datetime objects representing the adjusted booking times.
+
+        Notes:
+            When using shifts, the start time is aligned to the start of the shift containing
+            the requested start time, and the end time is aligned to the end of the shift
+            containing the requested end time. Day boundaries are crossed if necessary.
+        """
         start = booking.slot.lower + td(seconds=0.1)
         end = booking.slot.upper - td(seconds=0.1)
 
@@ -128,7 +249,29 @@ class BookingPolicy(NamedObject):
         return ensure_tz(start), ensure_tz(end)
 
     def permitted(self, booking):
-        """Returns True is the booking is permitted under the current policy."""
+        """Returns True if the booking is permitted under the current policy.
+
+        Validates that the booking satisfies all policy constraints including time ranges,
+        allowed days, immutability restrictions, forward booking limits, and quota limits.
+        Superusers can bypass most restrictions.
+
+        Args:
+            booking (BookingEntry):
+                The booking entry to validate.
+
+        Returns:
+            (bool):
+                True if the booking is permitted under this policy.
+
+        Raises:
+            PolicyDoesNotApply:
+                If the policy applies to the user/equipment but the specific booking
+                violates one of the policy's constraints.
+
+        Notes:
+            This method fixes the booking times before validation and checks various
+            conditions in sequence. The first violation encountered will raise an exception.
+        """
         superuser = booking.booker.is_superuser
         if not self.applies(booking):  # Role doesn't apply
             raise PolicyDoesNotApply(f"This policy does not apply for {booking.user} or {booking.equipment}")
@@ -165,21 +308,34 @@ class BookingPolicy(NamedObject):
     def get_policy(cls, booking, no_holds=False):
         """Try to locate the relevant booking policy for this booking.
 
+        Iterates through all policies associated with the equipment and returns the first
+        policy that both applies to and permits the booking. Checks user and admin hold
+        statuses unless explicitly bypassed.
+
         Args:
             booking (BookingEntry):
-                The potential bookingentry being considered.
+                The potential booking entry being considered.
 
-        Keyword Args:
-            no_holds (book :True):
-                Do not consider user or admin holds - e.g. for deleting bookings.
+        Keyword Parameters:
+            no_holds (bool):
+                Do not consider user or admin holds, e.g. for deleting bookings. Default is False.
 
         Returns:
             (BookingPolicy):
-                The effective boooking policy to use.
+                The effective booking policy to use, or None if the booker is a superuser
+                and no policy applies.
 
         Raises:
-            UserBookingHeld - raised if either user.hold or admin.hold is set and no_holds is not.
-            PolicyNotFoind - if no applicable policy can be found.
+            UserBookingHeld:
+                If the user's booking privileges are held pending user action and no_holds is False.
+            AdminBookingHeld:
+                If the user's booking privileges are administratively held and no_holds is False.
+            PolicyNotFound:
+                If no applicable policy can be found for this booking.
+
+        Notes:
+            Superusers are allowed to make bookings even when no policy applies, in which
+            case this method returns None.
         """
         if booking.user_hold and not no_holds:
             raise UserBookingHeld(
@@ -203,7 +359,25 @@ class BookingPolicy(NamedObject):
 
 
 class BookingEntry(ChargeableItgem):
-    """Represent a single booking entry for a user against an equipment item."""
+    """Represent a single booking entry for a user against an equipment item.
+
+    A BookingEntry records a reservation of equipment by a user for a specific time slot.
+    Bookings are validated against booking policies and checked for conflicts with existing
+    bookings. The system supports proxy bookings where one user makes a booking on behalf
+    of another.
+
+    Attributes:
+        user (Account):
+            The user for whom the equipment is booked.
+        booker (Account):
+            The user who made the booking (may differ from user in proxy bookings).
+        equipment (Equipment):
+            The equipment being booked.
+        slot (DateTimeTZRange):
+            The time range for the booking, stored as a PostgreSQL range type.
+        shifts (float):
+            The number of shifts covered by this booking, used for charging calculations.
+    """
 
     class Meta:
         ordering = ["equipment", "slot"]
@@ -225,51 +399,102 @@ class BookingEntry(ChargeableItgem):
 
     @property
     def duration(self) -> td:
-        """Return the time duration of the booking slot."""
+        """Return the time duration of the booking slot.
+
+        Returns:
+            (timedelta):
+                The duration of the booking as a timedelta object.
+        """
         return self.slot.upper - self.slot.lower
 
     @property
     def booker_role(self):
-        """Get the role of the specified user on this equipment - returns None if not on the userlist."""
+        """Get the role of the person making the booking on this equipment.
+
+        Returns:
+            (Role):
+                The role of the booker on this equipment's userlist, or None if they are not on the userlist.
+        """
         if self.equipment.userlist.filter(user=self.booker).count() == 0:
             return None
         return self.equipment.userlist.get(user=self.booker).role
 
     @property
     def user_role(self):
-        """Get the role of the specified user on this equipment - returns None if not on the userlist."""
+        """Get the role of the user for whom the booking is made on this equipment.
+
+        Returns:
+            (Role):
+                The role of the user on this equipment's userlist, or None if they are not on the userlist.
+        """
         if self.equipment.userlist.filter(user=self.user).count() == 0:
             return None
         return self.equipment.userlist.get(user=self.user).role
 
     @property
     def calendar_css(self):
-        """Get CSS classes to use in the calendar."""
+        """Get CSS classes to use in the calendar display.
+
+        Returns:
+            (str):
+                CSS class string for styling this booking in calendar views, based on the user's role
+                or a default danger style if the user has no role.
+        """
         if self.user_role:
             return self.user_role.css
         return "bg-gradient bg-danger text-white"
 
     @property
     def user_hold(self):
-        """Get the user hold status of the userlist entry."""
+        """Get the user hold status of the userlist entry.
+
+        Returns:
+            (bool):
+                True if the user's bookings are held pending user action, or if the user is not
+                on the equipment's userlist.
+        """
         if self.equipment.userlist.filter(user=self.user).count() == 0:
             return True
         return self.equipment.userlist.get(user=self.user).hold
 
     @property
     def admin_hold(self):
-        """Get the user hold status of the userlist entry."""
+        """Get the admin hold status of the userlist entry.
+
+        Returns:
+            (bool):
+                True if the user's bookings are administratively held, or if the user is not
+                on the equipment's userlist.
+        """
         if self.equipment.userlist.filter(user=self.user).count() == 0:
             return True
         return self.equipment.userlist.get(user=self.user).admin_hold
 
     @property
     def policy(self):
-        """Return the effective policy for this booking."""
+        """Return the effective policy for this booking.
+
+        Returns:
+            (BookingPolicy):
+                The booking policy that applies to this booking, or a string error message
+                if no policy can be determined.
+        """
         return self.get_policy()
 
     def calculate_charge(self):
-        """Calculate the charge for this booking. At the moment this is always 0.0"""
+        """Calculate the charge for this booking.
+
+        Calculates the cost based on the number of shifts and the equipment's charge rate
+        for the user. Updates the comment field with charge details.
+
+        Returns:
+            (float):
+                The calculated charge for this booking in pounds sterling.
+
+        Notes:
+            The charge is calculated as shifts × charge_rate, where the charge rate depends
+            on the user's cost rate category for this equipment.
+        """
         charge_rate = self.equipment.get_charge_rate(self)
         self.comment = (
             f"{self.shifts} shifts @ £{charge_rate.charge_rate:.2f}/shift ({charge_rate.cost_rate.name} rate)"
@@ -278,10 +503,33 @@ class BookingEntry(ChargeableItgem):
         return 0.0
 
     def get_default_cost_centre(self):
-        """Get a default cost_centre - for now this will return None."""
+        """Get a default cost centre for this booking.
+
+        Returns:
+            (CostCentre):
+                The default cost centre, currently always None.
+
+        Notes:
+            This is a placeholder for future implementation of automatic cost centre assignment.
+        """
         return None
 
     def get_policy(self, no_holds=False):
+        """Get the effective booking policy for this booking entry.
+
+        Args:
+            no_holds (bool):
+                If True, ignore user and admin hold statuses. Default is False.
+
+        Returns:
+            (BookingPolicy):
+                The applicable booking policy, or a string message describing why no policy
+                could be determined.
+
+        Notes:
+            This method wraps BookingPolicy.get_policy() and provides user-friendly error
+            messages when exceptions occur.
+        """
         try:
             return BookingPolicy.get_policy(self, no_holds)
         except PolicyNotFound:
@@ -292,7 +540,22 @@ class BookingEntry(ChargeableItgem):
             return "User Bookings are currently blocked."
 
     def rationalise(self, policy):
-        """Apply quantisation to the booking."""
+        """Apply quantisation to the booking.
+
+        Adjusts the booking's time slot according to the policy's time-fixing rules,
+        either aligning to shifts or applying time quantisation.
+
+        Args:
+            policy (BookingPolicy):
+                The policy to use for rationalising the booking times.
+
+        Returns:
+            (BookingEntry):
+                This booking entry with adjusted slot times.
+
+        Notes:
+            If the slot is empty or no policy is provided, returns the booking unchanged.
+        """
         if self.slot.isempty or policy is None:  # Bugout for the empty slot or no policy
             return self
         start, end = policy.fix_times(self)
@@ -300,7 +563,16 @@ class BookingEntry(ChargeableItgem):
         return self
 
     def fix_project(self):
-        """Workout a coist_centre for this booking."""
+        """Work out a cost centre for this booking.
+
+        Ensures the booking has a valid cost centre assigned from the user's available
+        projects. If no cost centre is set, uses the user's default project. If the
+        current cost centre is not in the user's project list, reverts to the default.
+
+        Returns:
+            (CostCentre):
+                The cost centre to use for this booking, or None if the user has no projects.
+        """
         if self.user.project.count() == 0:
             return None
         if not hasattr(self, "cost_centre") or self.cost_centre is None:
@@ -309,7 +581,19 @@ class BookingEntry(ChargeableItgem):
             return self.user.default_project
 
     def count_shifts(self):
-        """Return a weighted sum of the number of shifts for this booking."""
+        """Return a weighted sum of the number of shifts for this booking.
+
+        Calculates the total weighted shift count by iterating through the equipment's
+        shift schedule and summing the weightings of all shifts covered by the booking.
+
+        Returns:
+            (float):
+                The weighted sum of shifts, or None if no policy can be determined.
+
+        Notes:
+            Each shift has a weighting factor that accounts for different shift durations
+            or desirability. The total is used for calculating booking charges and quotas.
+        """
         if not (policy := self.get_policy(no_holds=True)):
             return None
         start, end = policy.fix_times(self)
@@ -326,7 +610,26 @@ class BookingEntry(ChargeableItgem):
         return total
 
     def clean(self, no_holds=False):
-        """Rearrange the slot and check for conflicts."""
+        """Rearrange the slot and check for conflicts.
+
+        Performs comprehensive validation of the booking including fixing the cost centre,
+        ensuring positive duration, applying policy-based time adjustments, checking for
+        scheduling conflicts, and calculating shift counts.
+
+        Keyword Parameters:
+            no_holds (bool):
+                If True, ignore user and admin hold statuses during validation. Default is False.
+
+        Raises:
+            ValidationError:
+                If the booking violates policy constraints, conflicts with existing bookings,
+                or has no time slot defined.
+
+        Notes:
+            This method is automatically called by Django during model validation. It ensures
+            that all booking constraints are satisfied before the booking is saved to the database.
+            Service user bookings bypass most validation checks.
+        """
         self.fix_project()
         # Swap start and end times to ensure positive duration
         if self.slot and not self.slot.isempty and self.slot.lower > self.slot.upper:
@@ -354,13 +657,53 @@ class BookingEntry(ChargeableItgem):
         return super().clean()
 
     def save(self, force_insert=False, force_update=False, using=None, update_fields=None, force_clean=False):
-        """Force model.clean to be called."""
+        """Force model.clean to be called before saving.
+
+        Keyword Parameters:
+            force_insert (bool):
+                Force an SQL INSERT operation. Default is False.
+            force_update (bool):
+                Force an SQL UPDATE operation. Default is False.
+            using (str):
+                Database alias to use for saving. Default is None (use default database).
+            update_fields (list):
+                List of field names to update. Default is None (update all fields).
+            force_clean (bool):
+                If not None, passed as no_holds parameter to clean(). Controls whether to
+                bypass user and admin hold checks during validation.
+
+        Notes:
+            Django models do not automatically call clean() during save, so this override
+            ensures validation always occurs.
+        """
         if force_clean is not None:
             self.clean(no_holds=force_clean)
         super().save(force_insert=force_insert, force_update=force_update, using=using, update_fields=update_fields)
 
     def delete(self, using=None, keep_parents=False, force=True):
-        """Check whether we can delete this object."""
+        """Check whether we can delete this object.
+
+        Validates that the booking can be deleted according to policy rules before
+        performing the deletion.
+
+        Keyword Parameters:
+            using (str):
+                Database alias to use for deletion. Default is None (use default database).
+            keep_parents (bool):
+                Keep parent model instances when deleting. Default is False.
+            force (bool):
+                If False, check policy before deleting. If True, delete without policy checks.
+                Default is True.
+
+        Returns:
+            (tuple):
+                Django's standard deletion result tuple (number_deleted, deletion_details_dict).
+
+        Notes:
+            When force is False, retrieves the booking policy with no_holds=True to verify
+            the deletion is permitted, though the current implementation always proceeds
+            with deletion after policy retrieval.
+        """
         if force:
             return super().delete(using=using, keep_parents=keep_parents)
         policy = BookingPolicy.get_policy(self, no_holds=True)
