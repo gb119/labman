@@ -7,7 +7,7 @@
                             data-bs-toggle="collapse" data-bs-target="#collapse_{{ role|slugify }}"
                             aria-expanded="{% if opentab == role|slugify %}true{% else %}false{% endif%}"
                             aria-controls="collapse_{{ role|slugify }}">
-                        {{ role }} ({{ userlist|length }} {{ role }}{% if userlist|length > 1 %}s{% endif %})
+                        {{ role }} ({{ userlist|length }} user{% if userlist|length != 1 %}s{% endif %})
                     </button>
                 </h2>
                 <div id="collapse_{{ role|slugify }}" class="accordion-collapse collapse{% if opentab == role|slugify %} show{% endif %}"
