@@ -13,6 +13,7 @@ The models support complex workflows including equipment booking, user authorisa
 document management, and cost tracking for laboratory resources.
 """
 # Python imports
+from collections import defaultdict
 from datetime import (
     date as Date,
     datetime as dt,
@@ -340,11 +341,14 @@ class Equipment(ResourceedObject):
 
         Returns:
             (dict):
-                Dictionary mapping role names (str) to QuerySets of UserListEntry objects.
+                Dictionary mapping role names (str) to lists of UserListEntry objects.
                 Roles are ordered by level (highest first).
-        """
-        from collections import defaultdict
 
+        Notes:
+            This method groups users in Python rather than using database filtering
+            to avoid N+1 queries. The return type changed from QuerySets to lists
+            in optimization efforts.
+        """
         # Fetch all users once with role prefetched to avoid N+1 queries
         users_list = list(self.userlist.all().prefetch_related("role").order_by("-role__level"))
 
@@ -353,9 +357,6 @@ class Equipment(ResourceedObject):
         for user in users_list:
             ret[user.role.name].append(user)
 
-        # Return a dict of lists instead of QuerySets
-        # Note: This changes the return type from QuerySets to lists
-        # Template code should use 'for entry in userlist' instead of 'for entry in userlist.all'
         return dict(ret)
 
     @property
