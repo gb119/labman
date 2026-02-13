@@ -4,7 +4,17 @@ from os.path import join
 # app imports
 # project imports
 from .common import *
-from .secrets import DATABASES
+
+try:
+    from .secrets import DATABASES
+except ImportError:
+    # Provide default DATABASES configuration if secrets.py is not available
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': str(PROJECT_ROOT_PATH / 'run' / 'db.sqlite3'),
+        }
+    }
 
 # uncomment the following line to include i18n
 # from .i18n import *

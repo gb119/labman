@@ -19,10 +19,12 @@ coverage_html
 # General backup files
 *.bak
 
-# Sectrets
+# Secrets
 
-*secrets.*
+*secrets.py
 *SECRET*
+# But allow template files
+!*secrets.py.template
 
 # Spyder project files
 .spyproject
