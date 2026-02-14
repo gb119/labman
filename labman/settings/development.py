@@ -6,13 +6,14 @@ from os.path import join
 from .common import *
 
 try:
+    # app imports
     from .secrets import DATABASES
 except ImportError:
     # Provide default DATABASES configuration if secrets.py is not available
     DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': str(PROJECT_ROOT_PATH / 'run' / 'db.sqlite3'),
+        "default": {
+            "ENGINE": "django.db.backends.sqlite3",
+            "NAME": str(PROJECT_ROOT_PATH / "run" / "db.sqlite3"),
         }
     }
 

@@ -275,11 +275,7 @@ class Document(dsfh.BaseMixin, dsfh.TitledMixin, dsfh.PublicMixin, dsfh.RenameMi
         if not q_obs:
             return None
         Location = apps.get_model("equipment", "location")
-        return (
-            Location.objects.filter(reduce(lambda left, right: left | right, q_obs))
-            .order_by("code")
-            .distinct()
-        )
+        return Location.objects.filter(reduce(lambda left, right: left | right, q_obs)).order_by("code").distinct()
 
     @property
     def needs_review(self):
@@ -336,9 +332,9 @@ class Document(dsfh.BaseMixin, dsfh.TitledMixin, dsfh.PublicMixin, dsfh.RenameMi
                     # Add equipment at locations associated with this document
                     Equipment = apps.get_model("equipment", "equipment")
                     for location in self.location.all():
-                        child_equipment_ids = Equipment.objects.filter(
-                            location__in=location.children
-                        ).values_list("id", flat=True)
+                        child_equipment_ids = Equipment.objects.filter(location__in=location.children).values_list(
+                            "id", flat=True
+                        )
                         equipment_ids.update(child_equipment_ids)
 
                     # Bulk update all userlist entries for collected equipment

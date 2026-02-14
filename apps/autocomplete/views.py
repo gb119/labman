@@ -31,6 +31,7 @@ class AutocompleteBaseView(View):
         ac_class (type):
             The autocomplete class for this view, resolved from the URL.
     """
+
     @cached_property
     def ac_class(self):
         """Resolve and return the autocomplete class from the URL.
@@ -225,6 +226,7 @@ class ToggleView(AutocompleteBaseView):
     and multi-select modes. It returns the updated selection state with HTMX
     triggers for client-side updates.
     """
+
     def get(self, request, *args, **kwargs):
         """Process a toggle request for selecting or deselecting an item.
 
@@ -325,6 +327,7 @@ class ItemsView(AutocompleteBaseView):
     This view processes search queries, applies minimum search length validation,
     and returns paginated results respecting the configured maximum result limit.
     """
+
     def get(self, request, *args, **kwargs):
         """Process a search request and return matching items.
 

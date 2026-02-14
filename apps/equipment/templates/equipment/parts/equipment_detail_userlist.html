@@ -11,53 +11,53 @@
                             {{ role }} ({{ userlist_count }} user{% if userlist_count != 1 %}s{% endif %})
                         </button>
                     </h2>
-                <div id="collapse_{{ role|slugify }}" class="accordion-collapse collapse{% if opentab == role|slugify %} show{% endif %}"
-                     aria-labelledby="{{ role|slugify }}" data-bs-parent="#UserLists">
-                    <div class="accordion-body">
-                        {% for entry in userlist %}
-                            {% if forloop.first %}
-                                <div class="row bg-secondary">
-                                    <div class="col col-md-5">
-                                        <h5>User</h5>
-                                    </div>
-                                    <div class="col col-md-3">
-                                        <h5>Role</h5>
-                                    </div>
-                                    <div class="col col-md-3">
-                                        <h5>Signed</h5>
-                                    </div>
-                                </div>
-                            {% endif %}
-                            <div class="row">
-                                <div class="col col-md-5 d-flex align-items-center">
-                                    <a href="/accounts/user/{{ entry.user.username }}">
-                                        {% if entry.user.mugshot %}
-                                            <img src="{{ entry.user.mugshot.get_thumbnail_url }}" alt="Picture of {{ entry.user.display_name" />
-                                        {% endif %}
-                                        {{ entry.user.display_name }}
-                                    </a>
-                                </div><div class="col col-md-3 d-flex align-items-center">{{ entry.role }}</div>
-                                <div class="col col-md-3 d-flex align-items-center">
-                                    {% if entry.hold %}
-                                        Sign off required
-                                    {% else %}
-                                        {{ entry.updated }}
-                                    {% endif %}
-                                </div>
-                                {% if equipment|can_edit:request.user %}
-                                    <div class="col col-md-1 d-flex justify-content-end align-items-center">
-                                        <a hx-get="{% url 'equipment:userlist_edit' equipment.pk entry.user.pk %}"
-                                           hx-target="#dialog">
-                                            <i class="bi bi-pencil"></i>
-                                        </a>
+                    <div id="collapse_{{ role|slugify }}" class="accordion-collapse collapse{% if opentab == role|slugify %} show{% endif %}"
+                         aria-labelledby="{{ role|slugify }}" data-bs-parent="#UserLists">
+                        <div class="accordion-body">
+                            {% for entry in userlist %}
+                                {% if forloop.first %}
+                                    <div class="row bg-secondary">
+                                        <div class="col col-md-5">
+                                            <h5>User</h5>
+                                        </div>
+                                        <div class="col col-md-3">
+                                            <h5>Role</h5>
+                                        </div>
+                                        <div class="col col-md-3">
+                                            <h5>Signed</h5>
+                                        </div>
                                     </div>
                                 {% endif %}
-                            </div>
-                        {% endfor %}
+                                <div class="row">
+                                    <div class="col col-md-5 d-flex align-items-center">
+                                        <a href="/accounts/user/{{ entry.user.username }}">
+                                            {% if entry.user.mugshot %}
+                                                <img src="{{ entry.user.mugshot.get_thumbnail_url }}" alt="Picture of {{ entry.user.display_name" />
+                                            {% endif %}
+                                            {{ entry.user.display_name }}
+                                        </a>
+                                    </div><div class="col col-md-3 d-flex align-items-center">{{ entry.role }}</div>
+                                    <div class="col col-md-3 d-flex align-items-center">
+                                        {% if entry.hold %}
+                                            Sign off required
+                                        {% else %}
+                                            {{ entry.updated }}
+                                        {% endif %}
+                                    </div>
+                                    {% if equipment|can_edit:request.user %}
+                                        <div class="col col-md-1 d-flex justify-content-end align-items-center">
+                                            <a hx-get="{% url 'equipment:userlist_edit' equipment.pk entry.user.pk %}"
+                                               hx-target="#dialog">
+                                                <i class="bi bi-pencil"></i>
+                                            </a>
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            {% endfor %}
+                        </div>
                     </div>
                 </div>
-            </div>
-        {% endif %}
+            {% endif %}
         {% endwith %}
     {% endfor %}
 </div>

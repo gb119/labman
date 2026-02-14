@@ -35,6 +35,7 @@ class AutocompleteWidget(Widget):
         ...     options={'multiselect': True, 'placeholder': 'Search...'}
         ... )
     """
+
     template_name = "autocomplete/component.html"
 
     configurable_values = [

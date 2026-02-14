@@ -39,6 +39,7 @@ class ModelAutocomplete(Autocomplete):
         ...     def get_label_for_record(cls, record):
         ...         return f"{record.username} ({record.email})"
     """
+
     model = None
     search_attrs = []
 

@@ -196,6 +196,7 @@ ALLOWED_HOSTS = [
     "127.0.0.1:8443",
     "localhost:8443",
     "stoner-intranet-dev.leeds.ac.uk",
+    "stoner-intranet.leeds.ac.uk",
 ]
 CSRF_TRUSTED_ORIGINS = [f"https://{x}" for x in ALLOWED_HOSTS]
 

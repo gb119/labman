@@ -19,7 +19,13 @@ from django.views.static import serve
 # Django REST Framework launcher import
 from . import api
 from .settings.production import DEBUG, MEDIA_ROOT, PROJECT_ROOT
-from .views import E403View, E404View, E500View, FileServeView
+from .views import (
+    E403View,
+    E404View,
+    E500View,
+    FileServeView,
+    RedirectLoginView,
+)
 
 # Set Error handlers
 handler404 = E404View.as_view()
@@ -36,6 +42,7 @@ urlpatterns = [
     path(r"scoir/", auth_views.LogoutView.as_view(next_page="/"), name="core_logout"),
     path("tinymce/", include("tinymce.urls")),
     path("photologue/", include("photologue.urls", namespace="photologue")),
+    path("login/", RedirectLoginView.as_view()),
     path("private-file-pseudo-directory-path/", include("django_simple_file_handler.urls")),
     path("api/", include(api)),  # main api module exports a urlpatterns
     path("api-auth/", include("rest_framework.urls")),  # Needed by REST framework for user authentication

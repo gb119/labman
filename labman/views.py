@@ -12,6 +12,7 @@ import sys
 # Django imports
 from django.conf import settings
 from django.http import Http404, StreamingHttpResponse
+from django.shortcuts import redirect
 from django.utils.decorators import classonlymethod
 from django.views import View
 from django.views.debug import technical_500_response
@@ -281,3 +282,27 @@ class FileServeView(View):
             response = StreamingHttpResponse(file_iterator(file_path))
             response["Content-Disposition"] = f'attachment; filename="{os.path.basename(file_path)}"'
             return response
+
+
+class RedirectLoginView(View):
+    """SAimple view to redirect requests to /login/?next=<url> if logged in."""
+
+    def get(self, request, *args, **kwargs):
+        """Handle GET requests to serve a file.
+
+        Args:
+            request (HttpRequest):
+                The HTTP request object.
+            *args: Variable positional arguments.
+
+        Keyword Parameters:
+            path (str):
+                Relative path to the file within MEDIA_ROOT.
+            **kwargs: Additional keyword arguments.
+
+        Returns:
+            Redirection to the requestd URL.
+        """
+        if next_url := request.GET.get("next", None):
+            return redirect(next_url)
+        return super().get(request, *args, **kwargs)

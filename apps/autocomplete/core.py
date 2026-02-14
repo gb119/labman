@@ -243,5 +243,6 @@ class ContextArg:
         >>> context = ContextArg(request=request, client_kwargs=request.GET)
         >>> results = MyAutocomplete.search_items("query", context)
     """
+
     request: HttpRequest
     client_kwargs: dict

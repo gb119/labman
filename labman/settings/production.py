@@ -3,13 +3,14 @@
 from .common import *
 
 try:
+    # app imports
     from .secrets import DATABASES
 except ImportError:
     # Provide default DATABASES configuration if secrets.py is not available
     DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': str(PROJECT_ROOT_PATH / 'run' / 'db.sqlite3'),
+        "default": {
+            "ENGINE": "django.db.backends.sqlite3",
+            "NAME": str(PROJECT_ROOT_PATH / "run" / "db.sqlite3"),
         }
     }
 
@@ -80,4 +81,6 @@ SESSION_COOKIE_SAMESITE = "Strict"
 
 X_FRAME_OPTIONS = "DENY"
 
-DEBUG = False
+INSTALLED_APPS = DEFAULT_APPS
+
+DEBUG = True

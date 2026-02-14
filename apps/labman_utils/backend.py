@@ -193,7 +193,7 @@ class LeedsAdfsBaseBackend(AdfsAuthCodeBackend):
         Notes:
             This method uses an on-behalf-of token to access Microsoft Graph on behalf
             of the authenticated user. SSL verification is enabled in the API call.
-            
+
             Error Handling Behavior:
             - In DEBUG mode (settings.DEBUG=True): Exceptions are re-raised to show the
               full Django error page for debugging purposes.
@@ -322,4 +322,3 @@ class LeedsAdfsBaseBackend(AdfsAuthCodeBackend):
 
             claim_groups.append(group_data["displayName"])
         return claim_groups
-
