@@ -277,7 +277,7 @@ class Document(dsfh.BaseMixin, dsfh.TitledMixin, dsfh.PublicMixin, dsfh.RenameMi
         if not doc_locations:
             return None
         
-        # Build Q objects using MPPT tree fields for efficient filtering
+        # Build Q objects using MPTT tree fields for efficient filtering
         location_queries = []
         for location in doc_locations:
             # Use MPTT indexed fields (tree_id, lft, rght) for efficient tree queries

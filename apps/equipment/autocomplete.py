@@ -25,10 +25,10 @@ class EquipmentAutocomplete(ModelAutocomplete):
         base_qs = cls.get_queryset()
         conditions = [Q(**{f"{attr}__icontains": search}) for attr in ["name", "description"]]
         
-        # Find locations matching the search
-        matching_locations = Location.objects.filter(name__icontains=search)
+        # Find locations matching the search and build Q objects for their trees
+        matching_locations = list(Location.objects.filter(name__icontains=search))
         
-        if matching_locations.exists():
+        if matching_locations:
             # Build Q objects for each location tree (uses MPTT indexed fields)
             location_conditions = []
             for loc in matching_locations:
