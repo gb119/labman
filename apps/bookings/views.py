@@ -443,7 +443,7 @@ class BookingRecordsView(IsAuthenticaedViewMixin, FormListView):
         """Get a queryset after filtering the data.
 
         Applies filters from the validated form including date range, equipment,
-        user, and cost centre filters.
+        user, user_group, and cost centre filters.
 
         Returns:
             (QuerySet): Filtered queryset of booking entries.
@@ -461,6 +461,8 @@ class BookingRecordsView(IsAuthenticaedViewMixin, FormListView):
             qs = qs.filter(equipment__in=data["equipment"])
         if data["user"]:
             qs = qs.filter(user__in=data["user"])
+        if data.get("user_group"):
+            qs = qs.filter(user__groups__in=data["user_group"]).distinct()
         if data["cost_centre"]:
             # Build Q objects using MPTT tree fields for efficient filtering
             cost_centre_queries = []
@@ -509,9 +511,19 @@ class BookingRecordsView(IsAuthenticaedViewMixin, FormListView):
         equipment_map = {e.pk: str(e) for e in Equipment.objects.filter(pk__in=equipment_ids)}
         user_map = {u.pk: str(u.display_name) for u in Account.objects.filter(pk__in=user_ids)}
         cost_centre_map = {cc.pk: str(cc.short_name) for cc in CostCentre.objects.filter(pk__in=cost_centre_ids)}
+        
+        # Build user group map - get group names for each user or "No Group"
+        user_group_map = {}
+        for user in Account.objects.filter(pk__in=user_ids).prefetch_related("groups"):
+            groups = user.groups.all()
+            if groups:
+                user_group_map[user.pk] = ", ".join([g.name for g in groups])
+            else:
+                user_group_map[user.pk] = "No Group"
 
         # Map foreign keys to strings using dictionary lookups
         # fillna handles any orphaned foreign keys gracefully
+        df["user_group"] = df["user"].map(user_group_map).fillna("No Group")
         df["equipment"] = df["equipment"].map(equipment_map).fillna(UNKNOWN_EQUIPMENT)
         df["user"] = df["user"].map(user_map).fillna(UNKNOWN_USER)
         df["cost_centre"] = df["cost_centre"].map(cost_centre_map).fillna(UNKNOWN_COST_CENTRE)
@@ -536,7 +548,7 @@ class BookingRecordsView(IsAuthenticaedViewMixin, FormListView):
             self.data.replace(np.nan, "Subtotal", inplace=True)
             self.data.set_index(groupby, inplace=True)
         else:
-            self.data = df[["User", "Cost_Centre", "Equipment", "Start", "End", "Shifts", "Charge", "Comment"]]
-        self.df = df[["User", "Cost_Centre", "Equipment", "Start", "End", "Shifts", "Charge", "Comment"]]
+            self.data = df[["User", "User_Group", "Cost_Centre", "Equipment", "Start", "End", "Shifts", "Charge", "Comment"]]
+        self.df = df[["User", "User_Group", "Cost_Centre", "Equipment", "Start", "End", "Shifts", "Charge", "Comment"]]
         context["data"] = self.data.to_html(classes="table table-striped table-hover tabel-responsive")
         return context
