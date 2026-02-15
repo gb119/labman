@@ -7,6 +7,7 @@ date-time range selection.
 """
 # Django imports
 from django import forms
+from django.contrib.auth.models import Group
 from django.contrib.postgres.forms import RangeWidget
 
 # external imports
@@ -145,9 +146,9 @@ class BookingEntryFilterForm(forms.Form):
     """A form for filtering and reporting on booking entries.
 
     This form provides comprehensive filtering and output options for booking
-    entry reports. Users can filter by date range, users, equipment, and cost
-    centres, with options to control the ordering and output format of results.
-    Multiple selection is supported for user, equipment, and cost centre fields
+    entry reports. Users can filter by date range, users, equipment, user groups,
+    and cost centres, with options to control the ordering and output format of results.
+    Multiple selection is supported for user, equipment, user_group, and cost centre fields
     using autocomplete widgets.
 
     Attributes:
@@ -157,12 +158,14 @@ class BookingEntryFilterForm(forms.Form):
             required field with custom date picker.
         user (forms.ModelMultipleChoiceField): Optional filter for specific
             users, supports multiple selection with autocomplete.
+        user_group (forms.ModelMultipleChoiceField): Optional filter for specific
+            user groups, supports multiple selection.
         equipment (forms.ModelMultipleChoiceField): Optional filter for
             specific equipment, supports multiple selection with autocomplete.
         cost_centre (forms.ModelMultipleChoiceField): Optional filter for
             specific cost centres, supports multiple selection with autocomplete.
         order (forms.ChoiceField): Selection of grouping and sub-totalling
-            order for the report, with predefined combinations of user,
+            order for the report, with predefined combinations of user, user_group,
             equipment, and project (cost centre).
         reverse (forms.BooleanField): Optional flag to reverse the order of
             sub-totals in the report.
@@ -177,6 +180,11 @@ class BookingEntryFilterForm(forms.Form):
         required=False,
         widget=AutocompleteWidget(options={"multiselect": True}, ac_class=AllUsersComplete),
     )
+    user_group = forms.ModelMultipleChoiceField(
+        Group.objects.all(),
+        required=False,
+        widget=forms.SelectMultiple(attrs={"class": "form-control"}),
+    )
     equipment = forms.ModelMultipleChoiceField(
         Equipment.objects.all(),
         required=False,
@@ -190,12 +198,15 @@ class BookingEntryFilterForm(forms.Form):
     )
     order = forms.ChoiceField(
         choices=[
-            ("user,equipment,cost_Centre", "User,Equipment & Project"),
+            ("user,equipment,cost_Centre", "User, Equipment & Project"),
             ("user,cost_centre,equipment", "User, Project & Equipment"),
             ("cost_centre,user,equipment", "Project, User & Equipment"),
+            ("user_group,user,equipment", "User Group, User & Equipment"),
+            ("user_group,equipment,cost_centre", "User Group, Equipment & Project"),
             ("user,equipment", "User & Equipment"),
             ("user,cost_centre", "User & Project"),
             ("equipment,cost_centre", "Equipment & Project"),
+            ("user_group,user", "User Group & User"),
         ],
         help_text="Select the levels to sub-total usage",
     )
