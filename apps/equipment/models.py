@@ -65,6 +65,7 @@ class Location(MPTTModel, ResourceedObject):
     class Meta:
         constraints = [
             models.UniqueConstraint(fields=["name"], name="Unique Location Name"),
+            # TODO: Remove code constraint after verifying MPTT migration in production
             models.UniqueConstraint(fields=["code"], name="Unique Location Code"),
         ]
         ordering = ["tree_id", "lft"]

@@ -12,6 +12,11 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
+        # First, remove the old custom level field
+        migrations.RemoveField(
+            model_name="location",
+            name="level",
+        ),
         # Add MPTT fields
         migrations.AddField(
             model_name="location",
@@ -31,6 +36,7 @@ class Migration(migrations.Migration):
             field=models.PositiveIntegerField(db_index=True, default=0, editable=False),
             preserve_default=False,
         ),
+        # Add new MPTT-managed level field (non-nullable PositiveIntegerField)
         migrations.AddField(
             model_name="location",
             name="level",
