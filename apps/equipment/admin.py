@@ -59,7 +59,7 @@ class LocationListFilter(SimpleListFilter):
     parameter_name = "location"
 
     def lookups(self, request, model_admin):
-        """Build lookup table of location codes to location objects.
+        """Build lookup table of location IDs to location objects.
 
         Args:
             request (HttpRequest):
@@ -69,11 +69,11 @@ class LocationListFilter(SimpleListFilter):
 
         Returns:
             (list):
-                List of tuples containing (code, location) pairs for all locations
-                ordered by location code.
+                List of tuples containing (id, location) pairs for all locations
+                ordered by tree structure.
         """
-        qs = Location.objects.all().order_by("code")
-        return [(loc.code, loc) for loc in qs.all()]
+        qs = Location.objects.all().order_by("tree_id", "lft")
+        return [(loc.pk, loc) for loc in qs.all()]
 
     def queryset(self, request, queryset):
         """Filter queryset based on location hierarchy.
@@ -98,10 +98,9 @@ class LocationListFilter(SimpleListFilter):
             return queryset
         
         try:
-            # Get the location object by code (during transition period)
-            # In the future, this should use ID
-            location = Location.objects.get(code=self.value())
-        except Location.DoesNotExist:
+            # Get the location object by ID
+            location = Location.objects.get(pk=self.value())
+        except (Location.DoesNotExist, ValueError):
             return queryset.none()
         
         if queryset.model is Location:
@@ -404,15 +403,15 @@ class LocationAdmin(ImportExportModelAdmin):
             Default ordering for the location list view.
     """
 
-    list_display = ["name", "location", "code"]
+    list_display = ["name", "parent", "code"]
     list_filter = ["name", LocationListFilter]
-    suit_list_filter_horizontal = ["name", "location"]
+    suit_list_filter_horizontal = ["name", "parent"]
     search_fields = (
         "name",
         "description",
-        "location__name",
+        "parent__name",
     )
-    ordering = ["code"]
+    ordering = ["tree_id", "lft"]
 
     def get_export_resource_class(self):
         """Return the import-export resource class for data export.
