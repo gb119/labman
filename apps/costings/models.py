@@ -112,7 +112,7 @@ class CostCentre(MPTTModel, NamedObject):
         
         Notes:
             This returns all descendants including self. For direct children only,
-            use the `direct_children` manager provided by the parent foreign key.
+            access the reverse relation via `self.direct_children.all()`.
         """
         # Use MPTT get_descendants with include_self=True
         return self.get_descendants(include_self=True)
