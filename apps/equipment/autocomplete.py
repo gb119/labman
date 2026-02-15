@@ -32,9 +32,10 @@ class EquipmentAutocomplete(ModelAutocomplete):
             # Build Q objects for each location tree (uses MPTT indexed fields)
             location_conditions = []
             for loc in matching_locations:
-                # Use MPTT tree fields for efficient filtering (single indexed lookup per tree)
+                # Use MPTT tree fields to find all descendants (including self)
+                # A node is a descendant if: tree_id matches AND lft is between parent's lft and rght
                 location_conditions.append(
-                    Q(location__tree_id=loc.tree_id, location__lft__gte=loc.lft, location__rght__lte=loc.rght)
+                    Q(location__tree_id=loc.tree_id, location__lft__gte=loc.lft, location__lft__lte=loc.rght)
                 )
             
             # Combine all location conditions with OR

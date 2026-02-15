@@ -280,9 +280,10 @@ class Document(dsfh.BaseMixin, dsfh.TitledMixin, dsfh.PublicMixin, dsfh.RenameMi
         # Build Q objects using MPTT tree fields for efficient filtering
         location_queries = []
         for location in doc_locations:
-            # Use MPTT indexed fields (tree_id, lft, rght) for efficient tree queries
+            # Use MPTT indexed fields to find all descendants (including self)
+            # A node is a descendant if: tree_id matches AND lft is between parent's lft and rght
             location_queries.append(
-                models.Q(tree_id=location.tree_id, lft__gte=location.lft, rght__lte=location.rght)
+                models.Q(tree_id=location.tree_id, lft__gte=location.lft, lft__lte=location.rght)
             )
         
         # Combine with OR and execute single query
@@ -353,12 +354,13 @@ class Document(dsfh.BaseMixin, dsfh.TitledMixin, dsfh.PublicMixin, dsfh.RenameMi
                         # Build Q objects using MPTT tree fields for efficient filtering
                         location_queries = []
                         for location in doc_locations:
-                            # Use MPTT indexed fields for efficient tree-based equipment lookup
+                            # Use MPTT indexed fields to find all descendants (including self)
+                            # A node is a descendant if: tree_id matches AND lft is between parent's lft and rght
                             location_queries.append(
                                 models.Q(
                                     location__tree_id=location.tree_id,
                                     location__lft__gte=location.lft,
-                                    location__rght__lte=location.rght,
+                                    location__lft__lte=location.rght,
                                 )
                             )
                         
