@@ -357,9 +357,9 @@ class ModelListView(HTMXProcessMixin, IsAuthenticaedViewMixin, views.generic.Lis
             case "equipment-tab":
                 qs = Equipment.objects.all().order_by("category", "name")
             case "locations-tab":
-                qs = Location.objects.all().order_by("code", "name")
+                qs = Location.objects.all().order_by("tree_id", "lft", "name")
             case "projects-tab":
-                qs = CostCentre.objects.all().order_by("code")
+                qs = CostCentre.objects.all().order_by("tree_id", "lft")
             case "documents-tab":
                 qs = {}
                 for category in dict(Document.CATEGORIES):
