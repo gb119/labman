@@ -75,6 +75,7 @@ class Location(MPTTModel, ResourceedObject):
     parent = TreeForeignKey(
         "self", on_delete=models.CASCADE, null=True, blank=True, related_name="children"
     )
+    # TODO: Remove code field after verifying MPTT migration in production
     code = models.CharField(max_length=80, blank=True)
 
     @property

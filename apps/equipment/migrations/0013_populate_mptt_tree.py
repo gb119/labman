@@ -21,7 +21,6 @@ def populate_mptt_from_existing_hierarchy(apps, schema_editor):
     roots = Location.objects.filter(parent__isnull=True).order_by("name")
     
     tree_id = 1
-    lft_counter = 1
     
     def build_tree(location, tree_id, lft):
         """Recursively build MPTT tree structure."""
@@ -51,7 +50,8 @@ def populate_mptt_from_existing_hierarchy(apps, schema_editor):
     
     # Build tree for each root
     for root in roots:
-        lft_counter = build_tree(root, tree_id, 1)
+        # Start each tree with lft=1, return value is unused
+        build_tree(root, tree_id, 1)
         tree_id += 1
 
 
