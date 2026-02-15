@@ -403,7 +403,7 @@ class LocationAdmin(ImportExportModelAdmin):
             Default ordering for the location list view.
     """
 
-    list_display = ["name", "parent", "code"]
+    list_display = ["name", "parent"]
     list_filter = ["name", LocationListFilter]
     suit_list_filter_horizontal = ["name", "parent"]
     search_fields = (

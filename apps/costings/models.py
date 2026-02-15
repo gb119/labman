@@ -70,15 +70,11 @@ class CostCentre(MPTTModel, NamedObject):
             Account responsible for managing this cost centre.
         parent (TreeForeignKey):
             Parent cost centre in the hierarchy.
-        code (CharField):
-            Legacy hierarchical code (maintained for backwards compatibility).
     """
 
     class Meta:
         constraints = [
             models.UniqueConstraint(fields=["name"], name="Unique Cost-centre Name"),
-            # TODO: Remove code constraint after verifying MPTT migration in production
-            models.UniqueConstraint(fields=["code"], name="Unique cost-centre Code"),
         ]
         ordering = ["tree_id", "lft"]
 
@@ -94,10 +90,8 @@ class CostCentre(MPTTModel, NamedObject):
         "accounts.Account", on_delete=models.CASCADE, related_name="managed_cost_centres", blank=True, null=True
     )
     parent = TreeForeignKey(
-        "self", on_delete=models.CASCADE, related_name="children", null=True, blank=True
+        "self", on_delete=models.CASCADE, related_name="direct_children", null=True, blank=True
     )
-    # TODO: Remove code field after verifying MPTT migration in production
-    code = models.CharField(max_length=80, blank=True)
 
     @property
     def all_parents(self):
@@ -114,7 +108,11 @@ class CostCentre(MPTTModel, NamedObject):
         """Return all sub-cost centres of this cost centre.
 
         Returns:
-            (QuerySet): All child cost centres in the hierarchy.
+            (QuerySet): All descendant cost centres in the hierarchy including self.
+        
+        Notes:
+            This returns all descendants including self. For direct children only,
+            use the `direct_children` manager provided by the parent foreign key.
         """
         # Use MPTT get_descendants with include_self=True
         return self.get_descendants(include_self=True)
