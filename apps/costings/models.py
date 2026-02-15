@@ -70,15 +70,11 @@ class CostCentre(MPTTModel, NamedObject):
             Account responsible for managing this cost centre.
         parent (TreeForeignKey):
             Parent cost centre in the hierarchy.
-        code (CharField):
-            Legacy hierarchical code (maintained for backwards compatibility).
     """
 
     class Meta:
         constraints = [
             models.UniqueConstraint(fields=["name"], name="Unique Cost-centre Name"),
-            # TODO: Remove code constraint after verifying MPTT migration in production
-            models.UniqueConstraint(fields=["code"], name="Unique cost-centre Code"),
         ]
         ordering = ["tree_id", "lft"]
 
@@ -94,10 +90,8 @@ class CostCentre(MPTTModel, NamedObject):
         "accounts.Account", on_delete=models.CASCADE, related_name="managed_cost_centres", blank=True, null=True
     )
     parent = TreeForeignKey(
-        "self", on_delete=models.CASCADE, related_name="children", null=True, blank=True
+        "self", on_delete=models.CASCADE, related_name="direct_children", null=True, blank=True
     )
-    # TODO: Remove code field after verifying MPTT migration in production
-    code = models.CharField(max_length=80, blank=True)
 
     @property
     def all_parents(self):
@@ -113,8 +107,23 @@ class CostCentre(MPTTModel, NamedObject):
     def children(self):
         """Return all sub-cost centres of this cost centre.
 
+        This property returns a QuerySet that can be iterated directly in templates
+        without calling .all().
+
         Returns:
-            (QuerySet): All child cost centres in the hierarchy.
+            (QuerySet): All descendant cost centres in the hierarchy including self.
+        
+        Examples:
+            Can be used directly in templates::
+            
+                {% for cc in cost_centre.children %}
+                    {{ cc.name }}
+                {% endfor %}
+        
+        Notes:
+            This returns all descendants including self via MPTT's get_descendants().
+            For direct children only, access the reverse relation via
+            `self.direct_children.all()`.
         """
         # Use MPTT get_descendants with include_self=True
         return self.get_descendants(include_self=True)

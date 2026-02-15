@@ -57,16 +57,11 @@ class Location(MPTTModel, ResourceedObject):
     Attributes:
         parent (Location or None):
             Parent location containing this location, or None for top-level locations.
-        code (str):
-            Legacy hierarchical location code (e.g., "1,2,3"). Maintained for backwards
-            compatibility during migration but will be removed in future.
     """
 
     class Meta:
         constraints = [
             models.UniqueConstraint(fields=["name"], name="Unique Location Name"),
-            # TODO: Remove code constraint after verifying MPTT migration in production
-            models.UniqueConstraint(fields=["code"], name="Unique Location Code"),
         ]
         ordering = ["tree_id", "lft"]
 
@@ -74,10 +69,8 @@ class Location(MPTTModel, ResourceedObject):
         order_insertion_by = ["name"]
 
     parent = TreeForeignKey(
-        "self", on_delete=models.CASCADE, null=True, blank=True, related_name="children"
+        "self", on_delete=models.CASCADE, null=True, blank=True, related_name="direct_children"
     )
-    # TODO: Remove code field after verifying MPTT migration in production
-    code = models.CharField(max_length=80, blank=True)
 
     @property
     def all_parents(self):
@@ -98,11 +91,24 @@ class Location(MPTTModel, ResourceedObject):
         """Retrieve all sub-locations contained within this location.
 
         Returns this location and all descendant locations at any depth in the
-        hierarchy.
+        hierarchy. This property returns a QuerySet that can be iterated directly
+        in templates without calling .all().
 
         Returns:
             (QuerySet):
-                QuerySet of Location objects representing this location and all children.
+                QuerySet of Location objects representing this location and all descendants.
+        
+        Examples:
+            Can be used directly in templates::
+            
+                {% for loc in location.children %}
+                    {{ loc.name }}
+                {% endfor %}
+        
+        Notes:
+            This returns all descendants including self via MPTT's get_descendants().
+            For direct children only, access the reverse relation via
+            `self.direct_children.all()`.
         """
         # Use MPTT get_descendants with include_self=True
         return self.get_descendants(include_self=True)
