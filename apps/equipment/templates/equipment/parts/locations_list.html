@@ -21,9 +21,9 @@
         </div>
         <div class="col col-md-3">
             {% for item in location.equipment.all %}
-                {% if forllop.first %}<ul>{% endif %}
+                {% if forloop.first %}<ul>{% endif %}
                 <li><a href="{{ item.url }}">{{ item.name }}</a></li>
-                {% if forllop.last %}</ul>{% endif %}
+                {% if forloop.last %}</ul>{% endif %}
             {% empty %}
                 -
             {% endfor %}
