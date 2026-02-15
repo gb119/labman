@@ -43,7 +43,9 @@ class LocationResource(resources.ModelResource):
     class Meta:
         model = Location
         import_id_fields = ["name"]
-        exclude = ["lft", "rght", "tree_id", "level"]  # MPTT fields are auto-managed
+        # Exclude MPTT fields - they are auto-managed by django-mptt
+        # Note: 'rght' is the correct field name (abbreviation of 'right')
+        exclude = ["lft", "rght", "tree_id", "level"]
 
 
 class DocumentResource(resources.ModelResource):

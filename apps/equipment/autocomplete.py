@@ -28,15 +28,18 @@ class EquipmentAutocomplete(ModelAutocomplete):
         # Find locations matching the search
         matching_locations = Location.objects.filter(name__icontains=search)
         
-        # For each matching location, get all its descendants
-        location_ids = []
-        for loc in matching_locations:
-            # Include the location itself and all descendants
-            location_ids.extend(loc.get_descendants(include_self=True).values_list("id", flat=True))
-        
-        # Add condition for equipment in any of these locations
-        if location_ids:
-            conditions.append(Q(location__id__in=location_ids))
+        if matching_locations.exists():
+            # Build Q objects for each location tree (uses MPTT indexed fields)
+            location_conditions = []
+            for loc in matching_locations:
+                # Use MPTT tree fields for efficient filtering (single indexed lookup per tree)
+                location_conditions.append(
+                    Q(location__tree_id=loc.tree_id, location__lft__gte=loc.lft, location__rght__lte=loc.rght)
+                )
+            
+            # Combine all location conditions with OR
+            if location_conditions:
+                conditions.append(reduce(operator.or_, location_conditions))
         
         condition_filter = reduce(operator.or_, conditions)
         queryset = base_qs.filter(condition_filter)

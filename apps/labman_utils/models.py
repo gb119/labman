@@ -271,17 +271,26 @@ class Document(dsfh.BaseMixin, dsfh.TitledMixin, dsfh.PublicMixin, dsfh.RenameMi
             return None
         
         Location = apps.get_model("equipment", "location")
-        location_ids = []
         
-        # For each location associated with this document, get all descendants
-        for location in self.location.all():
-            # Include the location itself and all descendants
-            location_ids.extend(location.get_descendants(include_self=True).values_list("id", flat=True))
-        
-        if not location_ids:
+        # Get all locations associated with this document
+        doc_locations = self.location.all()
+        if not doc_locations:
             return None
         
-        return Location.objects.filter(id__in=location_ids).order_by("tree_id", "lft").distinct()
+        # Build Q objects using MPPT tree fields for efficient filtering
+        location_queries = []
+        for location in doc_locations:
+            # Use MPTT indexed fields (tree_id, lft, rght) for efficient tree queries
+            location_queries.append(
+                models.Q(tree_id=location.tree_id, lft__gte=location.lft, rght__lte=location.rght)
+            )
+        
+        # Combine with OR and execute single query
+        from functools import reduce
+        import operator
+        return Location.objects.filter(
+            reduce(operator.or_, location_queries)
+        ).order_by("tree_id", "lft").distinct()
 
     @property
     def needs_review(self):
@@ -337,13 +346,30 @@ class Document(dsfh.BaseMixin, dsfh.TitledMixin, dsfh.PublicMixin, dsfh.RenameMi
 
                     # Add equipment at locations associated with this document
                     Equipment = apps.get_model("equipment", "equipment")
-                    for location in self.location.all():
-                        # Get all descendant locations including the location itself
-                        descendant_locations = location.get_descendants(include_self=True)
-                        child_equipment_ids = Equipment.objects.filter(location__in=descendant_locations).values_list(
-                            "id", flat=True
-                        )
-                        equipment_ids.update(child_equipment_ids)
+                    
+                    # Collect all locations for this document
+                    doc_locations = list(self.location.all())
+                    if doc_locations:
+                        # Build Q objects using MPTT tree fields for efficient filtering
+                        location_queries = []
+                        for location in doc_locations:
+                            # Use MPTT indexed fields for efficient tree-based equipment lookup
+                            location_queries.append(
+                                models.Q(
+                                    location__tree_id=location.tree_id,
+                                    location__lft__gte=location.lft,
+                                    location__rght__lte=location.rght,
+                                )
+                            )
+                        
+                        # Single query for all equipment in location trees
+                        if location_queries:
+                            from functools import reduce
+                            import operator
+                            child_equipment_ids = Equipment.objects.filter(
+                                reduce(operator.or_, location_queries)
+                            ).values_list("id", flat=True)
+                            equipment_ids.update(child_equipment_ids)
 
                     # Bulk update all userlist entries for collected equipment
                     if equipment_ids:
