@@ -10,6 +10,11 @@ manage their resources, equipment, and users efficiently. Built on Django 4.x wi
 PostgreSQL, it provides a complete solution for equipment booking, user management,
 cost tracking, and hierarchical organisation of laboratory resources.
 
+A key feature is the management of safety documentation including risk assessments
+and standard operating procedures (SOPs). Users must acknowledge having read all
+required safety documents before being granted equipment booking rights, ensuring
+compliance with laboratory safety protocols.
+
 ## Key Features
 
 ### Equipment Management
@@ -42,10 +47,20 @@ cost tracking, and hierarchical organisation of laboratory resources.
 - **Role hierarchy**: Trainee, User, Advanced User, Instructor, and Manager roles
 - **Microsoft authentication**: Integration with Microsoft ADFS/Azure AD via OAuth2
 
+### Safety and Compliance
+
+- **Risk assessments**: Manage and track risk assessments for equipment and
+  procedures
+- **Standard operating procedures**: Attach SOPs and safety documentation to
+  equipment
+- **Document sign-off**: Users must acknowledge reading safety documents before
+  booking
+- **Compliance tracking**: Monitor which users have completed required document
+  reviews
+- **Document versioning**: Track document updates and user acknowledgements
+
 ### Additional Features
 
-- **Document management**: Attach documents and safety information to equipment
-- **Sign-off tracking**: Track user acknowledgements of safety documents
 - **Photo management**: Equipment and location photos via Photologue
 - **RESTful API**: Django REST Framework integration for programmatic access
 - **Import/Export**: Bulk data import and export capabilities
@@ -173,9 +188,12 @@ Access the admin interface at `/riaradh/` (requires superuser account).
 ### Main Features
 
 - **Equipment booking**: Navigate to equipment listings and select time slots
+- **Safety compliance**: Review and sign off on risk assessments and SOPs before
+  booking
 - **User management**: Manage users, roles, and research groups via admin
+- **Document tracking**: Upload and version control safety documents and
+  procedures
 - **Cost tracking**: Set up cost centres and rates for equipment usage
-- **Document management**: Attach safety documents and track user sign-offs
 
 ## Development
 
