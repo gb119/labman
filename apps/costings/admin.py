@@ -89,9 +89,9 @@ class CostCentreAdmin(ImportExportModelAdmin):
             Fields that can be searched in the admin search box.
     """
 
-    list_display = ("short_name", "name", "code")
-    list_filter = list_display
-    search_fields = ("short_name", "name", "code", "description")
+    list_display = ("short_name", "name", "parent", "code")
+    list_filter = ("short_name", "name")
+    search_fields = ("short_name", "name", "code", "description", "parent__name")
 
     def get_export_resource_class(self):
         """Return the import-export resource class for data export.

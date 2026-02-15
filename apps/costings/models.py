@@ -11,6 +11,7 @@ from django.db import models
 # external imports
 import numpy as np
 from labman_utils.models import NamedObject
+from mptt.models import MPTTModel, TreeForeignKey
 from sortedm2m.fields import SortedManyToManyField
 
 
@@ -47,12 +48,12 @@ class CostRate(NamedObject):
         return self.name
 
 
-class CostCentre(NamedObject):
+class CostCentre(MPTTModel, NamedObject):
     """Model representing a cost centre for financial tracking and organisation.
 
     Cost centres represent organisational units that can be charged for equipment
     and resource usage. They support hierarchical structures and can be associated
-    with locations and equipment.
+    with locations and equipment. Uses django-mptt for efficient tree management.
 
     Attributes:
         locations (SortedManyToManyField):
@@ -67,20 +68,22 @@ class CostCentre(NamedObject):
             Charging rate applied to this cost centre.
         contact (ForeignKey):
             Account responsible for managing this cost centre.
-        super_cost_centre (ForeignKey):
+        parent (TreeForeignKey):
             Parent cost centre in the hierarchy.
         code (CharField):
-            Hierarchical code automatically generated (max 80 characters).
-        level (IntegerField):
-            Depth in the cost centre hierarchy (automatically calculated).
+            Legacy hierarchical code (maintained for backwards compatibility).
     """
 
     class Meta:
         constraints = [
             models.UniqueConstraint(fields=["name"], name="Unique Cost-centre Name"),
+            # TODO: Remove code constraint after verifying MPTT migration in production
             models.UniqueConstraint(fields=["code"], name="Unique cost-centre Code"),
         ]
-        ordering = ("-code",)
+        ordering = ["tree_id", "lft"]
+
+    class MPTTMeta:
+        order_insertion_by = ["name"]
 
     locations = SortedManyToManyField("equipment.location", related_name="cost_centres", blank=True)
     equipment = SortedManyToManyField("equipment.equipment", related_name="cost_centres", blank=True)
@@ -90,39 +93,11 @@ class CostCentre(NamedObject):
     contact = models.ForeignKey(
         "accounts.Account", on_delete=models.CASCADE, related_name="managed_cost_centres", blank=True, null=True
     )
-    super_cost_centre = models.ForeignKey(
-        "CostCentre", on_delete=models.CASCADE, related_name="sub_cost_centres", null=True, blank=True
+    parent = TreeForeignKey(
+        "self", on_delete=models.CASCADE, related_name="children", null=True, blank=True
     )
+    # TODO: Remove code field after verifying MPTT migration in production
     code = models.CharField(max_length=80, blank=True)
-    level = models.IntegerField(default=None, editable=False, blank=True, null=True)
-
-    @property
-    def next_code(self):
-        """Calculate the next available code for this cost centre.
-
-        Returns:
-            (str): The next available hierarchical code.
-
-        Notes:
-            Codes are hierarchical, separated by commas. For example, if the parent
-            has code "1,2", and siblings have codes "1,2,1" and "1,2,3", the next
-            code would be "1,2,2".
-        """
-        peers = self.__class__.objects.filter(super_cost_centre=self.super_cost_centre).exclude(pk=self.pk)
-        if peers.count() == 0:
-            new = "1"
-        else:
-            codes = np.ravel(peers.values_list("code"))
-            if self.super_cost_centre is not None:
-                cut = len(self.super_cost_centre.code) + 1
-            else:
-                cut = 0
-            codes = set([int(x[cut:]) for x in codes])
-            possible = set(np.arange(1, max(codes) + 2))
-            new = str(min(possible - codes))
-        if self.super_cost_centre:
-            return f"{self.super_cost_centre.code},{new}"
-        return new
 
     @property
     def all_parents(self):
@@ -131,12 +106,8 @@ class CostCentre(NamedObject):
         Returns:
             (QuerySet): Cost centres that contain this cost centre in the hierarchy.
         """
-        if self.level == 0:
-            return self.__class__.objects.filter(code=self.code)
-        # Generate list of all parent codes including self
-        parts = self.code.split(",")
-        parent_codes = [",".join(parts[:i]) for i in range(1, len(parts) + 1)]
-        return self.__class__.objects.filter(code__in=parent_codes).order_by("-code")
+        # Use MPTT get_ancestors with include_self=True
+        return self.get_ancestors(include_self=True)
 
     @property
     def children(self):
@@ -145,8 +116,8 @@ class CostCentre(NamedObject):
         Returns:
             (QuerySet): All child cost centres in the hierarchy.
         """
-        query = models.Q(code__startswith=f"{self.code},") | models.Q(code=self.code)
-        return self.__class__.objects.filter(query).order_by("code")
+        # Use MPTT get_descendants with include_self=True
+        return self.get_descendants(include_self=True)
 
     def __getattr__(self, name):
         """Provide dynamic access to all related objects in the hierarchy.
@@ -194,7 +165,7 @@ class CostCentre(NamedObject):
         return f"/costings/cost_centre_detail/{self.pk}/"
 
     def save(self, force_insert=False, force_update=False, using=None, update_fields=None):
-        """Save the cost centre, calculating code and updating sub-cost centres.
+        """Save the cost centre, assigning default rate if needed.
 
         Keyword Parameters:
             force_insert (bool):
@@ -207,24 +178,17 @@ class CostCentre(NamedObject):
                 List of field names to update.
 
         Notes:
-            Automatically calculates the hierarchical code and level. If no rate
-            is specified, assigns the default rate. Updates all sub-cost centres
-            after saving to maintain code consistency.
+            If no rate is specified, assigns the default rate. MPTT handles
+            tree structure updates automatically.
         """
-        if self.pk is None:  # Update our pk
-            super().save(
-                force_insert=force_insert,
-                force_update=force_update,
-                using=using,
-                update_fields=update_fields,
-            )
         if self.rate is None:
             self.rate = CostRate.default()
-        self.code = self.next_code
-        self.level = self.code.count(",")
-        super().save(update_fields=update_fields)
-        for sub in self.sub_cost_centres.all():
-            sub.save()
+        super().save(
+            force_insert=force_insert,
+            force_update=force_update,
+            using=using,
+            update_fields=update_fields,
+        )
 
 
 class ChargeableItem(models.Model):
