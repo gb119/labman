@@ -10,7 +10,9 @@ booking views with HTMX support.
 import io
 import json
 from datetime import datetime as dt, time as Time, timedelta as td
+from functools import reduce
 from itertools import chain
+import operator
 
 # Django imports
 from django import views
@@ -460,12 +462,22 @@ class BookingRecordsView(IsAuthenticaedViewMixin, FormListView):
         if data["user"]:
             qs = qs.filter(user__in=data["user"])
         if data["cost_centre"]:
-            for ix, sqs in enumerate(data["cost_centre"].all()):
-                if ix == 0:
-                    query = Q(cost_centre__in=sqs.children)
-                else:
-                    query |= Q(cost_centre__in=sqs.children)
-            qs = qs.filter(query)
+            # Build Q objects using MPTT tree fields for efficient filtering
+            cost_centre_queries = []
+            for sqs in data["cost_centre"].all():
+                # Use MPTT indexed fields to find all descendants (including self)
+                # A node is a descendant if: tree_id matches AND lft is between parent's lft and rght
+                cost_centre_queries.append(
+                    Q(
+                        cost_centre__tree_id=sqs.tree_id,
+                        cost_centre__lft__gte=sqs.lft,
+                        cost_centre__lft__lte=sqs.rght,
+                    )
+                )
+            
+            # Combine with OR
+            if cost_centre_queries:
+                qs = qs.filter(reduce(operator.or_, cost_centre_queries))
         return qs
 
     def get_context_data(self, **kwargs):

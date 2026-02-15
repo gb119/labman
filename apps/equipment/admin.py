@@ -59,7 +59,7 @@ class LocationListFilter(SimpleListFilter):
     parameter_name = "location"
 
     def lookups(self, request, model_admin):
-        """Build lookup table of location codes to location objects.
+        """Build lookup table of location IDs to location objects.
 
         Args:
             request (HttpRequest):
@@ -69,19 +69,18 @@ class LocationListFilter(SimpleListFilter):
 
         Returns:
             (list):
-                List of tuples containing (code, location) pairs for all locations
-                ordered by location code.
+                List of tuples containing (id, location) pairs for all locations
+                ordered by tree structure.
         """
-        qs = Location.objects.all().order_by("code")
-        return [(loc.code, loc) for loc in qs.all()]
+        qs = Location.objects.all().order_by("tree_id", "lft")
+        return [(loc.pk, loc) for loc in qs.all()]
 
     def queryset(self, request, queryset):
         """Filter queryset based on location hierarchy.
 
         Applies different filtering logic based on the model being filtered:
-        - For Location model: returns child locations (code starts with value but
-          is not equal to value)
-        - For Equipment model: returns equipment in locations with matching code prefix
+        - For Location model: returns descendant locations (excluding self)
+        - For Equipment model: returns equipment in the selected location and descendants
         - For other models: returns unfiltered queryset
 
         Args:
@@ -97,10 +96,20 @@ class LocationListFilter(SimpleListFilter):
         """
         if not self.value():
             return queryset
+        
+        try:
+            # Get the location object by ID
+            location = Location.objects.get(pk=self.value())
+        except (Location.DoesNotExist, ValueError):
+            return queryset.none()
+        
         if queryset.model is Location:
-            return queryset.filter(code__startswith=self.value()).exclude(code=self.value())
+            # Return descendants only (exclude self)
+            return queryset.filter(pk__in=location.get_descendants(include_self=False))
         if queryset.model is Equipment:
-            return queryset.filter(location__code__startswith=self.value())
+            # Return equipment in this location and all descendants
+            descendant_locations = location.get_descendants(include_self=True)
+            return queryset.filter(location__in=descendant_locations)
         return queryset
 
 
@@ -394,15 +403,15 @@ class LocationAdmin(ImportExportModelAdmin):
             Default ordering for the location list view.
     """
 
-    list_display = ["name", "location", "code"]
+    list_display = ["name", "parent", "code"]
     list_filter = ["name", LocationListFilter]
-    suit_list_filter_horizontal = ["name", "location"]
+    suit_list_filter_horizontal = ["name", "parent"]
     search_fields = (
         "name",
         "description",
-        "location__name",
+        "parent__name",
     )
-    ordering = ["code"]
+    ordering = ["tree_id", "lft"]
 
     def get_export_resource_class(self):
         """Return the import-export resource class for data export.

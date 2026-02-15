@@ -43,100 +43,69 @@ from labman_utils.models import (
     delta_t,
     patch_model,
 )
+from mptt.models import MPTTModel, TreeForeignKey
 from psycopg2.extras import DateRange
 from sortedm2m.fields import SortedManyToManyField
 
 
-class Location(ResourceedObject):
+class Location(MPTTModel, ResourceedObject):
     """Represents a physical location or room in a hierarchical structure.
 
     Locations can be nested to represent building/room/sub-location hierarchies.
-    Each location has a unique code that reflects its position in the hierarchy,
-    using comma-separated numeric identifiers (e.g., "1,2,3" for building 1,
-    room 2, sub-location 3).
+    Uses django-mptt for efficient hierarchical queries and tree management.
 
     Attributes:
-        location (Location or None):
+        parent (Location or None):
             Parent location containing this location, or None for top-level locations.
         code (str):
-            Hierarchical location code (e.g., "1,2,3"). Generated automatically on save.
-        level (int or None):
-            Depth in the location hierarchy (0 for top-level). Calculated from code.
+            Legacy hierarchical location code (e.g., "1,2,3"). Maintained for backwards
+            compatibility during migration but will be removed in future.
     """
 
     class Meta:
         constraints = [
             models.UniqueConstraint(fields=["name"], name="Unique Location Name"),
+            # TODO: Remove code constraint after verifying MPTT migration in production
             models.UniqueConstraint(fields=["code"], name="Unique Location Code"),
         ]
-        ordering = ("-code",)
+        ordering = ["tree_id", "lft"]
 
-    location = models.ForeignKey(
-        "Location", on_delete=models.CASCADE, related_name="sub_locations", null=True, blank=True
+    class MPTTMeta:
+        order_insertion_by = ["name"]
+
+    parent = TreeForeignKey(
+        "self", on_delete=models.CASCADE, null=True, blank=True, related_name="children"
     )
+    # TODO: Remove code field after verifying MPTT migration in production
     code = models.CharField(max_length=80, blank=True)
-
-    level = models.IntegerField(default=None, editable=False, blank=True, null=True)
-
-    @property
-    def next_code(self):
-        """Calculate the next available location code for this location.
-
-        Determines an unused numeric code within the parent location's namespace.
-        For top-level locations, returns a simple number. For nested locations,
-        prepends the parent's code followed by a comma.
-
-        Returns:
-            (str):
-                The next available location code (e.g., "1" or "1,2,3").
-        """
-        peers = self.__class__.objects.filter(location=self.location).exclude(pk=self.pk)
-        if peers.count() == 0:
-            new = "1"
-        else:
-            codes = np.ravel(peers.values_list("code"))
-            if self.location is not None:
-                cut = len(self.location.code) + 1
-            else:
-                cut = 0
-            codes = set([int(x[cut:]) for x in codes])
-            possible = set(np.arange(1, max(codes) + 2))
-            new = str(min(possible - codes))
-        if self.location:
-            return f"{self.location.code},{new}"
-        return new
 
     @property
     def all_parents(self):
         """Retrieve all parent locations containing this location.
 
         Returns the location hierarchy from the top-level location down to
-        this location, ordered by decreasing code (deepest first).
+        this location, including self.
 
         Returns:
             (QuerySet):
                 QuerySet of Location objects representing this location and all parents.
         """
-        if self.level == 0:
-            return self.__class__.objects.filter(code=self.code)
-        # Generate list of all parent codes including self
-        parts = self.code.split(",")
-        parent_codes = [",".join(parts[:i]) for i in range(1, len(parts) + 1)]
-        return self.__class__.objects.filter(code__in=parent_codes).order_by("-code")
+        # Use MPTT get_ancestors with include_self=True
+        return self.get_ancestors(include_self=True)
 
     @property
     def children(self):
         """Retrieve all sub-locations contained within this location.
 
         Returns this location and all descendant locations at any depth in the
-        hierarchy, ordered by code.
+        hierarchy.
 
         Returns:
             (QuerySet):
                 QuerySet of Location objects representing this location and all children.
         """
-        query = models.Q(code__startswith=f"{self.code},") | models.Q(code=self.code)
-        return self.__class__.objects.filter(query).order_by("code")
+        # Use MPTT get_descendants with include_self=True
+        return self.get_descendants(include_self=True)
 
     @property
     def all_files(self):
@@ -180,36 +149,6 @@ class Location(ResourceedObject):
                 URL path to the location detail view.
         """
         return f"/equipment/location_detail/{self.pk}/"
-
-    def save(self, force_insert=False, force_update=False, using=None, update_fields=None):
-        """Save the location and update its code and all sub-location codes.
-
-        Automatically calculates and updates the location code based on the parent
-        location. Also updates the level attribute and cascades code changes to all
-        sub-locations.
-
-        Keyword Parameters:
-            force_insert (bool):
-                Force an INSERT operation. Default is False.
-            force_update (bool):
-                Force an UPDATE operation. Default is False.
-            using (str or None):
-                Database alias to use. Default is None.
-            update_fields (list or None):
-                List of field names to update. Default is None.
-        """
-        if self.pk is None:  # Update our pk
-            super().save(
-                force_insert=force_insert,
-                force_update=force_update,
-                using=using,
-                update_fields=update_fields,
-            )
-        self.code = self.next_code
-        self.level = self.code.count(",")
-        super().save(force_insert=force_insert, force_update=force_update, using=using, update_fields=update_fields)
-        for sub in self.sub_locations.all():
-            sub.save()
 
 
 class Shift(NamedObject):

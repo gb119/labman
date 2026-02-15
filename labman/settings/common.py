@@ -96,6 +96,7 @@ DEFAULT_APPS = [
     "constance",
     "django_extensions",
     "django_htmx",
+    "mptt",
     "rest_framework",
     "import_export",
     "sitetree",
