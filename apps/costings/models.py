@@ -112,7 +112,13 @@ class CostCentre(MPTTModel, NamedObject):
 
         Returns:
             (QuerySet): All descendant cost centres in the hierarchy including self.
-                Can be used directly in templates: {% for cc in cost_centre.children %}
+        
+        Examples:
+            Can be used directly in templates::
+            
+                {% for cc in cost_centre.children %}
+                    {{ cc.name }}
+                {% endfor %}
         
         Notes:
             This returns all descendants including self via MPTT's get_descendants().

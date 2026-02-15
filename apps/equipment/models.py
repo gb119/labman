@@ -97,7 +97,13 @@ class Location(MPTTModel, ResourceedObject):
         Returns:
             (QuerySet):
                 QuerySet of Location objects representing this location and all descendants.
-                Can be used directly in templates: {% for loc in location.children %}
+        
+        Examples:
+            Can be used directly in templates::
+            
+                {% for loc in location.children %}
+                    {{ loc.name }}
+                {% endfor %}
         
         Notes:
             This returns all descendants including self via MPTT's get_descendants().
