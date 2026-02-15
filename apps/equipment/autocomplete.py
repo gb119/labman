@@ -24,9 +24,20 @@ class EquipmentAutocomplete(ModelAutocomplete):
     def get_query_filtered_queryset(cls, search, context):
         base_qs = cls.get_queryset()
         conditions = [Q(**{f"{attr}__icontains": search}) for attr in ["name", "description"]]
-        locations = Location.objects.filter(name__icontains=search).values("code").distinct()
-        locations_conditions = [Q(location__code__startswith=x["code"]) for x in locations.all()]
-        conditions.extend(locations_conditions)
+        
+        # Find locations matching the search
+        matching_locations = Location.objects.filter(name__icontains=search)
+        
+        # For each matching location, get all its descendants
+        location_ids = []
+        for loc in matching_locations:
+            # Include the location itself and all descendants
+            location_ids.extend(loc.get_descendants(include_self=True).values_list("id", flat=True))
+        
+        # Add condition for equipment in any of these locations
+        if location_ids:
+            conditions.append(Q(location__id__in=location_ids))
+        
         condition_filter = reduce(operator.or_, conditions)
         queryset = base_qs.filter(condition_filter)
         return queryset

@@ -79,9 +79,8 @@ class LocationListFilter(SimpleListFilter):
         """Filter queryset based on location hierarchy.
 
         Applies different filtering logic based on the model being filtered:
-        - For Location model: returns child locations (code starts with value but
-          is not equal to value)
-        - For Equipment model: returns equipment in locations with matching code prefix
+        - For Location model: returns descendant locations (excluding self)
+        - For Equipment model: returns equipment in the selected location and descendants
         - For other models: returns unfiltered queryset
 
         Args:
@@ -97,10 +96,21 @@ class LocationListFilter(SimpleListFilter):
         """
         if not self.value():
             return queryset
+        
+        try:
+            # Get the location object by code (during transition period)
+            # In the future, this should use ID
+            location = Location.objects.get(code=self.value())
+        except Location.DoesNotExist:
+            return queryset.none()
+        
         if queryset.model is Location:
-            return queryset.filter(code__startswith=self.value()).exclude(code=self.value())
+            # Return descendants only (exclude self)
+            return queryset.filter(pk__in=location.get_descendants(include_self=False))
         if queryset.model is Equipment:
-            return queryset.filter(location__code__startswith=self.value())
+            # Return equipment in this location and all descendants
+            descendant_locations = location.get_descendants(include_self=True)
+            return queryset.filter(location__in=descendant_locations)
         return queryset
 
 

@@ -28,11 +28,22 @@ class ShiftReource(resources.ModelResource):
 
 
 class LocationResource(resources.ModelResource):
-    """Import-export resource for Location objects."""
+    """Import-export resource for Location objects.
+    
+    Uses name as the primary import/export identifier. The code field is
+    maintained for backwards compatibility during migration.
+    """
+
+    parent = fields.Field(
+        column_name="parent",
+        attribute="parent",
+        widget=widgets.ForeignKeyWidget(Location, "name"),
+    )
 
     class Meta:
         model = Location
         import_id_fields = ["name"]
+        exclude = ["lft", "rght", "tree_id", "level"]  # MPTT fields are auto-managed
 
 
 class DocumentResource(resources.ModelResource):
@@ -63,7 +74,7 @@ class EquipmentResource(resources.ModelResource):
     location = fields.Field(
         column_name="location",
         attribute="location",
-        widget=widgets.ForeignKeyWidget(Location, "code"),
+        widget=widgets.ForeignKeyWidget(Location, "name"),
     )
 
     shifts = fields.Field(

@@ -269,13 +269,19 @@ class Document(dsfh.BaseMixin, dsfh.TitledMixin, dsfh.PublicMixin, dsfh.RenameMi
         """
         if not hasattr(self, "location"):
             return None
-        q_obs = []
-        for location in self.location.all():
-            q_obs.append(models.Q(code__startswith=location.code))
-        if not q_obs:
-            return None
+        
         Location = apps.get_model("equipment", "location")
-        return Location.objects.filter(reduce(lambda left, right: left | right, q_obs)).order_by("code").distinct()
+        location_ids = []
+        
+        # For each location associated with this document, get all descendants
+        for location in self.location.all():
+            # Include the location itself and all descendants
+            location_ids.extend(location.get_descendants(include_self=True).values_list("id", flat=True))
+        
+        if not location_ids:
+            return None
+        
+        return Location.objects.filter(id__in=location_ids).order_by("tree_id", "lft").distinct()
 
     @property
     def needs_review(self):
@@ -332,7 +338,9 @@ class Document(dsfh.BaseMixin, dsfh.TitledMixin, dsfh.PublicMixin, dsfh.RenameMi
                     # Add equipment at locations associated with this document
                     Equipment = apps.get_model("equipment", "equipment")
                     for location in self.location.all():
-                        child_equipment_ids = Equipment.objects.filter(location__in=location.children).values_list(
+                        # Get all descendant locations including the location itself
+                        descendant_locations = location.get_descendants(include_self=True)
+                        child_equipment_ids = Equipment.objects.filter(location__in=descendant_locations).values_list(
                             "id", flat=True
                         )
                         equipment_ids.update(child_equipment_ids)
