@@ -543,7 +543,13 @@ class BookingRecordsView(IsAuthenticaedViewMixin, FormListView):
             data = []
             for ix, _ in enumerate(groupby):
                 grp = groupby[:-ix] if ix > 0 else groupby
-                data.append(df.groupby(grp)[["Shifts", "Charge"]].sum().reset_index())
+                # Build aggregation dictionary
+                agg_dict = {"Shifts": "sum", "Charge": "sum"}
+                # Include User_Group when User is in groupby but User_Group is not
+                if "User" in grp and "User_Group" not in grp and "User_Group" in df.columns:
+                    agg_dict["User_Group"] = "first"
+                grouped = df.groupby(grp).agg(agg_dict).reset_index()
+                data.append(grouped)
             self.data = pd.concat(data, ignore_index=True).sort_values(groupby)
             self.data.replace(np.nan, "Subtotal", inplace=True)
             self.data.set_index(groupby, inplace=True)
