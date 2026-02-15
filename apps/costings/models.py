@@ -107,12 +107,17 @@ class CostCentre(MPTTModel, NamedObject):
     def children(self):
         """Return all sub-cost centres of this cost centre.
 
+        This property returns a QuerySet that can be iterated directly in templates
+        without calling .all().
+
         Returns:
             (QuerySet): All descendant cost centres in the hierarchy including self.
+                Can be used directly in templates: {% for cc in cost_centre.children %}
         
         Notes:
-            This returns all descendants including self. For direct children only,
-            access the reverse relation via `self.direct_children.all()`.
+            This returns all descendants including self via MPTT's get_descendants().
+            For direct children only, access the reverse relation via
+            `self.direct_children.all()`.
         """
         # Use MPTT get_descendants with include_self=True
         return self.get_descendants(include_self=True)
