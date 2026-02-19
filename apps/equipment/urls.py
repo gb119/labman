@@ -20,4 +20,5 @@ urlpatterns = [
     path("userlist/new/<int:equipment>/", views.UserlisttDialog.as_view(), name="userlist_new"),
     path("userlist/edit/<int:equipment>/<int:user>/", views.UserlisttDialog.as_view(), name="userlist_edit"),
     path("equipment/edit/<int:pk>/", views.EquipmentDialog.as_view(), name="edit_equipment"),
+    path("account/toggle-active/<int:pk>/", views.ToggleAccountActiveView.as_view(), name="toggle_account_active"),
 ]
