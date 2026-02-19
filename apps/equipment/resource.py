@@ -29,7 +29,7 @@ class ShiftReource(resources.ModelResource):
 
 class LocationResource(resources.ModelResource):
     """Import-export resource for Location objects.
-    
+
     Uses name as the primary import/export identifier. The code field is
     maintained for backwards compatibility during migration.
     """

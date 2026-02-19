@@ -96,13 +96,13 @@ class LocationListFilter(SimpleListFilter):
         """
         if not self.value():
             return queryset
-        
+
         try:
             # Get the location object by ID
             location = Location.objects.get(pk=self.value())
         except (Location.DoesNotExist, ValueError):
             return queryset.none()
-        
+
         if queryset.model is Location:
             # Return descendants only (exclude self)
             return queryset.filter(pk__in=location.get_descendants(include_self=False))

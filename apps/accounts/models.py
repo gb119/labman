@@ -87,6 +87,13 @@ class ResearchGroup(ResourceedObject):
         )
 
 
+class ActiveUsersManager(models.Manager):
+    """Prefilter the user accounts for just active users."""
+
+    def get_queryset(self):
+        return super().get_queryset().filter(is_active=True)
+
+
 class Account(AbstractUser):
     """Extended user account model with laboratory-specific attributes.
 
@@ -120,6 +127,8 @@ class Account(AbstractUser):
         ]
 
     USERNAME_FIELD = "username"
+
+    active = ActiveUsersManager()
 
     number = models.IntegerField(blank=True, null=True)
     title = models.CharField(max_length=20, blank=True, null=True)

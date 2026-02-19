@@ -1,8 +1,11 @@
 # Generated manually - Remove deprecated code field from Location model
 
-from django.db import migrations
-import mptt.fields
+# Django imports
 import django.db.models.deletion
+from django.db import migrations
+
+# external imports
+import mptt.fields
 
 
 class Migration(migrations.Migration):

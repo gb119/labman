@@ -1,5 +1,6 @@
 # Generated manually - Remove legacy location field from Location model
 
+# Django imports
 from django.db import migrations
 
 

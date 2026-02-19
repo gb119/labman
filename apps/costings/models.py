@@ -89,9 +89,7 @@ class CostCentre(MPTTModel, NamedObject):
     contact = models.ForeignKey(
         "accounts.Account", on_delete=models.CASCADE, related_name="managed_cost_centres", blank=True, null=True
     )
-    parent = TreeForeignKey(
-        "self", on_delete=models.CASCADE, related_name="direct_children", null=True, blank=True
-    )
+    parent = TreeForeignKey("self", on_delete=models.CASCADE, related_name="direct_children", null=True, blank=True)
 
     @property
     def all_parents(self):
@@ -112,14 +110,14 @@ class CostCentre(MPTTModel, NamedObject):
 
         Returns:
             (QuerySet): All descendant cost centres in the hierarchy including self.
-        
+
         Examples:
             Can be used directly in templates::
-            
+
                 {% for cc in cost_centre.children %}
                     {{ cc.name }}
                 {% endfor %}
-        
+
         Notes:
             This returns all descendants including self via MPTT's get_descendants().
             For direct children only, access the reverse relation via
@@ -150,9 +148,9 @@ class CostCentre(MPTTModel, NamedObject):
 
         linked = getattr(self, field)
         if hasattr(linked, "cost_centre"):
-            search = {"cost_centre__in": self.all_parents}
+            search = {"cost_centre__in": self.all_parents.all()}
         elif hasattr(linked, "project"):
-            search = {"project__in": self.all_parents}
+            search = {"project__in": self.all_parents.all()}
 
         return linked.objects.filter(**search)
 

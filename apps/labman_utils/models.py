@@ -269,29 +269,27 @@ class Document(dsfh.BaseMixin, dsfh.TitledMixin, dsfh.PublicMixin, dsfh.RenameMi
         """
         if not hasattr(self, "location"):
             return None
-        
+
         Location = apps.get_model("equipment", "location")
-        
+
         # Get all locations associated with this document
         doc_locations = self.location.all()
         if not doc_locations:
             return None
-        
+
         # Build Q objects using MPTT tree fields for efficient filtering
         location_queries = []
         for location in doc_locations:
             # Use MPTT indexed fields to find all descendants (including self)
             # A node is a descendant if: tree_id matches AND lft is between parent's lft and rght
-            location_queries.append(
-                models.Q(tree_id=location.tree_id, lft__gte=location.lft, lft__lte=location.rght)
-            )
-        
+            location_queries.append(models.Q(tree_id=location.tree_id, lft__gte=location.lft, lft__lte=location.rght))
+
         # Combine with OR and execute single query
-        from functools import reduce
+        # Python imports
         import operator
-        return Location.objects.filter(
-            reduce(operator.or_, location_queries)
-        ).order_by("tree_id", "lft").distinct()
+        from functools import reduce
+
+        return Location.objects.filter(reduce(operator.or_, location_queries)).order_by("tree_id", "lft").distinct()
 
     @property
     def needs_review(self):
@@ -347,7 +345,7 @@ class Document(dsfh.BaseMixin, dsfh.TitledMixin, dsfh.PublicMixin, dsfh.RenameMi
 
                     # Add equipment at locations associated with this document
                     Equipment = apps.get_model("equipment", "equipment")
-                    
+
                     # Collect all locations for this document
                     doc_locations = list(self.location.all())
                     if doc_locations:
@@ -363,11 +361,13 @@ class Document(dsfh.BaseMixin, dsfh.TitledMixin, dsfh.PublicMixin, dsfh.RenameMi
                                     location__lft__lte=location.rght,
                                 )
                             )
-                        
+
                         # Single query for all equipment in location trees
                         if location_queries:
-                            from functools import reduce
+                            # Python imports
                             import operator
+                            from functools import reduce
+
                             child_equipment_ids = Equipment.objects.filter(
                                 reduce(operator.or_, location_queries)
                             ).values_list("id", flat=True)

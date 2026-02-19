@@ -1,7 +1,10 @@
 # Generated manually for MPTT migration
 
-from django.db import migrations, models
+# Django imports
 import django.db.models.deletion
+from django.db import migrations, models
+
+# external imports
 import mptt.fields
 
 

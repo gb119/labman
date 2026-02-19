@@ -15,7 +15,7 @@ from .models import CostCentre, CostRate
 
 class CostCentreResource(resources.ModelResource):
     """Import-export resource for CostCentre code objects.
-    
+
     Uses name as the primary import/export identifier. The code field is
     maintained for backwards compatibility during migration.
     """

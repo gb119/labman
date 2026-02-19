@@ -9,10 +9,10 @@ booking views with HTMX support.
 # Python imports
 import io
 import json
+import operator
 from datetime import datetime as dt, time as Time, timedelta as td
 from functools import reduce
 from itertools import chain
-import operator
 
 # Django imports
 from django import views
@@ -476,7 +476,7 @@ class BookingRecordsView(IsAuthenticaedViewMixin, FormListView):
                         cost_centre__lft__lte=sqs.rght,
                     )
                 )
-            
+
             # Combine with OR
             if cost_centre_queries:
                 qs = qs.filter(reduce(operator.or_, cost_centre_queries))
@@ -511,7 +511,7 @@ class BookingRecordsView(IsAuthenticaedViewMixin, FormListView):
         equipment_map = {e.pk: str(e) for e in Equipment.objects.filter(pk__in=equipment_ids)}
         user_map = {u.pk: str(u.display_name) for u in Account.objects.filter(pk__in=user_ids)}
         cost_centre_map = {cc.pk: str(cc.short_name) for cc in CostCentre.objects.filter(pk__in=cost_centre_ids)}
-        
+
         # Build user group map - get group names for each user or "No Group"
         user_group_map = {}
         for user in Account.objects.filter(pk__in=user_ids).prefetch_related("groups"):
@@ -557,7 +557,9 @@ class BookingRecordsView(IsAuthenticaedViewMixin, FormListView):
             self.data.replace(np.nan, "Subtotal", inplace=True)
             self.data.set_index(groupby, inplace=True)
         else:
-            self.data = df[["User", "User_Group", "Cost_Centre", "Equipment", "Start", "End", "Shifts", "Charge", "Comment"]]
+            self.data = df[
+                ["User", "User_Group", "Cost_Centre", "Equipment", "Start", "End", "Shifts", "Charge", "Comment"]
+            ]
         self.df = df[["User", "User_Group", "Cost_Centre", "Equipment", "Start", "End", "Shifts", "Charge", "Comment"]]
         context["data"] = self.data.to_html(classes="table table-striped table-hover tabel-responsive")
         return context

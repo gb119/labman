@@ -68,9 +68,7 @@ class Location(MPTTModel, ResourceedObject):
     class MPTTMeta:
         order_insertion_by = ["name"]
 
-    parent = TreeForeignKey(
-        "self", on_delete=models.CASCADE, null=True, blank=True, related_name="direct_children"
-    )
+    parent = TreeForeignKey("self", on_delete=models.CASCADE, null=True, blank=True, related_name="direct_children")
 
     @property
     def all_parents(self):
@@ -97,14 +95,14 @@ class Location(MPTTModel, ResourceedObject):
         Returns:
             (QuerySet):
                 QuerySet of Location objects representing this location and all descendants.
-        
+
         Examples:
             Can be used directly in templates::
-            
+
                 {% for loc in location.children %}
                     {{ loc.name }}
                 {% endfor %}
-        
+
         Notes:
             This returns all descendants including self via MPTT's get_descendants().
             For direct children only, access the reverse relation via
@@ -122,7 +120,7 @@ class Location(MPTTModel, ResourceedObject):
                 QuerySet of Document objects associated with this location or any parent.
         """
         Document = apps.get_model("labman_utils", "document")
-        return Document.objects.filter(location__in=self.all_parents)
+        return Document.objects.filter(location__in=self.all_parents.all())
 
     @property
     def all_photos(self):
@@ -133,7 +131,7 @@ class Location(MPTTModel, ResourceedObject):
                 QuerySet of photo Document objects associated with this location or any parent.
         """
         Photo = apps.get_model("photologue", "photo")
-        return Photo.objects.filter(location__in=self.all_parents)
+        return Photo.objects.filter(location__in=self.all_parents.all())
 
     @property
     def all_pages(self):
@@ -144,7 +142,7 @@ class Location(MPTTModel, ResourceedObject):
                 QuerySet of page Document objects associated with this location or any parent.
         """
         FlatPage = apps.get_model("flatpages", "flatpage")
-        return FlatPage.objects.filter(location__in=self.all_parents)
+        return FlatPage.objects.filter(location__in=self.all_parents.all())
 
     @property
     def url(self):
@@ -357,10 +355,10 @@ class Equipment(ResourceedObject):
             return self.__getattribute__(name)
         if category == "all_file":
             my_docs = models.Q(equipment=self)
-            location_docs = models.Q(location__in=self.location.all_parents)
+            location_docs = models.Q(location__in=self.location.all_parents.all())
         else:
             my_docs = models.Q(category=category, equipment=self)
-            location_docs = models.Q(category=category, location__in=self.location.all_parents)
+            location_docs = models.Q(category=category, location__in=self.location.all_parents.all())
         return (
             Document.objects.filter(my_docs | location_docs).order_by().order_by("title", "-version").distinct("title")
         )

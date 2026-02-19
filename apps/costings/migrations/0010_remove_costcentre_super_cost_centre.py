@@ -1,5 +1,6 @@
 # Generated manually - Remove legacy super_cost_centre field from CostCentre model
 
+# Django imports
 from django.db import migrations
 
 

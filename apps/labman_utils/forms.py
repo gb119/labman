@@ -124,7 +124,9 @@ class DocumentLinksForm(forms.ModelForm):
         widgets = {"id": forms.HiddenInput()}
 
     equipment = SortedCheckboxMultipleChoiceField(Equipment.objects.all().order_by("category", "name"), required=False)
-    location = SortedCheckboxMultipleChoiceField(Location.objects.all().order_by("tree_id", "lft", "name"), required=False)
+    location = SortedCheckboxMultipleChoiceField(
+        Location.objects.all().order_by("tree_id", "lft", "name"), required=False
+    )
 
 
 class PhotoDialogForm(forms.ModelForm):
@@ -214,7 +216,9 @@ class PhotoLinksForm(forms.ModelForm):
         widgets = {"id": forms.HiddenInput()}
 
     equipment = SortedCheckboxMultipleChoiceField(Equipment.objects.all().order_by("category", "name"), required=False)
-    location = SortedCheckboxMultipleChoiceField(Location.objects.all().order_by("tree_id", "lft", "name"), required=False)
+    location = SortedCheckboxMultipleChoiceField(
+        Location.objects.all().order_by("tree_id", "lft", "name"), required=False
+    )
 
 
 class FlatPageForm(forms.ModelForm):
@@ -265,4 +269,6 @@ class FlatPagesLinksForm(forms.ModelForm):
         widgets = {"id": forms.HiddenInput()}
 
     equipment = SortedCheckboxMultipleChoiceField(Equipment.objects.all().order_by("category", "name"), required=False)
-    location = SortedCheckboxMultipleChoiceField(Location.objects.all().order_by("tree_id", "lft", "name"), required=False)
+    location = SortedCheckboxMultipleChoiceField(
+        Location.objects.all().order_by("tree_id", "lft", "name"), required=False
+    )
