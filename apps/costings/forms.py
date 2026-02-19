@@ -38,7 +38,7 @@ class CostCentreDialogForm(forms.ModelForm):
     """
 
     accounts = SortedCheckboxMultipleChoiceField(
-        Account.objects.all().order_by("last_name", "first_name"), required=False, label="People"
+        Account.objects.filter(is_active=True).order_by("last_name", "first_name"), required=False, label="People"
     )
 
     class Meta:
