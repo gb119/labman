@@ -1,16 +1,37 @@
+<style>
+    span#buttons a {cursor: pointer; font-size: xx-large;}
+</style>
 <div class="row bg-secondary">
-    <div class="col col-md-3">
-        <h5>Name</h5>
-    </div>
-    <div class="col col-md-2">
-        <h5>Code</h5>
-    </div>
-    <div class="col col-md-4">
-        <h5>Descriptions</h5>
-    </div>
-    <div class="col col-md-3">
-        <h5>People</h5>
-    </div>
+    {% if request.user.is_superuser %}
+        <div class="col col-md-3">
+            <h5>Name</h5>
+        </div>
+        <div class="col col-md-2">
+            <h5>Code</h5>
+        </div>
+        <div class="col col-md-3">
+            <h5>Descriptions</h5>
+        </div>
+        <div class="col col-md-3">
+            <h5>People</h5>
+        </div>
+        <div class="col col-md-1">
+            &nbsp;
+        </div>
+    {% else %}
+        <div class="col col-md-3">
+            <h5>Name</h5>
+        </div>
+        <div class="col col-md-2">
+            <h5>Code</h5>
+        </div>
+        <div class="col col-md-4">
+            <h5>Descriptions</h5>
+        </div>
+        <div class="col col-md-3">
+            <h5>People</h5>
+        </div>
+    {% endif %}
 </div>
 {% for cost_centre in cost_centres %}
     <div class="row">
@@ -20,7 +41,7 @@
         <div class="col col-md-2">
             <span>{{ cost_centre.account_code }}</span>
         </div>
-        <div class="col col-md-4" id="cost_centre_description_{{ cost_centre.id }}">
+        <div class="col {% if request.user.is_superuser %}col-md-3{% else %}col-md-4{% endif %}" id="cost_centre_description_{{ cost_centre.id }}">
             {{ cost_centre.description|safe|truncatewords_html:10 }}
             {% if cost_centre.description|safe|truncatewords_html:10 != cost_centre.description|safe %}
                 <a href="/" hx-get="/costings/lookups/cost_centres/"
@@ -36,5 +57,33 @@
                 {% if forloop.last %}</ul>{% endif %}
             {% endfor %}
         </div>
+        {% if request.user.is_superuser %}
+            <div class="col col-md-1">
+                <span id="buttons">
+                    <a hx-get="{% url 'costings:edit_cost_centre' cost_centre.pk %}"
+                       hx-target="#dialog">
+                        <i class="bi bi-pencil"></i>
+                    </a>
+                </span>
+            </div>
+        {% endif %}
     </div>
 {% endfor %}
+{% if request.user.is_superuser %}
+    <style>
+        nav#projectnav.navbar-dark { color: white; }
+        nav#projectnav a {cursor: pointer; }
+        nav#projectnav li.nav-item a {color: white; }
+    </style>
+    <nav id="projectnav" class="navbar navbar-dark bg-dark .navbar-expand-ms">
+        <div class="container-fluid">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0 list-group list-group-horizontal">
+                <li class="nav-item">
+                    <a hx-get="{% url 'costings:new_cost_centre' %}" hx-target="#dialog">
+                        <i class="bi bi-plus-circle"></i> Create New Cost Centre...
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+{% endif %}

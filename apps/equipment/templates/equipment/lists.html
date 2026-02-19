@@ -70,6 +70,7 @@
                 <li class="nav-item" role="presentation">
                     <button class="nav-link" id="projects-tab"
                             hx-get="{{ request.get_full_path }}" hx-target="#projects"
+                            hx-trigger="click, refreshProjects from:body consume"
                             data-bs-toggle="tab" data-bs-target="#projects"
                             type="button" role="tab" aria-controls="projects"
                             aria-selected="false">Projects</button>
@@ -113,7 +114,7 @@
              class="modal modal-blur fade"
              style="display: none"
              tabindex="-1">
-            <div class="modal-dialog modal-lg modal-dialog-centered" role="document" id="dialog">
+            <div class="modal-dialog modal-xl modal-dialog-centered" role="document" id="dialog">
                 <div class="modal-content"></div>
             </div>
         </div>

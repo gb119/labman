@@ -1,0 +1,46 @@
+{% load django_bootstrap5 %}
+{% load labman_tags %}
+{{ form.media }}
+<div class="modal-content">
+    <div class="modal-header">
+        <h5 class="modal-title">Manage Cost Centre</h5>
+    </div>
+    <div class="modal-body">
+        <form id="costcentre" method="POST"
+              hx-post="{{ post_url }}"
+              hx-target="#dialog">
+            {% csrf_token %}
+            {% bootstrap_form form layout="horizontal" %}
+            <div class="row justify-content-between">
+                <div class="col-md-6">
+                    <button type="reset"
+                            class="btn-secondary bi bi-x"
+                            data-bs-dismiss="modal"
+                            name="cancel">Cancel</button>
+                    {% if edit %}
+                        <button type="submit"
+                                class="btn-primary bi bi-pencil"
+                                id="submit_costcentre"
+                                value="{{ this.pk }}"
+                                name="costcentre">Edit</button>
+                    {% else %}
+                        <button type="submit"
+                                class="btn-primary bi bi-bookmark-plus"
+                                id="submit_costcentre"
+                                name="costcentre">Save</button>
+                    {% endif %}
+                </div>
+                <div class="col-md-3">
+                    {% if edit and request.user.is_superuser %}
+                        <button type="button"
+                                id="delete_costcentre"
+                                class="btn-danger bi bi-trash"
+                                hx-delete="{{ post_url }}"
+                                name="costcentre"
+                                value="{{ this.pk }}">Delete</button>
+                    {% endif %}
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
