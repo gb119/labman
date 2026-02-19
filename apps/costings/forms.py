@@ -4,6 +4,7 @@
 This module provides form classes for managing cost centres and related
 financial tracking objects within the labman application.
 """
+
 # Django imports
 from django import forms
 
@@ -16,7 +17,7 @@ class CostCentreDialogForm(forms.ModelForm):
 
     This form allows users to add or modify cost centre information including
     name, description, short name, account code, parent, rate, and contact.
-    
+
     Attributes:
         Meta (class): Meta configuration for the ModelForm.
     """

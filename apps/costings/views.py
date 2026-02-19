@@ -1,11 +1,16 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """Views for the accounts apps."""
+
 # Python imports
 import json
 
 # Django imports
-from django.http import HttpResponse, HttpResponseForbidden, HttpResponseNotFound
+from django.http import (
+    HttpResponse,
+    HttpResponseForbidden,
+    HttpResponseNotFound,
+)
 from django.urls import reverse
 from django.views.generic import TemplateView, UpdateView
 
