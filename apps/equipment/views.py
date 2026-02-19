@@ -20,7 +20,6 @@ from django.http import (
     HttpResponseForbidden,
     HttpResponseNotFound,
 )
-from django.shortcuts import get_object_or_404, render
 from django.urls import reverse
 from django.utils.text import slugify
 from django.views.generic import UpdateView
@@ -33,7 +32,7 @@ from costings.models import CostCentre
 from extra_views import FormSetView
 from htmx_views.views import HTMXFormMixin, HTMXProcessMixin
 from labman_utils.models import Document
-from labman_utils.views import IsAuthenticaedViewMixin, IsSuperuserViewMixin
+from labman_utils.views import IsAuthenticaedViewMixin
 
 # app imports
 from .forms import (
@@ -573,32 +572,3 @@ class EquipmentDialog(IsAuthenticaedViewMixin, HTMXFormMixin, UpdateView):
             status=204,
             headers={"HX-Trigger": "refreshEquipment"},
         )
-
-
-class ToggleAccountActiveView(IsSuperuserViewMixin, views.View):
-    """HTMX view for toggling the is_active flag on an Account.
-
-    Allows superusers to activate or deactivate accounts via an HTMX POST request.
-    Returns a rendered Bootstrap 5 toggle switch reflecting the new state.
-
-    Examples:
-        POST /equipment/account/toggle-active/42/ toggles the is_active flag on Account pk=42
-        and returns the updated toggle switch HTML fragment.
-    """
-
-    def post(self, request, pk, *args, **kwargs):
-        """Toggle the is_active flag and return an updated toggle switch fragment.
-
-        Args:
-            request: The HTTP request object.
-            pk (int): Primary key of the Account to toggle.
-            *args: Additional positional arguments.
-            **kwargs: Additional keyword arguments.
-
-        Returns:
-            (HttpResponse): Rendered HTML fragment containing the updated toggle switch.
-        """
-        account = get_object_or_404(Account, pk=pk)
-        account.is_active = not account.is_active
-        account.save(update_fields=["is_active"])
-        return render(request, "equipment/parts/account_active_toggle.html", {"account": account})

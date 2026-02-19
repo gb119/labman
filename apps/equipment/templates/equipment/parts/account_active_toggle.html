@@ -1,9 +1,0 @@
-<div id="active_toggle_{{ account.pk }}" class="form-check form-switch">
-    <input class="form-check-input" type="checkbox" role="switch"
-           id="active_{{ account.pk }}"
-           {% if account.is_active %}checked{% endif %}
-           hx-post="{% url 'equipment:toggle_account_active' account.pk %}"
-           hx-target="#active_toggle_{{ account.pk }}"
-           hx-trigger="change"
-           hx-swap="outerHTML">
-</div>

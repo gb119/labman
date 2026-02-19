@@ -27,14 +27,9 @@
                                         <div class="col col-md-2">
                                             <h5>Manager</h5>
                                         </div>
-                                        <div class="col {% if request.user.is_superuser %}col-md-2{% else %}col-md-3{% endif %}">
+                                        <div class="col col-md-3">
                                             <h5>Project</h5>
                                         </div>
-                                        {% if request.user.is_superuser %}
-                                            <div class="col col-md-1">
-                                                <h5>Active</h5>
-                                            </div>
-                                        {% endif %}
                                     </div>
                                 {% endif %}
                                 <div class="row">
@@ -58,14 +53,9 @@
                                             <a href="/accounts/user/{{ account.manager.username }}">{{ account.manager.formal_name }}</a>
                                         {% endif %}
                                     </div>
-                                    <div class="col {% if request.user.is_superuser %}col-md-2{% else %}col-md-3{% endif %}">
+                                    <div class="col col-md-3">
                                         <span>{% for project in account.project.all %}{{ project.name }}<br/>{% endfor %}</span>
                                     </div>
-                                    {% if request.user.is_superuser %}
-                                        <div class="col col-md-1">
-                                            {% include "equipment/parts/account_active_toggle.html" %}
-                                        </div>
-                                    {% endif %}
                                 </div>
                             {% endfor %}
                         {% endif %}
