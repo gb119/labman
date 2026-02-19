@@ -10,6 +10,7 @@ from django import forms
 from django.apps import apps
 
 # external imports
+from labman_utils.fields import ObfuscatedCharField
 from labman_utils.widgets import ObfuscatedTinyMCE
 from sortedm2m.forms import SortedCheckboxMultipleChoiceField
 
@@ -26,6 +27,10 @@ class CostCentreDialogForm(forms.ModelForm):
     name, description, short name, account code, parent, rate, contact, and
     associated accounts (people).
 
+    The description field uses ObfuscatedTinyMCE widget and ObfuscatedCharField to
+    handle ROT13 and Base64 encoding/decoding, allowing safe transmission of HTML
+    content through the web application firewall.
+
     Attributes:
         accounts (SortedCheckboxMultipleChoiceField): Field for selecting multiple
             accounts to associate with this cost centre.
@@ -40,3 +45,4 @@ class CostCentreDialogForm(forms.ModelForm):
         model = CostCentre
         fields = ["name", "short_name", "account_code", "description", "parent", "rate", "contact"]
         widgets = {"description": ObfuscatedTinyMCE()}
+        field_classes = {"description": ObfuscatedCharField}
