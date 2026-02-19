@@ -110,6 +110,17 @@ class CostCentreDialog(IsSuperuserViewMixin, HTMXFormMixin, UpdateView):
         except (CostCentre.DoesNotExist, AttributeError, KeyError):
             return None
 
+    def get_initial(self):
+        """Get initial form data for editing.
+
+        Returns:
+            (dict): Initial form data with accounts if editing an existing cost centre.
+        """
+        initial = super().get_initial()
+        if obj := self.get_object():
+            initial["accounts"] = list(obj.accounts.all())
+        return initial
+
     def htmx_form_valid_costcentre(self, form):
         """Handle the HTMX submitted cost centre form if valid.
 
@@ -120,6 +131,12 @@ class CostCentreDialog(IsSuperuserViewMixin, HTMXFormMixin, UpdateView):
             (HttpResponse): Empty response with HTMX trigger to refresh projects list.
         """
         self.object = form.save()
+
+        # Handle the accounts many-to-many relationship
+        if "accounts" in form.cleaned_data:
+            # Clear existing relationships and set new ones
+            self.object.accounts.set(form.cleaned_data["accounts"])
+
         return HttpResponse(
             status=204,
             headers={
