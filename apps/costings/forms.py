@@ -11,8 +11,8 @@ from django.apps import apps
 
 # external imports
 from labman_utils.fields import ObfuscatedCharField
+from labman_utils.forms import SortedCheckboxMultipleChoiceField
 from labman_utils.widgets import ObfuscatedTinyMCE
-from sortedm2m.forms import SortedCheckboxMultipleChoiceField
 
 # app imports
 from .models import CostCentre
