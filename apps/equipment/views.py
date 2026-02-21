@@ -598,7 +598,8 @@ class ToggleAccountActiveView(IsSuperuserViewMixin, views.View):
         Returns:
             (HttpResponse): Rendered HTML fragment containing the updated toggle switch.
         """
-        account = get_object_or_404(Account, pk=pk)
-        account.is_active = not account.is_active
-        account.save(update_fields=["is_active"])
+        if (accounts := Account.objects.filter(pk=pk)).count():
+            account = accounts.last()
+            account.is_active = not account.is_active
+            account.save(update_fields=["is_active"])
         return render(request, "equipment/parts/account_active_toggle.html", {"account": account})
