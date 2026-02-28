@@ -1,0 +1,61 @@
+# CI/test pip requirements for the labman project.
+# These cover the dependencies needed to run the test suite in CI environments.
+# The main project uses conda (environment.yaml), but these pip packages allow
+# running tests in standard CI environments without conda.
+
+# Django and database
+Django>=5.2
+psycopg2-binary>=2.9
+
+# Django admin theme (v2 required for DjangoSuitConfig)
+git+https://github.com/darklow/django-suit.git@v2#egg=django-suit
+
+# Core Django extensions used by the project
+django-bootstrap5
+django-constance[database]
+django-extensions
+django-htmx
+django-mathfilters
+django-mptt
+django-sortedm2m
+django-tinymce
+whitenoise
+
+# Authentication
+django-auth-adfs
+PyJWT
+
+# REST framework
+djangorestframework
+
+# Import/export
+django-import-export
+
+# Autocomplete
+django-autocomplete-light
+
+# Site tree navigation
+django-sitetree
+
+# Media and files
+django-photologue
+django-simple-file-handler
+
+# PDF generation
+django-easy-pdf3
+
+# HTML utilities
+nh3
+simple-html-table
+
+# Other runtime dependencies
+numpy
+pandas
+pillow
+pytz
+six
+
+# Testing
+pytest>=8.0
+pytest-django>=4.8
+pytest-cov>=5.0
