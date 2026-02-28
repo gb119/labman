@@ -222,9 +222,12 @@ for app in CUSTOM_APPS:
             if setting == setting.upper():
                 set_val = getattr(app_settings, setting)
                 if isinstance(set_val, dict):
-                    locals()[setting].update(set_val)
+                    if setting in locals() and isinstance(locals()[setting], dict):
+                        locals()[setting].update(set_val)
+                    else:
+                        locals()[setting] = set_val
                 elif isinstance(set_val, (list, tuple)):
-                    locals()[setting] = locals()[setting] + set_val
+                    locals()[setting] = locals().get(setting, type(set_val)()) + set_val
                 else:
                     locals()[setting] = set_val
     except ImportError:
