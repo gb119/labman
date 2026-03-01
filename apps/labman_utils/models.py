@@ -245,7 +245,7 @@ class Document(dsfh.BaseMixin, dsfh.TitledMixin, dsfh.PublicMixin, dsfh.RenameMi
     category = models.CharField(max_length=20, choices=CATEGORIES, default="other")
     review_date = models.DateField(blank=True, null=True, help_text="Date document should be reviewed on.")
 
-    subdirectory_path = dsfh.custom_subdirectory("documents/equipment/")
+    subdirectory_path = getattr(settings, "FILE_HANDLER_DIRECTORY", "") + "documents/equipment/"
 
     class Meta:
         verbose_name = "document (categorized)"
