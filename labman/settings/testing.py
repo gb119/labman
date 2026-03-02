@@ -171,6 +171,19 @@ AUTHENTICATION_BACKENDS = [
     "django.contrib.auth.backends.ModelBackend",
 ]
 
+# ##### ADFS AUTHENTICATION SETTINGS ######################
+# Mock settings required so that django_auth_adfs.config can be instantiated
+# at URL-conf load time without raising ImproperlyConfigured.
+# ADFS authentication is not used in tests (only ModelBackend is active).
+# Providing TENANT_ID causes the package to skip its required-field validation loop.
+AUTH_ADFS = {
+    "TENANT_ID": "ci-mock-tenant-id",
+    "CLIENT_ID": "ci-mock-client-id",
+    "AUDIENCE": "ci-mock-audience",
+    "RELYING_PARTY_ID": "ci-mock-relying-party-id",
+    "CLAIM_MAPPING": {"first_name": "given_name", "last_name": "family_name", "email": "email"},
+}
+
 # ##### LOGGING CONFIGURATION #############################
 # Minimal logging for tests to avoid file I/O
 
