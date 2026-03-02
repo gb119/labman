@@ -39,7 +39,7 @@ django-sitetree
 
 # Media and files
 django-photologue
-django-simple-file-handler
+django-simple-file-handler==0.3.5
 
 # PDF generation
 django-easy-pdf3
