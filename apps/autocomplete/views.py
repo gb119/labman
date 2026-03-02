@@ -9,7 +9,7 @@ Views integrate with HTMX for dynamic updates without full page reloads.
 import json
 
 # Django imports
-from django.http import HttpResponseBadRequest
+from django.http import Http404, HttpResponseBadRequest
 from django.shortcuts import render
 from django.urls import path
 from django.utils.functional import cached_property
@@ -40,7 +40,7 @@ class AutocompleteBaseView(View):
             (type): The autocomplete class registered under the URL name.
 
         Raises:
-            ValueError:
+            Http404:
                 If no autocomplete is registered with the specified name.
         """
         ac_name = self.kwargs["ac_name"]
@@ -49,7 +49,7 @@ class AutocompleteBaseView(View):
             return _ac_registry[ac_name]
 
         except KeyError as e:
-            raise ValueError(f"No registered autocomplete with name {ac_name}") from e
+            raise Http404(f"No registered autocomplete with name {ac_name}") from e
 
     def dispatch(self, request, *args, **kwargs):
         """Perform authentication check before dispatching to view method.
