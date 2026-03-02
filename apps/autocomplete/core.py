@@ -126,8 +126,8 @@ class Autocomplete:
         """Perform authentication and authorisation checks for autocomplete access.
 
         Override this method to implement custom authentication logic. By default,
-        checks the AUTOCOMPLETE_BLOCK_UNAUTHENTICATED setting to determine if
-        unauthenticated users should be blocked.
+        unauthenticated users are blocked unless the
+        ``AUTOCOMPLETE_ALLOW_UNAUTHENTICATED`` Django setting is set to ``True``.
 
         Args:
             request (HttpRequest):
@@ -135,11 +135,10 @@ class Autocomplete:
 
         Raises:
             PermissionDenied:
-                If the user is not authorised to use the autocomplete or if
-                AUTOCOMPLETE_BLOCK_UNAUTHENTICATED is True and user is not
-                authenticated.
+                If the user is not authenticated and
+                ``AUTOCOMPLETE_ALLOW_UNAUTHENTICATED`` is not ``True``.
         """
-        if getattr(settings, "AUTOCOMPLETE_BLOCK_UNAUTHENTICATED", False) and not request.user.is_authenticated:
+        if not getattr(settings, "AUTOCOMPLETE_ALLOW_UNAUTHENTICATED", False) and not request.user.is_authenticated:
             raise PermissionDenied("Must be logged in to use autocomplete")
 
         pass

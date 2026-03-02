@@ -192,7 +192,7 @@ def base_configurable_hx_vals(context):
 
     props = {
         "field_name": escape(field_name),
-        "component_prefix": component_prefix,
+        "component_prefix": escape(str(component_prefix or "")),
     }
 
     if required:
