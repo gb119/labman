@@ -11,9 +11,11 @@ psycopg2-binary>=2.9
 git+https://github.com/darklow/django-suit.git@v2#egg=django-suit
 
 # Core Django extensions used by the project
+django-ajax-selects
 django-bootstrap5
 django-constance[database]
 django-extensions
+django-extra-views
 django-htmx
 django-mathfilters
 django-mptt
