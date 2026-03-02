@@ -8,6 +8,7 @@ class Migration(migrations.Migration):
 
     dependencies = [
         ("accounts", "0005_remove_account_project"),
+        ("bookings", "0006_remove_bookingentry_project"),
     ]
 
     operations = [
