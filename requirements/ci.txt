@@ -4,7 +4,7 @@
 # running tests in standard CI environments without conda.
 
 # Django and database
-Django>=5.2
+Django>=5.2,<6
 psycopg2-binary>=2.9
 
 # Django admin theme (v2 required for DjangoSuitConfig)
