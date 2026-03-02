@@ -13,3 +13,9 @@ Sphinx
 # **flake8** is used to check for PEP8 compliance
 # See http://flake8.pycqa.org/en/latest/index.html
 flake8
+
+# **pytest** and pytest-django for running the test suite
+# See https://pytest-django.readthedocs.io/
+pytest
+pytest-django
+pytest-cov
