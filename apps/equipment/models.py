@@ -70,6 +70,14 @@ class Location(MPTTModel, ResourceedObject):
 
     parent = TreeForeignKey("self", on_delete=models.CASCADE, null=True, blank=True, related_name="direct_children")
 
+    def __str__(self):
+        """Return the name of the location.
+
+        Returns:
+            (str): The location name.
+        """
+        return self.name
+
     @property
     def all_parents(self):
         """Retrieve all parent locations containing this location.

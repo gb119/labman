@@ -146,6 +146,9 @@ class TestDispatch:
 
         view = MagicMock()
         view.http_method_names = http_method_names or ["get", "post", "delete", "patch", "put"]
+        # Mirror http_method_names so getattr falls back correctly (MagicMock auto-creates
+        # htmx_http_method_names otherwise, making __contains__ return False for all methods).
+        view.htmx_http_method_names = view.http_method_names
         # Ensure dispatch is callable on this mock as a bound method
         view.dispatch = lambda req, *a, **kw: dispatch(view, req, *a, **kw)
         return view
