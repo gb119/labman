@@ -609,3 +609,344 @@ class TestHTMXFormMixinFormInvalid:
         form = MagicMock()
         result = view.form_invalid(form)
         assert result.content == b"super_form_invalid"
+
+
+# ---------------------------------------------------------------------------
+# Tests for HTMXProcessMixin.__init__ and get_context_object_name
+# ---------------------------------------------------------------------------
+
+
+class TestHTMXProcessMixinInit:
+    """Tests for ``HTMXProcessMixin.__init__`` initialisation."""
+
+    def test_init_sets_htmx_flags_to_false(self):
+        """HTMXProcessMixin.__init__ initialises all _htmx_* flags to False."""
+        # external imports
+        from htmx_views.views import HTMXProcessMixin
+
+        class Concrete(HTMXProcessMixin, _StubBase):
+            pass
+
+        # Use normal instantiation to exercise __init__
+        view = Concrete()
+        assert view._htmx_get_context_data is False
+        assert view._htmx_get_context_object_name is False
+        assert view._htmx_get_template_names is False
+
+
+class TestHTMXProcessMixinContextObjectName:
+    """Tests for ``HTMXProcessMixin.get_context_object_name``."""
+
+    def _make_view(self, htmx=None, extra_attrs=None):
+        # external imports
+        from htmx_views.views import HTMXProcessMixin
+
+        class Concrete(HTMXProcessMixin, _StubBase):
+            pass
+
+        view = Concrete.__new__(Concrete)
+        view._htmx_get_context_data = False
+        view._htmx_get_context_object_name = False
+        view._htmx_get_template_names = False
+        view.request = _make_request(htmx=htmx)
+        if extra_attrs:
+            for k, v in extra_attrs.items():
+                setattr(view, k, v)
+        return view
+
+    def test_non_htmx_request_returns_base_name(self):
+        """get_context_object_name delegates to super() for non-HTMX requests."""
+        view = self._make_view(htmx=None)
+        assert view.get_context_object_name([]) == "base_list"
+
+    def test_already_in_htmx_context_falls_back_to_super(self):
+        """get_context_object_name falls back to super() when flag is True."""
+        view = self._make_view(htmx=_MockHtmx(trigger_name="myelem"))
+        view._htmx_get_context_object_name = True
+        assert view.get_context_object_name([]) == "base_list"
+
+    def test_htmx_uses_context_object_elem_attribute(self):
+        """get_context_object_name returns ``context_object_<elem>`` when present."""
+        view = self._make_view(
+            htmx=_MockHtmx(trigger_name="table"),
+            extra_attrs={"context_object_table": "table_list"},
+        )
+        assert view.get_context_object_name([]) == "table_list"
+
+    def test_htmx_no_match_falls_back_to_super(self):
+        """get_context_object_name falls back to super() when no element matches."""
+        view = self._make_view(htmx=_MockHtmx(trigger_name="unknown_xyz"))
+        assert view.get_context_object_name([]) == "base_list"
+
+
+class TestHTMXFormMixinInit:
+    """Tests for ``HTMXFormMixin.__init__`` initialisation."""
+
+    def test_init_sets_form_flags_to_false(self):
+        """HTMXFormMixin.__init__ initialises all _htmx_form_* flags to False."""
+        # external imports
+        from htmx_views.views import HTMXFormMixin
+
+        class Concrete(HTMXFormMixin, _StubBase):
+            pass
+
+        view = Concrete()
+        assert view._htmx_form_valid is False
+        assert view._htmx_form_invalid is False
+
+
+class TestHTMXProcessMixinContextObjectNameHandler:
+    """Tests for ``get_context_object_name`` with a callable handler."""
+
+    def _make_view(self, htmx=None, extra_attrs=None):
+        # external imports
+        from htmx_views.views import HTMXProcessMixin
+
+        class Concrete(HTMXProcessMixin, _StubBase):
+            pass
+
+        view = Concrete.__new__(Concrete)
+        view._htmx_get_context_data = False
+        view._htmx_get_context_object_name = False
+        view._htmx_get_template_names = False
+        view.request = _make_request(htmx=htmx)
+        if extra_attrs:
+            for k, v in extra_attrs.items():
+                setattr(view, k, v)
+        return view
+
+    def test_htmx_uses_get_context_object_name_handler(self):
+        """get_context_object_name calls ``get_context_object_name<elem>`` when present."""
+        view = self._make_view(htmx=_MockHtmx(trigger_name="table"))
+        view.get_context_object_nametable = lambda obj_list: "custom_list"
+        result = view.get_context_object_name([])
+        assert result == "custom_list"
+
+
+class TestHTMXProcessMixinDebugLogging:
+    """Tests for ``HTMXProcessMixin`` debug logging paths."""
+
+    def _make_view(self, htmx=None, extra_attrs=None):
+        # external imports
+        from htmx_views.views import HTMXProcessMixin
+
+        class Concrete(HTMXProcessMixin, _StubBase):
+            def get(self, request, *a, **kw):
+                return HttpResponse("get")
+
+            def delete(self, request, *a, **kw):
+                return HttpResponse("delete")
+
+        view = Concrete.__new__(Concrete)
+        view._htmx_get_context_data = False
+        view._htmx_get_context_object_name = False
+        view._htmx_get_template_names = False
+        view.request = _make_request(htmx=htmx)
+        if extra_attrs:
+            for k, v in extra_attrs.items():
+                setattr(view, k, v)
+        return view
+
+    def test_htmx_elements_with_debug_enabled(self, settings):
+        """htmx_elements logs elements when DEBUG is True."""
+        settings.DEBUG = True
+        # external imports
+        from htmx_views.views import HTMXProcessMixin
+
+        class Concrete(HTMXProcessMixin, _StubBase):
+            pass
+
+        obj = Concrete.__new__(Concrete)
+        obj._htmx_get_context_data = False
+        obj._htmx_get_context_object_name = False
+        obj._htmx_get_template_names = False
+        obj.request = _make_request(htmx=_MockHtmx(trigger_name="btn"))
+        elements = list(obj.htmx_elements())
+        assert elements == ["btn"]
+
+    def test_htmx_get_with_debug_enabled_and_matching_handler(self, settings):
+        """htmx_get logs the handler when DEBUG is True and an element-specific handler is found."""
+        settings.DEBUG = True
+        view = self._make_view(htmx=_MockHtmx(trigger_name="widget"))
+        sentinel = HttpResponse("debug_handler")
+        view.htmx_get_widget = lambda req, *a, **kw: sentinel
+        result = view.htmx_get(view.request)
+        assert result is sentinel
+
+    def test_htmx_delete_with_debug_enabled_fallback(self, settings):
+        """htmx_delete logs the fallback handler when DEBUG is True and no element-specific handler exists."""
+        settings.DEBUG = True
+        view = self._make_view(htmx=_MockHtmx(trigger_name="unknown"))
+        result = view.htmx_delete(view.request)
+        assert result.content == b"delete"
+
+    def test_get_template_names_with_debug_enabled_handler(self, settings):
+        """get_template_names logs the handler name when DEBUG is True."""
+        settings.DEBUG = True
+        # external imports
+        from htmx_views.views import HTMXProcessMixin
+
+        class Concrete(HTMXProcessMixin, _StubBase):
+            pass
+
+        view = Concrete.__new__(Concrete)
+        view._htmx_get_context_data = False
+        view._htmx_get_context_object_name = False
+        view._htmx_get_template_names = False
+        view.request = _make_request(htmx=_MockHtmx(trigger_name="refresh"))
+        view.get_template_names_refresh = lambda: ["htmx/refresh.html"]
+        result = view.get_template_names()
+        assert result == ["htmx/refresh.html"]
+
+    def test_get_template_names_with_debug_enabled_template_name_attr(self, settings):
+        """get_template_names logs the template name when DEBUG is True."""
+        settings.DEBUG = True
+        # external imports
+        from htmx_views.views import HTMXProcessMixin
+
+        class Concrete(HTMXProcessMixin, _StubBase):
+            pass
+
+        view = Concrete.__new__(Concrete)
+        view._htmx_get_context_data = False
+        view._htmx_get_context_object_name = False
+        view._htmx_get_template_names = False
+        view.request = _make_request(htmx=_MockHtmx(trigger_name="save"))
+        view.template_name_save = "htmx/save.html"
+        result = view.get_template_names()
+        assert result == "htmx/save.html"
+
+
+class TestHTMXProcessMixinMoreDebugLogging:
+    """Additional debug logging tests for ``HTMXProcessMixin`` patch/post/put methods."""
+
+    def _make_view(self, htmx=None, extra_attrs=None):
+        # external imports
+        from htmx_views.views import HTMXProcessMixin
+
+        class Concrete(HTMXProcessMixin, _StubBase):
+            def patch(self, request, *a, **kw):
+                return HttpResponse("patch")
+
+            def post(self, request, *a, **kw):
+                return HttpResponse("post")
+
+            def put(self, request, *a, **kw):
+                return HttpResponse("put")
+
+        view = Concrete.__new__(Concrete)
+        view._htmx_get_context_data = False
+        view._htmx_get_context_object_name = False
+        view._htmx_get_template_names = False
+        view.request = _make_request(htmx=htmx)
+        if extra_attrs:
+            for k, v in extra_attrs.items():
+                setattr(view, k, v)
+        return view
+
+    def test_htmx_patch_with_debug_enabled_and_handler(self, settings):
+        """htmx_patch logs the handler name when DEBUG is True and a handler is found."""
+        settings.DEBUG = True
+        view = self._make_view(htmx=_MockHtmx(trigger_name="update"))
+        sentinel = HttpResponse("htmx_patch_update")
+        view.htmx_patch_update = lambda req, *a, **kw: sentinel
+        result = view.htmx_patch(view.request)
+        assert result is sentinel
+
+    def test_htmx_patch_with_debug_enabled_fallback_after_no_match(self, settings):
+        """htmx_patch logs fallback when DEBUG=True and no handler found after element iteration."""
+        settings.DEBUG = True
+        view = self._make_view(htmx=_MockHtmx(trigger_name="unknown_patch"))
+        result = view.htmx_patch(view.request)
+        assert result.content == b"patch"
+
+    def test_htmx_post_with_debug_enabled_and_handler(self, settings):
+        """htmx_post logs the handler name when DEBUG is True and a handler is found."""
+        settings.DEBUG = True
+        view = self._make_view(htmx=_MockHtmx(trigger_name="submit"))
+        sentinel = HttpResponse("htmx_post_submit")
+        view.htmx_post_submit = lambda req, *a, **kw: sentinel
+        result = view.htmx_post(view.request)
+        assert result is sentinel
+
+    def test_htmx_post_with_debug_enabled_fallback_after_no_match(self, settings):
+        """htmx_post logs fallback when DEBUG=True and no handler found after element iteration."""
+        settings.DEBUG = True
+        view = self._make_view(htmx=_MockHtmx(trigger_name="unknown_post"))
+        result = view.htmx_post(view.request)
+        assert result.content == b"post"
+
+    def test_htmx_put_with_debug_enabled_and_handler(self, settings):
+        """htmx_put logs the handler name when DEBUG is True and a handler is found."""
+        settings.DEBUG = True
+        view = self._make_view(htmx=_MockHtmx(trigger_name="replace"))
+        sentinel = HttpResponse("htmx_put_replace")
+        view.htmx_put_replace = lambda req, *a, **kw: sentinel
+        result = view.htmx_put(view.request)
+        assert result is sentinel
+
+    def test_htmx_put_with_debug_enabled_fallback_after_no_match(self, settings):
+        """htmx_put logs fallback when DEBUG=True and no handler found after element iteration."""
+        settings.DEBUG = True
+        view = self._make_view(htmx=_MockHtmx(trigger_name="unknown_put"))
+        result = view.htmx_put(view.request)
+        assert result.content == b"put"
+
+
+class TestHTMXFormMixinDebugLogging:
+    """Tests for debug logging in ``HTMXFormMixin.form_valid`` and ``form_invalid``."""
+
+    def _make_view(self, htmx=None, extra_attrs=None):
+        # external imports
+        from htmx_views.views import HTMXFormMixin
+
+        class Concrete(HTMXFormMixin, _StubBase):
+            pass
+
+        view = Concrete.__new__(Concrete)
+        view._htmx_get_context_data = False
+        view._htmx_get_context_object_name = False
+        view._htmx_get_template_names = False
+        view._htmx_form_valid = False
+        view._htmx_form_invalid = False
+        view.request = _make_request(htmx=htmx)
+        if extra_attrs:
+            for k, v in extra_attrs.items():
+                setattr(view, k, v)
+        return view
+
+    def test_form_valid_with_debug_enabled_and_handler(self, settings):
+        """form_valid logs 'Looking for htmx_form_valid_<elem>' when DEBUG=True."""
+        settings.DEBUG = True
+        view = self._make_view(htmx=_MockHtmx(trigger_name="save"))
+        expected = HttpResponse("htmx_form_valid_save")
+        view.htmx_form_valid_save = lambda form: expected
+        form = MagicMock()
+        result = view.form_valid(form)
+        assert result is expected
+
+    def test_form_valid_with_debug_enabled_no_handler(self, settings):
+        """form_valid debug-logs element lookup when DEBUG=True and no handler found."""
+        settings.DEBUG = True
+        view = self._make_view(htmx=_MockHtmx(trigger_name="unknown_save"))
+        form = MagicMock()
+        result = view.form_valid(form)
+        assert result.content == b"super_form_valid"
+
+    def test_form_invalid_with_debug_enabled_and_handler(self, settings):
+        """form_invalid logs 'Looking for htmx_form_invalid_<elem>' when DEBUG=True."""
+        settings.DEBUG = True
+        view = self._make_view(htmx=_MockHtmx(trigger_name="save"))
+        expected = HttpResponse("htmx_form_invalid_save")
+        view.htmx_form_invalid_save = lambda form: expected
+        form = MagicMock()
+        result = view.form_invalid(form)
+        assert result is expected
+
+    def test_form_invalid_with_debug_enabled_no_handler(self, settings):
+        """form_invalid debug-logs element lookup when DEBUG=True and no handler found."""
+        settings.DEBUG = True
+        view = self._make_view(htmx=_MockHtmx(trigger_name="unknown_save"))
+        form = MagicMock()
+        result = view.form_invalid(form)
+        assert result.content == b"super_form_invalid"

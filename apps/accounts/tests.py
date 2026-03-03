@@ -254,3 +254,24 @@ class TestAccountViews:
         url = reverse("accounts:list_accounts_by_group", kwargs={"group": "Academic"})
         response = client_logged_in.get(url)
         assert response.status_code == 200
+
+    @pytest.mark.django_db
+    def test_account_list_different_group_returns_200(self, client_logged_in):
+        """AccountListByGroupView returns 200 for a 'Staff' group filter."""
+        url = reverse("accounts:list_accounts_by_group", kwargs={"group": "Staff"})
+        response = client_logged_in.get(url)
+        assert response.status_code == 200
+
+    @pytest.mark.django_db
+    def test_my_account_view_htmx_projects_tab(self, client_logged_in, regular_user):
+        """MyAccountView returns 200 for the projecttab HTMX trigger."""
+        url = reverse("accounts:my_account")
+        response = client_logged_in.get(url, HTTP_HX_REQUEST="true", HTTP_HX_TRIGGER_NAME="projecttab")
+        assert response.status_code == 200
+
+    @pytest.mark.django_db
+    def test_user_account_view_htmx_projects_tab(self, client_logged_in, regular_user):
+        """UserAccountView returns 200 for the projecttab HTMX trigger."""
+        url = reverse("accounts:user_account", kwargs={"username": regular_user.username})
+        response = client_logged_in.get(url, HTTP_HX_REQUEST="true", HTTP_HX_TRIGGER_NAME="projecttab")
+        assert response.status_code == 200
