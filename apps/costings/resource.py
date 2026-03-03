@@ -1,10 +1,8 @@
 # -*- coding: utf-8 -*-
 """Resources for the account app."""
 # Python imports
-import re
 
 # Django imports
-from django.contrib.auth.models import Group
 
 # external imports
 from import_export import fields, resources, widgets

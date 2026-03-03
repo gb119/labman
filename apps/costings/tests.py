@@ -4,7 +4,7 @@
 This module tests the CostRate and CostCentre models, including creation,
 string representations, hierarchical MPTT structure, and the default rate logic.
 """
-# Django imports
+# external imports
 import pytest
 
 
@@ -14,6 +14,7 @@ class TestCostRate:
     @pytest.mark.django_db
     def test_create_cost_rate(self, cost_rate):
         """Creating a CostRate persists it to the database."""
+        # external imports
         from costings.models import CostRate
 
         assert CostRate.objects.filter(name="standard").exists()
@@ -26,6 +27,7 @@ class TestCostRate:
     @pytest.mark.django_db
     def test_default_creates_standard(self):
         """CostRate.default() creates and returns a 'standard' rate."""
+        # external imports
         from costings.models import CostRate
 
         rate = CostRate.default()
@@ -35,6 +37,7 @@ class TestCostRate:
     @pytest.mark.django_db
     def test_default_returns_existing_standard(self, cost_rate):
         """CostRate.default() returns existing 'standard' rate without creating duplicate."""
+        # external imports
         from costings.models import CostRate
 
         rate = CostRate.default()
@@ -48,6 +51,7 @@ class TestCostCentre:
     @pytest.mark.django_db
     def test_create_cost_centre(self, cost_centre):
         """Creating a CostCentre persists it to the database."""
+        # external imports
         from costings.models import CostCentre
 
         assert CostCentre.objects.filter(name="Test Project").exists()
@@ -67,6 +71,7 @@ class TestCostCentre:
     @pytest.mark.django_db
     def test_default_rate_assigned_on_save(self, db):
         """CostCentre.save() assigns default CostRate when none is given."""
+        # external imports
         from costings.models import CostCentre, CostRate
 
         cc = CostCentre.objects.create(name="Rate Test CC", short_name="RTCC", account_code="ACC999")
@@ -76,6 +81,7 @@ class TestCostCentre:
     @pytest.mark.django_db
     def test_parent_child_hierarchy(self, cost_centre, db):
         """Creating a child CostCentre correctly sets the MPTT hierarchy."""
+        # external imports
         from costings.models import CostCentre
 
         child = CostCentre.objects.create(
@@ -90,6 +96,7 @@ class TestCostCentre:
     @pytest.mark.django_db
     def test_children_property_includes_descendants(self, cost_centre, db):
         """children property returns all descendants including self."""
+        # external imports
         from costings.models import CostCentre
 
         child = CostCentre.objects.create(
@@ -104,6 +111,7 @@ class TestCostCentre:
     @pytest.mark.django_db
     def test_all_parents_property(self, cost_centre, db):
         """all_parents property returns ancestor chain including self."""
+        # external imports
         from costings.models import CostCentre
 
         child = CostCentre.objects.create(
@@ -119,8 +127,11 @@ class TestCostCentre:
     @pytest.mark.django_db
     def test_unique_name_constraint(self, cost_centre):
         """Creating a second CostCentre with the same name raises an error."""
-        from costings.models import CostCentre
+        # Django imports
         from django.db import IntegrityError
+
+        # external imports
+        from costings.models import CostCentre
 
         with pytest.raises(IntegrityError):
             CostCentre.objects.create(name="Test Project", short_name="TP2", account_code="ACC099")

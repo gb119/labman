@@ -6,24 +6,12 @@ used in laboratory financial tracking and equipment charging. It includes
 import/export functionality for data management and reporting.
 """
 # Django imports
-from django import forms
 from django.contrib.admin import (
-    SimpleListFilter,
-    TabularInline,
     register,
-    site,
-    sites,
 )
-from django.contrib.auth.admin import GroupAdmin, UserAdmin
-from django.contrib.auth.models import Group
-from django.contrib.flatpages.models import FlatPage
-from django.utils.html import format_html
-from django.utils.translation import gettext_lazy as _
 
 # external imports
-from import_export import fields, resources, widgets
-from import_export.admin import ImportExportMixin, ImportExportModelAdmin
-from photologue.models import Photo
+from import_export.admin import ImportExportModelAdmin
 
 # app imports
 from .models import CostCentre, CostRate

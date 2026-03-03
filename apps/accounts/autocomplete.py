@@ -9,7 +9,7 @@ from functools import reduce
 from django.db.models import Q
 
 # external imports
-from autocomplete import ModelAutocomplete, QuerysetMappedIterable
+from autocomplete import ModelAutocomplete
 from equipment.models import UserListEntry
 
 # app imports

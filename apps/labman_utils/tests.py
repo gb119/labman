@@ -8,10 +8,7 @@ logic, and the NamedObject base model.
 # Python imports
 import base64
 import codecs
-from datetime import date, datetime, time, timedelta
-
-# Django imports
-import pytest
+from datetime import datetime, time, timedelta
 
 
 class TestToSeconds:
@@ -19,36 +16,42 @@ class TestToSeconds:
 
     def test_midnight(self):
         """to_seconds returns 0 for midnight."""
+        # external imports
         from labman_utils.models import to_seconds
 
         assert to_seconds(time(0, 0, 0)) == 0
 
     def test_one_hour(self):
         """to_seconds returns 3600 for 01:00:00."""
+        # external imports
         from labman_utils.models import to_seconds
 
         assert to_seconds(time(1, 0, 0)) == 3600
 
     def test_one_minute(self):
         """to_seconds returns 60 for 00:01:00."""
+        # external imports
         from labman_utils.models import to_seconds
 
         assert to_seconds(time(0, 1, 0)) == 60
 
     def test_one_second(self):
         """to_seconds returns 1 for 00:00:01."""
+        # external imports
         from labman_utils.models import to_seconds
 
         assert to_seconds(time(0, 0, 1)) == 1
 
     def test_noon(self):
         """to_seconds returns 43200 for 12:00:00."""
+        # external imports
         from labman_utils.models import to_seconds
 
         assert to_seconds(time(12, 0, 0)) == 43200
 
     def test_with_datetime(self):
         """to_seconds works with datetime objects using the time component."""
+        # external imports
         from labman_utils.models import to_seconds
 
         dt_val = datetime(2024, 1, 15, 9, 30, 0)
@@ -60,6 +63,7 @@ class TestDeltaT:
 
     def test_positive_difference(self):
         """delta_t returns positive timedelta when time1 > time2."""
+        # external imports
         from labman_utils.models import delta_t
 
         result = delta_t(time(12, 0), time(9, 0))
@@ -67,6 +71,7 @@ class TestDeltaT:
 
     def test_zero_difference(self):
         """delta_t returns zero timedelta when times are equal."""
+        # external imports
         from labman_utils.models import delta_t
 
         result = delta_t(time(10, 0), time(10, 0))
@@ -74,6 +79,7 @@ class TestDeltaT:
 
     def test_negative_difference(self):
         """delta_t returns negative timedelta when time1 < time2."""
+        # external imports
         from labman_utils.models import delta_t
 
         result = delta_t(time(9, 0), time(12, 0))
@@ -81,6 +87,7 @@ class TestDeltaT:
 
     def test_with_datetime_objects(self):
         """delta_t extracts time from datetime objects before computing difference."""
+        # external imports
         from labman_utils.models import delta_t
 
         dt1 = datetime(2024, 1, 15, 14, 0, 0)
@@ -94,6 +101,7 @@ class TestEnsureTz:
 
     def test_naive_datetime_gets_timezone(self):
         """ensure_tz adds DEFAULT_TZ to a naive datetime."""
+        # external imports
         from labman_utils.models import DEFAULT_TZ, ensure_tz
 
         naive = datetime(2024, 6, 15, 10, 0, 0)
@@ -102,6 +110,7 @@ class TestEnsureTz:
 
     def test_aware_datetime_unchanged(self):
         """ensure_tz returns an already-aware datetime unchanged."""
+        # external imports
         import pytz
         from labman_utils.models import ensure_tz
 
@@ -122,6 +131,7 @@ class TestObfuscatedCharField:
 
     def test_valid_encoded_value_decoded(self):
         """to_python decodes a properly Base64+ROT13 encoded value."""
+        # external imports
         from labman_utils.fields import ObfuscatedCharField
 
         field = ObfuscatedCharField()
@@ -132,6 +142,7 @@ class TestObfuscatedCharField:
 
     def test_plain_text_passthrough(self):
         """to_python returns plain text unchanged when it is not valid Base64."""
+        # external imports
         from labman_utils.fields import ObfuscatedCharField
 
         field = ObfuscatedCharField()
@@ -141,6 +152,7 @@ class TestObfuscatedCharField:
 
     def test_empty_string_passthrough(self):
         """to_python handles an empty string without raising."""
+        # external imports
         from labman_utils.fields import ObfuscatedCharField
 
         field = ObfuscatedCharField()
@@ -149,6 +161,7 @@ class TestObfuscatedCharField:
 
     def test_html_sanitised(self):
         """to_python strips disallowed HTML tags from decoded content."""
+        # external imports
         from labman_utils.fields import ObfuscatedCharField
 
         field = ObfuscatedCharField()

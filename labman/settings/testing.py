@@ -208,9 +208,7 @@ CONSTANCE_CONFIG = {"TEST": (42, "Test Field")}
 
 # ##### REST FRAMEWORK SETTINGS ###########################
 
-REST_FRAMEWORK = {
-    "DEFAULT_PERMISSION_CLASSES": ["rest_framework.permissions.IsAuthenticated"]
-}
+REST_FRAMEWORK = {"DEFAULT_PERMISSION_CLASSES": ["rest_framework.permissions.IsAuthenticated"]}
 
 # ##### SITETREE SETTINGS #################################
 

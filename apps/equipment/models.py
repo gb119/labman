@@ -27,16 +27,12 @@ from django.apps import apps
 from django.contrib.flatpages.models import FlatPage
 from django.contrib.postgres.fields import DateRangeField
 from django.db import models
-from django.db.models.constraints import CheckConstraint
 from django.utils.text import slugify
 
 # external imports
-import numpy as np
-import pytz
 from accounts.models import Account
 from costings.models import CostCentre, CostRate
 from labman_utils.models import (
-    DEFAULT_TZ,
     Document,
     NamedObject,
     ResourceedObject,

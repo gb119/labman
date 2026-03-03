@@ -8,10 +8,8 @@ through web application firewalls that might otherwise block legitimate content.
 # Django imports
 from django import forms
 from django.contrib.admin import widgets as admin_widgets
-from django.urls import reverse
 
 # external imports
-import tinymce.settings
 from tinymce.widgets import TinyMCE
 
 

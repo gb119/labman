@@ -6,8 +6,10 @@ This module tests the Account, ResearchGroup, and Role models, including
 string representations, computed properties, and manager behaviour.
 """
 # Django imports
-import pytest
 from django.contrib.auth.models import Group
+
+# external imports
+import pytest
 
 
 class TestResearchGroup:
@@ -16,6 +18,7 @@ class TestResearchGroup:
     @pytest.mark.django_db
     def test_create_research_group(self, research_group):
         """Creating a ResearchGroup persists it to the database."""
+        # external imports
         from accounts.models import ResearchGroup
 
         assert ResearchGroup.objects.filter(code="TEST").exists()
@@ -28,6 +31,7 @@ class TestResearchGroup:
     @pytest.mark.django_db
     def test_code_saved_uppercase(self):
         """ResearchGroup code is converted to uppercase on save."""
+        # external imports
         from accounts.models import ResearchGroup
 
         group = ResearchGroup.objects.create(code="lower", name="Lowercase Code Group")
@@ -36,8 +40,11 @@ class TestResearchGroup:
     @pytest.mark.django_db
     def test_unique_name_constraint(self, research_group):
         """Creating a second ResearchGroup with the same name raises an error."""
-        from accounts.models import ResearchGroup
+        # Django imports
         from django.db import IntegrityError
+
+        # external imports
+        from accounts.models import ResearchGroup
 
         with pytest.raises(IntegrityError):
             ResearchGroup.objects.create(code="TST2", name="Test Group")
@@ -49,6 +56,7 @@ class TestAccount:
     @pytest.mark.django_db
     def test_create_regular_user(self, regular_user):
         """Creating a regular user persists it to the database."""
+        # external imports
         from accounts.models import Account
 
         assert Account.objects.filter(username="testuser").exists()
@@ -66,6 +74,7 @@ class TestAccount:
     @pytest.mark.django_db
     def test_initials_from_email_with_dots(self):
         """initials are derived from dot-separated email username."""
+        # external imports
         from accounts.models import Account
 
         user = Account.objects.create_user(
@@ -80,6 +89,7 @@ class TestAccount:
     @pytest.mark.django_db
     def test_initials_from_name_without_dots(self):
         """initials fall back to first/last name when email has no dots."""
+        # external imports
         from accounts.models import Account
 
         user = Account.objects.create_user(
@@ -99,6 +109,7 @@ class TestAccount:
     @pytest.mark.django_db
     def test_is_supervisor_true_when_managing(self, regular_user, superuser):
         """is_supervisor returns True when the account manages at least one other."""
+        # external imports
         from accounts.models import Account
 
         Account.objects.filter(pk=regular_user.pk).update(manager=superuser)
@@ -120,6 +131,7 @@ class TestAccount:
     @pytest.mark.django_db
     def test_active_manager_returns_only_active(self, regular_user):
         """ActiveUsersManager returns only active users."""
+        # external imports
         from accounts.models import Account
 
         inactive = Account.objects.create_user(
@@ -152,6 +164,7 @@ class TestRole:
     @pytest.mark.django_db
     def test_create_role(self, role_trainee):
         """Creating a Role persists it to the database."""
+        # external imports
         from accounts.models import Role
 
         assert Role.objects.filter(name="Trainee").exists()
@@ -164,6 +177,7 @@ class TestRole:
     @pytest.mark.django_db
     def test_trainee_classproperty(self, role_trainee):
         """Role.trainee classproperty returns the level-0 role."""
+        # external imports
         from accounts.models import Role
 
         assert Role.trainee == role_trainee
@@ -171,6 +185,7 @@ class TestRole:
     @pytest.mark.django_db
     def test_user_classproperty(self, role_user):
         """Role.user classproperty returns the level-100 role."""
+        # external imports
         from accounts.models import Role
 
         assert Role.user == role_user

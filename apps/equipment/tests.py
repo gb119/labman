@@ -8,7 +8,7 @@ properties such as bookability and URL generation.
 # Python imports
 from datetime import time, timedelta
 
-# Django imports
+# external imports
 import pytest
 
 
@@ -18,6 +18,7 @@ class TestLocation:
     @pytest.mark.django_db
     def test_create_top_level_location(self, location):
         """Creating a top-level Location persists it without a parent."""
+        # external imports
         from equipment.models import Location
 
         loc = Location.objects.get(name="Test Lab")
@@ -55,8 +56,11 @@ class TestLocation:
     @pytest.mark.django_db
     def test_unique_name_constraint(self, location):
         """Creating a second Location with the same name raises an error."""
-        from equipment.models import Location
+        # Django imports
         from django.db import IntegrityError
+
+        # external imports
+        from equipment.models import Location
 
         with pytest.raises(IntegrityError):
             Location.objects.create(name="Test Lab")
@@ -68,6 +72,7 @@ class TestShift:
     @pytest.mark.django_db
     def test_create_shift(self, shift):
         """Creating a Shift persists it to the database."""
+        # external imports
         from equipment.models import Shift
 
         assert Shift.objects.filter(name="Day Shift").exists()
@@ -87,6 +92,7 @@ class TestShift:
     @pytest.mark.django_db
     def test_duration_midnight_crossing_shift(self, db):
         """duration handles shifts that cross midnight correctly."""
+        # external imports
         from equipment.models import Shift
 
         night_shift = Shift.objects.create(name="Night Shift", start_time=time(22, 0), end_time=time(6, 0))
@@ -99,6 +105,7 @@ class TestEquipment:
     @pytest.mark.django_db
     def test_create_equipment(self, equipment):
         """Creating Equipment persists it to the database."""
+        # external imports
         from equipment.models import Equipment
 
         assert Equipment.objects.filter(name="Test Instrument").exists()
@@ -122,8 +129,9 @@ class TestEquipment:
     @pytest.mark.django_db
     def test_not_bookable_when_offline(self, equipment, db):
         """bookable returns False when equipment is marked offline."""
-        from bookings.models import BookingPolicy
+        # external imports
         from accounts.models import Role
+        from bookings.models import BookingPolicy
 
         role, _ = Role.objects.get_or_create(name="Trainee", defaults={"level": 0})
         policy = BookingPolicy.objects.create(name="Test Policy", for_role=role, booker_role=role)
@@ -135,8 +143,9 @@ class TestEquipment:
     @pytest.mark.django_db
     def test_bookable_with_policy_and_online(self, equipment, db):
         """bookable returns True when policies exist and equipment is online."""
-        from bookings.models import BookingPolicy
+        # external imports
         from accounts.models import Role
+        from bookings.models import BookingPolicy
 
         role, _ = Role.objects.get_or_create(name="Trainee", defaults={"level": 0})
         policy = BookingPolicy.objects.create(name="Test Policy 2", for_role=role, booker_role=role)

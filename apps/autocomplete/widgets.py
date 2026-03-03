@@ -9,7 +9,7 @@ options for customising the autocomplete behaviour and appearance.
 from django.forms import Widget
 
 # app imports
-from .core import AC_CLASS_CONFIGURABLE_VALUES, Autocomplete
+from .core import AC_CLASS_CONFIGURABLE_VALUES
 
 
 class AutocompleteWidget(Widget):

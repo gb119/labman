@@ -8,7 +8,7 @@ marked with the ``django_db`` marker through the ``db`` fixture dependency.
 # Python imports
 from datetime import time
 
-# Django imports
+# external imports
 import pytest
 
 
@@ -22,6 +22,7 @@ def research_group(db):
     Returns:
         (ResearchGroup): A saved ResearchGroup with code 'TEST'.
     """
+    # external imports
     from accounts.models import ResearchGroup
 
     return ResearchGroup.objects.create(code="TEST", name="Test Group")
@@ -37,6 +38,7 @@ def superuser(db):
     Returns:
         (Account): A saved superuser account with username 'admin'.
     """
+    # external imports
     from accounts.models import Account
 
     return Account.objects.create_superuser(
@@ -59,6 +61,7 @@ def regular_user(db, research_group):
     Returns:
         (Account): A saved regular user account with username 'testuser'.
     """
+    # external imports
     from accounts.models import Account
 
     return Account.objects.create_user(
@@ -81,6 +84,7 @@ def cost_rate(db):
     Returns:
         (CostRate): A saved CostRate with name 'standard'.
     """
+    # external imports
     from costings.models import CostRate
 
     rate, _ = CostRate.objects.get_or_create(name="standard", defaults={"description": "Standard rate"})
@@ -99,6 +103,7 @@ def cost_centre(db, cost_rate, regular_user):
     Returns:
         (CostCentre): A saved CostCentre with name 'Test Project'.
     """
+    # external imports
     from costings.models import CostCentre
 
     return CostCentre.objects.create(
@@ -120,6 +125,7 @@ def location(db):
     Returns:
         (Location): A saved top-level Location with name 'Test Lab'.
     """
+    # external imports
     from equipment.models import Location
 
     return Location.objects.create(name="Test Lab")
@@ -136,6 +142,7 @@ def child_location(db, location):
     Returns:
         (Location): A saved child Location with name 'Test Room'.
     """
+    # external imports
     from equipment.models import Location
 
     return Location.objects.create(name="Test Room", parent=location)
@@ -151,6 +158,7 @@ def shift(db):
     Returns:
         (Shift): A saved Shift covering 09:00–17:00.
     """
+    # external imports
     from equipment.models import Shift
 
     return Shift.objects.create(name="Day Shift", start_time=time(9, 0), end_time=time(17, 0))
@@ -166,6 +174,7 @@ def role_trainee(db):
     Returns:
         (Role): A saved Role at trainee level (0).
     """
+    # external imports
     from accounts.models import Role
 
     role, _ = Role.objects.get_or_create(name="Trainee", defaults={"level": 0})
@@ -182,6 +191,7 @@ def role_user(db):
     Returns:
         (Role): A saved Role at user level (100).
     """
+    # external imports
     from accounts.models import Role
 
     role, _ = Role.objects.get_or_create(name="User", defaults={"level": 100})
@@ -200,6 +210,7 @@ def equipment(db, location, regular_user):
     Returns:
         (Equipment): A saved Equipment item named 'Test Instrument'.
     """
+    # external imports
     from equipment.models import Equipment
 
     return Equipment.objects.create(

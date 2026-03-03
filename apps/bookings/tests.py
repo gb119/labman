@@ -7,7 +7,7 @@ policy creation, string representations, and exception class hierarchy.
 # Python imports
 from datetime import time, timedelta
 
-# Django imports
+# external imports
 import pytest
 
 
@@ -25,6 +25,7 @@ class TestBookingPolicy:
         Returns:
             (BookingPolicy): A saved BookingPolicy named 'Test Policy'.
         """
+        # external imports
         from bookings.models import BookingPolicy
 
         return BookingPolicy.objects.create(
@@ -36,6 +37,7 @@ class TestBookingPolicy:
     @pytest.mark.django_db
     def test_create_booking_policy(self, booking_policy):
         """Creating a BookingPolicy persists it to the database."""
+        # external imports
         from bookings.models import BookingPolicy
 
         assert BookingPolicy.objects.filter(name="Test Policy").exists()
@@ -73,14 +75,18 @@ class TestBookingExceptions:
 
     def test_booking_error_is_validation_error(self):
         """BookingError inherits from ValidationError."""
-        from bookings.models import BookingError
+        # Django imports
         from django.core.exceptions import ValidationError
+
+        # external imports
+        from bookings.models import BookingError
 
         err = BookingError("test error")
         assert isinstance(err, ValidationError)
 
     def test_policy_does_not_apply_is_booking_error(self):
         """PolicyDoesNotApply inherits from BookingError."""
+        # external imports
         from bookings.models import BookingError, PolicyDoesNotApply
 
         err = PolicyDoesNotApply("not applicable")
@@ -88,6 +94,7 @@ class TestBookingExceptions:
 
     def test_policy_not_found_is_booking_error(self):
         """PolicyNotFound inherits from BookingError."""
+        # external imports
         from bookings.models import BookingError, PolicyNotFound
 
         err = PolicyNotFound("not found")
@@ -95,6 +102,7 @@ class TestBookingExceptions:
 
     def test_user_booking_held_is_booking_error(self):
         """UserBookingHeld inherits from BookingError."""
+        # external imports
         from bookings.models import BookingError, UserBookingHeld
 
         err = UserBookingHeld("user held")
@@ -102,6 +110,7 @@ class TestBookingExceptions:
 
     def test_admin_booking_held_is_booking_error(self):
         """AdminBookingHeld inherits from BookingError."""
+        # external imports
         from bookings.models import AdminBookingHeld, BookingError
 
         err = AdminBookingHeld("admin held")

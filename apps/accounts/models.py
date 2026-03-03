@@ -21,7 +21,6 @@ from labman_utils.models import ResourceedObject
 from photologue.models import Photo
 from six import string_types
 from sortedm2m.fields import SortedManyToManyField
-from tinymce.models import HTMLField
 
 # Create your models here.
 

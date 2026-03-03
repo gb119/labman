@@ -7,7 +7,6 @@ reporting functionality. It handles both single equipment and multi-equipment
 booking views with HTMX support.
 """
 # Python imports
-import io
 import json
 import operator
 from datetime import datetime as dt, time as Time, timedelta as td
@@ -24,7 +23,6 @@ from django.http import (
     HttpResponse,
     HttpResponseNotFound,
     HttpResponseNotModified,
-    StreamingHttpResponse,
 )
 from django.utils.text import slugify
 
@@ -39,7 +37,6 @@ from equipment.models import Equipment
 from equipment.tables import CalTable
 from htmx_views.views import HTMXFormMixin
 from labman_utils.views import FormListView, IsAuthenticaedViewMixin
-from psycopg2.extras import DateTimeTZRange
 
 # app imports
 from . import forms, models

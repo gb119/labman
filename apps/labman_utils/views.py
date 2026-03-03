@@ -18,11 +18,9 @@ from django.http import (
     HttpResponse,
     HttpResponseForbidden,
     HttpResponseNotFound,
-    HttpResponseNotModified,
     HttpResponseRedirect,
 )
 from django.urls import reverse
-from django.utils.text import slugify
 from django.views.generic import DetailView, ListView, UpdateView, View
 from django.views.generic.base import ContextMixin, TemplateResponseMixin
 from django.views.generic.edit import FormMixin, ProcessFormView

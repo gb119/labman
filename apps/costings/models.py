@@ -9,7 +9,6 @@ and resources, including cost centres, charging rates, and chargeable items.
 from django.db import models
 
 # external imports
-import numpy as np
 from labman_utils.models import NamedObject
 from mptt.models import MPTTModel, TreeForeignKey
 from sortedm2m.fields import SortedManyToManyField

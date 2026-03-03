@@ -16,7 +16,6 @@ from sitetree.admin import (
     override_item_admin,
     override_tree_admin,
 )
-from tinymce.widgets import TinyMCE
 
 # app imports
 from .fields import ObfuscatedCharField

@@ -10,11 +10,9 @@ by user roles. Supports both personal account views and general user browsing.
 from django import views
 from django.db.backends.postgresql.psycopg_any import DateTimeTZRange
 from django.utils import timezone as tz
-from django.views.generic import ListView, TemplateView
+from django.views.generic import ListView
 
 # external imports
-from bookings.forms import BookinngDialogForm
-from costings.models import CostCentre  # Hack for now
 from htmx_views.views import HTMXProcessMixin
 from labman_utils.views import IsAuthenticaedViewMixin
 

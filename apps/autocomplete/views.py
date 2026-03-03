@@ -11,9 +11,7 @@ import json
 # Django imports
 from django.http import Http404, HttpResponseBadRequest
 from django.shortcuts import render
-from django.urls import path
 from django.utils.functional import cached_property
-from django.utils.translation import gettext_lazy as _
 from django.views import View
 
 # app imports

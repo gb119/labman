@@ -8,16 +8,18 @@ measures in the autocomplete component.
 import json
 
 # Django imports
-import pytest
 from django.contrib.auth.models import AnonymousUser
 from django.core.exceptions import PermissionDenied
 from django.http import Http404
 from django.test import RequestFactory
 
+# external imports
+import pytest
 
 # ---------------------------------------------------------------------------
 # Helpers
 # ---------------------------------------------------------------------------
+
 
 class _MinimalAutocomplete:
     """Minimal stub that satisfies Autocomplete.validate()."""
@@ -37,11 +39,13 @@ class _MinimalAutocomplete:
 # auth_check tests
 # ---------------------------------------------------------------------------
 
+
 class TestAuthCheck:
     """Tests for Autocomplete.auth_check security behaviour."""
 
     def _make_request(self, authenticated=True):
         """Return a GET request with an authenticated or anonymous user."""
+        # external imports
         from accounts.models import Account
 
         rf = RequestFactory()
@@ -55,6 +59,7 @@ class TestAuthCheck:
 
     def test_unauthenticated_user_raises_permission_denied(self):
         """auth_check raises PermissionDenied for an anonymous user by default."""
+        # external imports
         from autocomplete.core import Autocomplete
 
         request = self._make_request(authenticated=False)
@@ -63,6 +68,7 @@ class TestAuthCheck:
 
     def test_authenticated_user_is_allowed(self):
         """auth_check does not raise for an authenticated user."""
+        # external imports
         from autocomplete.core import Autocomplete
 
         request = self._make_request(authenticated=True)
@@ -71,6 +77,7 @@ class TestAuthCheck:
 
     def test_allow_unauthenticated_setting_permits_anonymous(self, settings):
         """Setting AUTOCOMPLETE_ALLOW_UNAUTHENTICATED=True permits anonymous access."""
+        # external imports
         from autocomplete.core import Autocomplete
 
         settings.AUTOCOMPLETE_ALLOW_UNAUTHENTICATED = True
@@ -83,11 +90,13 @@ class TestAuthCheck:
 # View error-handling tests
 # ---------------------------------------------------------------------------
 
+
 class TestAutocompleteViews:
     """Tests for ItemsView and ToggleView error handling."""
 
     def _make_authenticated_request(self):
         """Return an authenticated GET request using a mock user (no DB required)."""
+        # Python imports
         from unittest.mock import MagicMock
 
         rf = RequestFactory()
@@ -99,6 +108,7 @@ class TestAutocompleteViews:
 
     def test_items_view_unknown_ac_name_raises_404(self):
         """ItemsView raises Http404 when given an unregistered autocomplete name."""
+        # external imports
         from autocomplete.views import ItemsView
 
         request = self._make_authenticated_request()
@@ -108,6 +118,7 @@ class TestAutocompleteViews:
 
     def test_toggle_view_unknown_ac_name_raises_404(self):
         """ToggleView raises Http404 when given an unregistered autocomplete name."""
+        # external imports
         from autocomplete.views import ToggleView
 
         request = self._make_authenticated_request()
@@ -117,6 +128,7 @@ class TestAutocompleteViews:
 
     def test_items_view_unauthenticated_raises_permission_denied(self):
         """ItemsView raises PermissionDenied when accessed without authentication."""
+        # external imports
         from autocomplete.views import ItemsView
 
         rf = RequestFactory()
@@ -131,14 +143,19 @@ class TestAutocompleteViews:
 # Template tag tests
 # ---------------------------------------------------------------------------
 
+
 class TestBaseConfigurableHxVals:
     """Tests for the base_configurable_hx_vals template tag."""
 
     def _render_tag(self, field_name, component_prefix, **extra):
         """Invoke base_configurable_hx_vals with the given context values."""
+        # Django imports
         from django.template import Context
 
-        from autocomplete.templatetags.autocomplete import base_configurable_hx_vals
+        # external imports
+        from autocomplete.templatetags.autocomplete import (
+            base_configurable_hx_vals,
+        )
 
         context = Context(
             {
@@ -180,12 +197,14 @@ class TestSearchHighlight:
 
     def test_empty_search_returns_value(self):
         """An empty search string returns the original value (unmodified)."""
+        # external imports
         from autocomplete.templatetags.autocomplete import search_highlight
 
         assert search_highlight("Hello World", "") == "Hello World"
 
     def test_match_wraps_in_highlight_span(self):
         """A matching search term is wrapped in a highlight span."""
+        # external imports
         from autocomplete.templatetags.autocomplete import search_highlight
 
         result = str(search_highlight("Hello World", "World"))
@@ -193,6 +212,7 @@ class TestSearchHighlight:
 
     def test_html_in_value_is_escaped(self):
         """HTML characters in the value are escaped to prevent XSS."""
+        # external imports
         from autocomplete.templatetags.autocomplete import search_highlight
 
         result = str(search_highlight("<script>alert(1)</script>", "alert"))

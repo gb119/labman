@@ -8,7 +8,6 @@ helper functions for working with dates and times.
 """
 # Python imports
 from datetime import date, datetime as dt, time, timedelta as td
-from functools import reduce
 
 # Django imports
 from django.apps import apps

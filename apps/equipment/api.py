@@ -5,8 +5,7 @@ This module defines serializers and viewsets for exposing Equipment, Location,
 and UserListEntry objects through the Django REST Framework API.
 """
 # external imports
-from accounts.api import AccountSerializer
-from rest_framework import routers, serializers, viewsets
+from rest_framework import serializers, viewsets
 
 # app imports
 from .models import Equipment, Location, UserListEntry

@@ -3,7 +3,6 @@
 """Views for the accounts apps."""
 
 # Python imports
-import json
 
 # Django imports
 from django.http import (

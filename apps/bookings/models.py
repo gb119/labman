@@ -7,11 +7,10 @@ as well as booking entries that represent actual equipment reservations. The mod
 several exception classes for handling various booking-related error conditions.
 """
 # Python imports
-from datetime import date as date, datetime as dt, time, timedelta as td
+from datetime import datetime as dt, time, timedelta as td
 
 # Django imports
 import django.utils.timezone as tz
-from django.conf import settings
 from django.contrib.postgres.fields import DateTimeRangeField
 from django.core.exceptions import ValidationError
 from django.db import models
@@ -22,7 +21,6 @@ from accounts.models import Account, Role
 from costings.models import ChargeableItem
 from equipment.models import Equipment
 from labman_utils.models import (
-    DEFAULT_TZ,
     NamedObject,
     delta_t,
     ensure_tz,

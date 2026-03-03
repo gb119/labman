@@ -15,13 +15,15 @@ All tests here are pure unit tests that do **not** require database access.
 from unittest.mock import MagicMock
 
 # Django imports
-import pytest
 from django.http import HttpResponse
 
+# external imports
+import pytest
 
 # ---------------------------------------------------------------------------
 # Helpers
 # ---------------------------------------------------------------------------
+
 
 class _MockHtmx:
     """Minimal stand-in for django_htmx.middleware.HtmxDetails."""
@@ -76,11 +78,13 @@ class _StubBase:
 # Tests for temp_attr
 # ---------------------------------------------------------------------------
 
+
 class TestTempAttr:
     """Tests for the ``temp_attr`` context manager."""
 
     def test_sets_attribute_while_inside_block(self):
         """The attribute is updated to the new value inside the block."""
+        # external imports
         from htmx_views.views import temp_attr
 
         obj = MagicMock()
@@ -90,6 +94,7 @@ class TestTempAttr:
 
     def test_restores_original_value_after_block(self):
         """The original attribute value is restored after the block exits."""
+        # external imports
         from htmx_views.views import temp_attr
 
         obj = MagicMock()
@@ -100,6 +105,7 @@ class TestTempAttr:
 
     def test_creates_attribute_when_it_does_not_exist(self):
         """An attribute that did not exist is created inside the block."""
+        # external imports
         from htmx_views.views import temp_attr
 
         class Plain:
@@ -111,6 +117,7 @@ class TestTempAttr:
 
     def test_deletes_attribute_after_block_when_it_did_not_exist(self):
         """An attribute that was created by the context manager is deleted on exit."""
+        # external imports
         from htmx_views.views import temp_attr
 
         class Plain:
@@ -123,6 +130,7 @@ class TestTempAttr:
 
     def test_restores_attribute_when_exception_is_raised(self):
         """The original value is restored even if an exception occurs inside the block."""
+        # external imports
         from htmx_views.views import temp_attr
 
         obj = MagicMock()
@@ -137,11 +145,13 @@ class TestTempAttr:
 # Tests for dispatch
 # ---------------------------------------------------------------------------
 
+
 class TestDispatch:
     """Tests for the monkey-patched HTMX-aware ``dispatch`` function."""
 
     def _make_view(self, http_method_names=None):
         """Create a mock view object suitable for calling dispatch."""
+        # external imports
         from htmx_views.views import dispatch
 
         view = MagicMock()
@@ -155,6 +165,7 @@ class TestDispatch:
 
     def test_non_htmx_request_calls_non_htmx_dispatch(self):
         """A non-HTMX request is forwarded to ``_non_htmx_dispatch``."""
+        # external imports
         from htmx_views.views import dispatch
 
         view = self._make_view()
@@ -164,6 +175,7 @@ class TestDispatch:
 
     def test_htmx_request_calls_htmx_verb_method(self):
         """An HTMX GET request calls ``htmx_get`` when the method exists."""
+        # external imports
         from htmx_views.views import dispatch
 
         view = self._make_view()
@@ -173,6 +185,7 @@ class TestDispatch:
 
     def test_htmx_request_falls_back_to_verb_method_when_no_htmx_handler(self):
         """Falls back to ``get`` when ``htmx_get`` is not defined on the view."""
+        # external imports
         from htmx_views.views import dispatch
 
         class MinimalView:
@@ -194,6 +207,7 @@ class TestDispatch:
 
     def test_htmx_method_not_in_allowed_names_calls_not_allowed(self):
         """An HTMX request with a method outside ``http_method_names`` calls ``http_method_not_allowed``."""
+        # external imports
         from htmx_views.views import dispatch
 
         view = self._make_view(http_method_names=["get", "post"])
@@ -203,11 +217,12 @@ class TestDispatch:
 
     def test_view_class_is_monkey_patched(self):
         """``View._non_htmx_dispatch`` exists, confirming the monkey-patch was applied."""
+        # Django imports
         from django.views import View
 
-        assert hasattr(View, "_non_htmx_dispatch"), (
-            "View should have been monkey-patched with _non_htmx_dispatch on module import"
-        )
+        assert hasattr(
+            View, "_non_htmx_dispatch"
+        ), "View should have been monkey-patched with _non_htmx_dispatch on module import"
         assert hasattr(View, "dispatch")
 
 
@@ -215,10 +230,12 @@ class TestDispatch:
 # Tests for HTMXProcessMixin
 # ---------------------------------------------------------------------------
 
+
 class TestHTMXElementsIteration:
     """Tests for ``HTMXProcessMixin.htmx_elements``."""
 
     def _make_mixin(self, htmx):
+        # external imports
         from htmx_views.views import HTMXProcessMixin
 
         class Concrete(HTMXProcessMixin, _StubBase):
@@ -272,6 +289,7 @@ class TestHTMXProcessMixinTemplateNames:
     """Tests for ``HTMXProcessMixin.get_template_names``."""
 
     def _make_view(self, htmx=None, extra_attrs=None):
+        # external imports
         from htmx_views.views import HTMXProcessMixin
 
         class Concrete(HTMXProcessMixin, _StubBase):
@@ -322,6 +340,7 @@ class TestHTMXProcessMixinContextData:
     """Tests for ``HTMXProcessMixin.get_context_data``."""
 
     def _make_view(self, htmx=None, extra_attrs=None):
+        # external imports
         from htmx_views.views import HTMXProcessMixin
 
         class Concrete(HTMXProcessMixin, _StubBase):
@@ -361,6 +380,7 @@ class TestHTMXProcessMixinVerbDelegation:
     """Tests for ``HTMXProcessMixin.htmx_<verb>`` delegation methods."""
 
     def _make_view(self, htmx=None, extra_attrs=None):
+        # external imports
         from htmx_views.views import HTMXProcessMixin
 
         class Concrete(HTMXProcessMixin, _StubBase):
@@ -464,10 +484,12 @@ class TestHTMXProcessMixinVerbDelegation:
 # Tests for HTMXFormMixin
 # ---------------------------------------------------------------------------
 
+
 class TestHTMXFormMixinFormValid:
     """Tests for ``HTMXFormMixin.form_valid``."""
 
     def _make_view(self, htmx=None, extra_attrs=None):
+        # external imports
         from htmx_views.views import HTMXFormMixin
 
         class Concrete(HTMXFormMixin, _StubBase):
@@ -530,6 +552,7 @@ class TestHTMXFormMixinFormInvalid:
     """Tests for ``HTMXFormMixin.form_invalid``."""
 
     def _make_view(self, htmx=None, extra_attrs=None):
+        # external imports
         from htmx_views.views import HTMXFormMixin
 
         class Concrete(HTMXFormMixin, _StubBase):
