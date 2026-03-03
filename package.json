@@ -8,6 +8,7 @@
   },
   "scripts": {
     "lint:css": "stylelint \"static/css/**/*.css\" \"apps/**/static/**/*.css\"",
+    "lint:js": "eslint \"apps/**/static/**/*.js\"",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {

@@ -1,9 +1,13 @@
+/* exported phac_aspc_autocomplete_trigger_change, phac_aspc_autocomplete_blur_handler,
+   phac_aspc_autocomplete_item_click_handler, phac_aspc_autocomplete_focus_handler,
+   phac_aspc_autocomplete_click_handler, phac_aspc_autocomplete_keyup_handler,
+   phac_aspc_autocomplete_keydown_handler, SingleAutocompleteHelper, MultiAutocompleteHelper */
 function phac_aspc_autocomplete_trigger_change(container_id) {
     setTimeout(() => {
         const container = document.getElementById(container_id);
         const el = container.querySelector('.textinput');
         el.dispatchEvent(new Event('change', { bubbles: true }));
-    }, 0)
+    }, 0);
 }
 
 function phac_aspc_autocomplete_clear_focus(container, activate_ring) {
@@ -32,7 +36,7 @@ function phac_aspc_autocomplete_hide_results(container) {
     results.classList.remove('show');
 }
 
-phac_aspc_autocomplete_blur_skip = {}
+var phac_aspc_autocomplete_blur_skip = {};
 function phac_aspc_autocomplete_blur_handler(event, name, sync = false, item = false) {
     // Handler responsible for blur events
     // Will remove the results when focus is no longer on the component, and update
@@ -47,7 +51,7 @@ function phac_aspc_autocomplete_blur_handler(event, name, sync = false, item = f
             // Reset the component's state
             phac_aspc_autocomplete_closed[id] = false;
             if (phac_aspc_autocomplete_keyup_debounce[id]) {
-                clearTimeout(phac_aspc_autocomplete_keyup_debounce[id])
+                clearTimeout(phac_aspc_autocomplete_keyup_debounce[id]);
                 phac_aspc_autocomplete_keyup_debounce[id] = false;
             }
 
@@ -132,7 +136,7 @@ function phac_aspc_autocomplete_set_initial_value(container, reset = false) {
     }
 }
 
-phac_aspc_autocomplete_closed = {};
+var phac_aspc_autocomplete_closed = {};
 function phac_aspc_autocomplete_click_handler(event) {
     if (event.target.classList.contains('item')) return true;
     const container = event.target.closest('.phac-aspc-form-autocomplete');
@@ -173,12 +177,12 @@ function phac_aspc_autocomplete_keyup_handler(event) {
     const v = elem.value;
 
     debounce[id] = setTimeout(() => {
-        if (!phac_aspc_autocomplete_closed[id] && v != value[id]) {
+        if (!phac_aspc_autocomplete_closed[id] && v !== value[id]) {
             elem.dispatchEvent(new Event('phac_aspc_autocomplete_trigger'));
         } else if (
             phac_aspc_autocomplete_closed[id] &&
-            v != value[id] &&
-            v == ''
+            v !== value[id] &&
+            v === ''
         ) {
             phac_aspc_autocomplete_closed[id] = false;
         }
@@ -225,21 +229,21 @@ function phac_aspc_autocomplete_keydown_handler(event) {
         }
         if (counter > 0) return fallback;
         return null;
-    }
+    };
     const switchFocus = (element, container) => {
         phac_aspc_autocomplete_clear_focus(container);
         const el = container.querySelector('.textinput');
         el.setAttribute('aria-activedescendant', element.getAttribute('id'));
         element.classList.add('has-focus');
-        element.scrollIntoView({ block: 'nearest' })
-    }
+        element.scrollIntoView({ block: 'nearest' });
+    };
     const selectFocusedItem = (container) => {
         const item = container.querySelector('.has-focus');
         if (item) {
             item.dispatchEvent(new Event('click'));
         }
         return item;
-    }
+    };
     const focusWhenResultsShown = (container, timeout, up) => {
         // This function uses polling to wait for the results to be shown before
         // moving focus.
@@ -266,13 +270,13 @@ function phac_aspc_autocomplete_keydown_handler(event) {
             const next = whereTo(container, true, false);
             if (next) switchFocus(next, container);
         }
-    }
+    };
 
     const getPageSize = (container) => {
         const r1 = container.getBoundingClientRect();
         const r2 = container.querySelector('.item').getBoundingClientRect();
         return Math.floor((r1.bottom - r1.top) / (r2.bottom - r2.top));
-    }
+    };
 
     const container = event.target.closest('.phac-aspc-form-autocomplete');
     const results = container.querySelector('.results');
