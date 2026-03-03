@@ -27,8 +27,8 @@ class Cost_CentreView(IsAuthenticaedViewMixin, HTMXProcessMixin, TemplateView):
     """Make a list of user CostCentre."""
 
     template_name_id_cost_centre = "costings/parts/cost_centres_options.html"
-    template_name_full_description = "costings/parts/cost_cntre_description_full.html"
-    template_name_short_description = "costings/parts/cost_cntre_description_short.html"
+    template_name_full_description = "costings/parts/cost_centre_description_full.html"
+    template_name_short_description = "costings/parts/cost_centre_description_short.html"
 
     def get_context_data_id_cost_centre(self, **kwargs):
         """Add the cost_centres for this user."""
