@@ -86,6 +86,26 @@ class ErrorView(TemplateView):
         context["config"] = config
         return context
 
+    def dispatch(self, request, *args, **kwargs):
+        """Dispatch any HTTP method to the get handler.
+
+        Error pages should be displayed regardless of the HTTP method used in the
+        original request. This override ensures all methods are handled by the
+        standard get() method.
+
+        Args:
+            request (HttpRequest):
+                The HTTP request object.
+            *args: Variable positional arguments.
+
+        Keyword Parameters:
+            **kwargs: Variable keyword arguments.
+
+        Returns:
+            (HttpResponse): Response with the error status code set.
+        """
+        return self.get(request, *args, **kwargs)
+
     def get_template_names(self):
         """Return the template name based on the error code.
 
