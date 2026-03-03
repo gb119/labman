@@ -37,7 +37,7 @@
     </div>
 
     {% if multiselect %}
-        {% include "./ac_container.html" with selected_items=toggle %}
+        {% include "./ac-container.html" with selected_items=toggle %}
         <div hx-swap-oob="innerHTML" id="{{ component_id }}__sr_description">
             {% if toggle|length > 0 %}
                 {{ toggle|length }} {% use_string "selected" custom_strings %}

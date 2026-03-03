@@ -31,3 +31,7 @@ coverage_html
 
 # Log files and directories
 logs/
+
+# Node.js dependencies
+node_modules/
+package-lock.json

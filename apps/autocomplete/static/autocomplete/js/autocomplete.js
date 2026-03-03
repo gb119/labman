@@ -7,20 +7,20 @@ function phac_aspc_autocomplete_trigger_change(container_id) {
 }
 
 function phac_aspc_autocomplete_clear_focus(container, activate_ring) {
-    const hasFocus = container.querySelectorAll('.hasFocus'); 
-    for (const el of hasFocus) {
-        el.classList.remove('hasFocus');
+    const focusedElements = container.querySelectorAll('.has-focus');
+    for (const el of focusedElements) {
+        el.classList.remove('has-focus');
     }
 
     const el = container.querySelector('.textinput');
     el.removeAttribute('aria-activedescendant');
 
     if (activate_ring) {
-        container.closest('.phac_aspc_form_autocomplete_focus_ring')
+        container.closest('.phac-aspc-form-autocomplete-focus-ring')
             .classList.add('active');
         container.querySelector('.textinput').focus();
     } else {
-        container.closest('.phac_aspc_form_autocomplete_focus_ring')
+        container.closest('.phac-aspc-form-autocomplete-focus-ring')
             .classList.remove('active');
     }
 }
@@ -98,7 +98,7 @@ function phac_aspc_autocomplete_blur_handler(event, name, sync = false, item = f
 }
 
 function phac_aspc_autocomplete_item_click_handler(event) {
-    const container = event.target.closest('.phac_aspc_form_autocomplete');
+    const container = event.target.closest('.phac-aspc-form-autocomplete');
     const results = container.querySelector('.results');
     const open = results && results.classList.contains('show');
     if (open) {
@@ -109,12 +109,12 @@ function phac_aspc_autocomplete_item_click_handler(event) {
 }
 
 function phac_aspc_autocomplete_focus_handler(event) {
-    const container = event.target.closest('.phac_aspc_form_autocomplete');
+    const container = event.target.closest('.phac-aspc-form-autocomplete');
     phac_aspc_autocomplete_clear_focus(container, true);
     phac_aspc_autocomplete_set_initial_value(container);
     setTimeout(() => {
         // Announce selected items to screen readers.  (if any)
-        const info = container.querySelector('.live_info');
+        const info = container.querySelector('.live-info');
         info.innerHTML += '&nbsp;';    
     }, 100);
 }
@@ -135,7 +135,7 @@ function phac_aspc_autocomplete_set_initial_value(container, reset = false) {
 phac_aspc_autocomplete_closed = {};
 function phac_aspc_autocomplete_click_handler(event) {
     if (event.target.classList.contains('item')) return true;
-    const container = event.target.closest('.phac_aspc_form_autocomplete');
+    const container = event.target.closest('.phac-aspc-form-autocomplete');
     const id = container.getAttribute('id');
     const results = container.querySelector('.results');
     const open = results && results.classList.contains('show');
@@ -160,7 +160,7 @@ function phac_aspc_autocomplete_keyup_handler(event) {
     const value = phac_aspc_autocomplete_initial_value;
     const elem = event.target;
 
-    const container = elem.closest('.phac_aspc_form_autocomplete');
+    const container = elem.closest('.phac-aspc-form-autocomplete');
     const id = container.getAttribute('id');
 
     phac_aspc_autocomplete_set_initial_value(container);
@@ -205,7 +205,7 @@ function phac_aspc_autocomplete_keydown_handler(event) {
         // TODO: bug with down
         if (!container) return null;
         const results = container.querySelector('.results');
-        let element = container.querySelector('.hasFocus');
+        let element = container.querySelector('.has-focus');
         const must_skip = Boolean(element);
         const fallback = down ? results.querySelector('a:first-child')
             : results.querySelector('a:last-child');
@@ -230,11 +230,11 @@ function phac_aspc_autocomplete_keydown_handler(event) {
         phac_aspc_autocomplete_clear_focus(container);
         const el = container.querySelector('.textinput');
         el.setAttribute('aria-activedescendant', element.getAttribute('id'));
-        element.classList.add('hasFocus');
+        element.classList.add('has-focus');
         element.scrollIntoView({ block: 'nearest' })
     }
     const selectFocusedItem = (container) => {
-        const item = container.querySelector('.hasFocus');
+        const item = container.querySelector('.has-focus');
         if (item) {
             item.dispatchEvent(new Event('click'));
         }
@@ -274,7 +274,7 @@ function phac_aspc_autocomplete_keydown_handler(event) {
         return Math.floor((r1.bottom - r1.top) / (r2.bottom - r2.top));
     }
 
-    const container = event.target.closest('.phac_aspc_form_autocomplete');
+    const container = event.target.closest('.phac-aspc-form-autocomplete');
     const results = container.querySelector('.results');
     const id = container.getAttribute('id');
 
@@ -414,7 +414,7 @@ class MultiAutocompleteHelper extends AbstractAutocompleteHelper {
     }
 
     getChips(){
-        return this.getContainer().querySelectorAll(`#${this.getComponentId()}_ac_container li.chip`);
+        return this.getContainer().querySelectorAll(`#${this.getComponentId()}_ac-container li.chip`);
     }
 
     clear(){
