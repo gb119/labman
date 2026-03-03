@@ -3,10 +3,10 @@
 {% comment %} 
 This is the main component template that creates the basic HTML structure.
 {% endcomment %}
-<div class="phac_aspc_form_autocomplete_focus_ring {{ disabled|yesno:'disabled,' }}">
+<div class="phac-aspc-form-autocomplete-focus-ring {{ disabled|yesno:'disabled,' }}">
     <div
         id="{{ component_id }}__container"
-        class="phac_aspc_form_autocomplete"
+        class="phac-aspc-form-autocomplete"
     >
     {% comment %} Hidden input elements used to maintain the component's state {% endcomment %}
     {% comment %} and used when submitting forms {% endcomment %}
@@ -26,7 +26,7 @@ This is the main component template that creates the basic HTML structure.
             <label for="{{ component_id }}__textinput" class="form-label">{{ label }}</label>
         {% endif %}
 
-        {% include "./ac_container.html" %}
+        {% include "./ac-container.html" %}
         <div
             class="results"
             role="listbox"
@@ -37,7 +37,7 @@ This is the main component template that creates the basic HTML structure.
             {% endif %}
         ></div>
     {% comment %} This region provides contextual information for screen readers {% endcomment %}
-        <div role="region" class="live_info" id="{{ component_id }}__info" aria-live="polite">
+        <div role="region" class="live-info" id="{{ component_id }}__info" aria-live="polite">
             {% if selected_items|length > 0 %}
                 {% for item in selected_items %}
                     {% with item=item.label %}
@@ -93,7 +93,7 @@ This is the main component template that creates the basic HTML structure.
             document.querySelector(`#${componentid}__container`).addEventListener(
                 'mousedown',
                 function(event) {
-                    const container = event.target.closest('.phac_aspc_form_autocomplete');
+                    const container = event.target.closest('.phac-aspc-form-autocomplete');
                     const id = container.getAttribute('id');
                     phac_aspc_autocomplete_blur_skip[id] = true;
                 }
@@ -101,7 +101,7 @@ This is the main component template that creates the basic HTML structure.
             document.querySelector(`#${componentid}__container`).addEventListener(
                 'mouseup',
                 function(event) {
-                    const container = event.target.closest('.phac_aspc_form_autocomplete');
+                    const container = event.target.closest('.phac-aspc-form-autocomplete');
                     const id = container.getAttribute('id');
                     phac_aspc_autocomplete_blur_skip[id] = false;
                 }
@@ -111,7 +111,7 @@ This is the main component template that creates the basic HTML structure.
                 function(event) {
                     if (
                         event.target === this ||
-                        event.target.classList.contains('ac_container') ||
+                        event.target.classList.contains('ac-container') ||
                         event.target.classList.contains('textinput')
                     ) {
                         return phac_aspc_autocomplete_click_handler(event);

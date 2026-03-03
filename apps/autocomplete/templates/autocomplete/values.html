@@ -13,7 +13,7 @@
 {% if required and values|length == 0 %}
     <span><input type="hidden"
                  name="{{ field_name }}"
-                 required class="ac_required_input"
+                 required class="ac-required-input"
                  tabindex="-1"
                  {% for attr,val in hx_attrs.items %}
                  {{ attr }}="{{val"

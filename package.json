@@ -1,0 +1,29 @@
+{
+  "name": "labman",
+  "version": "1.0.0",
+  "description": "A Django-based laboratory management system for managing equipment, bookings, users, and costs in research facilities.",
+  "main": "index.js",
+  "directories": {
+    "doc": "doc"
+  },
+  "scripts": {
+    "lint:css": "stylelint \"static/css/**/*.css\" \"apps/**/static/**/*.css\"",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/gb119/labman.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/gb119/labman/issues"
+  },
+  "homepage": "https://github.com/gb119/labman#readme",
+  "devDependencies": {
+    "stylelint": "^17.4.0",
+    "stylelint-config-standard": "^40.0.0"
+  }
+}
