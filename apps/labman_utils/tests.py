@@ -102,7 +102,7 @@ class TestEnsureTz:
     def test_naive_datetime_gets_timezone(self):
         """ensure_tz adds DEFAULT_TZ to a naive datetime."""
         # external imports
-        from labman_utils.models import DEFAULT_TZ, ensure_tz
+        from labman_utils.models import ensure_tz
 
         naive = datetime(2024, 6, 15, 10, 0, 0)
         result = ensure_tz(naive)

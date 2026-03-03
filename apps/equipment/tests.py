@@ -227,9 +227,6 @@ class TestEquipmentViews:
     @pytest.mark.django_db
     def test_toggle_account_active_toggles_flag(self, client_superuser, regular_user):
         """ToggleAccountActiveView toggles the is_active flag for superusers."""
-        # external imports
-        from accounts.models import Account
-
         url = reverse("equipment:toggle_account_active", kwargs={"pk": regular_user.pk})
         original_active = regular_user.is_active
         client_superuser.post(url)

@@ -650,7 +650,9 @@ class BookingEntry(ChargeableItem):
                 )
             if policy:
                 self.shifts = self.count_shifts()
-        elif self.user_id and self.user and self.user.username == "service":  # Special case, service user always booked!
+        elif (
+            self.user_id and self.user and self.user.username == "service"
+        ):  # Special case, service user always booked!
             pass
         else:
             raise ValidationError("No booking slot defined!")

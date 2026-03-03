@@ -4,7 +4,7 @@ from .common import *
 
 try:
     # app imports
-    from .secrets import DATABASES
+    from .secrets import DATABASES  # pylint: disable=unused-import
 except ImportError:
     # Provide default DATABASES configuration if secrets.py is not available
     DATABASES = {

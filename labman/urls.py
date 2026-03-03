@@ -13,12 +13,10 @@ from django.contrib import admin
 from django.contrib.auth import views as auth_views
 from django.urls import include, path, re_path
 from django.views.generic import TemplateView
-from django.views.static import serve
 
 # app imports
 # Django REST Framework launcher import
 from . import api
-from .settings.production import DEBUG, MEDIA_ROOT, PROJECT_ROOT
 from .views import (
     E403View,
     E404View,
@@ -51,7 +49,7 @@ urlpatterns = [
 ]
 
 # Add urls path for all the apps
-for f in (Path(PROJECT_ROOT) / "apps").iterdir():
+for f in (Path(settings.PROJECT_ROOT) / "apps").iterdir():
     if not f.is_dir() or f.name.startswith("."):
         continue
     if (f / "urls.py").exists():
@@ -62,7 +60,7 @@ urlpatterns += [
         r"^media/(?P<path>.*)$",
         FileServeView.as_view(),
         {
-            "document_root": MEDIA_ROOT,
+            "document_root": settings.MEDIA_ROOT,
         },
         name="media_files",
     ),
