@@ -1,11 +1,15 @@
 # -*- coding: utf-8 -*-
 """Tests for the bookings app.
 
-This module tests the BookingPolicy and BookingEntry models, including
-policy creation, string representations, and exception class hierarchy.
+This module tests the BookingPolicy and BookingEntry models including
+policy creation, string representations, and exception class hierarchy,
+as well as the bookings views.
 """
 # Python imports
 from datetime import time, timedelta
+
+# Django imports
+from django.urls import reverse
 
 # external imports
 import pytest
@@ -115,3 +119,59 @@ class TestBookingExceptions:
 
         err = AdminBookingHeld("admin held")
         assert isinstance(err, BookingError)
+
+
+class TestBookingViews:
+    """Integration tests for bookings app views."""
+
+    @pytest.mark.django_db
+    def test_calendar_view_requires_login(self, client, equipment):
+        """Unauthenticated requests to CalendarView redirect to login."""
+        url = reverse("bookings:equipment_calendar", kwargs={"equipment": equipment.pk, "date": 20240101})
+        response = client.get(url)
+        assert response.status_code in (302, 301)
+        assert "/login" in response["Location"]
+
+    @pytest.mark.django_db
+    def test_calendar_view_returns_200(self, client_logged_in, equipment):
+        """CalendarView returns 200 for an authenticated user."""
+        url = reverse("bookings:equipment_calendar", kwargs={"equipment": equipment.pk, "date": 20240101})
+        response = client_logged_in.get(url)
+        assert response.status_code == 200
+
+    @pytest.mark.django_db
+    def test_calendar_view_context_contains_equipment(self, client_logged_in, equipment):
+        """CalendarView places the equipment object into context."""
+        url = reverse("bookings:equipment_calendar", kwargs={"equipment": equipment.pk, "date": 20240101})
+        response = client_logged_in.get(url)
+        assert response.context["equipment"] == equipment
+
+    @pytest.mark.django_db
+    def test_all_calendar_view_requires_login(self, client):
+        """Unauthenticated requests to AllCalendarView redirect to login."""
+        url = reverse("bookings:all_equipment_calendar")
+        response = client.get(url)
+        assert response.status_code in (302, 301)
+        assert "/login" in response["Location"]
+
+    @pytest.mark.django_db
+    def test_all_calendar_view_returns_200(self, client_logged_in, equipment):
+        """AllCalendarView returns 200 for an authenticated user."""
+        url = reverse("bookings:all_equipment_calendar")
+        response = client_logged_in.get(url)
+        assert response.status_code == 200
+
+    @pytest.mark.django_db
+    def test_booking_records_view_requires_login(self, client):
+        """Unauthenticated requests to BookingRecordsView redirect to login."""
+        url = reverse("bookings:reporting")
+        response = client.get(url)
+        assert response.status_code in (302, 301)
+        assert "/login" in response["Location"]
+
+    @pytest.mark.django_db
+    def test_booking_records_view_returns_200(self, client_logged_in):
+        """BookingRecordsView returns 200 for an authenticated user."""
+        url = reverse("bookings:reporting")
+        response = client_logged_in.get(url)
+        assert response.status_code == 200
