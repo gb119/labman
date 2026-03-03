@@ -11,6 +11,7 @@ This document lists bugs, issues, and potential problems identified in docstring
 **Issue:** Method returns an empty list instead of processing user groups.
 
 **Current Code:**
+
 ```python
 def process_user_groups(self, claims, access_token=None):
     """Process user groups from claims or Microsoft Graph.
@@ -24,9 +25,11 @@ def process_user_groups(self, claims, access_token=None):
     return groups
 ```
 
-**Impact:** User group memberships are not being processed, which means group-based authorisation and permissions may not work as expected.
+**Impact:** User group memberships are not being processed, which means group-based authorisation and permissions may
+not work as expected.
 
-**Suggested Work:** Implement full group processing from either the access token claims or by querying Microsoft Graph API. This should populate the groups list with actual user group memberships.
+**Suggested Work:** Implement full group processing from either the access token claims or by querying Microsoft Graph
+API. This should populate the groups list with actual user group memberships.
 
 ---
 
@@ -37,6 +40,7 @@ def process_user_groups(self, claims, access_token=None):
 **Issue:** Method only logs but doesn't update user groups.
 
 **Current Code:**
+
 ```python
 def update_user_groups(self, user, claim_groups):
     """Update user group memberships based on LDAP or claim information.
@@ -49,9 +53,11 @@ def update_user_groups(self, user, claim_groups):
     logger.debug(f"Groups update requested for {user} with {claim_groups}")
 ```
 
-**Impact:** User group memberships are not synchronised with external systems (LDAP or claims), potentially causing authorisation issues.
+**Impact:** User group memberships are not synchronised with external systems (LDAP or claims), potentially causing
+authorisation issues.
 
-**Suggested Work:** Implement LDAP lookup or claims processing to properly synchronise user group memberships with Django's group system.
+**Suggested Work:** Implement LDAP lookup or claims processing to properly synchronise user group memberships with
+Django's group system.
 
 ---
 
@@ -62,6 +68,7 @@ def update_user_groups(self, user, claim_groups):
 **Issue:** Method only logs but doesn't update user permission flags.
 
 **Current Code:**
+
 ```python
 def update_user_flags(self, user, claims, claim_groups):
     """Update user permission flags based on group membership.
@@ -74,7 +81,8 @@ def update_user_flags(self, user, claims, claim_groups):
     logger.debug(f"User flags update requested for {user} with {claim_groups}")
 ```
 
-**Impact:** User permission flags (is_staff, is_superuser, etc.) are not being set based on group memberships, which could mean administrators don't get the correct permissions.
+**Impact:** User permission flags (is_staff, is_superuser, etc.) are not being set based on group memberships, which
+could mean administrators don't get the correct permissions.
 
 **Suggested Work:** Implement logic to set user permission flags based on group memberships or LDAP information.
 
@@ -87,6 +95,7 @@ def update_user_flags(self, user, claims, claim_groups):
 **Issue:** Method always returns None instead of determining a default cost centre.
 
 **Current Code:**
+
 ```python
 def get_default_cost_centre(self):
     """Get a default cost centre for this booking.
@@ -103,7 +112,8 @@ def get_default_cost_centre(self):
 
 **Impact:** Bookings may not have cost centres assigned automatically, requiring manual assignment.
 
-**Suggested Work:** Implement logic to determine default cost centres based on equipment, user, research group, or other booking attributes.
+**Suggested Work:** Implement logic to determine default cost centres based on equipment, user, research group, or
+other booking attributes.
 
 ---
 
@@ -114,6 +124,7 @@ def get_default_cost_centre(self):
 **Issue:** Class is a placeholder with no implementation.
 
 **Current Code:**
+
 ```python
 class GroupedTree(TreeBase):
     """Placeholder for grouped tree navigation.
@@ -138,6 +149,7 @@ class GroupedTree(TreeBase):
 **Issue:** Widget is overridden using what the code itself describes as an "ugly hack".
 
 **Current Code:**
+
 ```python
 def formfield(self, **kwargs):
     """Return a form field for this database field configured with obfuscated widgets.
@@ -155,26 +167,30 @@ def formfield(self, **kwargs):
     return super().formfield(**defaults)
 ```
 
-**Impact:** While functional, this is not a clean solution and may cause maintenance issues or unexpected behaviour in certain contexts.
+**Impact:** While functional, this is not a clean solution and may cause maintenance issues or unexpected behaviour in
+certain contexts.
 
-**Suggested Work:** Investigate a cleaner way to handle admin widget overrides, possibly by properly configuring the admin form or using Django's formfield_overrides.
+**Suggested Work:** Investigate a cleaner way to handle admin widget overrides, possibly by properly configuring the
+admin form or using Django's formfield_overrides.
 
 ---
 
-### 9. Hack: Import from `costings.models` 
+### 9. Hack: Import from `costings.models`
 
 **Location:** `apps/accounts/views.py:17`
 
 **Issue:** Import is marked as a hack.
 
 **Current Code:**
+
 ```python
 from costings.models import CostCentre  # Hack for now
 ```
 
 **Impact:** This suggests improper module dependencies or circular import issues.
 
-**Suggested Work:** Refactor the code to eliminate the need for this hack. This might involve moving the import to where it's used, restructuring the models, or using Django's lazy imports.
+**Suggested Work:** Refactor the code to eliminate the need for this hack. This might involve moving the import to
+where it's used, restructuring the models, or using Django's lazy imports.
 
 ---
 
@@ -185,6 +201,7 @@ from costings.models import CostCentre  # Hack for now
 **Issue:** Widget is described as "hacked" to strip whitespace from usernames.
 
 **Current Code:**
+
 ```python
 class StrippedCharWidget(widgets.CharWidget):
     """Hacked to make sure usernames don't have leading or trailing space spaces."""
@@ -196,7 +213,8 @@ class StrippedCharWidget(widgets.CharWidget):
 
 **Impact:** While this works, calling it a "hack" suggests it might not be the proper way to handle this requirement.
 
-**Suggested Work:** This is actually a reasonable implementation. The docstring should be updated to remove the word "hacked" and instead describe it as "Custom widget to ensure usernames don't have leading or trailing whitespace."
+**Suggested Work:** This is actually a reasonable implementation. The docstring should be updated to remove the word
+"hacked" and instead describe it as "Custom widget to ensure usernames don't have leading or trailing whitespace."
 
 ---
 
@@ -209,6 +227,7 @@ class StrippedCharWidget(widgets.CharWidget):
 **Issue:** Code has a TODO comment indicating shifts are not fully implemented.
 
 **Current Code:**
+
 ```python
 if shift is not None:
     end = start + shift.duration
