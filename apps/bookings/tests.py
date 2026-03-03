@@ -155,7 +155,7 @@ class TestBookingViews:
         assert "/login" in response["Location"]
 
     @pytest.mark.django_db
-    def test_all_calendar_view_returns_200(self, client_logged_in):
+    def test_all_calendar_view_returns_200(self, client_logged_in, equipment):
         """AllCalendarView returns 200 for an authenticated user."""
         url = reverse("bookings:all_equipment_calendar")
         response = client_logged_in.get(url)
