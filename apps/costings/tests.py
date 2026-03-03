@@ -187,3 +187,54 @@ class TestCostingsViews:
         response = client.get(url)
         assert response.status_code in (302, 301)
         assert "/login" in response["Location"]
+
+    @pytest.mark.django_db
+    def test_cost_centre_full_description_context_via_htmx(self, client_logged_in, cost_centre):
+        """Cost_CentreView returns the full description context for a valid cost_centre_id."""
+        url = reverse("costings:cost_centre_filter")
+        response = client_logged_in.get(
+            url,
+            {"cost_centre_id": cost_centre.pk},
+            HTTP_HX_REQUEST="true",
+            HTTP_HX_TRIGGER_NAME="full_description",
+        )
+        assert response.status_code == 200
+
+    @pytest.mark.django_db
+    def test_cost_centre_full_description_invalid_id(self, client_logged_in):
+        """Cost_CentreView handles an invalid cost_centre_id gracefully."""
+        url = reverse("costings:cost_centre_filter")
+        response = client_logged_in.get(
+            url,
+            {"cost_centre_id": 99999},
+            HTTP_HX_REQUEST="true",
+            HTTP_HX_TRIGGER_NAME="full_description",
+        )
+        assert response.status_code == 200
+
+    @pytest.mark.django_db
+    def test_delete_cost_centre_forbidden_for_regular_user(self, client_logged_in, cost_centre):
+        """htmx_delete_costcentre returns 403 for a non-superuser."""
+        url = reverse("costings:edit_cost_centre", kwargs={"pk": cost_centre.pk})
+        response = client_logged_in.delete(
+            url,
+            HTTP_HX_REQUEST="true",
+            HTTP_HX_TRIGGER_NAME="costcentre",
+        )
+        assert response.status_code == 403
+
+    @pytest.mark.django_db
+    def test_delete_cost_centre_succeeds_for_superuser(self, client_superuser, cost_centre):
+        """htmx_delete_costcentre deletes the cost centre and returns 204 for a superuser."""
+        # external imports
+        from costings.models import CostCentre
+
+        pk = cost_centre.pk
+        url = reverse("costings:edit_cost_centre", kwargs={"pk": pk})
+        response = client_superuser.delete(
+            url,
+            HTTP_HX_REQUEST="true",
+            HTTP_HX_TRIGGER_NAME="costcentre",
+        )
+        assert response.status_code == 204
+        assert not CostCentre.objects.filter(pk=pk).exists()

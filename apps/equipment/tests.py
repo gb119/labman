@@ -232,3 +232,67 @@ class TestEquipmentViews:
         client_superuser.post(url)
         regular_user.refresh_from_db()
         assert regular_user.is_active is not original_active
+
+    @pytest.mark.django_db
+    def test_sign_off_view_requires_login(self, client, equipment):
+        """SignOffFormSetView redirects unauthenticated users to login."""
+        url = reverse("equipment:sign-off", kwargs={"equipment": equipment.pk})
+        response = client.get(url)
+        assert response.status_code in (302, 301)
+        assert "/login" in response["Location"]
+
+    @pytest.mark.django_db
+    def test_sign_off_view_returns_200_for_authenticated_user(self, client_logged_in, equipment):
+        """SignOffFormSetView returns 200 for an authenticated user."""
+        url = reverse("equipment:sign-off", kwargs={"equipment": equipment.pk})
+        response = client_logged_in.get(url)
+        assert response.status_code == 200
+
+    @pytest.mark.django_db
+    def test_userlist_new_view_requires_login(self, client, equipment):
+        """UserlisttDialog (new) redirects unauthenticated users to login."""
+        url = reverse("equipment:userlist_new", kwargs={"equipment": equipment.pk})
+        response = client.get(url)
+        assert response.status_code in (302, 301)
+        assert "/login" in response["Location"]
+
+    @pytest.mark.django_db
+    def test_userlist_new_view_returns_200_for_authenticated_user(self, client_logged_in, equipment):
+        """UserlisttDialog (new) returns 200 for an authenticated user."""
+        url = reverse("equipment:userlist_new", kwargs={"equipment": equipment.pk})
+        response = client_logged_in.get(url)
+        assert response.status_code == 200
+
+    @pytest.mark.django_db
+    def test_equipment_edit_view_requires_login(self, client, equipment):
+        """EquipmentDialog (edit) redirects unauthenticated users to login."""
+        url = reverse("equipment:edit_equipment", kwargs={"pk": equipment.pk})
+        response = client.get(url)
+        assert response.status_code in (302, 301)
+        assert "/login" in response["Location"]
+
+    @pytest.mark.django_db
+    def test_equipment_edit_view_returns_200_for_authenticated_user(self, client_logged_in, equipment):
+        """EquipmentDialog (edit) returns 200 for an authenticated user."""
+        url = reverse("equipment:edit_equipment", kwargs={"pk": equipment.pk})
+        response = client_logged_in.get(url)
+        assert response.status_code == 200
+
+    @pytest.mark.django_db
+    def test_location_detail_view_context_contains_location(self, client_logged_in, location):
+        """LocationDetailView places the location object into the template context."""
+        url = reverse("equipment:location_detail", kwargs={"pk": location.pk})
+        response = client_logged_in.get(url)
+        assert response.status_code == 200
+        assert response.context["location"] == location
+
+    @pytest.mark.django_db
+    def test_equipment_detail_htmx_tab_returns_200(self, client_logged_in, equipment):
+        """EquipmentDetailView returns 200 for an HTMX request with a tab trigger."""
+        url = reverse("equipment:equipment_detail", kwargs={"pk": equipment.pk})
+        response = client_logged_in.get(
+            url,
+            HTTP_HX_REQUEST="true",
+            HTTP_HX_TRIGGER_NAME="signofftab",
+        )
+        assert response.status_code == 200

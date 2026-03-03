@@ -25,17 +25,15 @@ $(document).ready(function() {
             var base64EncodedText = base64Encode(originalText);
             var rot13Text = rot13(base64EncodedText);
             $(this).val(rot13Text);
-            $(this).attr({"encoded":"True"})
-            console.log("Original text"+originalText);
-            console.log("New text:"+$(this).val());
+            $(this).attr({"encoded": "true"});
             return false;
         });
     }
 
     // Intercept form submission
-    $('form').on('submit', function(event) {
+    $('form').on('submit', function() {
         setTimeout(function() {
             obfuscateHtmlContent();
-        },0);
+        }, 0);
     });
 });
