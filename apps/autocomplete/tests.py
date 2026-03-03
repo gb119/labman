@@ -7,7 +7,7 @@ module of the autocomplete component.
 
 # Python imports
 import json
-from unittest.mock import MagicMock, patch
+from unittest.mock import MagicMock
 
 # Django imports
 from django.contrib.auth.models import AnonymousUser
@@ -232,7 +232,7 @@ class TestToggleSet:
 
     def test_adds_item_when_not_in_set(self):
         """toggle_set adds an item that is not present in the set."""
-        # app imports
+        # external imports
         from autocomplete.views import toggle_set
 
         result = toggle_set({"a", "b"}, "c")
@@ -240,7 +240,7 @@ class TestToggleSet:
 
     def test_removes_item_when_present(self):
         """toggle_set removes an item that is already in the set."""
-        # app imports
+        # external imports
         from autocomplete.views import toggle_set
 
         result = toggle_set({"a", "b", "c"}, "b")
@@ -248,7 +248,7 @@ class TestToggleSet:
 
     def test_removes_item_by_string_comparison(self):
         """toggle_set removes an item matching by str() comparison."""
-        # app imports
+        # external imports
         from autocomplete.views import toggle_set
 
         result = toggle_set({1, 2, 3}, "2")
@@ -257,7 +257,7 @@ class TestToggleSet:
 
     def test_adds_item_when_set_is_empty(self):
         """toggle_set adds an item to an empty set."""
-        # app imports
+        # external imports
         from autocomplete.views import toggle_set
 
         result = toggle_set(set(), "x")
@@ -265,7 +265,7 @@ class TestToggleSet:
 
     def test_does_not_mutate_original_set(self):
         """toggle_set returns a new set and does not mutate the original."""
-        # app imports
+        # external imports
         from autocomplete.views import toggle_set
 
         original = {"a", "b"}
@@ -278,7 +278,7 @@ class TestReplaceOrToggle:
 
     def test_removes_item_when_already_selected(self):
         """replace_or_toggle removes the item when it is already selected."""
-        # app imports
+        # external imports
         from autocomplete.views import replace_or_toggle
 
         result = replace_or_toggle({"x"}, "x")
@@ -286,7 +286,7 @@ class TestReplaceOrToggle:
 
     def test_replaces_existing_item_with_new_item(self):
         """replace_or_toggle replaces the existing item with the new one."""
-        # app imports
+        # external imports
         from autocomplete.views import replace_or_toggle
 
         result = replace_or_toggle({"old"}, "new")
@@ -294,7 +294,7 @@ class TestReplaceOrToggle:
 
     def test_empty_set_adds_item(self):
         """replace_or_toggle adds the item when the set is empty."""
-        # app imports
+        # external imports
         from autocomplete.views import replace_or_toggle
 
         result = replace_or_toggle(set(), "item")
@@ -302,7 +302,7 @@ class TestReplaceOrToggle:
 
     def test_raises_for_set_with_multiple_items(self):
         """replace_or_toggle raises an exception when the set has more than one item."""
-        # app imports
+        # external imports
         from autocomplete.views import replace_or_toggle
 
         with pytest.raises(Exception):
@@ -326,7 +326,7 @@ def _register_test_ac(name):
     Returns:
         (type): The registered autocomplete class.
     """
-    # app imports
+    # external imports
     from autocomplete.core import Autocomplete, _ac_registry, register
 
     if name in _ac_registry:
@@ -363,7 +363,7 @@ class TestAutocompleteBaseView:
         Returns:
             (AutocompleteBaseView): A configured view instance.
         """
-        # app imports
+        # external imports
         from autocomplete.views import AutocompleteBaseView
 
         rf = RequestFactory()
@@ -388,7 +388,7 @@ class TestAutocompleteBaseView:
 
     def test_ac_class_raises_404_for_unknown_name(self):
         """ac_class raises Http404 when the autocomplete name is not registered."""
-        # app imports
+        # external imports
         from autocomplete.views import AutocompleteBaseView
 
         rf = RequestFactory()
@@ -444,8 +444,17 @@ class TestAutocompleteBaseView:
         """get_template_context returns a dict with all expected keys."""
         view = self._make_view("BaseViewTestAC")
         ctx = view.get_template_context()
-        for key in ("route_name", "ac_class", "field_name", "component_id", "required",
-                    "placeholder", "multiselect", "component_prefix", "disabled"):
+        for key in (
+            "route_name",
+            "ac_class",
+            "field_name",
+            "component_id",
+            "required",
+            "placeholder",
+            "multiselect",
+            "component_prefix",
+            "disabled",
+        ):
             assert key in ctx, f"Missing key: {key}"
 
     def test_get_template_context_field_name_matches_request(self):
@@ -490,7 +499,7 @@ class TestItemsView:
 
     def test_items_view_returns_200_for_registered_ac(self):
         """ItemsView.get returns a 200 response for a registered autocomplete name."""
-        # app imports
+        # external imports
         from autocomplete.views import ItemsView
 
         _register_test_ac("ItemsViewTestAC")
@@ -504,7 +513,7 @@ class TestItemsView:
 
     def test_items_view_short_query_returns_no_results(self):
         """ItemsView.get returns a response with show=False when query is too short."""
-        # app imports
+        # external imports
         from autocomplete.views import ItemsView
 
         _register_test_ac("ItemsViewTestAC")
@@ -553,7 +562,7 @@ class TestToggleView:
 
     def test_toggle_view_returns_200_for_registered_ac(self):
         """ToggleView.get returns a 200 response when selecting an item."""
-        # app imports
+        # external imports
         from autocomplete.views import ToggleView
 
         _register_test_ac("ToggleViewTestAC")
@@ -567,7 +576,7 @@ class TestToggleView:
 
     def test_toggle_view_missing_item_returns_400(self):
         """ToggleView.get returns 400 when the item parameter is missing."""
-        # app imports
+        # external imports
         from autocomplete.views import ToggleView
 
         _register_test_ac("ToggleViewTestAC")
@@ -585,7 +594,7 @@ class TestToggleView:
 
     def test_toggle_view_sets_htmx_trigger_header(self):
         """ToggleView.get sets the HX-Trigger-After-Settle response header."""
-        # app imports
+        # external imports
         from autocomplete.views import ToggleView
 
         _register_test_ac("ToggleViewTestAC")
@@ -638,7 +647,7 @@ class TestQuerysetMappedIterable:
 
     def test_iter_yields_mapped_dicts(self):
         """__iter__ yields dict with 'key' and 'label' for each record."""
-        # app imports
+        # external imports
         from autocomplete.shortcuts import QuerysetMappedIterable
 
         rec = self._make_record(1, "Alpha")
@@ -649,7 +658,7 @@ class TestQuerysetMappedIterable:
 
     def test_len_returns_queryset_count(self):
         """__len__ returns the count from the underlying QuerySet."""
-        # app imports
+        # external imports
         from autocomplete.shortcuts import QuerysetMappedIterable
 
         qs = self._make_mock_queryset([self._make_record(1, "A"), self._make_record(2, "B")])
@@ -658,7 +667,7 @@ class TestQuerysetMappedIterable:
 
     def test_getitem_int_returns_single_record(self):
         """__getitem__ with an int index returns a single mapped dict."""
-        # app imports
+        # external imports
         from autocomplete.shortcuts import QuerysetMappedIterable
 
         rec = self._make_record(5, "Gamma")
@@ -670,7 +679,7 @@ class TestQuerysetMappedIterable:
 
     def test_getitem_slice_returns_list(self):
         """__getitem__ with a slice returns a list of mapped dicts."""
-        # app imports
+        # external imports
         from autocomplete.shortcuts import QuerysetMappedIterable
 
         recs = [self._make_record(i, f"Item{i}") for i in range(3)]
@@ -683,7 +692,7 @@ class TestQuerysetMappedIterable:
 
     def test_getitem_invalid_type_raises_type_error(self):
         """__getitem__ with an invalid key type raises TypeError."""
-        # app imports
+        # external imports
         from autocomplete.shortcuts import QuerysetMappedIterable
 
         qs = self._make_mock_queryset([])
@@ -702,7 +711,7 @@ class TestModelAutocomplete:
 
     def test_get_search_attrs_raises_when_not_set(self):
         """get_search_attrs raises ValueError when search_attrs is empty."""
-        # app imports
+        # external imports
         from autocomplete.shortcuts import ModelAutocomplete
 
         class NoAttrs(ModelAutocomplete):
@@ -718,7 +727,7 @@ class TestModelAutocomplete:
 
     def test_get_model_raises_when_not_set(self):
         """get_model raises ValueError when model is not set."""
-        # app imports
+        # external imports
         from autocomplete.shortcuts import ModelAutocomplete
 
         class NoModel(ModelAutocomplete):
@@ -734,7 +743,7 @@ class TestModelAutocomplete:
 
     def test_get_label_for_record_returns_str(self):
         """get_label_for_record returns the string representation of the record."""
-        # app imports
+        # external imports
         from autocomplete.shortcuts import ModelAutocomplete
 
         record = MagicMock()
@@ -768,7 +777,7 @@ class TestAutocompleteWidget:
 
     def test_init_accepts_valid_options(self):
         """AutocompleteWidget.__init__ accepts known option keys."""
-        # app imports
+        # external imports
         from autocomplete.widgets import AutocompleteWidget
 
         ac = self._make_ac_class()
@@ -778,7 +787,7 @@ class TestAutocompleteWidget:
 
     def test_init_raises_for_invalid_option(self):
         """AutocompleteWidget.__init__ raises ValueError for unknown option keys."""
-        # app imports
+        # external imports
         from autocomplete.widgets import AutocompleteWidget
 
         ac = self._make_ac_class()
@@ -787,7 +796,7 @@ class TestAutocompleteWidget:
 
     def test_value_from_datadict_single_select(self):
         """value_from_datadict returns a single value for single-select mode."""
-        # app imports
+        # external imports
         from autocomplete.widgets import AutocompleteWidget
 
         ac = self._make_ac_class()
@@ -799,7 +808,7 @@ class TestAutocompleteWidget:
 
     def test_value_from_datadict_multi_select_query_dict(self):
         """value_from_datadict returns a list for multi-select mode with QueryDict."""
-        # app imports
+        # external imports
         from autocomplete.widgets import AutocompleteWidget
 
         ac = self._make_ac_class()
@@ -811,7 +820,7 @@ class TestAutocompleteWidget:
 
     def test_value_from_datadict_multi_select_plain_dict(self):
         """value_from_datadict falls back to .get() when getlist is unavailable."""
-        # app imports
+        # external imports
         from autocomplete.widgets import AutocompleteWidget
 
         ac = self._make_ac_class()
@@ -822,7 +831,7 @@ class TestAutocompleteWidget:
 
     def test_value_omitted_from_data_returns_empty_list(self):
         """value_omitted_from_data always returns an empty list."""
-        # app imports
+        # external imports
         from autocomplete.widgets import AutocompleteWidget
 
         ac = self._make_ac_class()
@@ -831,7 +840,7 @@ class TestAutocompleteWidget:
 
     def test_get_configurable_value_from_config(self):
         """get_configurable_value returns value from widget config when present."""
-        # app imports
+        # external imports
         from autocomplete.widgets import AutocompleteWidget
 
         ac = self._make_ac_class()
@@ -840,7 +849,7 @@ class TestAutocompleteWidget:
 
     def test_get_configurable_value_from_ac_class(self):
         """get_configurable_value falls back to the autocomplete class attribute."""
-        # app imports
+        # external imports
         from autocomplete.widgets import AutocompleteWidget
 
         ac = self._make_ac_class()
@@ -850,7 +859,7 @@ class TestAutocompleteWidget:
 
     def test_is_multi_is_falsy_by_default(self):
         """is_multi is falsy when multiselect is not configured."""
-        # app imports
+        # external imports
         from autocomplete.widgets import AutocompleteWidget
 
         ac = self._make_ac_class()
@@ -859,7 +868,7 @@ class TestAutocompleteWidget:
 
     def test_is_multi_returns_true_when_configured(self):
         """is_multi returns True when multiselect is set to True."""
-        # app imports
+        # external imports
         from autocomplete.widgets import AutocompleteWidget
 
         ac = self._make_ac_class()
@@ -868,7 +877,7 @@ class TestAutocompleteWidget:
 
     def test_get_component_id_combines_prefix_and_name(self):
         """get_component_id returns prefix + field_name."""
-        # app imports
+        # external imports
         from autocomplete.widgets import AutocompleteWidget
 
         ac = self._make_ac_class()
@@ -878,7 +887,7 @@ class TestAutocompleteWidget:
 
     def test_get_context_includes_expected_keys(self):
         """get_context returns a context dict with the required autocomplete keys."""
-        # app imports
+        # external imports
         from autocomplete.widgets import AutocompleteWidget
 
         ac = self._make_ac_class()
@@ -900,7 +909,7 @@ class TestMakeIdFilter:
 
     def test_returns_consistent_hash(self):
         """make_id returns the same SHA1 hex digest for the same input."""
-        # app imports
+        # external imports
         from autocomplete.templatetags.autocomplete import make_id
 
         result1 = make_id("hello")
@@ -910,7 +919,7 @@ class TestMakeIdFilter:
 
     def test_different_inputs_give_different_hashes(self):
         """make_id returns different hashes for different inputs."""
-        # app imports
+        # external imports
         from autocomplete.templatetags.autocomplete import make_id
 
         assert make_id("hello") != make_id("world")
@@ -921,7 +930,7 @@ class TestSearchHighlightNoMatch:
 
     def test_no_match_returns_original_value(self):
         """search_highlight returns the original value when search is not found."""
-        # app imports
+        # external imports
         from autocomplete.templatetags.autocomplete import search_highlight
 
         result = search_highlight("Hello World", "xyz")
@@ -933,7 +942,7 @@ class TestJsBoolean:
 
     def test_truthy_value_returns_true_string(self):
         """js_boolean returns 'true' for a truthy value."""
-        # app imports
+        # external imports
         from autocomplete.templatetags.autocomplete import js_boolean
 
         assert js_boolean(True) == "true"
@@ -942,7 +951,7 @@ class TestJsBoolean:
 
     def test_falsy_value_returns_false_string(self):
         """js_boolean returns 'false' for a falsy value."""
-        # app imports
+        # external imports
         from autocomplete.templatetags.autocomplete import js_boolean
 
         assert js_boolean(False) == "false"
@@ -956,14 +965,14 @@ class TestValueIfTruthy:
 
     def test_returns_value_when_test_is_truthy(self):
         """value_if_truthy returns the value when the test condition is truthy."""
-        # app imports
+        # external imports
         from autocomplete.templatetags.autocomplete import value_if_truthy
 
         assert value_if_truthy(True, "active", "") == "active"
 
     def test_returns_default_when_test_is_falsy(self):
         """value_if_truthy returns the default when the test condition is falsy."""
-        # app imports
+        # external imports
         from autocomplete.templatetags.autocomplete import value_if_truthy
 
         assert value_if_truthy(False, "active", "inactive") == "inactive"
@@ -975,7 +984,7 @@ class TestSubstituteString:
 
     def test_substitutes_placeholders(self):
         """substitute_string replaces %(key)s placeholders with kwargs."""
-        # app imports
+        # external imports
         from autocomplete.templatetags.autocomplete import substitute_string
 
         result = substitute_string("Hello %(name)s, you have %(count)s items", name="Alice", count=3)
@@ -983,7 +992,7 @@ class TestSubstituteString:
 
     def test_no_placeholders_returns_template_unchanged(self):
         """substitute_string returns the template string unchanged when no kwargs match."""
-        # app imports
+        # external imports
         from autocomplete.templatetags.autocomplete import substitute_string
 
         result = substitute_string("No placeholders here")
@@ -995,8 +1004,10 @@ class TestStringifyExtraHxVals:
 
     def test_returns_comma_separated_key_value_pairs(self):
         """stringify_extra_hx_vals returns JSON-like key-value pairs."""
-        # app imports
-        from autocomplete.templatetags.autocomplete import stringify_extra_hx_vals
+        # external imports
+        from autocomplete.templatetags.autocomplete import (
+            stringify_extra_hx_vals,
+        )
 
         result = stringify_extra_hx_vals({"key1": "val1", "key2": "val2"})
         assert '"key1": val1' in result
@@ -1004,8 +1015,10 @@ class TestStringifyExtraHxVals:
 
     def test_raises_for_values_containing_single_quotes(self):
         """stringify_extra_hx_vals raises ValueError when a value contains a single quote."""
-        # app imports
-        from autocomplete.templatetags.autocomplete import stringify_extra_hx_vals
+        # external imports
+        from autocomplete.templatetags.autocomplete import (
+            stringify_extra_hx_vals,
+        )
 
         with pytest.raises(ValueError):
             stringify_extra_hx_vals({"key": "it's a problem"})
@@ -1028,7 +1041,7 @@ class TestBaseConfigurableHxParams:
         # Django imports
         from django.template import Context
 
-        # app imports
+        # external imports
         from autocomplete.templatetags.autocomplete import (
             base_configurable_values_hx_params,
         )
@@ -1077,7 +1090,7 @@ class TestAutocompleteHeadAndScriptsTags:
 
     def test_autocomplete_head_renders_without_error(self):
         """autocomplete_head renders the head template without raising exceptions."""
-        # app imports
+        # external imports
         from autocomplete.templatetags.autocomplete import autocomplete_head
 
         result = autocomplete_head()
@@ -1092,8 +1105,10 @@ class TestBaseConfigurableHxValsExtraBranches:
         # Django imports
         from django.template import Context
 
-        # app imports
-        from autocomplete.templatetags.autocomplete import base_configurable_hx_vals
+        # external imports
+        from autocomplete.templatetags.autocomplete import (
+            base_configurable_hx_vals,
+        )
 
         context = Context(
             {
@@ -1180,7 +1195,7 @@ class TestTextInputHxVals:
 
     def test_renders_basic_hx_vals(self):
         """text_input_hx_vals returns a js:{...} expression with field_name."""
-        # app imports
+        # external imports
         from autocomplete.templatetags.autocomplete import text_input_hx_vals
 
         context = self._make_context()
@@ -1190,7 +1205,7 @@ class TestTextInputHxVals:
 
     def test_extra_hx_vals_are_included(self):
         """text_input_hx_vals includes extra hx vals when ac_class provides them."""
-        # app imports
+        # external imports
         from autocomplete.templatetags.autocomplete import text_input_hx_vals
 
         context = self._make_context(extra_hx_vals={"custom_key": "someValue"})
@@ -1204,7 +1219,7 @@ class TestModelAutocompleteSuccessPaths:
 
     def test_get_search_attrs_returns_list_when_set(self):
         """get_search_attrs returns the search_attrs list when it is non-empty."""
-        # app imports
+        # external imports
         from autocomplete.shortcuts import ModelAutocomplete
 
         class WithAttrs(ModelAutocomplete):
@@ -1219,7 +1234,7 @@ class TestModelAutocompleteSuccessPaths:
 
     def test_get_model_returns_model_when_set(self):
         """get_model returns the model class when it is non-None."""
-        # app imports
+        # external imports
         from autocomplete.shortcuts import ModelAutocomplete
 
         class WithModel(ModelAutocomplete):
@@ -1238,7 +1253,7 @@ class TestToggleSetRemainingBranches:
 
     def test_removes_string_item_that_matches_str_of_set_member(self):
         """toggle_set removes item by str(item) comparison when set contains strings."""
-        # app imports
+        # external imports
         from autocomplete.views import toggle_set
 
         # str(2) = "2" is in the set, so "2" is removed
@@ -1261,7 +1276,7 @@ class TestToggleViewAdvanced:
         Returns:
             (tuple): ``(view, request)`` ready for testing.
         """
-        # app imports
+        # external imports
         from autocomplete.views import ToggleView
 
         _register_test_ac(ac_name)
@@ -1308,7 +1323,7 @@ class TestItemsViewMaxResults:
 
     def test_results_are_truncated_to_max_results(self):
         """ItemsView truncates results when the total exceeds max_results."""
-        # app imports
+        # external imports
         from autocomplete.core import Autocomplete, _ac_registry, register
 
         ac_name = "LargeResultAC"
@@ -1320,10 +1335,7 @@ class TestItemsViewMaxResults:
                 @classmethod
                 def search_items(cls, search, context):
                     # Return more items than max_results
-                    return [
-                        {"key": str(i), "label": f"Item {i}"}
-                        for i in range(10)
-                    ]
+                    return [{"key": str(i), "label": f"Item {i}"} for i in range(10)]
 
                 @classmethod
                 def get_items_from_keys(cls, keys, context):
@@ -1331,6 +1343,7 @@ class TestItemsViewMaxResults:
 
             register(_LargeAC, route_name=ac_name)
 
+        # external imports
         from autocomplete.views import ItemsView
 
         rf = RequestFactory()
@@ -1351,7 +1364,7 @@ class TestWidgetGetContextWithValue:
 
     def test_get_context_with_single_value(self):
         """get_context calls get_items_from_keys with [value] for single-select mode."""
-        # app imports
+        # external imports
         from autocomplete.widgets import AutocompleteWidget
 
         ac = MagicMock()
@@ -1366,15 +1379,13 @@ class TestWidgetGetContextWithValue:
 
     def test_get_context_with_multi_value(self):
         """get_context calls get_items_from_keys with the full list for multi-select mode."""
-        # app imports
+        # external imports
         from autocomplete.widgets import AutocompleteWidget
 
         ac = MagicMock()
         ac.route_name = "TestWidgetAC3"
         ac.component_prefix = ""
-        ac.get_items_from_keys = MagicMock(
-            return_value=[{"key": "1", "label": "A"}, {"key": "2", "label": "B"}]
-        )
+        ac.get_items_from_keys = MagicMock(return_value=[{"key": "1", "label": "A"}, {"key": "2", "label": "B"}])
         widget = AutocompleteWidget(ac, options={"multiselect": True})
         ctx = widget.get_context("my_field", ["1", "2"], {"id": "id_my_field"})
         ac.get_items_from_keys.assert_called_once_with(["1", "2"], None)
@@ -1386,7 +1397,7 @@ class TestToggleViewEdgeCases:
 
     def test_toggle_view_raises_when_item_not_found_in_results(self):
         """ToggleView.get raises ValueError when the toggled item is not in the results."""
-        # app imports
+        # external imports
         from autocomplete.views import ToggleView
 
         _register_test_ac("ToggleViewTestAC")
@@ -1409,7 +1420,7 @@ class TestDispatchAuthCheck:
 
     def test_dispatch_calls_auth_check_and_succeeds_for_authenticated_user(self):
         """dispatch calls auth_check and proceeds for authenticated users."""
-        # app imports
+        # external imports
         from autocomplete.views import ItemsView
 
         ac_name = "DispatchTestAC"
@@ -1443,7 +1454,7 @@ class TestAutocompleteRegister:
 
     def test_register_raises_when_name_already_registered(self):
         """register raises ValueError when the same route_name is already registered."""
-        # app imports
+        # external imports
         from autocomplete.core import Autocomplete, _ac_registry, register
 
         ac_name = "DuplicateAC_Test"
@@ -1479,7 +1490,7 @@ class TestAutocompleteValidate:
 
     def test_validate_raises_when_search_items_missing(self):
         """validate raises ValueError when search_items is not implemented."""
-        # app imports
+        # external imports
         from autocomplete.core import Autocomplete
 
         class NoSearch(Autocomplete):
@@ -1496,7 +1507,7 @@ class TestAutocompleteValidate:
 
     def test_validate_raises_when_get_items_from_keys_missing(self):
         """validate raises ValueError when get_items_from_keys is not implemented."""
-        # app imports
+        # external imports
         from autocomplete.core import Autocomplete
 
         class NoGetItems(Autocomplete):
