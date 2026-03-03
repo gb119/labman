@@ -1,9 +1,13 @@
 # -*- coding: utf-8 -*-
 """Tests for the costings app.
 
-This module tests the CostRate and CostCentre models, including creation,
-string representations, hierarchical MPTT structure, and the default rate logic.
+This module tests the CostRate and CostCentre models including creation,
+string representations, hierarchical MPTT structure, and the default rate logic,
+as well as the costings views.
 """
+# Django imports
+from django.urls import reverse
+
 # external imports
 import pytest
 
@@ -135,3 +139,51 @@ class TestCostCentre:
 
         with pytest.raises(IntegrityError):
             CostCentre.objects.create(name="Test Project", short_name="TP2", account_code="ACC099")
+
+
+class TestCostingsViews:
+    """Integration tests for costings app views."""
+
+    @pytest.mark.django_db
+    def test_cost_centre_filter_view_requires_login(self, client):
+        """Unauthenticated requests to Cost_CentreView redirect to login."""
+        url = reverse("costings:cost_centre_filter")
+        response = client.get(url)
+        assert response.status_code in (302, 301)
+        assert "/login" in response["Location"]
+
+    @pytest.mark.django_db
+    def test_cost_centre_filter_view_returns_200_via_htmx(self, client_logged_in):
+        """Cost_CentreView returns 200 when called via HTMX with id_cost_centre trigger."""
+        url = reverse("costings:cost_centre_filter")
+        response = client_logged_in.get(url, HTTP_HX_REQUEST="true", HTTP_HX_TRIGGER_NAME="id_cost_centre")
+        assert response.status_code == 200
+
+    @pytest.mark.django_db
+    def test_new_cost_centre_dialog_requires_superuser(self, client_logged_in):
+        """CostCentreDialog (new) redirects non-superusers."""
+        url = reverse("costings:new_cost_centre")
+        response = client_logged_in.get(url)
+        assert response.status_code in (302, 301, 403)
+
+    @pytest.mark.django_db
+    def test_new_cost_centre_dialog_accessible_to_superuser(self, client_superuser):
+        """CostCentreDialog (new) is accessible to superusers."""
+        url = reverse("costings:new_cost_centre")
+        response = client_superuser.get(url)
+        assert response.status_code == 200
+
+    @pytest.mark.django_db
+    def test_edit_cost_centre_dialog_accessible_to_superuser(self, client_superuser, cost_centre):
+        """CostCentreDialog (edit) is accessible to superusers."""
+        url = reverse("costings:edit_cost_centre", kwargs={"pk": cost_centre.pk})
+        response = client_superuser.get(url)
+        assert response.status_code == 200
+
+    @pytest.mark.django_db
+    def test_new_cost_centre_dialog_requires_login(self, client):
+        """Unauthenticated requests to CostCentreDialog redirect to login."""
+        url = reverse("costings:new_cost_centre")
+        response = client.get(url)
+        assert response.status_code in (302, 301)
+        assert "/login" in response["Location"]
