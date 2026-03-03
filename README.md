@@ -1,7 +1,7 @@
+# LabMan - Laboratory Management System
+
 [![Codacy Badge](https://app.codacy.com/project/badge/Grade/a8c75bac3a344a5e8ca12e14e4b7255d)](https://app.codacy.com/gh/gb119/labman/dashboard?utm_source=gh&utm_medium=referral&utm_content=&utm_campaign=Badge_grade)
 [![Codacy Badge](https://app.codacy.com/project/badge/Coverage/a8c75bac3a344a5e8ca12e14e4b7255d)](https://app.codacy.com/gh/gb119/labman/dashboard?utm_source=gh&utm_medium=referral&utm_content=&utm_campaign=Badge_coverage)
-
-# LabMan - Laboratory Management System
 
 A Django-based laboratory management system for managing equipment, bookings, users,
 and costs in research facilities.
