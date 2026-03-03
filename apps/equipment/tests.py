@@ -1,12 +1,15 @@
 # -*- coding: utf-8 -*-
 """Tests for the equipment app.
 
-This module tests the Location, Shift, and Equipment models, including
+This module tests the Location, Shift, and Equipment models including
 hierarchical location structure, shift duration calculations, and equipment
-properties such as bookability and URL generation.
+properties such as bookability and URL generation, as well as the equipment views.
 """
 # Python imports
 from datetime import time, timedelta
+
+# Django imports
+from django.urls import reverse
 
 # external imports
 import pytest
@@ -157,3 +160,78 @@ class TestEquipment:
         """schedule property returns a URL containing the equipment pk."""
         assert str(equipment.pk) in equipment.schedule
         assert "/bookings/cal/" in equipment.schedule
+
+
+class TestEquipmentViews:
+    """Integration tests for equipment app views."""
+
+    @pytest.mark.django_db
+    def test_equipment_detail_view_requires_login(self, client, equipment):
+        """Unauthenticated requests to EquipmentDetailView redirect to login."""
+        url = reverse("equipment:equipment_detail", kwargs={"pk": equipment.pk})
+        response = client.get(url)
+        assert response.status_code in (302, 301)
+        assert "/login" in response["Location"]
+
+    @pytest.mark.django_db
+    def test_equipment_detail_view_returns_200(self, client_logged_in, equipment):
+        """EquipmentDetailView returns 200 for an authenticated user."""
+        url = reverse("equipment:equipment_detail", kwargs={"pk": equipment.pk})
+        response = client_logged_in.get(url)
+        assert response.status_code == 200
+
+    @pytest.mark.django_db
+    def test_equipment_detail_view_context_contains_equipment(self, client_logged_in, equipment):
+        """EquipmentDetailView places the equipment object into context."""
+        url = reverse("equipment:equipment_detail", kwargs={"pk": equipment.pk})
+        response = client_logged_in.get(url)
+        assert response.context["equipment"] == equipment
+
+    @pytest.mark.django_db
+    def test_location_detail_view_requires_login(self, client, location):
+        """Unauthenticated requests to LocationDetailView redirect to login."""
+        url = reverse("equipment:location_detail", kwargs={"pk": location.pk})
+        response = client.get(url)
+        assert response.status_code in (302, 301)
+        assert "/login" in response["Location"]
+
+    @pytest.mark.django_db
+    def test_location_detail_view_returns_200(self, client_logged_in, location):
+        """LocationDetailView returns 200 for an authenticated user."""
+        url = reverse("equipment:location_detail", kwargs={"pk": location.pk})
+        response = client_logged_in.get(url)
+        assert response.status_code == 200
+
+    @pytest.mark.django_db
+    def test_model_list_view_requires_login(self, client):
+        """Unauthenticated requests to ModelListView redirect to login."""
+        url = reverse("equipment:lists")
+        response = client.get(url)
+        assert response.status_code in (302, 301)
+        assert "/login" in response["Location"]
+
+    @pytest.mark.django_db
+    def test_model_list_view_returns_200(self, client_logged_in):
+        """ModelListView returns 200 for an authenticated user."""
+        url = reverse("equipment:lists")
+        response = client_logged_in.get(url)
+        assert response.status_code == 200
+
+    @pytest.mark.django_db
+    def test_toggle_account_active_requires_superuser(self, client_logged_in, regular_user):
+        """ToggleAccountActiveView redirects non-superusers."""
+        url = reverse("equipment:toggle_account_active", kwargs={"pk": regular_user.pk})
+        response = client_logged_in.post(url)
+        assert response.status_code in (302, 301, 403)
+
+    @pytest.mark.django_db
+    def test_toggle_account_active_toggles_flag(self, client_superuser, regular_user):
+        """ToggleAccountActiveView toggles the is_active flag for superusers."""
+        # external imports
+        from accounts.models import Account
+
+        url = reverse("equipment:toggle_account_active", kwargs={"pk": regular_user.pk})
+        original_active = regular_user.is_active
+        client_superuser.post(url)
+        regular_user.refresh_from_db()
+        assert regular_user.is_active is not original_active

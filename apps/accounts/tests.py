@@ -2,11 +2,13 @@
 # -*- coding: utf-8 -*-
 """Tests for the accounts app.
 
-This module tests the Account, ResearchGroup, and Role models, including
-string representations, computed properties, and manager behaviour.
+This module tests the Account, ResearchGroup, and Role models including
+string representations, computed properties, and manager behaviour, as well
+as the accounts views.
 """
 # Django imports
 from django.contrib.auth.models import Group
+from django.urls import reverse
 
 # external imports
 import pytest
@@ -189,3 +191,66 @@ class TestRole:
         from accounts.models import Role
 
         assert Role.user == role_user
+
+
+class TestAccountViews:
+    """Integration tests for accounts app views."""
+
+    @pytest.mark.django_db
+    def test_my_account_view_requires_login(self, client):
+        """Unauthenticated requests to MyAccountView redirect to login."""
+        url = reverse("accounts:my_account")
+        response = client.get(url)
+        assert response.status_code in (302, 301)
+        assert "/login" in response["Location"]
+
+    @pytest.mark.django_db
+    def test_my_account_view_returns_200_for_authenticated_user(self, client_logged_in):
+        """MyAccountView returns 200 for an authenticated user."""
+        url = reverse("accounts:my_account")
+        response = client_logged_in.get(url)
+        assert response.status_code == 200
+
+    @pytest.mark.django_db
+    def test_my_account_view_context_contains_account(self, client_logged_in, regular_user):
+        """MyAccountView places the current user's account into context."""
+        url = reverse("accounts:my_account")
+        response = client_logged_in.get(url)
+        assert response.context["account"] == regular_user
+
+    @pytest.mark.django_db
+    def test_user_account_view_requires_login(self, client, regular_user):
+        """Unauthenticated requests to UserAccountView redirect to login."""
+        url = reverse("accounts:user_account", kwargs={"username": regular_user.username})
+        response = client.get(url)
+        assert response.status_code in (302, 301)
+        assert "/login" in response["Location"]
+
+    @pytest.mark.django_db
+    def test_user_account_view_returns_200(self, client_logged_in, regular_user):
+        """UserAccountView returns 200 for an authenticated user."""
+        url = reverse("accounts:user_account", kwargs={"username": regular_user.username})
+        response = client_logged_in.get(url)
+        assert response.status_code == 200
+
+    @pytest.mark.django_db
+    def test_user_account_view_context_contains_account(self, client_logged_in, regular_user):
+        """UserAccountView places the requested account into context."""
+        url = reverse("accounts:user_account", kwargs={"username": regular_user.username})
+        response = client_logged_in.get(url)
+        assert response.context["account"] == regular_user
+
+    @pytest.mark.django_db
+    def test_account_list_by_group_view_requires_login(self, client):
+        """Unauthenticated requests to AccountListByGroupView redirect to login."""
+        url = reverse("accounts:list_accounts_by_group", kwargs={"group": "Academic"})
+        response = client.get(url)
+        assert response.status_code in (302, 301)
+        assert "/login" in response["Location"]
+
+    @pytest.mark.django_db
+    def test_account_list_by_group_view_returns_200(self, client_logged_in):
+        """AccountListByGroupView returns 200 for an authenticated user."""
+        url = reverse("accounts:list_accounts_by_group", kwargs={"group": "Academic"})
+        response = client_logged_in.get(url)
+        assert response.status_code == 200
