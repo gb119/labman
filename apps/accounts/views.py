@@ -48,6 +48,10 @@ class UserAccountView(IsAuthenticaedViewMixin, HTMXProcessMixin, views.generic.D
     slug_url_kwarg = "username"
     model = Account
 
+    def get_queryset(self):
+        """Ensure we get all user accounts."""
+        return self.model.objects.all()
+
     def get_context_data(self, **kwargs):
         """Build context data including user's future bookings.
 

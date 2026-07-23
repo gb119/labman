@@ -32,6 +32,30 @@ from .widgets import AdminObfuscatedTinyMCE, ObfuscatedTinyMCE
 DEFAULT_TZ = pytz.timezone(settings.TIME_ZONE)
 
 
+def getattribute(obj, attr):
+    """Recursively and safely get a nested attribute of an object.
+
+    Args:
+        obj (object):
+            Object to look for nested attributes on.
+        attr (str):
+            dotted notation of attribute to resolve.
+
+    Returns:
+        (object | None):
+            Returns the nested attribute or None if the nested attribute didn't exist.
+    """
+    attrs = attr.split(",")
+    for attr in attrs:
+        if new_obj := getattr(obj, attr, None):
+            obj = new_obj
+        else:
+            break
+    else:
+        return obj
+    return None
+
+
 class ObfuscatedHTMLField(HTMLField):
     """Custom HTML field that uses obfuscated widgets for security.
 
@@ -235,6 +259,7 @@ class Document(dsfh.BaseMixin, dsfh.TitledMixin, dsfh.PublicMixin, dsfh.RenameMi
         ("ra", "Risk Assessment"),
         ("sop", "Standard Operator Procedure"),
         ("coshh", "COSHH Forms"),
+        ("msds", "Materials Safety Datasheets"),
         ("manual", "Manual/Instructions"),
         ("other", "Other"),
     ]

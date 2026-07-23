@@ -37,6 +37,7 @@ from labman_utils.models import (
     NamedObject,
     ResourceedObject,
     delta_t,
+    getattribute,
     patch_model,
 )
 from mptt.models import MPTTModel, TreeForeignKey
@@ -507,7 +508,7 @@ class UserListEntry(models.Model):
     updated = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return f"{self.user.display_name}: {self.role.name} of {self.equipment.name}"
+        return f"{getattribute(self,'user.display_name')}: {getattribute(self,'role.name')} of {getattribute(self,'equipment.name')}"
 
     def save(self, force_insert=False, force_update=False, using=None, update_fields=None):
         """Save the entry and manage hold status based on role changes.
@@ -526,6 +527,9 @@ class UserListEntry(models.Model):
             update_fields (list or None):
                 List of field names to update. Default is None.
         """
+        if self.role is None:
+            Role = apps.get_model("accounts.role")
+            self.role = Role.default
         if self.pk and not self.hold:  # Check if the role has increased and hold if so
             old = UserListEntry.objects.get(pk=self.pk)
             if old.role.level < self.role.level:  # Old role level was lower
@@ -609,7 +613,7 @@ class DocumentSignOff(models.Model):
         unique_together = ["document", "version", "user"]  # Enforce unique document/user/version
 
     def __str__(self):
-        return f"{self.document.title} v{self.version} ({self.user.display_name}) {self.created}"
+        return f"{getattribute(self,'document.title')} v{self.version} ({getattribute(self,'user.display_name')}) {self.created}"
 
     def save(self, force_insert=False, force_update=False, using=None, update_fields=None):
         """Save the sign-off and update related user list entry hold status.
@@ -671,7 +675,7 @@ class ChargingRate(models.Model):
         unique_together = ["equipment", "cost_rate", "dates"]  # Enforce unique equipment, cost_rate, effective dates
 
     def __str__(self):
-        return f"{self.cost_rate.name} for {self.equipment.name} £{self.charge_rate}/shift"
+        return f"{getattribute(self,'cost_rate.name')} for {getattribute(self, 'equipment.name')} £{self.charge_rate}/shift"
 
     def save(self, force_insert=False, force_update=False, using=None, update_fields=None):
         """Save the charging rate and manage overlapping date ranges.

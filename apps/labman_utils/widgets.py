@@ -8,41 +8,18 @@ through web application firewalls that might otherwise block legitimate content.
 # Django imports
 from django import forms
 from django.contrib.admin import widgets as admin_widgets
+from django.urls import reverse
 
 # external imports
+import tinymce.settings
 from tinymce.widgets import TinyMCE
 
 
 class ObfuscatedTinyMCE(TinyMCE):
-    """A TinyMCE widget with client-side obfuscation for secure data transmission.
-
-    This widget extends the standard TinyMCE rich text editor by adding JavaScript that
-    obfuscates the content before submission. This prevents the content from triggering
-    web application firewall rules whilst maintaining data integrity.
-
-    Attributes:
-        The widget inherits all attributes from TinyMCE and adds custom CSS class for
-        JavaScript targeting.
-    """
+    """A hacked version of TinyMCE that adds extra javascript."""
 
     def __init__(self, content_language=None, attrs=None, mce_attrs=None):
-        """Initialise the obfuscated TinyMCE widget with required CSS class.
-
-        Args:
-            content_language (str):
-                The language code for the content editor.
-
-        Keyword Parameters:
-            attrs (dict):
-                HTML attributes for the widget. The 'obfuscate_html' class is automatically
-                added to enable JavaScript obfuscation. The default is None.
-            mce_attrs (dict):
-                TinyMCE-specific configuration attributes. The default is None.
-
-        Notes:
-            The 'obfuscate_html' CSS class is essential for the JavaScript obfuscation
-            code to identify and process this widget's content before form submission.
-        """
+        """Make sure we set the class to incloude saomething fopr the JavaScript to latch on to."""
         if attrs is None:
             attrs = {}
         if css_class := attrs.get("class", None):
@@ -54,22 +31,22 @@ class ObfuscatedTinyMCE(TinyMCE):
 
     @TinyMCE.media.getter
     def media(self):
-        """Define the media resources required by the widget.
-
-        Returns:
-            (forms.Media):
-                A Media object containing the CSS and JavaScript files required for the
-                widget to function, including the standard TinyMCE resources and the
-                custom obfuscation JavaScript.
-
-        Notes:
-            This method adds '/static/js/obfuscatre_htmlfield.js' to the standard TinyMCE
-            media resources to provide the client-side obfuscation functionality.
-        """
-        media = super().media
-        js = media._js_lists[0]
-        css = media._css_lists[0]
+        css = None
+        if tinymce.settings.USE_COMPRESSOR:
+            js = [reverse("tinymce-compressor")]
+        else:
+            js = [tinymce.settings.JS_URL]
         js += ["/static/js/obfuscatre_htmlfield.js"]
+        if tinymce.settings.USE_FILEBROWSER:
+            js.append(reverse("tinymce-filebrowser"))
+        if tinymce.settings.USE_EXTRA_MEDIA:
+            if "js" in tinymce.settings.USE_EXTRA_MEDIA:
+                js += tinymce.settings.USE_EXTRA_MEDIA["js"]
+
+            if "css" in tinymce.settings.USE_EXTRA_MEDIA:
+                css = tinymce.settings.USE_EXTRA_MEDIA["css"]
+        js.append("django_tinymce/init_tinymce.js")
+
         return forms.Media(css=css, js=js)
 
 

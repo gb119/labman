@@ -20,7 +20,7 @@
     </style>}
 {% endblock css %}
 {%block content %}
-    <h2>{{ account.display_name }}'s Profile</h2>
+    <h2>{{ account.display_name }}'s Profile{% if not account.is_active %}<span class="bg-warning text-dark px-1 rounded">User account deactivated!</span>{% endif %}</h2>
     <main>
         <ul class="nav nav-tabs" id="profile_tabs" role="tablist">
             <li class="nav-item" role="presentation">
