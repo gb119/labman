@@ -215,7 +215,7 @@ def ensure_tz(time):
 
 
 def patch_model(model, name=None, prep=None):
-    """Decorator to monkey-patch a function into a Django model.
+    """Decorate a function to add it to a Django model.
 
     Args:
         model (Model):

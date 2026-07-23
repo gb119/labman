@@ -71,7 +71,8 @@ def search_highlight(value, search):
 
 @register.simple_tag(takes_context=True)
 def use_string(context, name, strings):
-    """.
+    """Load a string from a template or the supplied string mapping.
+
             Loads the string from a template or via the variable dict `strings` if the `name`
             key is defined within.  This allows strings to be overriden in 2 ways, either by
             user defined templates which will override *all* instances, or via the
@@ -109,9 +110,7 @@ def use_string(context, name, strings):
 
 @register.simple_tag
 def substitute_string(template_str, **kwargs):
-    """.
-            Substitute the template string with the kwargs
-
+    """Substitute keyword values into a template string.
 
     Args:
         template_str (object):
@@ -166,9 +165,7 @@ def autocomplete(name, selected=None):
 
 @register.filter
 def js_boolean(value):
-    """.
-            Convert the value to a javascript boolean
-
+    """Convert a value to a JavaScript boolean string.
 
     Args:
         value (object):
@@ -312,7 +309,8 @@ def base_configurable_values_hx_params(context):
 
 @register.simple_tag(takes_context=True)
 def base_configurable_hx_vals(context):
-    """.
+    """Build the configurable values used in the HTMX ``hx-vals`` attribute.
+
             json-like format
             must be wrapped in curly braces
 
@@ -330,7 +328,6 @@ def base_configurable_hx_vals(context):
             >>> callable(base_configurable_hx_vals)
             True
     """
-
     field_name = context.get("field_name")
     required = context.get("required")
     disabled = context.get("disabled")
@@ -390,7 +387,8 @@ def stringify_extra_hx_vals(extra_hx_vals_dict):
 
 @register.simple_tag(takes_context=True)
 def text_input_hx_vals(context):
-    """.
+    """Build the HTMX values used by an autocomplete text input.
+
             items has augments hx-vals,
             - it adds JS value of the search input
             - users can add more values in their class
@@ -409,7 +407,6 @@ def text_input_hx_vals(context):
             >>> callable(text_input_hx_vals)
             True
     """
-
     base_hx_vals_str = base_configurable_hx_vals(context)
 
     component_id_escape = escape(context.get("component_id"))

@@ -122,7 +122,7 @@ class MyAccountView(UserAccountView):
     template_name_userlisttab = "accounts/parts/myaccount_userlist.html"
 
     def get_object(self, queryset=None):
-        """Always return the current logged-in user.
+        """Return the currently logged-in user.
 
         Keyword Parameters:
             queryset (QuerySet or None): Optional queryset (ignored).

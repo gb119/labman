@@ -11,9 +11,7 @@ from . import Autocomplete, ModelAutocomplete, register
 
 
 class AutocompleteConfig(AppConfig):
-    """.
-            Django app config
-
+    """Configure autocomplete discovery and registration.
 
     Examples:
         Inspect the public interface in an interactive session::

@@ -32,7 +32,7 @@ class TestResearchGroup:
 
     @pytest.mark.django_db
     def test_code_saved_uppercase(self):
-        """ResearchGroup code is converted to uppercase on save."""
+        """Verify that ResearchGroup code is converted to uppercase on save."""
         # external imports
         from accounts.models import ResearchGroup
 
@@ -75,7 +75,7 @@ class TestAccount:
 
     @pytest.mark.django_db
     def test_initials_from_email_with_dots(self):
-        """initials are derived from dot-separated email username."""
+        """Verify that initials are derived from dot-separated email username."""
         # external imports
         from accounts.models import Account
 
@@ -90,7 +90,7 @@ class TestAccount:
 
     @pytest.mark.django_db
     def test_initials_from_name_without_dots(self):
-        """initials fall back to first/last name when email has no dots."""
+        """Verify that initials fall back to first/last name when email has no dots."""
         # external imports
         from accounts.models import Account
 
@@ -132,7 +132,7 @@ class TestAccount:
 
     @pytest.mark.django_db
     def test_active_manager_returns_only_active(self, regular_user):
-        """ActiveUsersManager returns only active users."""
+        """Verify that ActiveUsersManager returns only active users."""
         # external imports
         from accounts.models import Account
 
@@ -206,14 +206,14 @@ class TestAccountViews:
 
     @pytest.mark.django_db
     def test_my_account_view_returns_200_for_authenticated_user(self, client_logged_in):
-        """MyAccountView returns 200 for an authenticated user."""
+        """Verify that MyAccountView returns 200 for an authenticated user."""
         url = reverse("accounts:my_account")
         response = client_logged_in.get(url)
         assert response.status_code == 200
 
     @pytest.mark.django_db
     def test_my_account_view_context_contains_account(self, client_logged_in, regular_user):
-        """MyAccountView places the current user's account into context."""
+        """Verify that MyAccountView places the current user's account into context."""
         url = reverse("accounts:my_account")
         response = client_logged_in.get(url)
         assert response.context["account"] == regular_user
@@ -228,14 +228,14 @@ class TestAccountViews:
 
     @pytest.mark.django_db
     def test_user_account_view_returns_200(self, client_logged_in, regular_user):
-        """UserAccountView returns 200 for an authenticated user."""
+        """Verify that UserAccountView returns 200 for an authenticated user."""
         url = reverse("accounts:user_account", kwargs={"username": regular_user.username})
         response = client_logged_in.get(url)
         assert response.status_code == 200
 
     @pytest.mark.django_db
     def test_user_account_view_context_contains_account(self, client_logged_in, regular_user):
-        """UserAccountView places the requested account into context."""
+        """Verify that UserAccountView places the requested account into context."""
         url = reverse("accounts:user_account", kwargs={"username": regular_user.username})
         response = client_logged_in.get(url)
         assert response.context["account"] == regular_user
@@ -250,28 +250,28 @@ class TestAccountViews:
 
     @pytest.mark.django_db
     def test_account_list_by_group_view_returns_200(self, client_logged_in):
-        """AccountListByGroupView returns 200 for an authenticated user."""
+        """Verify that AccountListByGroupView returns 200 for an authenticated user."""
         url = reverse("accounts:list_accounts_by_group", kwargs={"group": "Academic"})
         response = client_logged_in.get(url)
         assert response.status_code == 200
 
     @pytest.mark.django_db
     def test_account_list_different_group_returns_200(self, client_logged_in):
-        """AccountListByGroupView returns 200 for a 'Staff' group filter."""
+        """Verify that AccountListByGroupView returns 200 for a 'Staff' group filter."""
         url = reverse("accounts:list_accounts_by_group", kwargs={"group": "Staff"})
         response = client_logged_in.get(url)
         assert response.status_code == 200
 
     @pytest.mark.django_db
     def test_my_account_view_htmx_projects_tab(self, client_logged_in, regular_user):
-        """MyAccountView returns 200 for the projecttab HTMX trigger."""
+        """Verify that MyAccountView returns 200 for the projecttab HTMX trigger."""
         url = reverse("accounts:my_account")
         response = client_logged_in.get(url, HTTP_HX_REQUEST="true", HTTP_HX_TRIGGER_NAME="projecttab")
         assert response.status_code == 200
 
     @pytest.mark.django_db
     def test_user_account_view_htmx_projects_tab(self, client_logged_in, regular_user):
-        """UserAccountView returns 200 for the projecttab HTMX trigger."""
+        """Verify that UserAccountView returns 200 for the projecttab HTMX trigger."""
         url = reverse("accounts:user_account", kwargs={"username": regular_user.username})
         response = client_logged_in.get(url, HTTP_HX_REQUEST="true", HTTP_HX_TRIGGER_NAME="projecttab")
         assert response.status_code == 200

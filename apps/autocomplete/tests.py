@@ -111,7 +111,7 @@ class TestAutocompleteViews:
         return request
 
     def test_items_view_unknown_ac_name_raises_404(self):
-        """ItemsView raises Http404 when given an unregistered autocomplete name."""
+        """Verify that ItemsView raises Http404 when given an unregistered autocomplete name."""
         # external imports
         from autocomplete.views import ItemsView
 
@@ -121,7 +121,7 @@ class TestAutocompleteViews:
             view(request, ac_name="DoesNotExist__XYZ")
 
     def test_toggle_view_unknown_ac_name_raises_404(self):
-        """ToggleView raises Http404 when given an unregistered autocomplete name."""
+        """Verify that ToggleView raises Http404 when given an unregistered autocomplete name."""
         # external imports
         from autocomplete.views import ToggleView
 
@@ -131,7 +131,7 @@ class TestAutocompleteViews:
             view(request, ac_name="DoesNotExist__XYZ")
 
     def test_items_view_unauthenticated_raises_permission_denied(self):
-        """ItemsView raises PermissionDenied when accessed without authentication."""
+        """Verify that ItemsView raises PermissionDenied when accessed without authentication."""
         # external imports
         from autocomplete.views import ItemsView
 
@@ -1310,7 +1310,7 @@ class TestToggleViewAdvanced:
         return view, request
 
     def test_undefined_current_item_cleared_to_empty_list(self):
-        """ToggleView clears current_items when the value is 'undefined'."""
+        """Verify that ToggleView clears current_items when the value is 'undefined'."""
         # The item toggles in regardless of the 'undefined' sentinel value
         params = {
             "field_name": "my_field",
@@ -1323,7 +1323,7 @@ class TestToggleViewAdvanced:
         assert response.status_code == 200
 
     def test_multiselect_toggle_adds_second_item(self):
-        """ToggleView with multiselect=True toggles items in multi-select mode."""
+        """Verify that ToggleView with multiselect=True toggles items in multi-select mode."""
         params = {
             "field_name": "my_field",
             "component_prefix": "",
@@ -1340,7 +1340,7 @@ class TestItemsViewMaxResults:
     """Tests for ``ItemsView.get`` when results exceed max_results."""
 
     def test_results_are_truncated_to_max_results(self):
-        """ItemsView truncates results when the total exceeds max_results."""
+        """Verify that ItemsView truncates results when the total exceeds max_results."""
         # external imports
         from autocomplete.core import Autocomplete, _ac_registry, register
 
@@ -1441,7 +1441,7 @@ class TestDispatchAuthCheck:
     """Tests for the ``AutocompleteBaseView.dispatch`` auth_check integration."""
 
     def test_dispatch_calls_auth_check_and_succeeds_for_authenticated_user(self):
-        """dispatch calls auth_check and proceeds for authenticated users."""
+        """Verify that dispatch calls auth_check and proceeds for authenticated users."""
         # external imports
         from autocomplete.views import ItemsView
 
@@ -1475,7 +1475,7 @@ class TestAutocompleteRegister:
     """Tests for the ``register`` function in autocomplete.core."""
 
     def test_register_raises_when_name_already_registered(self):
-        """register raises ValueError when the same route_name is already registered."""
+        """Verify that register raises ValueError when the same route_name is already registered."""
         # external imports
         from autocomplete.core import Autocomplete, _ac_registry, register
 
@@ -1519,7 +1519,7 @@ class TestAutocompleteValidate:
     """Tests for ``Autocomplete.validate`` in autocomplete.core."""
 
     def test_validate_raises_when_search_items_missing(self):
-        """validate raises ValueError when search_items is not implemented."""
+        """Verify that validate raises ValueError when search_items is not implemented."""
         # external imports
         from autocomplete.core import Autocomplete
 
@@ -1539,7 +1539,7 @@ class TestAutocompleteValidate:
             NoSearch.validate()
 
     def test_validate_raises_when_get_items_from_keys_missing(self):
-        """validate raises ValueError when get_items_from_keys is not implemented."""
+        """Verify that validate raises ValueError when get_items_from_keys is not implemented."""
         # external imports
         from autocomplete.core import Autocomplete
 

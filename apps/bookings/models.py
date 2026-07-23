@@ -186,7 +186,7 @@ class BookingPolicy(NamedObject):
     use_shifts = models.BooleanField(default=True)
 
     def applies(self, booking):
-        """Returns True if booking policy applies for this user/equipment.
+        """Return whether this booking policy applies to the user and equipment.
 
         Args:
             booking (BookingEntry):
@@ -319,7 +319,7 @@ class BookingPolicy(NamedObject):
         return ensure_tz(start), ensure_tz(end)
 
     def permitted(self, booking):
-        """Returns True if the booking is permitted under the current policy.
+        """Return whether the current policy permits the booking.
 
                         Validates that the booking satisfies all policy constraints including time ranges,
                         allowed days, immutability restrictions, forward booking limits, and quota limits.

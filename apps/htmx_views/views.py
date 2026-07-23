@@ -111,7 +111,7 @@ class HTMXProcessMixin:
     """
 
     def __init__(self, *args, **kwargs):
-        """Setup the _htmc_call attribute for later use."""
+        """Set up the HTMX call attributes for later use."""
         super().__init__(*args, **kwargs)
         self._htmx_get_context_data = False
         self._htmx_get_context_object_name = False
@@ -418,7 +418,7 @@ class HTMXFormMixin(HTMXProcessMixin):
     """
 
     def __init__(self, *args, **kwargs):
-        """Setup the _htmc_call attribute for later use."""
+        """Set up the HTMX call attributes for later use."""
         super().__init__(*args, **kwargs)
         self._htmx_form_valid = False
         self._htmx_form_invalid = False

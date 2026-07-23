@@ -68,7 +68,7 @@ class TestCostCentre:
 
     @pytest.mark.django_db
     def test_url_property(self, cost_centre):
-        """url property returns the correct detail URL."""
+        """Verify that url property returns the correct detail URL."""
         expected = f"/costings/cost_centre_detail/{cost_centre.pk}/"
         assert cost_centre.url == expected
 
@@ -99,7 +99,7 @@ class TestCostCentre:
 
     @pytest.mark.django_db
     def test_children_property_includes_descendants(self, cost_centre, db):
-        """children property returns all descendants including self."""
+        """Verify that children property returns all descendants including self."""
         # external imports
         from costings.models import CostCentre
 
@@ -161,21 +161,21 @@ class TestCostingsViews:
 
     @pytest.mark.django_db
     def test_new_cost_centre_dialog_requires_superuser(self, client_logged_in):
-        """CostCentreDialog (new) redirects non-superusers."""
+        """Verify that CostCentreDialog (new) redirects non-superusers."""
         url = reverse("costings:new_cost_centre")
         response = client_logged_in.get(url)
         assert response.status_code in (302, 301, 403)
 
     @pytest.mark.django_db
     def test_new_cost_centre_dialog_accessible_to_superuser(self, client_superuser):
-        """CostCentreDialog (new) is accessible to superusers."""
+        """Verify that CostCentreDialog (new) is accessible to superusers."""
         url = reverse("costings:new_cost_centre")
         response = client_superuser.get(url)
         assert response.status_code == 200
 
     @pytest.mark.django_db
     def test_edit_cost_centre_dialog_accessible_to_superuser(self, client_superuser, cost_centre):
-        """CostCentreDialog (edit) is accessible to superusers."""
+        """Verify that CostCentreDialog (edit) is accessible to superusers."""
         url = reverse("costings:edit_cost_centre", kwargs={"pk": cost_centre.pk})
         response = client_superuser.get(url)
         assert response.status_code == 200

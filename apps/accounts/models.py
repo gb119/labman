@@ -498,7 +498,7 @@ class Role(ResourceedObject):
 
     @classproperty
     def default(cls):
-        """Return the default (lowest level) role.
+        """Fetch the role with the lowest access level.
 
         Returns:
             (Role): The trainee role object.

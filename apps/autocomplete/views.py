@@ -286,7 +286,6 @@ def replace_or_toggle(_set, item):
             >>> callable(replace_or_toggle)
             True
     """
-
     if len(_set) > 1:
         raise Exception("this function is only for sets with one item")
 

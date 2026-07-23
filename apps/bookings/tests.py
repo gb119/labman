@@ -78,7 +78,7 @@ class TestBookingExceptions:
     """Tests for the booking exception class hierarchy."""
 
     def test_booking_error_is_validation_error(self):
-        """BookingError inherits from ValidationError."""
+        """Verify that BookingError inherits from ValidationError."""
         # Django imports
         from django.core.exceptions import ValidationError
 
@@ -89,7 +89,7 @@ class TestBookingExceptions:
         assert isinstance(err, ValidationError)
 
     def test_policy_does_not_apply_is_booking_error(self):
-        """PolicyDoesNotApply inherits from BookingError."""
+        """Verify that PolicyDoesNotApply inherits from BookingError."""
         # external imports
         from bookings.models import BookingError, PolicyDoesNotApply
 
@@ -97,7 +97,7 @@ class TestBookingExceptions:
         assert isinstance(err, BookingError)
 
     def test_policy_not_found_is_booking_error(self):
-        """PolicyNotFound inherits from BookingError."""
+        """Verify that PolicyNotFound inherits from BookingError."""
         # external imports
         from bookings.models import BookingError, PolicyNotFound
 
@@ -105,7 +105,7 @@ class TestBookingExceptions:
         assert isinstance(err, BookingError)
 
     def test_user_booking_held_is_booking_error(self):
-        """UserBookingHeld inherits from BookingError."""
+        """Verify that UserBookingHeld inherits from BookingError."""
         # external imports
         from bookings.models import BookingError, UserBookingHeld
 
@@ -113,7 +113,7 @@ class TestBookingExceptions:
         assert isinstance(err, BookingError)
 
     def test_admin_booking_held_is_booking_error(self):
-        """AdminBookingHeld inherits from BookingError."""
+        """Verify that AdminBookingHeld inherits from BookingError."""
         # external imports
         from bookings.models import AdminBookingHeld, BookingError
 
@@ -134,14 +134,14 @@ class TestBookingViews:
 
     @pytest.mark.django_db
     def test_calendar_view_returns_200(self, client_logged_in, equipment):
-        """CalendarView returns 200 for an authenticated user."""
+        """Verify that CalendarView returns 200 for an authenticated user."""
         url = reverse("bookings:equipment_calendar", kwargs={"equipment": equipment.pk, "date": 20240101})
         response = client_logged_in.get(url)
         assert response.status_code == 200
 
     @pytest.mark.django_db
     def test_calendar_view_context_contains_equipment(self, client_logged_in, equipment):
-        """CalendarView places the equipment object into context."""
+        """Verify that CalendarView places the equipment object into context."""
         url = reverse("bookings:equipment_calendar", kwargs={"equipment": equipment.pk, "date": 20240101})
         response = client_logged_in.get(url)
         assert response.context["equipment"] == equipment
@@ -156,7 +156,7 @@ class TestBookingViews:
 
     @pytest.mark.django_db
     def test_all_calendar_view_returns_200(self, client_logged_in, equipment):
-        """AllCalendarView returns 200 for an authenticated user."""
+        """Verify that AllCalendarView returns 200 for an authenticated user."""
         url = reverse("bookings:all_equipment_calendar")
         response = client_logged_in.get(url)
         assert response.status_code == 200
@@ -171,7 +171,7 @@ class TestBookingViews:
 
     @pytest.mark.django_db
     def test_booking_records_view_returns_200(self, client_logged_in):
-        """BookingRecordsView returns 200 for an authenticated user."""
+        """Verify that BookingRecordsView returns 200 for an authenticated user."""
         url = reverse("bookings:reporting")
         response = client_logged_in.get(url)
         assert response.status_code == 200

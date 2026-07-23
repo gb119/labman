@@ -204,7 +204,6 @@ class Autocomplete:
                 >>> callable(Autocomplete.map_search_results)
                 True
         """
-
         return [
             {  # this is the default mapping
                 "key": str(i["key"]),
@@ -258,7 +257,6 @@ class Autocomplete:
                 >>> callable(Autocomplete.get_extra_text_input_hx_vals)
                 True
         """
-
         return {}
 
 

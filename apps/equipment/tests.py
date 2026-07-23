@@ -39,13 +39,13 @@ class TestLocation:
 
     @pytest.mark.django_db
     def test_url_property(self, location):
-        """url property returns the correct detail URL."""
+        """Verify that url property returns the correct detail URL."""
         expected = f"/equipment/location_detail/{location.pk}/"
         assert location.url == expected
 
     @pytest.mark.django_db
     def test_children_includes_descendants(self, location, child_location):
-        """children property returns descendants including self."""
+        """Verify that children property returns descendants including self."""
         children = list(location.children)
         assert child_location in children
 
@@ -89,12 +89,12 @@ class TestShift:
 
     @pytest.mark.django_db
     def test_duration_standard_shift(self, shift):
-        """duration returns 8 hours for a 09:00–17:00 shift."""
+        """Verify that duration returns 8 hours for a 09:00–17:00 shift."""
         assert shift.duration == timedelta(hours=8)
 
     @pytest.mark.django_db
     def test_duration_midnight_crossing_shift(self, db):
-        """duration handles shifts that cross midnight correctly."""
+        """Verify that duration handles shifts that cross midnight correctly."""
         # external imports
         from equipment.models import Shift
 
@@ -120,18 +120,18 @@ class TestEquipment:
 
     @pytest.mark.django_db
     def test_url_property(self, equipment):
-        """url property returns the correct detail URL."""
+        """Verify that url property returns the correct detail URL."""
         expected = f"/equipment/equipment_detail/{equipment.pk}/"
         assert equipment.url == expected
 
     @pytest.mark.django_db
     def test_not_bookable_without_policies(self, equipment):
-        """bookable returns False when no booking policies are defined."""
+        """Verify that bookable returns False when no booking policies are defined."""
         assert equipment.bookable is False
 
     @pytest.mark.django_db
     def test_not_bookable_when_offline(self, equipment, db):
-        """bookable returns False when equipment is marked offline."""
+        """Verify that bookable returns False when equipment is marked offline."""
         # external imports
         from accounts.models import Role
         from bookings.models import BookingPolicy
@@ -145,7 +145,7 @@ class TestEquipment:
 
     @pytest.mark.django_db
     def test_bookable_with_policy_and_online(self, equipment, db):
-        """bookable returns True when policies exist and equipment is online."""
+        """Verify that bookable returns True when policies exist and equipment is online."""
         # external imports
         from accounts.models import Role
         from bookings.models import BookingPolicy
@@ -157,7 +157,7 @@ class TestEquipment:
 
     @pytest.mark.django_db
     def test_schedule_url(self, equipment):
-        """schedule property returns a URL containing the equipment pk."""
+        """Verify that schedule property returns a URL containing the equipment pk."""
         assert str(equipment.pk) in equipment.schedule
         assert "/bookings/cal/" in equipment.schedule
 
@@ -175,14 +175,14 @@ class TestEquipmentViews:
 
     @pytest.mark.django_db
     def test_equipment_detail_view_returns_200(self, client_logged_in, equipment):
-        """EquipmentDetailView returns 200 for an authenticated user."""
+        """Verify that EquipmentDetailView returns 200 for an authenticated user."""
         url = reverse("equipment:equipment_detail", kwargs={"pk": equipment.pk})
         response = client_logged_in.get(url)
         assert response.status_code == 200
 
     @pytest.mark.django_db
     def test_equipment_detail_view_context_contains_equipment(self, client_logged_in, equipment):
-        """EquipmentDetailView places the equipment object into context."""
+        """Verify that EquipmentDetailView places the equipment object into context."""
         url = reverse("equipment:equipment_detail", kwargs={"pk": equipment.pk})
         response = client_logged_in.get(url)
         assert response.context["equipment"] == equipment
@@ -197,7 +197,7 @@ class TestEquipmentViews:
 
     @pytest.mark.django_db
     def test_location_detail_view_returns_200(self, client_logged_in, location):
-        """LocationDetailView returns 200 for an authenticated user."""
+        """Verify that LocationDetailView returns 200 for an authenticated user."""
         url = reverse("equipment:location_detail", kwargs={"pk": location.pk})
         response = client_logged_in.get(url)
         assert response.status_code == 200
@@ -212,21 +212,21 @@ class TestEquipmentViews:
 
     @pytest.mark.django_db
     def test_model_list_view_returns_200(self, client_logged_in):
-        """ModelListView returns 200 for an authenticated user."""
+        """Verify that ModelListView returns 200 for an authenticated user."""
         url = reverse("equipment:lists")
         response = client_logged_in.get(url)
         assert response.status_code == 200
 
     @pytest.mark.django_db
     def test_toggle_account_active_requires_superuser(self, client_logged_in, regular_user):
-        """ToggleAccountActiveView redirects non-superusers."""
+        """Verify that ToggleAccountActiveView redirects non-superusers."""
         url = reverse("equipment:toggle_account_active", kwargs={"pk": regular_user.pk})
         response = client_logged_in.post(url)
         assert response.status_code in (302, 301, 403)
 
     @pytest.mark.django_db
     def test_toggle_account_active_toggles_flag(self, client_superuser, regular_user):
-        """ToggleAccountActiveView toggles the is_active flag for superusers."""
+        """Verify that ToggleAccountActiveView toggles the is_active flag for superusers."""
         url = reverse("equipment:toggle_account_active", kwargs={"pk": regular_user.pk})
         original_active = regular_user.is_active
         client_superuser.post(url)
@@ -235,7 +235,7 @@ class TestEquipmentViews:
 
     @pytest.mark.django_db
     def test_sign_off_view_requires_login(self, client, equipment):
-        """SignOffFormSetView redirects unauthenticated users to login."""
+        """Verify that SignOffFormSetView redirects unauthenticated users to login."""
         url = reverse("equipment:sign-off", kwargs={"equipment": equipment.pk})
         response = client.get(url)
         assert response.status_code in (302, 301)
@@ -243,14 +243,14 @@ class TestEquipmentViews:
 
     @pytest.mark.django_db
     def test_sign_off_view_returns_200_for_authenticated_user(self, client_logged_in, equipment):
-        """SignOffFormSetView returns 200 for an authenticated user."""
+        """Verify that SignOffFormSetView returns 200 for an authenticated user."""
         url = reverse("equipment:sign-off", kwargs={"equipment": equipment.pk})
         response = client_logged_in.get(url)
         assert response.status_code == 200
 
     @pytest.mark.django_db
     def test_userlist_new_view_requires_login(self, client, equipment):
-        """UserlisttDialog (new) redirects unauthenticated users to login."""
+        """Verify that UserlisttDialog (new) redirects unauthenticated users to login."""
         url = reverse("equipment:userlist_new", kwargs={"equipment": equipment.pk})
         response = client.get(url)
         assert response.status_code in (302, 301)
@@ -258,14 +258,14 @@ class TestEquipmentViews:
 
     @pytest.mark.django_db
     def test_userlist_new_view_returns_200_for_authenticated_user(self, client_logged_in, equipment):
-        """UserlisttDialog (new) returns 200 for an authenticated user."""
+        """Verify that UserlisttDialog (new) returns 200 for an authenticated user."""
         url = reverse("equipment:userlist_new", kwargs={"equipment": equipment.pk})
         response = client_logged_in.get(url)
         assert response.status_code == 200
 
     @pytest.mark.django_db
     def test_equipment_edit_view_requires_login(self, client, equipment):
-        """EquipmentDialog (edit) redirects unauthenticated users to login."""
+        """Verify that EquipmentDialog (edit) redirects unauthenticated users to login."""
         url = reverse("equipment:edit_equipment", kwargs={"pk": equipment.pk})
         response = client.get(url)
         assert response.status_code in (302, 301)
@@ -273,14 +273,14 @@ class TestEquipmentViews:
 
     @pytest.mark.django_db
     def test_equipment_edit_view_returns_200_for_authenticated_user(self, client_logged_in, equipment):
-        """EquipmentDialog (edit) returns 200 for an authenticated user."""
+        """Verify that EquipmentDialog (edit) returns 200 for an authenticated user."""
         url = reverse("equipment:edit_equipment", kwargs={"pk": equipment.pk})
         response = client_logged_in.get(url)
         assert response.status_code == 200
 
     @pytest.mark.django_db
     def test_location_detail_view_context_contains_location(self, client_logged_in, location):
-        """LocationDetailView places the location object into the template context."""
+        """Verify that LocationDetailView places the location object into the template context."""
         url = reverse("equipment:location_detail", kwargs={"pk": location.pk})
         response = client_logged_in.get(url)
         assert response.status_code == 200
@@ -288,7 +288,7 @@ class TestEquipmentViews:
 
     @pytest.mark.django_db
     def test_equipment_detail_htmx_tab_returns_200(self, client_logged_in, equipment):
-        """EquipmentDetailView returns 200 for an HTMX request with a tab trigger."""
+        """Verify that EquipmentDetailView returns 200 for an HTMX request with a tab trigger."""
         url = reverse("equipment:equipment_detail", kwargs={"pk": equipment.pk})
         response = client_logged_in.get(
             url,
