@@ -52,12 +52,9 @@ class IsAuthenticaedViewMixin(UserPassesTestMixin):
     This mixin restricts view access to authenticated users by checking if the user is logged in.
     If the test fails, users are redirected to the login URL.
 
-    Attributes:
-        login_url (str):
-            The URL to redirect to when authentication fails, defaults to "/login".
+    The login URL is taken from Django's ``LOGIN_URL`` setting so production
+    requests enter the configured ADFS authentication flow.
     """
-
-    login_url = "/login"
 
     def test_func(self):
         """Test whether the user is set and logged in.

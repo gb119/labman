@@ -22,7 +22,6 @@ from .views import (
     E404View,
     E500View,
     FileServeView,
-    RedirectLoginView,
 )
 
 # Set Error handlers
@@ -40,7 +39,6 @@ urlpatterns = [
     path(r"scoir/", auth_views.LogoutView.as_view(next_page="/"), name="core_logout"),
     path("tinymce/", include("tinymce.urls")),
     path("photologue/", include("photologue.urls", namespace="photologue")),
-    path("login/", RedirectLoginView.as_view()),
     path("private-file-pseudo-directory-path/", include("django_simple_file_handler.urls")),
     path("api/", include(api)),  # main api module exports a urlpatterns
     path("api-auth/", include("rest_framework.urls")),  # Needed by REST framework for user authentication

@@ -11,6 +11,34 @@ import codecs
 from datetime import datetime, time, timedelta
 
 
+class TestIsAuthenticatedViewMixin:
+    """Tests for redirects from views that require authentication."""
+
+    def test_uses_configured_login_url(self):
+        """Anonymous requests are sent into the configured ADFS flow."""
+        # Django imports
+        from django.contrib.auth.models import AnonymousUser
+        from django.http import HttpResponse
+        from django.test import RequestFactory, override_settings
+        from django.views import View
+
+        # external imports
+        from labman_utils.views import IsAuthenticaedViewMixin
+
+        class ProtectedView(IsAuthenticaedViewMixin, View):
+            def get(self, request):
+                return HttpResponse()
+
+        request = RequestFactory().get("/protected/")
+        request.user = AnonymousUser()
+
+        with override_settings(LOGIN_URL="django_auth_adfs:login"):
+            response = ProtectedView.as_view()(request)
+
+        assert response.status_code == 302
+        assert response.url == "/oauth2/login?next=/protected/"
+
+
 class TestToSeconds:
     """Tests for the to_seconds utility function."""
 

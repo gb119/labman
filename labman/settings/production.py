@@ -77,7 +77,10 @@ SECURE_SSL_REDIRECT = True
 SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
 
 SESSION_COOKIE_SECURE = True
-SESSION_COOKIE_SAMESITE = "Strict"
+# The ADFS callback is a cross-site, top-level navigation. ``Strict`` can
+# withhold the newly created session cookie from the callback's immediate
+# redirect, causing the destination page to start the login flow again.
+SESSION_COOKIE_SAMESITE = "Lax"
 
 X_FRAME_OPTIONS = "DENY"
 
