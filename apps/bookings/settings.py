@@ -1,7 +1,5 @@
 # -*- coding: utf-8 -*-
-"""
-Bookings Settings
-"""
+"""Define configurable field types and defaults for the bookings application."""
 # Python imports
 from datetime import time
 

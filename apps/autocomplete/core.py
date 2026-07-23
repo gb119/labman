@@ -76,9 +76,9 @@ def register(ac_class: type, route_name: str = None):
 class Autocomplete:
     """Base class for creating autocomplete components.
 
-    This class provides the foundation for implementing custom autocomplete
-    functionality. Subclasses must implement the search_items and get_items_from_keys
-    methods to define the search and retrieval behaviour.
+        This class provides the foundation for implementing custom autocomplete
+        functionality. Subclasses must implement the search_items and get_items_from_keys
+        methods to define the search and retrieval behaviour.
 
     Attributes:
         no_result_text (str):
@@ -125,9 +125,9 @@ class Autocomplete:
     def auth_check(cls, request):
         """Perform authentication and authorisation checks for autocomplete access.
 
-        Override this method to implement custom authentication logic. By default,
-        unauthenticated users are blocked unless the
-        ``AUTOCOMPLETE_ALLOW_UNAUTHENTICATED`` Django setting is set to ``True``.
+                        Override this method to implement custom authentication logic. By default,
+                        unauthenticated users are blocked unless the
+                        ``AUTOCOMPLETE_ALLOW_UNAUTHENTICATED`` Django setting is set to ``True``.
 
         Args:
             request (HttpRequest):
@@ -137,6 +137,13 @@ class Autocomplete:
             PermissionDenied:
                 If the user is not authenticated and
                 ``AUTOCOMPLETE_ALLOW_UNAUTHENTICATED`` is not ``True``.
+
+
+        Examples:
+            Inspect the public interface in an interactive session::
+
+                >>> callable(Autocomplete.auth_check)
+                True
         """
         if not getattr(settings, "AUTOCOMPLETE_ALLOW_UNAUTHENTICATED", False) and not request.user.is_authenticated:
             raise PermissionDenied("Must be logged in to use autocomplete")
@@ -151,6 +158,13 @@ class Autocomplete:
             ValueError:
                 If the class does not implement search_items or get_items_from_keys
                 methods.
+
+
+        Examples:
+            Inspect the public interface in an interactive session::
+
+                >>> callable(Autocomplete.validate)
+                True
         """
         if not hasattr(cls, "search_items"):
             raise ValueError("You must implement a search_items method.")
@@ -162,9 +176,9 @@ class Autocomplete:
     def map_search_results(cls, items_iterable, selected_keys=None):
         """Map search results to a standardised format for display.
 
-        Transforms raw search results into a consistent structure with key, label,
-        and selected attributes. Override this method to customise result mapping
-        or to work with complex data structures like Django QuerySets.
+                        Transforms raw search results into a consistent structure with key, label,
+                        and selected attributes. Override this method to customise result mapping
+                        or to work with complex data structures like Django QuerySets.
 
         Args:
             items_iterable (Iterable):
@@ -182,6 +196,13 @@ class Autocomplete:
         Notes:
             The default implementation expects items_iterable to yield dictionaries
             with 'key' and 'label' keys.
+
+
+        Examples:
+            Inspect the public interface in an interactive session::
+
+                >>> callable(Autocomplete.map_search_results)
+                True
         """
 
         return [
@@ -200,6 +221,13 @@ class Autocomplete:
         Returns:
             (dict): Dictionary containing localised strings for 'no_results',
                 'more_results', and 'type_at_least_n_characters'.
+
+
+        Examples:
+            Inspect the public interface in an interactive session::
+
+                >>> callable(Autocomplete.get_custom_strings)
+                True
         """
         return {
             "no_results": cls.no_result_text,
@@ -211,8 +239,8 @@ class Autocomplete:
     def get_extra_text_input_hx_vals(cls):
         """Get additional HTMX values for the text input element.
 
-        Override this method to provide additional key-value pairs that will be
-        included in the hx-vals attribute of the search input element.
+                        Override this method to provide additional key-value pairs that will be
+                        included in the hx-vals attribute of the search input element.
 
         Returns:
             (dict): Dictionary of additional HTMX values. Keys and values must not
@@ -222,6 +250,13 @@ class Autocomplete:
         Notes:
             - Values must not contain single quotes
             - Values are not automatically quoted to allow JavaScript expressions
+
+
+        Examples:
+            Inspect the public interface in an interactive session::
+
+                >>> callable(Autocomplete.get_extra_text_input_hx_vals)
+                True
         """
 
         return {}

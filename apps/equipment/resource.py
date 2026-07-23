@@ -20,9 +20,18 @@ from .models import (
 
 
 class ShiftReource(resources.ModelResource):
-    """Import-export resource for Location objects."""
+    """Import-export resource for Location objects.
+
+    Examples:
+        Inspect the public interface in an interactive session::
+
+            >>> ShiftReource.__name__
+            'ShiftReource'
+    """
 
     class Meta:
+        """Configure the Meta class."""
+
         model = Shift
         import_id_fields = ["name"]
 
@@ -30,8 +39,15 @@ class ShiftReource(resources.ModelResource):
 class LocationResource(resources.ModelResource):
     """Import-export resource for Location objects.
 
-    Uses name as the primary import/export identifier. The code field is
-    maintained for backwards compatibility during migration.
+            Uses name as the primary import/export identifier. The code field is
+            maintained for backwards compatibility during migration.
+
+
+    Examples:
+        Inspect the public interface in an interactive session::
+
+            >>> LocationResource.__name__
+            'LocationResource'
     """
 
     parent = fields.Field(
@@ -41,6 +57,8 @@ class LocationResource(resources.ModelResource):
     )
 
     class Meta:
+        """Configure the Meta class."""
+
         model = Location
         import_id_fields = ["name"]
         # Exclude MPTT fields - they are auto-managed by django-mptt
@@ -49,23 +67,48 @@ class LocationResource(resources.ModelResource):
 
 
 class DocumentResource(resources.ModelResource):
-    """Import-export resource for Document objects."""
+    """Import-export resource for Document objects.
+
+    Examples:
+        Inspect the public interface in an interactive session::
+
+            >>> DocumentResource.__name__
+            'DocumentResource'
+    """
 
     class Meta:
+        """Configure the Meta class."""
+
         model = Document
         import_id_fields = ["title"]
 
 
 class DocumentSignOffResource(resources.ModelResource):
-    """Import-export resource for Sign-off objects."""
+    """Import-export resource for Sign-off objects.
+
+    Examples:
+        Inspect the public interface in an interactive session::
+
+            >>> DocumentSignOffResource.__name__
+            'DocumentSignOffResource'
+    """
 
     class Meta:
+        """Configure the Meta class."""
+
         model = DocumentSignOff
         import_id_fields = ["user", "document", "version"]
 
 
 class EquipmentResource(resources.ModelResource):
-    """Import-export resource for Equipment objects."""
+    """Import-export resource for Equipment objects.
+
+    Examples:
+        Inspect the public interface in an interactive session::
+
+            >>> EquipmentResource.__name__
+            'EquipmentResource'
+    """
 
     owner = fields.Field(
         column_name="owner",
@@ -92,12 +135,21 @@ class EquipmentResource(resources.ModelResource):
     )
 
     class Meta:
+        """Configure the Meta class."""
+
         model = Equipment
         import_id_fields = ["name"]
 
 
 class UserListEntryResource(resources.ModelResource):
-    """Import-export resource for UserListEntry objects."""
+    """Import-export resource for UserListEntry objects.
+
+    Examples:
+        Inspect the public interface in an interactive session::
+
+            >>> UserListEntryResource.__name__
+            'UserListEntryResource'
+    """
 
     user = fields.Field(
         column_name="user",
@@ -118,11 +170,20 @@ class UserListEntryResource(resources.ModelResource):
     )
 
     class Meta:
+        """Configure the Meta class."""
+
         model = UserListEntry
 
 
 class ChargingRateResource(resources.ModelResource):
-    """Resource Class for ChargingRate objects."""
+    """Resource Class for ChargingRate objects.
+
+    Examples:
+        Inspect the public interface in an interactive session::
+
+            >>> ChargingRateResource.__name__
+            'ChargingRateResource'
+    """
 
     equipment = fields.Field(
         column_name="equipment",
@@ -136,5 +197,7 @@ class ChargingRateResource(resources.ModelResource):
     )
 
     class Meta:
+        """Configure the Meta class."""
+
         model = ChargingRate
         import_id_fields = ["equipment", "cost_rate"]

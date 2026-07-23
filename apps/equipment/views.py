@@ -53,15 +53,22 @@ DEFAULT_TZ = pytz.timezone(settings.TIME_ZONE)
 class SignOffFormSetView(IsAuthenticaedViewMixin, FormSetView):
     """View for signing off risk assessments and SOPs required for equipment booking.
 
-    This view presents a formset allowing users to sign off on required documents
-    (risk assessments and SOPs) before they are permitted to book equipment.
-    Each document must be signed at the current version before the user can proceed.
+            This view presents a formset allowing users to sign off on required documents
+            (risk assessments and SOPs) before they are permitted to book equipment.
+            Each document must be signed at the current version before the user can proceed.
 
     Attributes:
         template_name (str): Template path for the sign-off form.
         form_class: Form class used for each document sign-off.
         success_url (str): Redirect URL after successful sign-off.
         factory_kwargs (dict): Configuration for the formset factory.
+
+
+    Examples:
+        Inspect the public interface in an interactive session::
+
+            >>> SignOffFormSetView.__name__
+            'SignOffFormSetView'
     """
 
     template_name = "equipment/sign-off.html"
@@ -72,12 +79,19 @@ class SignOffFormSetView(IsAuthenticaedViewMixin, FormSetView):
     def get_initial(self):
         """Get initial data for the document sign-off formset.
 
-        Retrieves all risk assessment and SOP documents for the specified equipment
-        and checks if the current user has already signed them at the current version.
+                        Retrieves all risk assessment and SOP documents for the specified equipment
+                        and checks if the current user has already signed them at the current version.
 
         Returns:
             (list of dict): List of dictionaries containing initial form data with keys:
                 'document', 'user', 'version', 'id' (if exists), and 'signed' status.
+
+
+        Examples:
+            Inspect the public interface in an interactive session::
+
+                >>> callable(SignOffFormSetView.get_initial)
+                True
         """
         equipment_id = int(self.kwargs["equipment"])
         equipment = Equipment.objects.get(pk=equipment_id)
@@ -98,15 +112,22 @@ class SignOffFormSetView(IsAuthenticaedViewMixin, FormSetView):
     def formset_valid(self, formset):
         """Process the formset to add sign-offs of documents.
 
-        Creates or retrieves DocumentSignOff records for each signed document.
-        If no documents require signing, forces a save of the user list entry
-        to update timestamps.
+                        Creates or retrieves DocumentSignOff records for each signed document.
+                        If no documents require signing, forces a save of the user list entry
+                        to update timestamps.
 
         Args:
             formset: The validated formset containing document sign-off data.
 
         Returns:
             (HttpResponse): Redirect response from parent class.
+
+
+        Examples:
+            Inspect the public interface in an interactive session::
+
+                >>> callable(SignOffFormSetView.formset_valid)
+                True
         """
         equipment_id = int(self.kwargs["equipment"])
         equipment = Equipment.objects.get(pk=equipment_id)
@@ -131,6 +152,13 @@ class SignOffFormSetView(IsAuthenticaedViewMixin, FormSetView):
 
         Returns:
             (dict): Context dictionary with 'docs' key containing list of documents.
+
+
+        Examples:
+            Inspect the public interface in an interactive session::
+
+                >>> callable(SignOffFormSetView.get_context_data)
+                True
         """
         context = super().get_context_data(**kwargs)
         docs = [x.initial["document"] for x in context["formset"].forms]
@@ -141,9 +169,9 @@ class SignOffFormSetView(IsAuthenticaedViewMixin, FormSetView):
 class EquipmentDetailView(HTMXProcessMixin, IsAuthenticaedViewMixin, views.generic.DetailView):
     """Detailed view for a single equipment item with tabbed interface.
 
-    Provides a comprehensive detail view for equipment with multiple tabs including
-    resources, images, pages, user list, and schedule. Supports both single equipment
-    and all-equipment calendar views with HTMX for dynamic tab loading.
+            Provides a comprehensive detail view for equipment with multiple tabs including
+            resources, images, pages, user list, and schedule. Supports both single equipment
+            and all-equipment calendar views with HTMX for dynamic tab loading.
 
     Attributes:
         template_name (str): Main template for equipment detail.
@@ -156,6 +184,13 @@ class EquipmentDetailView(HTMXProcessMixin, IsAuthenticaedViewMixin, views.gener
         template_name_cal_back (str): Template for calendar back navigation.
         template_name_cal_forward (str): Template for calendar forward navigation.
         model: Equipment model class.
+
+
+    Examples:
+        Inspect the public interface in an interactive session::
+
+            >>> EquipmentDetailView.__name__
+            'EquipmentDetailView'
     """
 
     template_name = "equipment/equipment_detail.html"
@@ -172,8 +207,8 @@ class EquipmentDetailView(HTMXProcessMixin, IsAuthenticaedViewMixin, views.gener
     def get_context_data_scheduletab(self, **kwargs):
         """Build the context for the calendar display.
 
-        Creates a calendar table for equipment booking, supporting both single equipment
-        and all-equipment views. Handles date navigation and mode switching.
+                        Creates a calendar table for equipment booking, supporting both single equipment
+                        and all-equipment views. Handles date navigation and mode switching.
 
         Keyword Parameters:
             **kwargs: Additional context data from parent classes.
@@ -183,6 +218,13 @@ class EquipmentDetailView(HTMXProcessMixin, IsAuthenticaedViewMixin, views.gener
 
         Raises:
             ValueError: If an unknown mode is specified.
+
+
+        Examples:
+            Inspect the public interface in an interactive session::
+
+                >>> callable(EquipmentDetailView.get_context_data_scheduletab)
+                True
         """
         context = super().get_context_data(**kwargs)
         # Build the calendar rows from the shifts.
@@ -264,6 +306,13 @@ class EquipmentDetailView(HTMXProcessMixin, IsAuthenticaedViewMixin, views.gener
 
         Returns:
             (dict): Context dictionary with opentab key for controlling tab state.
+
+
+        Examples:
+            Inspect the public interface in an interactive session::
+
+                >>> callable(EquipmentDetailView.get_context_data_userlisttab)
+                True
         """
         context = super().get_context_data(**kwargs)
         context["opentab"] = slugify(self.request.GET.get("opentab", "Manager"))
@@ -273,8 +322,8 @@ class EquipmentDetailView(HTMXProcessMixin, IsAuthenticaedViewMixin, views.gener
 class LocationDetailView(HTMXProcessMixin, IsAuthenticaedViewMixin, views.generic.DetailView):
     """Detailed view for a location with tabbed interface.
 
-    Provides a comprehensive detail view for locations with multiple tabs including
-    resources, images, pages, and equipment list. Uses HTMX for dynamic tab loading.
+            Provides a comprehensive detail view for locations with multiple tabs including
+            resources, images, pages, and equipment list. Uses HTMX for dynamic tab loading.
 
     Attributes:
         template_name (str): Main template for location detail.
@@ -283,6 +332,13 @@ class LocationDetailView(HTMXProcessMixin, IsAuthenticaedViewMixin, views.generi
         template_name_pagestab (str): Template for pages tab.
         template_name_equipmenttab (str): Template for equipment tab.
         model: Location model class.
+
+
+    Examples:
+        Inspect the public interface in an interactive session::
+
+            >>> LocationDetailView.__name__
+            'LocationDetailView'
     """
 
     template_name = "equipment/location_detail.html"
@@ -301,6 +357,13 @@ class LocationDetailView(HTMXProcessMixin, IsAuthenticaedViewMixin, views.generi
 
         Returns:
             (dict): Context dictionary for location tab.
+
+
+        Examples:
+            Inspect the public interface in an interactive session::
+
+                >>> callable(LocationDetailView.get_context_data_locationtab)
+                True
         """
         context = super().get_context_data(**kwargs)
 
@@ -308,9 +371,9 @@ class LocationDetailView(HTMXProcessMixin, IsAuthenticaedViewMixin, views.generi
 class ModelListView(HTMXProcessMixin, IsAuthenticaedViewMixin, views.generic.ListView):
     """Tabbed list view for equipment, locations, projects, documents, and accounts.
 
-    Provides a unified interface for listing various model types across different tabs.
-    Uses HTMX to dynamically load tab content and supports multiple context objects
-    for different model types.
+            Provides a unified interface for listing various model types across different tabs.
+            Uses HTMX to dynamically load tab content and supports multiple context objects
+            for different model types.
 
     Attributes:
         template_name (str): Main template for the list view.
@@ -324,6 +387,13 @@ class ModelListView(HTMXProcessMixin, IsAuthenticaedViewMixin, views.generic.Lis
         context_object_projectstab (str): Context object name for projects.
         context_object_documentstab (str): Context object name for documents.
         context_object_accountstab (str): Context object name for accounts.
+
+
+    Examples:
+        Inspect the public interface in an interactive session::
+
+            >>> ModelListView.__name__
+            'ModelListView'
     """
 
     template_name = "equipment/lists.html"
@@ -342,12 +412,19 @@ class ModelListView(HTMXProcessMixin, IsAuthenticaedViewMixin, views.generic.Lis
     def get_queryset(self):
         """Get different querysets for each HTMX query.
 
-        Returns different querysets based on the HTMX trigger, supporting equipment,
-        locations, projects, documents, and accounts with appropriate filtering.
+                        Returns different querysets based on the HTMX trigger, supporting equipment,
+                        locations, projects, documents, and accounts with appropriate filtering.
 
         Returns:
             (QuerySet or dict): QuerySet for the requested model type, or dictionary
                 of querysets grouped by category or user group.
+
+
+        Examples:
+            Inspect the public interface in an interactive session::
+
+                >>> callable(ModelListView.get_queryset)
+                True
         """
         if not getattr(self.request, "htmx", False):
             ret = {}
@@ -379,13 +456,20 @@ class ModelListView(HTMXProcessMixin, IsAuthenticaedViewMixin, views.generic.Lis
     def get_context_data_equipmenttab(self, **kwargs):
         """Extra context for equipment list.
 
-        Groups equipment by category for organized display.
+                        Groups equipment by category for organized display.
 
         Keyword Parameters:
             **kwargs: Additional context data from parent classes.
 
         Returns:
             (dict): Context dictionary with equipment grouped by category.
+
+
+        Examples:
+            Inspect the public interface in an interactive session::
+
+                >>> callable(ModelListView.get_context_data_equipmenttab)
+                True
         """
         context = super().get_context_data(**kwargs)
         data = {}
@@ -398,13 +482,20 @@ class ModelListView(HTMXProcessMixin, IsAuthenticaedViewMixin, views.generic.Lis
     def get_context_data_documentstab(self, **kwargs):
         """Extra context for documents list.
 
-        Adds document categories to the context for display.
+                        Adds document categories to the context for display.
 
         Keyword Parameters:
             **kwargs: Additional context data from parent classes.
 
         Returns:
             (dict): Context dictionary with document categories.
+
+
+        Examples:
+            Inspect the public interface in an interactive session::
+
+                >>> callable(ModelListView.get_context_data_documentstab)
+                True
         """
         context = super().get_context_data(**kwargs)
         context["categories"] = dict(Document.CATEGORIES)
@@ -414,15 +505,22 @@ class ModelListView(HTMXProcessMixin, IsAuthenticaedViewMixin, views.generic.Lis
 class UserlisttDialog(IsAuthenticaedViewMixin, HTMXFormMixin, UpdateView):
     """HTMX dialog for creating and editing user list entries.
 
-    Provides an HTMX-powered dialog interface for managing user list entries,
-    which define user roles and permissions for specific equipment. Supports
-    both creating new entries and editing existing ones.
+            Provides an HTMX-powered dialog interface for managing user list entries,
+            which define user roles and permissions for specific equipment. Supports
+            both creating new entries and editing existing ones.
 
     Attributes:
         model: UserListEntry model class.
         template_name (str): Template for the user list form dialog.
         context_object_name (str): Name for the object in template context.
         form_class: Form class for user list entries.
+
+
+    Examples:
+        Inspect the public interface in an interactive session::
+
+            >>> UserlisttDialog.__name__
+            'UserlisttDialog'
     """
 
     model = UserListEntry
@@ -431,7 +529,21 @@ class UserlisttDialog(IsAuthenticaedViewMixin, HTMXFormMixin, UpdateView):
     form_class = UserListEnryForm
 
     def get_context_data_dialog(self, **kwargs):
-        """Create the context for HTMX calls to open the booking dialog."""
+        """Create the context for HTMX calls to open the booking dialog.
+
+        Keyword Parameters:
+            **kwargs (object):
+                Value supplied for ``kwargs``.
+        Returns:
+            (object):
+                The result of the operation.
+
+        Examples:
+            Inspect the public interface in an interactive session::
+
+                >>> callable(UserlisttDialog.get_context_data_dialog)
+                True
+        """
         context = super().get_context_data(**kwargs)
         context["current_url"] = self.request.htmx.current_url
         context["this"] = self.get_object()
@@ -447,7 +559,21 @@ class UserlisttDialog(IsAuthenticaedViewMixin, HTMXFormMixin, UpdateView):
         return context
 
     def get_object(self, queryset=None):
-        """Either get the UserList entry or None."""
+        """Either get the UserList entry or None.
+
+        Keyword Parameters:
+            queryset (object):
+                Value supplied for ``queryset``.
+        Returns:
+            (object):
+                The result of the operation.
+
+        Examples:
+            Inspect the public interface in an interactive session::
+
+                >>> callable(UserlisttDialog.get_object)
+                True
+        """
         try:
             return UserListEntry.objects.get(equipment=self.kwargs["equipment"], user=self.kwargs["user"])
         except (UserListEntry.DoesNotExist, AttributeError, KeyError):
@@ -458,6 +584,13 @@ class UserlisttDialog(IsAuthenticaedViewMixin, HTMXFormMixin, UpdateView):
 
         Returns:
             (dict): Initial form data containing equipment and optionally user.
+
+
+        Examples:
+            Inspect the public interface in an interactive session::
+
+                >>> callable(UserlisttDialog.get_initial)
+                True
         """
         equipment = Equipment.objects.get(pk=self.kwargs.get("equipment", None))
         if "user" in self.kwargs:
@@ -469,8 +602,8 @@ class UserlisttDialog(IsAuthenticaedViewMixin, HTMXFormMixin, UpdateView):
     def htmx_form_valid_userlistentry(self, form):
         """Handle the HTMX submitted user list form if valid.
 
-        Saves the user list entry after checking permissions. Only managers,
-        owners, and superusers can modify user list entries.
+                        Saves the user list entry after checking permissions. Only managers,
+                        owners, and superusers can modify user list entries.
 
         Args:
             form: The validated form containing user list entry data.
@@ -480,6 +613,13 @@ class UserlisttDialog(IsAuthenticaedViewMixin, HTMXFormMixin, UpdateView):
 
         Raises:
             HttpResponseForbidden: If user lacks permission to modify the entry.
+
+
+        Examples:
+            Inspect the public interface in an interactive session::
+
+                >>> callable(UserlisttDialog.htmx_form_valid_userlistentry)
+                True
         """
         entry = form.instance
         if not entry.equipment.can_edit(self.request.user):
@@ -506,6 +646,17 @@ class UserlisttDialog(IsAuthenticaedViewMixin, HTMXFormMixin, UpdateView):
         Raises:
             HttpResponseNotFound: If the user list entry cannot be found.
             HttpResponseForbidden: If user lacks permission to delete the entry.
+
+
+        Keyword Parameters:
+            **kwargs (object):
+                Value supplied for ``kwargs``.
+
+        Examples:
+            Inspect the public interface in an interactive session::
+
+                >>> callable(UserlisttDialog.htmx_delete_userlistentry)
+                True
         """
         if not (entry := self.get_object()):
             return HttpResponseNotFound("Unable to locate userlist entry.")
@@ -527,14 +678,21 @@ class UserlisttDialog(IsAuthenticaedViewMixin, HTMXFormMixin, UpdateView):
 class EquipmentDialog(IsAuthenticaedViewMixin, HTMXFormMixin, UpdateView):
     """HTMX dialog for editing equipment details.
 
-    Provides an HTMX-powered dialog interface for editing equipment information
-    such as name, description, category, and other equipment-specific settings.
+            Provides an HTMX-powered dialog interface for editing equipment information
+            such as name, description, category, and other equipment-specific settings.
 
     Attributes:
         model: Equipment model class.
         template_name (str): Template for the equipment form dialog.
         context_object_name (str): Name for the object in template context.
         form_class: Form class for equipment editing.
+
+
+    Examples:
+        Inspect the public interface in an interactive session::
+
+            >>> EquipmentDialog.__name__
+            'EquipmentDialog'
     """
 
     model = Equipment
@@ -543,7 +701,21 @@ class EquipmentDialog(IsAuthenticaedViewMixin, HTMXFormMixin, UpdateView):
     form_class = EquipmentForm
 
     def get_context_data_dialog(self, **kwargs):
-        """Create the context for HTMX calls to open the booking dialog."""
+        """Create the context for HTMX calls to open the booking dialog.
+
+        Keyword Parameters:
+            **kwargs (object):
+                Value supplied for ``kwargs``.
+        Returns:
+            (object):
+                The result of the operation.
+
+        Examples:
+            Inspect the public interface in an interactive session::
+
+                >>> callable(EquipmentDialog.get_context_data_dialog)
+                True
+        """
         context = super().get_context_data(**kwargs)
         context["current_url"] = self.request.htmx.current_url
         context["this"] = self.get_object()
@@ -553,7 +725,21 @@ class EquipmentDialog(IsAuthenticaedViewMixin, HTMXFormMixin, UpdateView):
         return context
 
     def get_object(self, queryset=None):
-        """Either get the UserList entry or None."""
+        """Either get the UserList entry or None.
+
+        Keyword Parameters:
+            queryset (object):
+                Value supplied for ``queryset``.
+        Returns:
+            (object):
+                The result of the operation.
+
+        Examples:
+            Inspect the public interface in an interactive session::
+
+                >>> callable(EquipmentDialog.get_object)
+                True
+        """
         try:
             return Equipment.objects.get(pk=self.kwargs.get("pk"))
         except (Equipment.DoesNotExist, AttributeError, KeyError):
@@ -567,6 +753,13 @@ class EquipmentDialog(IsAuthenticaedViewMixin, HTMXFormMixin, UpdateView):
 
         Returns:
             (HttpResponse): Empty response with HTMX trigger to refresh equipment display.
+
+
+        Examples:
+            Inspect the public interface in an interactive session::
+
+                >>> callable(EquipmentDialog.htmx_form_valid_equipment)
+                True
         """
         form.save()
         return HttpResponse(
@@ -578,8 +771,8 @@ class EquipmentDialog(IsAuthenticaedViewMixin, HTMXFormMixin, UpdateView):
 class ToggleAccountActiveView(IsSuperuserViewMixin, views.View):
     """HTMX view for toggling the is_active flag on an Account.
 
-    Allows superusers to activate or deactivate accounts via an HTMX POST request.
-    Returns a rendered Bootstrap 5 toggle switch reflecting the new state.
+        Allows superusers to activate or deactivate accounts via an HTMX POST request.
+        Returns a rendered Bootstrap 5 toggle switch reflecting the new state.
 
     Examples:
         POST /equipment/account/toggle-active/42/ toggles the is_active flag on Account pk=42
@@ -597,6 +790,17 @@ class ToggleAccountActiveView(IsSuperuserViewMixin, views.View):
 
         Returns:
             (HttpResponse): Rendered HTML fragment containing the updated toggle switch.
+
+
+        Keyword Parameters:
+            **kwargs (object):
+                Value supplied for ``kwargs``.
+
+        Examples:
+            Inspect the public interface in an interactive session::
+
+                >>> callable(ToggleAccountActiveView.post)
+                True
         """
         if (accounts := Account.objects.filter(pk=pk)).count():
             account = accounts.last()

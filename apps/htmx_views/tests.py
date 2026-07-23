@@ -29,6 +29,7 @@ class _MockHtmx:
     """Minimal stand-in for django_htmx.middleware.HtmxDetails."""
 
     def __init__(self, trigger_name=None, trigger=None, target=None):
+        """Perform the init operation."""
         self.trigger_name = trigger_name
         self.trigger = trigger
         self.target = target
@@ -56,21 +57,27 @@ class _StubBase:
     template_name = "stub.html"
 
     def get_template_names(self):
+        """Perform the get template names operation."""
         return [self.template_name]
 
     def get_context_data(self, **kwargs):
+        """Perform the get context data operation."""
         return {"base": True, **kwargs}
 
     def get_context_object_name(self, object_list):
+        """Perform the get context object name operation."""
         return "base_list"
 
     def form_valid(self, form):
+        """Perform the form valid operation."""
         return HttpResponse("super_form_valid")
 
     def form_invalid(self, form):
+        """Perform the form invalid operation."""
         return HttpResponse("super_form_invalid")
 
     def http_method_not_allowed(self, request, *args, **kwargs):
+        """Perform the http method not allowed operation."""
         return HttpResponse("method_not_allowed", status=405)
 
 
@@ -109,6 +116,8 @@ class TestTempAttr:
         from htmx_views.views import temp_attr
 
         class Plain:
+            """Provide the Plain implementation."""
+
             pass
 
         obj = Plain()
@@ -121,6 +130,8 @@ class TestTempAttr:
         from htmx_views.views import temp_attr
 
         class Plain:
+            """Provide the Plain implementation."""
+
             pass
 
         obj = Plain()
@@ -189,15 +200,20 @@ class TestDispatch:
         from htmx_views.views import dispatch
 
         class MinimalView:
+            """Provide the MinimalView implementation."""
+
             http_method_names = ["get", "post"]
 
             def _non_htmx_dispatch(self, request, *a, **kw):
+                """Perform the non htmx dispatch operation."""
                 return HttpResponse("non_htmx")
 
             def get(self, request, *a, **kw):
+                """Perform the get operation."""
                 return HttpResponse("get")
 
             def http_method_not_allowed(self, request, *a, **kw):
+                """Perform the http method not allowed operation."""
                 return HttpResponse("not_allowed", status=405)
 
         view = MinimalView()
@@ -236,9 +252,13 @@ class TestHTMXElementsIteration:
 
     def _make_mixin(self, htmx):
         # external imports
+        """Perform the make mixin operation."""
+        # external imports
         from htmx_views.views import HTMXProcessMixin
 
         class Concrete(HTMXProcessMixin, _StubBase):
+            """Provide the Concrete implementation."""
+
             pass
 
         obj = Concrete.__new__(Concrete)
@@ -290,9 +310,13 @@ class TestHTMXProcessMixinTemplateNames:
 
     def _make_view(self, htmx=None, extra_attrs=None):
         # external imports
+        """Perform the make view operation."""
+        # external imports
         from htmx_views.views import HTMXProcessMixin
 
         class Concrete(HTMXProcessMixin, _StubBase):
+            """Provide the Concrete implementation."""
+
             pass
 
         view = Concrete.__new__(Concrete)
@@ -341,9 +365,13 @@ class TestHTMXProcessMixinContextData:
 
     def _make_view(self, htmx=None, extra_attrs=None):
         # external imports
+        """Perform the make view operation."""
+        # external imports
         from htmx_views.views import HTMXProcessMixin
 
         class Concrete(HTMXProcessMixin, _StubBase):
+            """Provide the Concrete implementation."""
+
             pass
 
         view = Concrete.__new__(Concrete)
@@ -381,22 +409,31 @@ class TestHTMXProcessMixinVerbDelegation:
 
     def _make_view(self, htmx=None, extra_attrs=None):
         # external imports
+        """Perform the make view operation."""
+        # external imports
         from htmx_views.views import HTMXProcessMixin
 
         class Concrete(HTMXProcessMixin, _StubBase):
+            """Provide the Concrete implementation."""
+
             def get(self, request, *a, **kw):
+                """Perform the get operation."""
                 return HttpResponse("get")
 
             def post(self, request, *a, **kw):
+                """Perform the post operation."""
                 return HttpResponse("post")
 
             def delete(self, request, *a, **kw):
+                """Perform the delete operation."""
                 return HttpResponse("delete")
 
             def patch(self, request, *a, **kw):
+                """Perform the patch operation."""
                 return HttpResponse("patch")
 
             def put(self, request, *a, **kw):
+                """Perform the put operation."""
                 return HttpResponse("put")
 
         view = Concrete.__new__(Concrete)
@@ -490,9 +527,13 @@ class TestHTMXFormMixinFormValid:
 
     def _make_view(self, htmx=None, extra_attrs=None):
         # external imports
+        """Perform the make view operation."""
+        # external imports
         from htmx_views.views import HTMXFormMixin
 
         class Concrete(HTMXFormMixin, _StubBase):
+            """Provide the Concrete implementation."""
+
             pass
 
         view = Concrete.__new__(Concrete)
@@ -553,9 +594,13 @@ class TestHTMXFormMixinFormInvalid:
 
     def _make_view(self, htmx=None, extra_attrs=None):
         # external imports
+        """Perform the make view operation."""
+        # external imports
         from htmx_views.views import HTMXFormMixin
 
         class Concrete(HTMXFormMixin, _StubBase):
+            """Provide the Concrete implementation."""
+
             pass
 
         view = Concrete.__new__(Concrete)
@@ -625,6 +670,8 @@ class TestHTMXProcessMixinInit:
         from htmx_views.views import HTMXProcessMixin
 
         class Concrete(HTMXProcessMixin, _StubBase):
+            """Provide the Concrete implementation."""
+
             pass
 
         # Use normal instantiation to exercise __init__
@@ -639,9 +686,13 @@ class TestHTMXProcessMixinContextObjectName:
 
     def _make_view(self, htmx=None, extra_attrs=None):
         # external imports
+        """Perform the make view operation."""
+        # external imports
         from htmx_views.views import HTMXProcessMixin
 
         class Concrete(HTMXProcessMixin, _StubBase):
+            """Provide the Concrete implementation."""
+
             pass
 
         view = Concrete.__new__(Concrete)
@@ -688,6 +739,8 @@ class TestHTMXFormMixinInit:
         from htmx_views.views import HTMXFormMixin
 
         class Concrete(HTMXFormMixin, _StubBase):
+            """Provide the Concrete implementation."""
+
             pass
 
         view = Concrete()
@@ -700,9 +753,13 @@ class TestHTMXProcessMixinContextObjectNameHandler:
 
     def _make_view(self, htmx=None, extra_attrs=None):
         # external imports
+        """Perform the make view operation."""
+        # external imports
         from htmx_views.views import HTMXProcessMixin
 
         class Concrete(HTMXProcessMixin, _StubBase):
+            """Provide the Concrete implementation."""
+
             pass
 
         view = Concrete.__new__(Concrete)
@@ -728,13 +785,19 @@ class TestHTMXProcessMixinDebugLogging:
 
     def _make_view(self, htmx=None, extra_attrs=None):
         # external imports
+        """Perform the make view operation."""
+        # external imports
         from htmx_views.views import HTMXProcessMixin
 
         class Concrete(HTMXProcessMixin, _StubBase):
+            """Provide the Concrete implementation."""
+
             def get(self, request, *a, **kw):
+                """Perform the get operation."""
                 return HttpResponse("get")
 
             def delete(self, request, *a, **kw):
+                """Perform the delete operation."""
                 return HttpResponse("delete")
 
         view = Concrete.__new__(Concrete)
@@ -754,6 +817,8 @@ class TestHTMXProcessMixinDebugLogging:
         from htmx_views.views import HTMXProcessMixin
 
         class Concrete(HTMXProcessMixin, _StubBase):
+            """Provide the Concrete implementation."""
+
             pass
 
         obj = Concrete.__new__(Concrete)
@@ -787,6 +852,8 @@ class TestHTMXProcessMixinDebugLogging:
         from htmx_views.views import HTMXProcessMixin
 
         class Concrete(HTMXProcessMixin, _StubBase):
+            """Provide the Concrete implementation."""
+
             pass
 
         view = Concrete.__new__(Concrete)
@@ -805,6 +872,8 @@ class TestHTMXProcessMixinDebugLogging:
         from htmx_views.views import HTMXProcessMixin
 
         class Concrete(HTMXProcessMixin, _StubBase):
+            """Provide the Concrete implementation."""
+
             pass
 
         view = Concrete.__new__(Concrete)
@@ -822,16 +891,23 @@ class TestHTMXProcessMixinMoreDebugLogging:
 
     def _make_view(self, htmx=None, extra_attrs=None):
         # external imports
+        """Perform the make view operation."""
+        # external imports
         from htmx_views.views import HTMXProcessMixin
 
         class Concrete(HTMXProcessMixin, _StubBase):
+            """Provide the Concrete implementation."""
+
             def patch(self, request, *a, **kw):
+                """Perform the patch operation."""
                 return HttpResponse("patch")
 
             def post(self, request, *a, **kw):
+                """Perform the post operation."""
                 return HttpResponse("post")
 
             def put(self, request, *a, **kw):
+                """Perform the put operation."""
                 return HttpResponse("put")
 
         view = Concrete.__new__(Concrete)
@@ -898,9 +974,13 @@ class TestHTMXFormMixinDebugLogging:
 
     def _make_view(self, htmx=None, extra_attrs=None):
         # external imports
+        """Perform the make view operation."""
+        # external imports
         from htmx_views.views import HTMXFormMixin
 
         class Concrete(HTMXFormMixin, _StubBase):
+            """Provide the Concrete implementation."""
+
             pass
 
         view = Concrete.__new__(Concrete)

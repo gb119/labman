@@ -1,3 +1,5 @@
+"""Provide i18n functionality for the labman.settings package."""
+
 # Python imports
 from os.path import join
 

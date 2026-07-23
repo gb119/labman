@@ -22,12 +22,19 @@ from .models import Document, Equipment, UserListEntry
 class SelectDatefForm(forms.Form):
     """A simple form for selecting a date with auto-submit functionality.
 
-    This form provides a single date field that automatically submits when
-    a date is selected, useful for filtering or navigation based on dates.
+            This form provides a single date field that automatically submits when
+            a date is selected, useful for filtering or navigation based on dates.
 
     Attributes:
         date (forms.DateField): The date field with custom input widget that
             submits the form on change.
+
+
+    Examples:
+        Inspect the public interface in an interactive session::
+
+            >>> SelectDatefForm.__name__
+            'SelectDatefForm'
     """
 
     date = forms.DateField(widget=DateCustomInput(attrs={"onChange": "this.form.submit();"}))
@@ -36,9 +43,9 @@ class SelectDatefForm(forms.Form):
 class SignOffForm(forms.Form):
     """A form for recording document sign-off by users.
 
-    This form captures user acknowledgement of documents, including the
-    specific version signed. The user, document, and version fields are
-    hidden as they are typically pre-populated from the context.
+            This form captures user acknowledgement of documents, including the
+            specific version signed. The user, document, and version fields are
+            hidden as they are typically pre-populated from the context.
 
     Attributes:
         user (forms.ModelChoiceField): The user signing off the document,
@@ -49,6 +56,13 @@ class SignOffForm(forms.Form):
             signed, hidden field.
         signed (forms.BooleanField): Checkbox indicating the user has signed
             off the document.
+
+
+    Examples:
+        Inspect the public interface in an interactive session::
+
+            >>> SignOffForm.__name__
+            'SignOffForm'
     """
 
     user = forms.ModelChoiceField(Account.objects.all(), widget=forms.HiddenInput)
@@ -60,19 +74,28 @@ class SignOffForm(forms.Form):
 class UserListEnryForm(forms.ModelForm):
     """A form for editing user list entries associated with equipment.
 
-    This ModelForm allows editing of user list entries, which track which
-    users are authorised or associated with specific equipment. The equipment
-    field is hidden as it's typically pre-selected, and the user field uses
-    autocomplete for easy selection.
+            This ModelForm allows editing of user list entries, which track which
+            users are authorised or associated with specific equipment. The equipment
+            field is hidden as it's typically pre-selected, and the user field uses
+            autocomplete for easy selection.
 
     Attributes:
         Meta.model (UserListEntry): The model class for this form.
         Meta.exclude (list): Fields excluded from the form (hold, updated).
         Meta.widgets (dict): Custom widgets for form fields, including hidden
             equipment field and autocomplete user field.
+
+
+    Examples:
+        Inspect the public interface in an interactive session::
+
+            >>> UserListEnryForm.__name__
+            'UserListEnryForm'
     """
 
     class Meta:
+        """Configure the Meta class."""
+
         model = UserListEntry
         exclude = ["hold", "updated"]
         widgets = {
@@ -84,10 +107,10 @@ class UserListEnryForm(forms.ModelForm):
 class EquipmentForm(forms.ModelForm):
     """A form for creating and editing equipment records.
 
-    This ModelForm provides fields for managing equipment details including
-    name, description, owner, location, and offline status. Rich text editing
-    is provided for descriptions, and autocomplete widgets are used for owner
-    and location selection.
+            This ModelForm provides fields for managing equipment details including
+            name, description, owner, location, and offline status. Rich text editing
+            is provided for descriptions, and autocomplete widgets are used for owner
+            and location selection.
 
     Attributes:
         Meta.model (Equipment): The model class for this form.
@@ -95,9 +118,18 @@ class EquipmentForm(forms.ModelForm):
             owner, location, offline).
         Meta.widgets (dict): Custom widgets for form fields, including rich
             text editor for description and autocomplete for owner and location.
+
+
+    Examples:
+        Inspect the public interface in an interactive session::
+
+            >>> EquipmentForm.__name__
+            'EquipmentForm'
     """
 
     class Meta:
+        """Configure the Meta class."""
+
         model = Equipment
         fields = ["name", "description", "owner", "location", "offline"]
 

@@ -1,3 +1,5 @@
+"""Provide production functionality for the labman.settings package."""
+
 # Production settings
 # app imports
 from .common import *

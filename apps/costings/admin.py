@@ -24,9 +24,9 @@ from .resource import CostCentreResource, CostRateResource
 class CosRateAdmin(ImportExportModelAdmin):
     """Admin interface configuration for CostRate objects.
 
-    Manages cost rate definitions that specify different charging rates for
-    equipment usage. Cost rates can represent internal rates, external rates,
-    academic rates, or other pricing structures used in laboratory operations.
+            Manages cost rate definitions that specify different charging rates for
+            equipment usage. Cost rates can represent internal rates, external rates,
+            academic rates, or other pricing structures used in laboratory operations.
 
     Attributes:
         list_display (tuple):
@@ -35,6 +35,13 @@ class CosRateAdmin(ImportExportModelAdmin):
             Fields available for filtering in the admin sidebar.
         search_fields (tuple):
             Fields that can be searched in the admin search box.
+
+
+    Examples:
+        Inspect the public interface in an interactive session::
+
+            >>> CosRateAdmin.__name__
+            'CosRateAdmin'
     """
 
     list_display = ("name", "description")
@@ -47,6 +54,13 @@ class CosRateAdmin(ImportExportModelAdmin):
         Returns:
             (type):
                 The CostRateResource class used for exporting cost rate data.
+
+
+        Examples:
+            Inspect the public interface in an interactive session::
+
+                >>> callable(CosRateAdmin.get_export_resource_class)
+                True
         """
         return CostRateResource
 
@@ -56,6 +70,13 @@ class CosRateAdmin(ImportExportModelAdmin):
         Returns:
             (type):
                 The CostRateResource class used for importing cost rate data.
+
+
+        Examples:
+            Inspect the public interface in an interactive session::
+
+                >>> callable(CosRateAdmin.get_import_resource_class)
+                True
         """
         return CostRateResource
 
@@ -64,9 +85,9 @@ class CosRateAdmin(ImportExportModelAdmin):
 class CostCentreAdmin(ImportExportModelAdmin):
     """Admin interface configuration for CostCentre objects.
 
-    Manages cost centre codes used for financial tracking and reporting of
-    equipment usage charges. Cost centres typically represent departments,
-    projects, or grants that are charged for resource utilisation.
+            Manages cost centre codes used for financial tracking and reporting of
+            equipment usage charges. Cost centres typically represent departments,
+            projects, or grants that are charged for resource utilisation.
 
     Attributes:
         list_display (tuple):
@@ -75,6 +96,13 @@ class CostCentreAdmin(ImportExportModelAdmin):
             Fields available for filtering in the admin sidebar.
         search_fields (tuple):
             Fields that can be searched in the admin search box.
+
+
+    Examples:
+        Inspect the public interface in an interactive session::
+
+            >>> CostCentreAdmin.__name__
+            'CostCentreAdmin'
     """
 
     list_display = ("short_name", "name", "parent")
@@ -87,6 +115,13 @@ class CostCentreAdmin(ImportExportModelAdmin):
         Returns:
             (type):
                 The CostCentreResource class used for exporting cost centre data.
+
+
+        Examples:
+            Inspect the public interface in an interactive session::
+
+                >>> callable(CostCentreAdmin.get_export_resource_class)
+                True
         """
         return CostCentreResource
 
@@ -96,5 +131,12 @@ class CostCentreAdmin(ImportExportModelAdmin):
         Returns:
             (type):
                 The CostCentreResource class used for importing cost centre data.
+
+
+        Examples:
+            Inspect the public interface in an interactive session::
+
+                >>> callable(CostCentreAdmin.get_import_resource_class)
+                True
         """
         return CostCentreResource

@@ -30,10 +30,12 @@ class _MinimalAutocomplete:
 
     @classmethod
     def search_items(cls, search, context):
+        """Perform the search items operation."""
         return []
 
     @classmethod
     def get_items_from_keys(cls, keys, context):
+        """Perform the get items from keys operation."""
         return []
 
 
@@ -317,8 +319,8 @@ class TestReplaceOrToggle:
 def _register_test_ac(name):
     """Register a test autocomplete class and return it.
 
-    Skips registration if the name is already taken (e.g., from a prior run
-    in the same process) so tests are idempotent.
+        Skips registration if the name is already taken (e.g., from a prior run
+        in the same process) so tests are idempotent.
 
     Args:
         name (str): The route name to register under.
@@ -333,12 +335,16 @@ def _register_test_ac(name):
         return _ac_registry[name]
 
     class _TestAC(Autocomplete):
+        """Provide the test autocomplete implementation."""
+
         @classmethod
         def search_items(cls, search, context):
+            """Perform the search items operation."""
             return [{"key": "1", "label": "Alpha"}, {"key": "2", "label": "Beta"}]
 
         @classmethod
         def get_items_from_keys(cls, keys, context):
+            """Perform the get items from keys operation."""
             items = {"1": "Alpha", "2": "Beta"}
             return [{"key": k, "label": items[k]} for k in keys if k in items]
 
@@ -715,11 +721,14 @@ class TestModelAutocomplete:
         from autocomplete.shortcuts import ModelAutocomplete
 
         class NoAttrs(ModelAutocomplete):
+            """Provide the NoAttrs implementation."""
+
             model = object  # placeholder
             search_attrs = []
 
             @classmethod
             def get_items_from_keys(cls, keys, context):
+                """Perform the get items from keys operation."""
                 return []
 
         with pytest.raises(ValueError):
@@ -731,11 +740,14 @@ class TestModelAutocomplete:
         from autocomplete.shortcuts import ModelAutocomplete
 
         class NoModel(ModelAutocomplete):
+            """Provide the NoModel implementation."""
+
             model = None
             search_attrs = ["name"]
 
             @classmethod
             def search_items(cls, search, context):
+                """Perform the search items operation."""
                 return []
 
         with pytest.raises(ValueError):
@@ -1223,11 +1235,14 @@ class TestModelAutocompleteSuccessPaths:
         from autocomplete.shortcuts import ModelAutocomplete
 
         class WithAttrs(ModelAutocomplete):
+            """Provide the WithAttrs implementation."""
+
             model = object
             search_attrs = ["name", "email"]
 
             @classmethod
             def get_items_from_keys(cls, keys, context):
+                """Perform the get items from keys operation."""
                 return []
 
         assert WithAttrs.get_search_attrs() == ["name", "email"]
@@ -1238,11 +1253,14 @@ class TestModelAutocompleteSuccessPaths:
         from autocomplete.shortcuts import ModelAutocomplete
 
         class WithModel(ModelAutocomplete):
+            """Provide the WithModel implementation."""
+
             model = object
             search_attrs = ["name"]
 
             @classmethod
             def search_items(cls, search, context):
+                """Perform the search items operation."""
                 return []
 
         assert WithModel.get_model() is object
@@ -1330,15 +1348,19 @@ class TestItemsViewMaxResults:
         if ac_name not in _ac_registry:
 
             class _LargeAC(Autocomplete):
+                """Provide the _LargeAC implementation."""
+
                 max_results = 2  # low limit for testing
 
                 @classmethod
                 def search_items(cls, search, context):
                     # Return more items than max_results
+                    """Perform the search items operation."""
                     return [{"key": str(i), "label": f"Item {i}"} for i in range(10)]
 
                 @classmethod
                 def get_items_from_keys(cls, keys, context):
+                    """Perform the get items from keys operation."""
                     return [{"key": k, "label": f"Item {k}"} for k in keys]
 
             register(_LargeAC, route_name=ac_name)
@@ -1461,24 +1483,32 @@ class TestAutocompleteRegister:
         if ac_name not in _ac_registry:
 
             class _FirstAC(Autocomplete):
+                """Provide the _FirstAC implementation."""
+
                 @classmethod
                 def search_items(cls, s, ctx):
+                    """Perform the search items operation."""
                     return []
 
                 @classmethod
                 def get_items_from_keys(cls, k, ctx):
+                    """Perform the get items from keys operation."""
                     return []
 
             register(_FirstAC, route_name=ac_name)
 
         # Try to register a second class under the same name
         class _SecondAC(Autocomplete):
+            """Provide the _SecondAC implementation."""
+
             @classmethod
             def search_items(cls, s, ctx):
+                """Perform the search items operation."""
                 return []
 
             @classmethod
             def get_items_from_keys(cls, k, ctx):
+                """Perform the get items from keys operation."""
                 return []
 
         with pytest.raises(ValueError, match="already registered"):
@@ -1494,8 +1524,11 @@ class TestAutocompleteValidate:
         from autocomplete.core import Autocomplete
 
         class NoSearch(Autocomplete):
+            """Provide the NoSearch implementation."""
+
             @classmethod
             def get_items_from_keys(cls, k, ctx):
+                """Perform the get items from keys operation."""
                 return []
 
         # Remove search_items to simulate a missing implementation
@@ -1511,8 +1544,11 @@ class TestAutocompleteValidate:
         from autocomplete.core import Autocomplete
 
         class NoGetItems(Autocomplete):
+            """Provide the NoGetItems implementation."""
+
             @classmethod
             def search_items(cls, s, ctx):
+                """Perform the search items operation."""
                 return []
 
         # Remove get_items_from_keys to simulate a missing implementation

@@ -1,4 +1,4 @@
-"""labman URL Configuration
+"""Configure the top-level Labman URL routes.
 
 The `urlpatterns` list routes URLs to views. For more information please see:
     https://docs.djangoproject.com/en/1.11/topics/http/urls/

@@ -1,9 +1,5 @@
 # -*- coding: utf-8 -*-
-"""
-Created on Sun Aug  6 16:31:16 2023
-
-@author: phygbu
-"""
+"""Define URL routes and path converters for shared Labman utilities."""
 # Python imports
 from os.path import basename, dirname
 
@@ -15,12 +11,51 @@ from . import views
 
 
 class FloatUrlParameterConverter:
+    """Provide the FloatUrlParameterConverter implementation.
+
+    Examples:
+        Inspect the public interface in an interactive session::
+
+            >>> FloatUrlParameterConverter.__name__
+            'FloatUrlParameterConverter'
+    """
+
     regex = r"[0-9]+\.?[0-9]+"
 
     def to_python(self, value):
+        """Perform the to python operation.
+
+        Args:
+            value (object):
+                Value supplied for ``value``.
+        Returns:
+            (object):
+                The result of the operation.
+
+        Examples:
+            Inspect the public interface in an interactive session::
+
+                >>> callable(FloatUrlParameterConverter.to_python)
+                True
+        """
         return float(value)
 
     def to_url(self, value):
+        """Perform the to url operation.
+
+        Args:
+            value (object):
+                Value supplied for ``value``.
+        Returns:
+            (object):
+                The result of the operation.
+
+        Examples:
+            Inspect the public interface in an interactive session::
+
+                >>> callable(FloatUrlParameterConverter.to_url)
+                True
+        """
         return str(value)
 
 

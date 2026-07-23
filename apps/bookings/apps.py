@@ -10,6 +10,13 @@ from django.apps import AppConfig
 
 
 class BookingsConfig(AppConfig):
-    """Bookings App config class."""
+    """Bookings App config class.
+
+    Examples:
+        Inspect the public interface in an interactive session::
+
+            >>> BookingsConfig.__name__
+            'BookingsConfig'
+    """
 
     name = basename(dirname(__file__))

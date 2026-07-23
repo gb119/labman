@@ -19,13 +19,37 @@ from .models import Account
 class UserListAutoComplete(ModelAutocomplete):
     """An Autocomplete class for Accounts that are users of a piece of equipment.
 
-    The Equipment item must be in a field called equipment in the form."""
+            The Equipment item must be in a field called equipment in the form.
+
+    Examples:
+        Inspect the public interface in an interactive session::
+
+            >>> UserListAutoComplete.__name__
+            'UserListAutoComplete'
+    """
 
     model = Account
     search_attrs = ["first_name", "last_name", "username"]
 
     @classmethod
     def get_query_filtered_queryset(cls, search, context):
+        """Perform the get query filtered queryset operation.
+
+        Args:
+            search (object):
+                Value supplied for ``search``.
+            context (object):
+                Value supplied for ``context``.
+        Returns:
+            (object):
+                The result of the operation.
+
+        Examples:
+            Inspect the public interface in an interactive session::
+
+                >>> callable(UserListAutoComplete.get_query_filtered_queryset)
+                True
+        """
         base_qs = cls.get_queryset()
         if equipment := context.request.GET.get("equipment", None):
             try:
@@ -43,7 +67,14 @@ class UserListAutoComplete(ModelAutocomplete):
 class AllUsersComplete(ModelAutocomplete):
     """An Autocomplete class for Accounts that are users of a piece of equipment.
 
-    The Equipment item must be in a field called equipment in the form."""
+            The Equipment item must be in a field called equipment in the form.
+
+    Examples:
+        Inspect the public interface in an interactive session::
+
+            >>> AllUsersComplete.__name__
+            'AllUsersComplete'
+    """
 
     model = Account
     search_attrs = ["first_name", "last_name", "username"]

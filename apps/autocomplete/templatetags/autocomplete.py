@@ -1,6 +1,4 @@
-"""
-Django template tags to facilitate rendering of the component
-"""
+"""Provide Django template tags for rendering autocomplete components."""
 
 # Python imports
 import hashlib
@@ -20,14 +18,44 @@ register = template.Library()
 @register.filter
 @stringfilter
 def make_id(value):
-    """Generate an ID given a string, to use as element IDs in HTML"""
+    """Generate an ID given a string, to use as element IDs in HTML.
+
+    Args:
+        value (object):
+            Value supplied for ``value``.
+    Returns:
+        (object):
+            The result of the operation.
+
+    Examples:
+        Inspect the public interface in an interactive session::
+
+            >>> callable(make_id)
+            True
+    """
     return hashlib.sha1(value.encode("utf-8")).hexdigest()
 
 
 @register.filter()
 @stringfilter
 def search_highlight(value, search):
-    """Surround the section of text matching the search with a classed span"""
+    """Surround the section of text matching the search with a classed span.
+
+    Args:
+        value (object):
+            Value supplied for ``value``.
+        search (object):
+            Value supplied for ``search``.
+    Returns:
+        (object):
+            The result of the operation.
+
+    Examples:
+        Inspect the public interface in an interactive session::
+
+            >>> callable(search_highlight)
+            True
+    """
     if search == "":
         return value
     try:
@@ -43,17 +71,35 @@ def search_highlight(value, search):
 
 @register.simple_tag(takes_context=True)
 def use_string(context, name, strings):
-    """
-    Loads the string from a template or via the variable dict `strings` if the `name`
-    key is defined within.  This allows strings to be overriden in 2 ways, either by
-    user defined templates which will override *all* instances, or via the
-    `custom_strings` property of the Autocomplete instance which allows individual
-    customization.
+    """.
+            Loads the string from a template or via the variable dict `strings` if the `name`
+            key is defined within.  This allows strings to be overriden in 2 ways, either by
+            user defined templates which will override *all* instances, or via the
+            `custom_strings` property of the Autocomplete instance which allows individual
+            customization.
 
-    When `name` is not found in `strings`, the template name becomes:
+            When `name` is not found in `strings`, the template name becomes:
 
-    autocomplete/strings/{name}.html
+            autocomplete/strings/{name}.html
 
+
+
+    Args:
+        context (object):
+            Value supplied for ``context``.
+        name (object):
+            Value supplied for ``name``.
+        strings (object):
+            Value supplied for ``strings``.
+    Returns:
+        (object):
+            The result of the operation.
+
+    Examples:
+        Inspect the public interface in an interactive session::
+
+            >>> callable(use_string)
+            True
     """
     if name in strings:
         return strings[name]
@@ -63,8 +109,25 @@ def use_string(context, name, strings):
 
 @register.simple_tag
 def substitute_string(template_str, **kwargs):
-    """
-    Substitute the template string with the kwargs
+    """.
+            Substitute the template string with the kwargs
+
+
+    Args:
+        template_str (object):
+            Value supplied for ``template_str``.
+    Keyword Parameters:
+        **kwargs (object):
+            Value supplied for ``kwargs``.
+    Returns:
+        (object):
+            The result of the operation.
+
+    Examples:
+        Inspect the public interface in an interactive session::
+
+            >>> callable(substitute_string)
+            True
     """
     as_strings = {k: str(v) for k, v in kwargs.items()}
     return template_str % as_strings
@@ -72,18 +135,25 @@ def substitute_string(template_str, **kwargs):
 
 @register.simple_tag
 def autocomplete(name, selected=None):
-    """
-    Tag used to render autocomplete component in a Django Template
+    """Render an autocomplete component in a Django template.
 
-    Parameters:
+    Args:
+        name (str):
+            The unique component and route name.
 
-        name        Name of the component.
-                    The name is used to generate routes and must be unique.
-                    Required.
+    Keyword Parameters:
+        selected (iterable | None):
+            The values to select initially.
 
-        selected    Comma separated list of selected values
-                    Defaults to None
+    Returns:
+        (SafeString):
+            The HTML which loads the autocomplete component.
 
+    Examples:
+        Inspect the public interface in an interactive session::
+
+            >>> callable(autocomplete)
+            True
     """
     options_selected = ",".join([str(x) for x in selected]) if selected is not None else ""
 
@@ -96,41 +166,72 @@ def autocomplete(name, selected=None):
 
 @register.filter
 def js_boolean(value):
-    """
-    Convert the value to a javascript boolean
+    """.
+            Convert the value to a javascript boolean
+
+
+    Args:
+        value (object):
+            Value supplied for ``value``.
+    Returns:
+        (object):
+            The result of the operation.
+
+    Examples:
+        Inspect the public interface in an interactive session::
+
+            >>> callable(js_boolean)
+            True
     """
     return "true" if value else "false"
 
 
 @register.simple_tag
 def autocomplete_head(bootstrap=False):
-    """
-    Renders the styles required for the component
+    """Render the styles required by autocomplete components.
 
-    Parameters:
+    Keyword Parameters:
+        bootstrap (bool):
+            Whether to load Bootstrap CSS from a content delivery network.
 
-        bootstrap   Set to true if the bootstrap css should be loaded from cdn
-                    Defaults to False.
+    Returns:
+        (str):
+            The rendered stylesheet tags.
+
+    Examples:
+        Inspect the public interface in an interactive session::
+
+            >>> callable(autocomplete_head)
+            True
     """
     return loader.get_template("autocomplete/head.html", using="django").render({"bootstrap": bootstrap})
 
 
 @register.simple_tag(takes_context=True)
 def autocomplete_scripts(context, bootstrap=False, htmx=False, htmx_csrf=False):
-    """
-    Renders the required script tags for the component
+    """Render the scripts required by autocomplete components.
 
-    Parameters:
+    Args:
+        context (django.template.Context):
+            The current template context.
 
-        bootstrap   Set to true if bootstrap should be loaded from cdn
-                    Defaults to False.
+    Keyword Parameters:
+        bootstrap (bool):
+            Whether to load Bootstrap from a content delivery network.
+        htmx (bool):
+            Whether to load HTMX from a content delivery network.
+        htmx_csrf (bool):
+            Whether to configure HTMX with the CSRF token.
 
-        htmx        Set to true if htmx should be loaded from cdn
-                    Defaults to False.
+    Returns:
+        (str):
+            The rendered script tags.
 
-        htmx_csrf   Set to true if htmx should be initialized with csrf token
-                    Defaults to False.
+    Examples:
+        Inspect the public interface in an interactive session::
 
+            >>> callable(autocomplete_scripts)
+            True
     """
     return loader.get_template("autocomplete/scripts.html", using="django").render(
         {
@@ -144,15 +245,48 @@ def autocomplete_scripts(context, bootstrap=False, htmx=False, htmx_csrf=False):
 
 @register.simple_tag
 def value_if_truthy(test, value, default=""):
-    """
-    Return the value if it is truthy, otherwise return the default
+    """Return a value when a test is truthy, or a default otherwise.
+
+    Args:
+        test (object):
+            The value whose truthiness is tested.
+        value (object):
+            The result to return when ``test`` is truthy.
+
+    Keyword Parameters:
+        default (object):
+            The result to return when ``test`` is falsy.
+
+    Returns:
+        (object):
+            ``value`` when ``test`` is truthy; otherwise ``default``.
+
+    Examples:
+        Inspect the public interface in an interactive session::
+
+            >>> callable(value_if_truthy)
+            True
     """
     return value if test else default
 
 
 @register.simple_tag(takes_context=True)
 def base_configurable_values_hx_params(context):
+    """Perform the base configurable values hx params operation.
 
+    Args:
+        context (object):
+            Value supplied for ``context``.
+    Returns:
+        (object):
+            The result of the operation.
+
+    Examples:
+        Inspect the public interface in an interactive session::
+
+            >>> callable(base_configurable_values_hx_params)
+            True
+    """
     field_name = context.get("field_name")
     required = context.get("required")
     disabled = context.get("disabled")
@@ -178,9 +312,23 @@ def base_configurable_values_hx_params(context):
 
 @register.simple_tag(takes_context=True)
 def base_configurable_hx_vals(context):
-    """
-    json-like format
-    must be wrapped in curly braces
+    """.
+            json-like format
+            must be wrapped in curly braces
+
+
+    Args:
+        context (object):
+            Value supplied for ``context``.
+    Returns:
+        (object):
+            The result of the operation.
+
+    Examples:
+        Inspect the public interface in an interactive session::
+
+            >>> callable(base_configurable_hx_vals)
+            True
     """
 
     field_name = context.get("field_name")
@@ -213,6 +361,25 @@ def base_configurable_hx_vals(context):
 
 
 def stringify_extra_hx_vals(extra_hx_vals_dict):
+    """Perform the stringify extra hx vals operation.
+
+    Args:
+        extra_hx_vals_dict (object):
+            Value supplied for ``extra_hx_vals_dict``.
+    Returns:
+        (object):
+            The result of the operation.
+
+    Raises:
+        ValueError:
+            If any value contains a single quote.
+
+    Examples:
+        Inspect the public interface in an interactive session::
+
+            >>> callable(stringify_extra_hx_vals)
+            True
+    """
     if any("'" in val for val in extra_hx_vals_dict.values()):
         raise ValueError(
             "Extra hx vals cannot contain single quotes, consider backticks for JS expressions or escaping double-quotes"
@@ -223,10 +390,24 @@ def stringify_extra_hx_vals(extra_hx_vals_dict):
 
 @register.simple_tag(takes_context=True)
 def text_input_hx_vals(context):
-    """
-    items has augments hx-vals,
-    - it adds JS value of the search input
-    - users can add more values in their class
+    """.
+            items has augments hx-vals,
+            - it adds JS value of the search input
+            - users can add more values in their class
+
+
+    Args:
+        context (object):
+            Value supplied for ``context``.
+    Returns:
+        (object):
+            The result of the operation.
+
+    Examples:
+        Inspect the public interface in an interactive session::
+
+            >>> callable(text_input_hx_vals)
+            True
     """
 
     base_hx_vals_str = base_configurable_hx_vals(context)

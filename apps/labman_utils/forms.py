@@ -35,12 +35,19 @@ Document = apps.get_model(app_label="labman_utils", model_name="document")
 class SortedCheckboxMultipleChoiceField(SortedMultipleChoiceField):
     """A multiple choice field with sorted checkboxes for user selection.
 
-    This field extends SortedMultipleChoiceField to use checkbox widgets whilst maintaining
-    the sorting functionality for choice options.
+            This field extends SortedMultipleChoiceField to use checkbox widgets whilst maintaining
+            the sorting functionality for choice options.
 
     Attributes:
         widget (SortedCheckboxSelectMultiple):
             The widget used to render the field as sorted checkboxes.
+
+
+    Examples:
+        Inspect the public interface in an interactive session::
+
+            >>> SortedCheckboxMultipleChoiceField.__name__
+            'SortedCheckboxMultipleChoiceField'
     """
 
     widget = SortedCheckboxSelectMultiple
@@ -52,6 +59,13 @@ class DateTimeCustomInput(forms.DateTimeInput):
     Attributes:
         input_type (str):
             Set to 'datetime-local' to use the HTML5 datetime picker.
+
+
+    Examples:
+        Inspect the public interface in an interactive session::
+
+            >>> DateTimeCustomInput.__name__
+            'DateTimeCustomInput'
     """
 
     input_type = "datetime-local"
@@ -63,6 +77,13 @@ class DateCustomInput(forms.DateInput):
     Attributes:
         input_type (str):
             Set to 'date' to use the HTML5 date picker.
+
+
+    Examples:
+        Inspect the public interface in an interactive session::
+
+            >>> DateCustomInput.__name__
+            'DateCustomInput'
     """
 
     input_type = "date"
@@ -74,6 +95,13 @@ class TimeCustomInput(forms.TimeInput):
     Attributes:
         input_type (str):
             Set to 'time' to use the HTML5 time picker.
+
+
+    Examples:
+        Inspect the public interface in an interactive session::
+
+            >>> TimeCustomInput.__name__
+            'TimeCustomInput'
     """
 
     input_type = "time"
@@ -82,43 +110,63 @@ class TimeCustomInput(forms.TimeInput):
 class DocumentDialogForm(forms.ModelForm):
     """Form for creating and editing documents associated with equipment or locations.
 
-    This form allows users to add or modify document information including title,
-    description, category, version, review date, and the file itself. The form can
-    be associated with either an equipment item or a location through hidden fields.
+            This form allows users to add or modify document information including title,
+            description, category, version, review date, and the file itself. The form can
+            be associated with either an equipment item or a location through hidden fields.
 
     Attributes:
         equipment (forms.ModelChoiceField):
             Hidden field for associating the document with an equipment item.
         location (forms.ModelChoiceField):
             Hidden field for associating the document with a location.
+
+
+    Examples:
+        Inspect the public interface in an interactive session::
+
+            >>> DocumentDialogForm.__name__
+            'DocumentDialogForm'
     """
 
     equipment = forms.ModelChoiceField(queryset=Equipment.objects.all(), required=False, widget=forms.HiddenInput())
     location = forms.ModelChoiceField(queryset=Location.objects.all(), required=False, widget=forms.HiddenInput())
 
     class Meta:
+        """Configure the Meta class."""
+
         model = Document
         fields = ["title", "extra_text", "category", "version", "review_date", "saved_file"]
         widgets = {"review_date": DateCustomInput()}
 
     class Media:
+        """Configure the Media class."""
+
         js: ["/static/bootstrap_datepick_plus/js/datepicker-widget.js"]
 
 
 class DocumentLinksForm(forms.ModelForm):
     """Form for managing associations between documents and equipment or locations.
 
-    This form provides an interface for linking existing documents to multiple equipment
-    items and locations using sorted checkbox selection fields.
+            This form provides an interface for linking existing documents to multiple equipment
+            items and locations using sorted checkbox selection fields.
 
     Attributes:
         equipment (SortedCheckboxMultipleChoiceField):
             Field for selecting multiple equipment items to link to the document.
         location (SortedCheckboxMultipleChoiceField):
             Field for selecting multiple locations to link to the document.
+
+
+    Examples:
+        Inspect the public interface in an interactive session::
+
+            >>> DocumentLinksForm.__name__
+            'DocumentLinksForm'
     """
 
     class Meta:
+        """Configure the Meta class."""
+
         model = Document
         fields = ["id"]
         widgets = {"id": forms.HiddenInput()}
@@ -132,9 +180,9 @@ class DocumentLinksForm(forms.ModelForm):
 class PhotoDialogForm(forms.ModelForm):
     """Form for uploading and editing photos associated with equipment, locations, or accounts.
 
-    This form handles photo uploads and metadata including title, caption, and slug.
-    The slug is automatically generated if not provided, based on the associated entity's
-    name.
+            This form handles photo uploads and metadata including title, caption, and slug.
+            The slug is automatically generated if not provided, based on the associated entity's
+            name.
 
     Attributes:
         equipment (forms.ModelChoiceField):
@@ -143,6 +191,13 @@ class PhotoDialogForm(forms.ModelForm):
             Hidden field for associating the photo with a location.
         account (forms.ModelChoiceField):
             Hidden field for associating the photo with an account.
+
+
+    Examples:
+        Inspect the public interface in an interactive session::
+
+            >>> PhotoDialogForm.__name__
+            'PhotoDialogForm'
     """
 
     equipment = forms.ModelChoiceField(queryset=Equipment.objects.all(), required=False, widget=forms.HiddenInput())
@@ -150,6 +205,8 @@ class PhotoDialogForm(forms.ModelForm):
     account = forms.ModelChoiceField(queryset=Account.objects.all(), required=False, widget=forms.HiddenInput())
 
     class Meta:
+        """Configure the Meta class."""
+
         model = Photo
         fields = ["image", "title", "caption", "slug", "id"]
         widgets = {"slug": forms.HiddenInput(), "id": forms.HiddenInput()}
@@ -185,6 +242,13 @@ class PhotoDialogForm(forms.ModelForm):
             from the associated equipment, location, or account. The slug is generated
             using Django's slugify function on the entity's name. If no slug can be
             determined, it is set to None to trigger proper object save behaviour.
+
+
+        Examples:
+            Inspect the public interface in an interactive session::
+
+                >>> callable(PhotoDialogForm.clean)
+                True
         """
         cleaned_data = super().clean()
         for fld in ["equipment", "location", "account"]:
@@ -200,17 +264,26 @@ class PhotoDialogForm(forms.ModelForm):
 class PhotoLinksForm(forms.ModelForm):
     """Form for managing associations between photos and equipment or locations.
 
-    This form provides an interface for linking existing photos to multiple equipment
-    items and locations using sorted checkbox selection fields.
+            This form provides an interface for linking existing photos to multiple equipment
+            items and locations using sorted checkbox selection fields.
 
     Attributes:
         equipment (SortedCheckboxMultipleChoiceField):
             Field for selecting multiple equipment items to link to the photo.
         location (SortedCheckboxMultipleChoiceField):
             Field for selecting multiple locations to link to the photo.
+
+
+    Examples:
+        Inspect the public interface in an interactive session::
+
+            >>> PhotoLinksForm.__name__
+            'PhotoLinksForm'
     """
 
     class Meta:
+        """Configure the Meta class."""
+
         model = Photo
         fields = ["id"]
         widgets = {"id": forms.HiddenInput()}
@@ -224,9 +297,9 @@ class PhotoLinksForm(forms.ModelForm):
 class FlatPageForm(forms.ModelForm):
     """Form for creating and editing flat pages with obfuscated HTML content.
 
-    This form uses an obfuscated TinyMCE editor and custom field to safely transmit
-    HTML content through web application firewalls. It can be associated with equipment
-    or location entities through hidden fields.
+            This form uses an obfuscated TinyMCE editor and custom field to safely transmit
+            HTML content through web application firewalls. It can be associated with equipment
+            or location entities through hidden fields.
 
     Attributes:
         equipment (forms.ModelChoiceField):
@@ -238,9 +311,18 @@ class FlatPageForm(forms.ModelForm):
         The content field uses ObfuscatedTinyMCE widget and ObfuscatedCharField to
         handle ROT13 and Base64 encoding/decoding, allowing safe transmission of HTML
         content that might otherwise be blocked by security filters.
+
+
+    Examples:
+        Inspect the public interface in an interactive session::
+
+            >>> FlatPageForm.__name__
+            'FlatPageForm'
     """
 
     class Meta:
+        """Configure the Meta class."""
+
         model = FlatPage
         fields = ["title", "url", "content", "id"]
         widgets = {"content": ObfuscatedTinyMCE(), "id": forms.HiddenInput()}
@@ -253,17 +335,26 @@ class FlatPageForm(forms.ModelForm):
 class FlatPagesLinksForm(forms.ModelForm):
     """Form for managing associations between flat pages and equipment or locations.
 
-    This form provides an interface for linking existing flat pages to multiple equipment
-    items and locations using sorted checkbox selection fields.
+            This form provides an interface for linking existing flat pages to multiple equipment
+            items and locations using sorted checkbox selection fields.
 
     Attributes:
         equipment (SortedCheckboxMultipleChoiceField):
             Field for selecting multiple equipment items to link to the flat page.
         location (SortedCheckboxMultipleChoiceField):
             Field for selecting multiple locations to link to the flat page.
+
+
+    Examples:
+        Inspect the public interface in an interactive session::
+
+            >>> FlatPagesLinksForm.__name__
+            'FlatPagesLinksForm'
     """
 
     class Meta:
+        """Configure the Meta class."""
+
         model = FlatPage
         fields = ["id"]
         widgets = {"id": forms.HiddenInput()}

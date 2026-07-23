@@ -1,11 +1,5 @@
 # -*- coding: utf-8 -*-
-"""
-Read any individual app .api modules
-
-Created on Sun Jun 25 14:43:10 2023
-
-@author: phygbu
-"""
+"""Discover application API modules and combine their URL patterns."""
 __all__ = ["urlpatterns"]
 # Python imports
 from pathlib import Path

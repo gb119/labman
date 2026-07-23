@@ -24,7 +24,21 @@ DEFAULT_TZ = pytz.timezone(settings.TIME_ZONE)
 
 
 def calendar_date_vector(date: Union[Date, dt]) -> List[Date]:
-    """Get the dates for a weekly calendar that includes date."""
+    """Get the dates for a weekly calendar that includes date.
+
+    Args:
+        date (Union[Date, dt]):
+            Value supplied for ``date``.
+    Returns:
+        (List[Date]):
+            The result of the operation.
+
+    Examples:
+        Inspect the public interface in an interactive session::
+
+            >>> callable(calendar_date_vector)
+            True
+    """
     start_day = int(config.CALENDAR_START_DAY)
     if isinstance(date, Date):
         date = dt.combine(date, Time(), tzinfo=DEFAULT_TZ)
@@ -34,7 +48,18 @@ def calendar_date_vector(date: Union[Date, dt]) -> List[Date]:
 
 
 def calendar_time_vector() -> List[Time]:
-    """Return an array of times with which to construct a calendar."""
+    """Return an array of times with which to construct a calendar.
+
+    Returns:
+        (List[Time]):
+            The result of the operation.
+
+    Examples:
+        Inspect the public interface in an interactive session::
+
+            >>> callable(calendar_time_vector)
+            True
+    """
     start = config.CALENDAR_START_TIME
     end = config.CALENDAR_END_TIME
     start = dt.combine(Date(1, 1, 1), start, tzinfo=DEFAULT_TZ)
@@ -46,7 +71,21 @@ def calendar_time_vector() -> List[Time]:
 
 
 def yyyymmdd_to_date(value: int) -> Date:
-    """Convert a datestampt to a datetime.Date."""
+    """Convert a datestampt to a datetime.Date.
+
+    Args:
+        value (int):
+            Value supplied for ``value``.
+    Returns:
+        (Date):
+            The result of the operation.
+
+    Examples:
+        Inspect the public interface in an interactive session::
+
+            >>> callable(yyyymmdd_to_date)
+            True
+    """
     value = str(value).strip()
     return DEFAULT_TZ.localize(dt.strptime(value, "%Y%m%d")).date()
 
@@ -54,7 +93,29 @@ def yyyymmdd_to_date(value: int) -> Date:
 def datetime_to_coord(
     target: dt, date_vec: List[Date], time_vec: List[Time], mode: str = "nearest"
 ) -> Tuple[int, int]:
-    """Workout a target datetime's position in time_vec,date_vec."""
+    """Workout a target datetime's position in time_vec,date_vec.
+
+    Args:
+        target (dt):
+            Value supplied for ``target``.
+        date_vec (List[Date]):
+            Value supplied for ``date_vec``.
+        time_vec (List[Time]):
+            Value supplied for ``time_vec``.
+
+    Keyword Parameters:
+        mode (str):
+            Value supplied for ``mode``.
+    Returns:
+        (Tuple[int, int]):
+            The result of the operation.
+
+    Examples:
+        Inspect the public interface in an interactive session::
+
+            >>> callable(datetime_to_coord)
+            True
+    """
     data = np.zeros(len(date_vec) * len(time_vec))
     for idt, date in enumerate(date_vec):
         for itt, time in enumerate(time_vec):
@@ -85,7 +146,14 @@ def datetime_to_coord(
 
 
 class CalTable(Table):
-    """Subclass Table to mae something suitable for making a calendar from."""
+    """Subclass Table to mae something suitable for making a calendar from.
+
+    Examples:
+        Inspect the public interface in an interactive session::
+
+            >>> CalTable.__name__
+            'CalTable'
+    """
 
     def __init__(self, *args, **kargs):
         """Set up time and date vectors."""
@@ -129,7 +197,14 @@ class CalTable(Table):
         self.build_table()
 
     def build_table(self):
-        """Build the equipment table."""
+        """Build the equipment table.
+
+        Examples:
+            Inspect the public interface in an interactive session::
+
+                >>> callable(CalTable.build_table)
+                True
+        """
         self[0].header = True
         self[:, 0].header = True
         for index_col, date in enumerate(self.date_vec, start=1):
@@ -171,7 +246,25 @@ class CalTable(Table):
         self.classes += " table col-md-10 table-hover"
 
     def fill_entries(self, equipment):
-        """Fill in the entries for this item of equipment."""
+        """Fill in the entries for this item of equipment.
+
+        Args:
+            equipment (object):
+                Value supplied for ``equipment``.
+        Returns:
+            (object):
+                The result of the operation.
+
+        Raises:
+            ValueError:
+                If the equipment is not represented in the table.
+
+        Examples:
+            Inspect the public interface in an interactive session::
+
+                >>> callable(CalTable.fill_entries)
+                True
+        """
         # Locate the bit of the table relevant to this equipment
         for ix, equip in enumerate(self.equip_vec):
             if equip.pk == equipment.pk:

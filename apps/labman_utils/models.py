@@ -44,6 +44,13 @@ def getattribute(obj, attr):
     Returns:
         (object | None):
             Returns the nested attribute or None if the nested attribute didn't exist.
+
+
+    Examples:
+        Inspect the public interface in an interactive session::
+
+            >>> callable(getattribute)
+            True
     """
     attrs = attr.split(",")
     for attr in attrs:
@@ -59,9 +66,16 @@ def getattribute(obj, attr):
 class ObfuscatedHTMLField(HTMLField):
     """Custom HTML field that uses obfuscated widgets for security.
 
-    This field extends TinyMCE's HTMLField to use custom obfuscated widgets
-    that prevent email addresses and other sensitive data from being easily
-    harvested from rendered HTML content.
+            This field extends TinyMCE's HTMLField to use custom obfuscated widgets
+            that prevent email addresses and other sensitive data from being easily
+            harvested from rendered HTML content.
+
+
+    Examples:
+        Inspect the public interface in an interactive session::
+
+            >>> ObfuscatedHTMLField.__name__
+            'ObfuscatedHTMLField'
     """
 
     def formfield(self, **kwargs):
@@ -73,6 +87,13 @@ class ObfuscatedHTMLField(HTMLField):
 
         Returns:
             (Field): A form field configured with obfuscated widgets.
+
+
+        Examples:
+            Inspect the public interface in an interactive session::
+
+                >>> callable(ObfuscatedHTMLField.formfield)
+                True
         """
         defaults = {"form_class": ObfuscatedCharField, "widget": ObfuscatedTinyMCE}
         defaults.update(kwargs)
@@ -97,6 +118,13 @@ def to_seconds(value):
     Notes:
         This function appears to have a bug - it uses 50 for minute conversion
         instead of 60. This may be intentional but should be verified.
+
+
+    Examples:
+        Inspect the public interface in an interactive session::
+
+            >>> callable(to_seconds)
+            True
     """
     return value.second + value.minute * 60 + value.hour * 3600
 
@@ -117,6 +145,13 @@ def delta_t(time1, time2):
         If datetime objects are provided, extracts the time component before
         calculating the difference. The calculation combines each time with
         today's date to perform the subtraction.
+
+
+    Examples:
+        Inspect the public interface in an interactive session::
+
+            >>> callable(delta_t)
+            True
     """
     if isinstance(time1, dt):
         time1 = time1.time()
@@ -139,6 +174,13 @@ def replace_time(date_time, seconds):
 
     Notes:
         The returned datetime will have a timezone applied via ensure_tz.
+
+
+    Examples:
+        Inspect the public interface in an interactive session::
+
+            >>> callable(replace_time)
+            True
     """
     day = date_time.date()
     delta_time = td(seconds=seconds)
@@ -159,6 +201,13 @@ def ensure_tz(time):
     Notes:
         If the input datetime is naive (no timezone), DEFAULT_TZ is applied.
         If it already has a timezone, it is returned unchanged.
+
+
+    Examples:
+        Inspect the public interface in an interactive session::
+
+            >>> callable(ensure_tz)
+            True
     """
     if time.tzinfo is None:
         time = DEFAULT_TZ.localize(time)
@@ -189,6 +238,18 @@ def patch_model(model, name=None, prep=None):
     """
 
     def patch_model_decorator(func):
+        """Perform the patch model decorator operation.
+
+        Args:
+            func (object):
+                Value supplied for ``func``.
+
+        Examples:
+            Inspect the public interface in an interactive session::
+
+                >>> callable(patch_model_decorator)
+                True
+        """
         if name is None:
             attr_name = func.__name__
         else:
@@ -205,18 +266,27 @@ def patch_model(model, name=None, prep=None):
 class NamedObject(models.Model):
     """Base class for models with a name and HTML description.
 
-    This abstract model provides common fields for named entities throughout
-    the labman application. All models inheriting from this class will have
-    a name and description field.
+            This abstract model provides common fields for named entities throughout
+            the labman application. All models inheriting from this class will have
+            a name and description field.
 
     Attributes:
         name (CharField):
             The name of the object, maximum 80 characters.
         description (ObfuscatedHTMLField):
             An HTML description of the object with email obfuscation.
+
+
+    Examples:
+        Inspect the public interface in an interactive session::
+
+            >>> NamedObject.__name__
+            'NamedObject'
     """
 
     class Meta:
+        """Configure the Meta class."""
+
         abstract = True
 
     name = models.CharField(max_length=80, null=True, blank=True)
@@ -234,9 +304,9 @@ class NamedObject(models.Model):
 class Document(dsfh.BaseMixin, dsfh.TitledMixin, dsfh.PublicMixin, dsfh.RenameMixin, models.Model):
     """Document model for storing categorised files with version control and review tracking.
 
-    Extends django-simple-file-handler functionality to add document categorisation,
-    version tracking, and review date management. Documents can be risk assessments,
-    SOPs, COSHH forms, manuals, or other types.
+            Extends django-simple-file-handler functionality to add document categorisation,
+            version tracking, and review date management. Documents can be risk assessments,
+            SOPs, COSHH forms, manuals, or other types.
 
     Attributes:
         version (FloatField):
@@ -253,6 +323,13 @@ class Document(dsfh.BaseMixin, dsfh.TitledMixin, dsfh.PublicMixin, dsfh.RenameMi
     Notes:
         When a version is incremented for risk assessments or SOPs, all associated
         equipment user lists are automatically put on hold to ensure re-acknowledgement.
+
+
+    Examples:
+        Inspect the public interface in an interactive session::
+
+            >>> Document.__name__
+            'Document'
     """
 
     CATEGORIES = [
@@ -272,6 +349,8 @@ class Document(dsfh.BaseMixin, dsfh.TitledMixin, dsfh.PublicMixin, dsfh.RenameMi
     subdirectory_path = getattr(settings, "FILE_HANDLER_DIRECTORY", "") + "documents/equipment/"
 
     class Meta:
+        """Configure the Meta class."""
+
         verbose_name = "document (categorized)"
         verbose_name_plural = "documents (categorized)"
 
@@ -281,6 +360,13 @@ class Document(dsfh.BaseMixin, dsfh.TitledMixin, dsfh.PublicMixin, dsfh.RenameMi
 
         Returns:
             (str): Human-readable category name.
+
+
+        Examples:
+            Inspect the public interface in an interactive session::
+
+                >>> callable(Document.category_name)
+                True
         """
         return self.CATAGORIES_DICT[self.category]
 
@@ -290,6 +376,13 @@ class Document(dsfh.BaseMixin, dsfh.TitledMixin, dsfh.PublicMixin, dsfh.RenameMi
 
         Returns:
             (QuerySet or None): QuerySet of Location objects, or None if no locations.
+
+
+        Examples:
+            Inspect the public interface in an interactive session::
+
+                >>> callable(Document.all_locations)
+                True
         """
         if not hasattr(self, "location"):
             return None
@@ -321,6 +414,13 @@ class Document(dsfh.BaseMixin, dsfh.TitledMixin, dsfh.PublicMixin, dsfh.RenameMi
 
         Returns:
             (bool): True if review_date exists and has passed, False otherwise.
+
+
+        Examples:
+            Inspect the public interface in an interactive session::
+
+                >>> callable(Document.needs_review)
+                True
         """
         return self.review_date and self.review_date < dt.today().date()
 
@@ -330,6 +430,13 @@ class Document(dsfh.BaseMixin, dsfh.TitledMixin, dsfh.PublicMixin, dsfh.RenameMi
 
         Returns:
             (bool): True if review is needed within 30 days, False otherwise.
+
+
+        Examples:
+            Inspect the public interface in an interactive session::
+
+                >>> callable(Document.review_soon)
+                True
         """
         return self.review_date and (self.review_date - dt.today().date()) < td(days=30)
 
@@ -344,8 +451,8 @@ class Document(dsfh.BaseMixin, dsfh.TitledMixin, dsfh.PublicMixin, dsfh.RenameMi
     def save(self, force_insert=False, force_update=False, using=None, update_fields=None):
         """Save the document and handle version changes for risk assessments and SOPs.
 
-        If the version has increased for RA or SOP documents, puts a hold on all
-        userlist entries of associated equipment to ensure re-acknowledgement.
+                        If the version has increased for RA or SOP documents, puts a hold on all
+                        userlist entries of associated equipment to ensure re-acknowledgement.
 
         Keyword Parameters:
             force_insert (bool):
@@ -356,6 +463,23 @@ class Document(dsfh.BaseMixin, dsfh.TitledMixin, dsfh.PublicMixin, dsfh.RenameMi
                 Database alias to use.
             update_fields (list):
                 List of field names to update.
+
+
+        Args:
+            force_insert (object):
+                Value supplied for ``force_insert``.
+            force_update (object):
+                Value supplied for ``force_update``.
+            using (object):
+                Value supplied for ``using``.
+            update_fields (object):
+                Value supplied for ``update_fields``.
+
+        Examples:
+            Inspect the public interface in an interactive session::
+
+                >>> callable(Document.save)
+                True
         """
         if self.pk and self.category in ["ra", "sop"]:
             old = Document.objects.get(pk=self.pk)
@@ -408,9 +532,9 @@ class Document(dsfh.BaseMixin, dsfh.TitledMixin, dsfh.PublicMixin, dsfh.RenameMi
 class ResourceedObject(NamedObject):
     """Base class for objects with photos, documents, and pages.
 
-    Extends NamedObject to add support for photos, files (documents), and
-    flat pages. Provides properties and methods for accessing and displaying
-    these resources.
+            Extends NamedObject to add support for photos, files (documents), and
+            flat pages. Provides properties and methods for accessing and displaying
+            these resources.
 
     Attributes:
         photos (SortedManyToManyField):
@@ -424,6 +548,13 @@ class ResourceedObject(NamedObject):
         This is an abstract model. The many-to-many field names use the
         %(class)s placeholder to create unique reverse relations for each
         concrete model that inherits from this class.
+
+
+    Examples:
+        Inspect the public interface in an interactive session::
+
+            >>> ResourceedObject.__name__
+            'ResourceedObject'
     """
 
     photos = SortedManyToManyField(Photo, related_name="%(class)s", blank=True)
@@ -431,6 +562,8 @@ class ResourceedObject(NamedObject):
     pages = SortedManyToManyField(FlatPage, related_name="%(class)s", blank=True)
 
     class Meta:
+        """Configure the Meta class."""
+
         abstract = True
 
     @property
@@ -439,6 +572,13 @@ class ResourceedObject(NamedObject):
 
         Returns:
             (str): HTML img tag with thumbnail URL, or empty string if no photos.
+
+
+        Examples:
+            Inspect the public interface in an interactive session::
+
+                >>> callable(ResourceedObject.thumbnail)
+                True
         """
         if self.photos.all().count() == 0:
             return ""
@@ -450,6 +590,13 @@ class ResourceedObject(NamedObject):
 
         Returns:
             (str): HTML img tag with display URL, or empty string if no photos.
+
+
+        Examples:
+            Inspect the public interface in an interactive session::
+
+                >>> callable(ResourceedObject.photo)
+                True
         """
         if self.photos.all().count() == 0:
             return ""
@@ -462,6 +609,13 @@ class ResourceedObject(NamedObject):
         Returns:
             (dict): Dictionary mapping category names to querysets of documents.
                     Only includes categories that have at least one document.
+
+
+        Examples:
+            Inspect the public interface in an interactive session::
+
+                >>> callable(ResourceedObject.all_files_dict)
+                True
         """
         ret = {}
         for key, name in Document.CATAGORIES_DICT.items():
@@ -498,17 +652,24 @@ class ResourceedObject(NamedObject):
 class GroupedTree(TreeBase):
     """Placeholder for grouped tree navigation.
 
-    This class extends TreeBase to support grouped tree structures
-    in the labman application.
+            This class extends TreeBase to support grouped tree structures
+            in the labman application.
+
+
+    Examples:
+        Inspect the public interface in an interactive session::
+
+            >>> GroupedTree.__name__
+            'GroupedTree'
     """
 
 
 class GroupedTreeItem(TreeItemBase):
     """Tree item with group-based access control.
 
-    Extends TreeItemBase to add group-based permissions for controlling
-    access to menu items. Supports allowing and blocking specific groups,
-    as well as staff and superuser access controls.
+            Extends TreeItemBase to add group-based permissions for controlling
+            access to menu items. Supports allowing and blocking specific groups,
+            as well as staff and superuser access controls.
 
     Attributes:
         groups (ManyToManyField):
@@ -521,6 +682,13 @@ class GroupedTreeItem(TreeItemBase):
             Controls superuser access: 0=neutral, 1=grant, 2=block.
         TRISTATE (list):
             Choices for access control fields.
+
+
+    Examples:
+        Inspect the public interface in an interactive session::
+
+            >>> GroupedTreeItem.__name__
+            'GroupedTreeItem'
     """
 
     TRISTATE = [(0, "--"), (1, "Grant"), (2, "Block")]
@@ -552,6 +720,13 @@ class GroupedTreeItem(TreeItemBase):
             3. Staff access restrictions
             4. Group membership (allowed groups)
             5. Group exclusion (blocked groups)
+
+
+        Examples:
+            Inspect the public interface in an interactive session::
+
+                >>> callable(GroupedTreeItem.access_check)
+                True
         """
         auth = tree.check_access_auth(self, tree.context)
         user = tree.current_request.user

@@ -14,8 +14,15 @@ from .models import CostCentre, CostRate
 class CostCentreResource(resources.ModelResource):
     """Import-export resource for CostCentre code objects.
 
-    Uses name as the primary import/export identifier. The code field is
-    maintained for backwards compatibility during migration.
+            Uses name as the primary import/export identifier. The code field is
+            maintained for backwards compatibility during migration.
+
+
+    Examples:
+        Inspect the public interface in an interactive session::
+
+            >>> CostCentreResource.__name__
+            'CostCentreResource'
     """
 
     parent = fields.Field(
@@ -25,6 +32,8 @@ class CostCentreResource(resources.ModelResource):
     )
 
     class Meta:
+        """Configure the Meta class."""
+
         model = CostCentre
         import_id_fields = ["name"]
         # Exclude MPTT fields - they are auto-managed by django-mptt
@@ -33,8 +42,17 @@ class CostCentreResource(resources.ModelResource):
 
 
 class CostRateResource(resources.ModelResource):
-    """Import-Export admin for CostRates."""
+    """Import-Export admin for CostRates.
+
+    Examples:
+        Inspect the public interface in an interactive session::
+
+            >>> CostRateResource.__name__
+            'CostRateResource'
+    """
 
     class Meta:
+        """Configure the Meta class."""
+
         model = CostRate
         import_id_fields = ["id"]

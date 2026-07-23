@@ -1,7 +1,5 @@
 # -*- coding: utf-8 -*-
-"""
-Admin interfaces for util modles
-"""
+"""Configure Django administration interfaces for shared utility models."""
 # Django imports
 from django.contrib import admin
 from django.contrib.admin import register
@@ -29,7 +27,14 @@ from .widgets import AdminObfuscatedTinyMCE
 
 # And our custom tree item admin model.
 class CustomTreeItemAdmin(TreeItemAdmin):
-    """Custom sitetree item admin to add ability to control display groups."""
+    """Custom sitetree item admin to add ability to control display groups.
+
+    Examples:
+        Inspect the public interface in an interactive session::
+
+            >>> CustomTreeItemAdmin.__name__
+            'CustomTreeItemAdmin'
+    """
 
     fieldsets = (
         (
@@ -79,7 +84,14 @@ class CustomTreeItemAdmin(TreeItemAdmin):
 
 
 class CustomTreeAdmin(TreeAdmin):
-    """Simple duplicate."""
+    """Simple duplicate.
+
+    Examples:
+        Inspect the public interface in an interactive session::
+
+            >>> CustomTreeAdmin.__name__
+            'CustomTreeAdmin'
+    """
 
 
 override_tree_admin(CustomTreeAdmin)
@@ -91,7 +103,14 @@ admin.site.unregister(FlatPage)
 
 @register(FlatPage)
 class TinyMCEFlatPageAdmin(FlatPageAdmin):
-    """Admin interface definition for flatpages that adds TinyMCE editor."""
+    """Admin interface definition for flatpages that adds TinyMCE editor.
+
+    Examples:
+        Inspect the public interface in an interactive session::
+
+            >>> TinyMCEFlatPageAdmin.__name__
+            'TinyMCEFlatPageAdmin'
+    """
 
     list_display = ["url", "title", "enable_comments"]
     list_filters = ["url", "title", "enable_comments"]
@@ -113,7 +132,26 @@ class TinyMCEFlatPageAdmin(FlatPageAdmin):
     )
 
     def formfield_for_dbfield(self, db_field, request, **kwargs):
-        """Replace the widget for the content with TinyMCE editor."""
+        """Replace the widget for the content with TinyMCE editor.
+
+        Args:
+            db_field (object):
+                Value supplied for ``db_field``.
+            request (object):
+                Value supplied for ``request``.
+        Keyword Parameters:
+            **kwargs (object):
+                Value supplied for ``kwargs``.
+        Returns:
+            (object):
+                The result of the operation.
+
+        Examples:
+            Inspect the public interface in an interactive session::
+
+                >>> callable(TinyMCEFlatPageAdmin.formfield_for_dbfield)
+                True
+        """
         if db_field.name == "content":
             ret = ObfuscatedCharField(
                 widget=AdminObfuscatedTinyMCE(

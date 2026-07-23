@@ -15,9 +15,9 @@ from .core import AC_CLASS_CONFIGURABLE_VALUES
 class AutocompleteWidget(Widget):
     """Django form widget for rendering autocomplete components.
 
-    This widget integrates autocomplete functionality into Django forms, handling
-    both single and multi-select modes. It manages value extraction from form
-    data and provides a template-based rendering system.
+        This widget integrates autocomplete functionality into Django forms, handling
+        both single and multi-select modes. It manages value extraction from form
+        data and provides a template-based rendering system.
 
     Attributes:
         template_name (str):
@@ -82,8 +82,8 @@ class AutocompleteWidget(Widget):
     def value_from_datadict(self, data, files, name):
         """Extract the field value from form data.
 
-        Handles both single and multi-select modes, extracting values from Django's
-        QueryDict or plain dictionaries (e.g., JSON data).
+                        Handles both single and multi-select modes, extracting values from Django's
+                        QueryDict or plain dictionaries (e.g., JSON data).
 
         Args:
             data (QueryDict or dict):
@@ -96,6 +96,13 @@ class AutocompleteWidget(Widget):
         Returns:
             The extracted value(s). For multi-select, returns a list; for single-select,
             returns a single value.
+
+
+        Examples:
+            Inspect the public interface in an interactive session::
+
+                >>> callable(AutocompleteWidget.value_from_datadict)
+                True
         """
         if self.is_multi:
             try:
@@ -114,8 +121,8 @@ class AutocompleteWidget(Widget):
     def value_omitted_from_data(self, data, files, name):
         """Check if the field value was omitted from the form data.
 
-        For multi-select widgets, always returns an empty list since an unselected
-        multi-select field doesn't appear in POST data.
+                        For multi-select widgets, always returns an empty list since an unselected
+                        multi-select field doesn't appear in POST data.
 
         Args:
             data (QueryDict or dict):
@@ -127,6 +134,13 @@ class AutocompleteWidget(Widget):
 
         Returns:
             (list): Empty list indicating the field was not omitted.
+
+
+        Examples:
+            Inspect the public interface in an interactive session::
+
+                >>> callable(AutocompleteWidget.value_omitted_from_data)
+                True
         """
         # An unselected <select multiple> doesn't appear in POST data, so it's
         # never known if the value is actually omitted.
@@ -141,6 +155,13 @@ class AutocompleteWidget(Widget):
 
         Returns:
             (str): The unique component identifier.
+
+
+        Examples:
+            Inspect the public interface in an interactive session::
+
+                >>> callable(AutocompleteWidget.get_component_id)
+                True
         """
         prefix = self.get_configurable_value("component_prefix")
 
@@ -149,8 +170,8 @@ class AutocompleteWidget(Widget):
     def get_configurable_value(self, key):
         """Retrieve a configuration value from widget config or autocomplete class.
 
-        Configuration values are first checked in the widget's config dictionary,
-        then fall back to the autocomplete class attributes.
+                        Configuration values are first checked in the widget's config dictionary,
+                        then fall back to the autocomplete class attributes.
 
         Args:
             key (str):
@@ -158,6 +179,13 @@ class AutocompleteWidget(Widget):
 
         Returns:
             The configuration value, or None if not found.
+
+
+        Examples:
+            Inspect the public interface in an interactive session::
+
+                >>> callable(AutocompleteWidget.get_configurable_value)
+                True
         """
         if key in self.config:
             return self.config.get(key)
@@ -173,6 +201,13 @@ class AutocompleteWidget(Widget):
 
         Returns:
             (bool): True if multi-select is enabled, False otherwise.
+
+
+        Examples:
+            Inspect the public interface in an interactive session::
+
+                >>> callable(AutocompleteWidget.is_multi)
+                True
         """
         return self.get_configurable_value("multiselect")
 
@@ -191,6 +226,13 @@ class AutocompleteWidget(Widget):
         Returns:
             (dict): Context dictionary for template rendering, including the
                 autocomplete class, field configuration, and selected items.
+
+
+        Examples:
+            Inspect the public interface in an interactive session::
+
+                >>> callable(AutocompleteWidget.get_context)
+                True
         """
         context = super().get_context(name, value, attrs)
 

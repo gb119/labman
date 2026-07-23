@@ -17,8 +17,15 @@ from sortedm2m.fields import SortedManyToManyField
 class CostRate(NamedObject):
     """Model representing a charging scheme for equipment usage.
 
-    Cost rates define different pricing structures that can be applied to
-    equipment or resources. A default 'standard' rate is always available.
+            Cost rates define different pricing structures that can be applied to
+            equipment or resources. A default 'standard' rate is always available.
+
+
+    Examples:
+        Inspect the public interface in an interactive session::
+
+            >>> CostRate.__name__
+            'CostRate'
     """
 
     @classmethod
@@ -31,6 +38,13 @@ class CostRate(NamedObject):
         Notes:
             Creates the 'standard' rate if it doesn't exist, and sets a default
             description if the description is empty.
+
+
+        Examples:
+            Inspect the public interface in an interactive session::
+
+                >>> callable(CostRate.default)
+                True
         """
         std, _ = cls.objects.get_or_create(name="standard")
         if std.description == "":
@@ -50,9 +64,9 @@ class CostRate(NamedObject):
 class CostCentre(MPTTModel, NamedObject):
     """Model representing a cost centre for financial tracking and organisation.
 
-    Cost centres represent organisational units that can be charged for equipment
-    and resource usage. They support hierarchical structures and can be associated
-    with locations and equipment. Uses django-mptt for efficient tree management.
+            Cost centres represent organisational units that can be charged for equipment
+            and resource usage. They support hierarchical structures and can be associated
+            with locations and equipment. Uses django-mptt for efficient tree management.
 
     Attributes:
         locations (SortedManyToManyField):
@@ -69,15 +83,26 @@ class CostCentre(MPTTModel, NamedObject):
             Account responsible for managing this cost centre.
         parent (TreeForeignKey):
             Parent cost centre in the hierarchy.
+
+
+    Examples:
+        Inspect the public interface in an interactive session::
+
+            >>> CostCentre.__name__
+            'CostCentre'
     """
 
     class Meta:
+        """Configure the Meta class."""
+
         constraints = [
             models.UniqueConstraint(fields=["name"], name="Unique Cost-centre Name"),
         ]
         ordering = ["tree_id", "lft"]
 
     class MPTTMeta:
+        """Configure the MPTTMeta class."""
+
         order_insertion_by = ["name"]
 
     locations = SortedManyToManyField("equipment.location", related_name="cost_centres", blank=True)
@@ -96,6 +121,13 @@ class CostCentre(MPTTModel, NamedObject):
 
         Returns:
             (QuerySet): Cost centres that contain this cost centre in the hierarchy.
+
+
+        Examples:
+            Inspect the public interface in an interactive session::
+
+                >>> callable(CostCentre.all_parents)
+                True
         """
         # Use MPTT get_ancestors with include_self=True
         return self.get_ancestors(include_self=True)
@@ -104,8 +136,8 @@ class CostCentre(MPTTModel, NamedObject):
     def children(self):
         """Return all sub-cost centres of this cost centre.
 
-        This property returns a QuerySet that can be iterated directly in templates
-        without calling .all().
+                This property returns a QuerySet that can be iterated directly in templates
+                without calling .all().
 
         Returns:
             (QuerySet): All descendant cost centres in the hierarchy including self.
@@ -128,7 +160,7 @@ class CostCentre(MPTTModel, NamedObject):
     def __getattr__(self, name):
         """Provide dynamic access to all related objects in the hierarchy.
 
-        Args:
+        Keyword Parameters:
             name (str):
                 Attribute name. If starting with 'all_', returns related objects
                 from this cost centre and all parent cost centres.
@@ -167,6 +199,13 @@ class CostCentre(MPTTModel, NamedObject):
 
         Returns:
             (str): URL path to the cost centre detail page.
+
+
+        Examples:
+            Inspect the public interface in an interactive session::
+
+                >>> callable(CostCentre.url)
+                True
         """
         return f"/costings/cost_centre_detail/{self.pk}/"
 
@@ -186,6 +225,23 @@ class CostCentre(MPTTModel, NamedObject):
         Notes:
             If no rate is specified, assigns the default rate. MPTT handles
             tree structure updates automatically.
+
+
+        Keyword Parameters:
+            force_insert (object):
+                Value supplied for ``force_insert``.
+            force_update (object):
+                Value supplied for ``force_update``.
+            using (object):
+                Value supplied for ``using``.
+            update_fields (object):
+                Value supplied for ``update_fields``.
+
+        Examples:
+            Inspect the public interface in an interactive session::
+
+                >>> callable(CostCentre.save)
+                True
         """
         if self.rate is None:
             self.rate = CostRate.default()
@@ -200,8 +256,8 @@ class CostCentre(MPTTModel, NamedObject):
 class ChargeableItem(models.Model):
     """Base class for representing a single use of a chargeable resource.
 
-    This abstract model provides common fields for tracking resource usage
-    that should be charged to cost centres.
+            This abstract model provides common fields for tracking resource usage
+            that should be charged to cost centres.
 
     Attributes:
         cost_centre (ForeignKey):
@@ -214,9 +270,18 @@ class ChargeableItem(models.Model):
     Notes:
         This is an abstract model. Concrete models should inherit from this
         class and add specific fields for the type of resource being charged.
+
+
+    Examples:
+        Inspect the public interface in an interactive session::
+
+            >>> ChargeableItem.__name__
+            'ChargeableItem'
     """
 
     class Meta:
+        """Configure the Meta class."""
+
         abstract = True
 
     cost_centre = models.ForeignKey(
@@ -227,15 +292,54 @@ class ChargeableItem(models.Model):
     comment = models.CharField(max_length=80, blank=True, null=True)
 
     def calculate_charge(self):
-        """Calculate the charge to be applied for this istem."""
+        """Calculate the charge to be applied for this istem.
+
+        Raises:
+            NotImplementedError:
+                This base implementation must be overridden by a subclass.
+
+        Examples:
+            Inspect the public interface in an interactive session::
+
+                >>> callable(ChargeableItem.calculate_charge)
+                True
+        """
         raise NotImplementedError(f"{self.__class__.__name__} should implement a calculate_charge method!")
 
     def get_default_cost_centre(self):
-        """Return a default cost_centre for this item."""
+        """Return a default cost_centre for this item.
+
+        Raises:
+            NotImplementedError:
+                This base implementation must be overridden by a subclass.
+
+        Examples:
+            Inspect the public interface in an interactive session::
+
+                >>> callable(ChargeableItem.get_default_cost_centre)
+                True
+        """
         raise NotImplementedError(f"{self.__class__.__name__} should have implemented get_default_cost_centre method")
 
     def save(self, force_insert=False, force_update=False, using=None, update_fields=None):
-        """Enforce charge calculation and cost_centre allocation."""
+        """Enforce charge calculation and cost_centre allocation.
+
+        Keyword Parameters:
+            force_insert (object):
+                Value supplied for ``force_insert``.
+            force_update (object):
+                Value supplied for ``force_update``.
+            using (object):
+                Value supplied for ``using``.
+            update_fields (object):
+                Value supplied for ``update_fields``.
+
+        Examples:
+            Inspect the public interface in an interactive session::
+
+                >>> callable(ChargeableItem.save)
+                True
+        """
         self.charge = self.calculate_charge()
         if not self.cost_centre:
             self.const_centre = self.get_default_cost_centre()

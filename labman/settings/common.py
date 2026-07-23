@@ -1,3 +1,5 @@
+"""Provide common functionality for the labman.settings package."""
+
 # Python imports
 import socket
 import sys

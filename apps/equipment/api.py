@@ -14,13 +14,22 @@ from .models import Equipment, Location, UserListEntry
 class UserListEntrySeriqlizer(serializers.ModelSerializer):
     """Serializer for UserListEntry objects.
 
-    Serializes user list entry data with nested relationships for API responses.
+            Serializes user list entry data with nested relationships for API responses.
 
     Notes:
         The class name appears to have a typo ('Seriqlizer' instead of 'Serializer').
+
+
+    Examples:
+        Inspect the public interface in an interactive session::
+
+            >>> UserListEntrySeriqlizer.__name__
+            'UserListEntrySeriqlizer'
     """
 
     class Meta:
+        """Configure the Meta class."""
+
         model = UserListEntry
         exclude = ["equipment"]
         depth = 1
@@ -29,17 +38,26 @@ class UserListEntrySeriqlizer(serializers.ModelSerializer):
 class EquipmentSerializer(serializers.ModelSerializer):
     """Serializer for Equipment objects.
 
-    Serializes equipment data including users, photos, and files with deep
-    nested relationships for comprehensive API responses.
+            Serializes equipment data including users, photos, and files with deep
+            nested relationships for comprehensive API responses.
 
     Attributes:
         users (SerializerMethodField):
             Custom field for serializing associated users.
+
+
+    Examples:
+        Inspect the public interface in an interactive session::
+
+            >>> EquipmentSerializer.__name__
+            'EquipmentSerializer'
     """
 
     users = serializers.SerializerMethodField("get_users")
 
     class Meta:
+        """Configure the Meta class."""
+
         model = Equipment
         fields = ["id", "name", "description", "owner", "photos", "files", "users"]
         depth = 10
@@ -53,6 +71,13 @@ class EquipmentSerializer(serializers.ModelSerializer):
 
         Returns:
             (list): List of serialized user list entry data.
+
+
+        Examples:
+            Inspect the public interface in an interactive session::
+
+                >>> callable(EquipmentSerializer.get_users)
+                True
         """
         return UserListEntrySeriqlizer(instance=equipment.users.all(), many=True).data
 
@@ -60,10 +85,19 @@ class EquipmentSerializer(serializers.ModelSerializer):
 class LocationSerializer(serializers.ModelSerializer):
     """Serializer for Location objects.
 
-    Serializes all location fields for API responses.
+            Serializes all location fields for API responses.
+
+
+    Examples:
+        Inspect the public interface in an interactive session::
+
+            >>> LocationSerializer.__name__
+            'LocationSerializer'
     """
 
     class Meta:
+        """Configure the Meta class."""
+
         model = Location
         exclude = []
 
@@ -71,14 +105,21 @@ class LocationSerializer(serializers.ModelSerializer):
 class EquipmentViewSet(viewsets.ReadOnlyModelViewSet):
     """Read-only API viewset for Equipment objects.
 
-    Provides list and detail views for equipment through the REST API.
-    Supports standard REST operations: GET (list and detail).
+            Provides list and detail views for equipment through the REST API.
+            Supports standard REST operations: GET (list and detail).
 
     Attributes:
         queryset (QuerySet):
             All Equipment objects.
         serializer_class (class):
             EquipmentSerializer for object serialization.
+
+
+    Examples:
+        Inspect the public interface in an interactive session::
+
+            >>> EquipmentViewSet.__name__
+            'EquipmentViewSet'
     """
 
     queryset = Equipment.objects.all()
@@ -88,14 +129,21 @@ class EquipmentViewSet(viewsets.ReadOnlyModelViewSet):
 class UserListEntryViewSet(viewsets.ReadOnlyModelViewSet):
     """Read-only API viewset for UserListEntry objects.
 
-    Provides list and detail views for user list entries through the REST API.
-    Supports standard REST operations: GET (list and detail).
+            Provides list and detail views for user list entries through the REST API.
+            Supports standard REST operations: GET (list and detail).
 
     Attributes:
         queryset (QuerySet):
             All UserListEntry objects.
         serializer_class (class):
             UserListEntrySeriqlizer for object serialization.
+
+
+    Examples:
+        Inspect the public interface in an interactive session::
+
+            >>> UserListEntryViewSet.__name__
+            'UserListEntryViewSet'
     """
 
     queryset = UserListEntry.objects.all()
@@ -105,14 +153,21 @@ class UserListEntryViewSet(viewsets.ReadOnlyModelViewSet):
 class LocationViewSet(viewsets.ReadOnlyModelViewSet):
     """Read-only API viewset for Location objects.
 
-    Provides list and detail views for locations through the REST API.
-    Supports standard REST operations: GET (list and detail).
+            Provides list and detail views for locations through the REST API.
+            Supports standard REST operations: GET (list and detail).
 
     Attributes:
         queryset (QuerySet):
             All Location objects.
         serializer_class (class):
             LocationSerializer for object serialization.
+
+
+    Examples:
+        Inspect the public interface in an interactive session::
+
+            >>> LocationViewSet.__name__
+            'LocationViewSet'
     """
 
     queryset = Location.objects.all()

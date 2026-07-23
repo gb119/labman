@@ -12,9 +12,18 @@ from .models import BookingEntry, BookingPolicy
 
 
 class BookingEntryResource(resources.ModelResource):
-    """Import export resource for BookingEntry objects."""
+    """Import export resource for BookingEntry objects.
+
+    Examples:
+        Inspect the public interface in an interactive session::
+
+            >>> BookingEntryResource.__name__
+            'BookingEntryResource'
+    """
 
     class Meta:
+        """Configure the Meta class."""
+
         model = BookingEntry
         import_id_fields = ["id"]
 
@@ -28,9 +37,18 @@ class BookingEntryResource(resources.ModelResource):
 
 
 class BookingPolicyResource(resources.ModelResource):
-    """Import-export resource for BookingPolicy objects."""
+    """Import-export resource for BookingPolicy objects.
+
+    Examples:
+        Inspect the public interface in an interactive session::
+
+            >>> BookingPolicyResource.__name__
+            'BookingPolicyResource'
+    """
 
     class Meta:
+        """Configure the Meta class."""
+
         model = BookingPolicy
         import_id_fields = ["id"]
 

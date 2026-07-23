@@ -34,19 +34,28 @@ MANAGER = 1000
 class ResearchGroup(ResourceedObject):
     """Model representing a research group within the laboratory.
 
-    Research groups are organisational units that contain member accounts.
-    Each group has a unique code and name, and can have associated photos,
-    documents, and pages through the ResourcedObject base class.
+            Research groups are organisational units that contain member accounts.
+            Each group has a unique code and name, and can have associated photos,
+            documents, and pages through the ResourcedObject base class.
 
     Attributes:
         code (CharField):
             Primary key code for the research group, maximum 10 characters.
             Automatically converted to uppercase on save.
+
+
+    Examples:
+        Inspect the public interface in an interactive session::
+
+            >>> ResearchGroup.__name__
+            'ResearchGroup'
     """
 
     code = models.CharField(max_length=10, primary_key=True)
 
     class Meta:
+        """Configure the Meta class."""
+
         ordering = ["code"]
         constraints = [models.UniqueConstraint(fields=["name"], name="Unique Research Group Name")]
 
@@ -76,6 +85,23 @@ class ResearchGroup(ResourceedObject):
                 Database alias to use.
             update_fields (list):
                 List of field names to update.
+
+
+        Args:
+            force_insert (object):
+                Value supplied for ``force_insert``.
+            force_update (object):
+                Value supplied for ``force_update``.
+            using (object):
+                Value supplied for ``using``.
+            update_fields (object):
+                Value supplied for ``update_fields``.
+
+        Examples:
+            Inspect the public interface in an interactive session::
+
+                >>> callable(ResearchGroup.save)
+                True
         """
         self.code = self.code.upper()
         super().save(
@@ -87,18 +113,37 @@ class ResearchGroup(ResourceedObject):
 
 
 class ActiveUsersManager(models.Manager):
-    """Prefilter the user accounts for just active users."""
+    """Prefilter the user accounts for just active users.
+
+    Examples:
+        Inspect the public interface in an interactive session::
+
+            >>> ActiveUsersManager.__name__
+            'ActiveUsersManager'
+    """
 
     def get_queryset(self):
+        """Perform the get queryset operation.
+
+        Returns:
+            (object):
+                The result of the operation.
+
+        Examples:
+            Inspect the public interface in an interactive session::
+
+                >>> callable(ActiveUsersManager.get_queryset)
+                True
+        """
         return super().get_queryset().filter(is_active=True)
 
 
 class Account(AbstractUser):
     """Extended user account model with laboratory-specific attributes.
 
-    This model extends Django's AbstractUser to include additional fields
-    for research group membership, project associations, photos, and other
-    laboratory management features.
+            This model extends Django's AbstractUser to include additional fields
+            for research group membership, project associations, photos, and other
+            laboratory management features.
 
     Attributes:
         number (IntegerField):
@@ -117,9 +162,18 @@ class Account(AbstractUser):
             Photos associated with this account (e.g., profile pictures).
         pages (SortedManyToManyField):
             Flat pages associated with this account.
+
+
+    Examples:
+        Inspect the public interface in an interactive session::
+
+            >>> Account.__name__
+            'Account'
     """
 
     class Meta:
+        """Configure the Meta class."""
+
         ordering = ["last_name", "first_name"]
         permissions = [
             ("access_admin", "Can Access the Admin backend"),
@@ -145,6 +199,13 @@ class Account(AbstractUser):
 
         Returns:
             (str): The username.
+
+
+        Examples:
+            Inspect the public interface in an interactive session::
+
+                >>> callable(Account.natural_key)
+                True
         """
         return self.username
 
@@ -154,6 +215,13 @@ class Account(AbstractUser):
 
         Returns:
             (str): The full name in the format "FirstName LastName".
+
+
+        Examples:
+            Inspect the public interface in an interactive session::
+
+                >>> callable(Account.display_name)
+                True
         """
         return f"{self.first_name} {self.last_name}"
 
@@ -163,6 +231,13 @@ class Account(AbstractUser):
 
         Returns:
             (CostCentre or None): The first project, or None if no projects.
+
+
+        Examples:
+            Inspect the public interface in an interactive session::
+
+                >>> callable(Account.default_project)
+                True
         """
         return self.project.first()
 
@@ -173,6 +248,13 @@ class Account(AbstractUser):
         Returns:
             (Photo or None): The first photo if available, generic profile image
                             if one exists, or None if neither is available.
+
+
+        Examples:
+            Inspect the public interface in an interactive session::
+
+                >>> callable(Account.mugshot)
+                True
         """
         if self.photos.all().count() > 0:
             return self.photos.first()
@@ -187,6 +269,13 @@ class Account(AbstractUser):
 
         Returns:
             (str): URL to edit existing photo or create new photo.
+
+
+        Examples:
+            Inspect the public interface in an interactive session::
+
+                >>> callable(Account.mugshot_edit_link)
+                True
         """
         if self.photos.all().count() > 0:
             return reverse("labman_utils:edit_account_photo", args=(self.pk, self.mugshot.pk))
@@ -199,6 +288,13 @@ class Account(AbstractUser):
         Returns:
             (str): Formal name in the format "Title I. LastName", with appropriate
                   spacing even if title is not set.
+
+
+        Examples:
+            Inspect the public interface in an interactive session::
+
+                >>> callable(Account.formal_name)
+                True
         """
         if self.title is None:
             title = ""
@@ -213,6 +309,13 @@ class Account(AbstractUser):
 
         Returns:
             (str): Alias for formal_name property.
+
+
+        Examples:
+            Inspect the public interface in an interactive session::
+
+                >>> callable(Account.name)
+                True
         """
         return self.formal_name
 
@@ -222,6 +325,13 @@ class Account(AbstractUser):
 
         Returns:
             (str): URL path to the user's profile page.
+
+
+        Examples:
+            Inspect the public interface in an interactive session::
+
+                >>> callable(Account.url)
+                True
         """
         return f"/accounts/user/{self.username}/"
 
@@ -242,6 +352,13 @@ class Account(AbstractUser):
 
         Returns:
             (bool): True if the account is a member of the group, False otherwise.
+
+
+        Examples:
+            Inspect the public interface in an interactive session::
+
+                >>> callable(Account.is_member)
+                True
         """
         if not self.pk:
             return False
@@ -263,6 +380,13 @@ class Account(AbstractUser):
             If the email username part contains dots, splits on dots and uses first
             character of each part. Otherwise, uses first character of first and
             last names, or falls back to username if insufficient information.
+
+
+        Examples:
+            Inspect the public interface in an interactive session::
+
+                >>> callable(Account.initials)
+                True
         """
         if "." in self.email.split("@")[0]:
             userfield = self.email.split("@")[0]
@@ -280,6 +404,13 @@ class Account(AbstractUser):
 
         Returns:
             (bool): True if this account is a manager for at least one other account.
+
+
+        Examples:
+            Inspect the public interface in an interactive session::
+
+                >>> callable(Account.is_supervisor)
+                True
         """
         return self.managing.count() > 0
 
@@ -289,6 +420,13 @@ class Account(AbstractUser):
 
         Returns:
             (CostCentre or None): The first project, or None if no projects.
+
+
+        Examples:
+            Inspect the public interface in an interactive session::
+
+                >>> callable(Account.primary_project)
+                True
         """
         if self.project.all().count() > 0:
             return self.project.all().first()
@@ -308,6 +446,13 @@ class Account(AbstractUser):
         Notes:
             There appears to be a typo in the implementation ('menager' instead
             of 'manager') which may cause this method to fail.
+
+
+        Examples:
+            Inspect the public interface in an interactive session::
+
+                >>> callable(Account.can_edit)
+                True
         """
         return other == self or other == self.menager or other.is_superuser
 
@@ -315,9 +460,9 @@ class Account(AbstractUser):
 class Role(ResourceedObject):
     """Model representing user roles within the equipment management system.
 
-    Roles define permission levels for equipment access, ranging from trainee
-    to manager. Each role has a numeric level and associated CSS styling for
-    display purposes.
+            Roles define permission levels for equipment access, ranging from trainee
+            to manager. Each role has a numeric level and associated CSS styling for
+            display purposes.
 
     Attributes:
         level (IntegerField):
@@ -325,9 +470,18 @@ class Role(ResourceedObject):
             200=ADVANCED_USER, 300=INSTRUCTOR, 1000=MANAGER).
         css (CharField):
             CSS classes for displaying the role in the interface.
+
+
+    Examples:
+        Inspect the public interface in an interactive session::
+
+            >>> Role.__name__
+            'Role'
     """
 
     class Meta:
+        """Configure the Meta class."""
+
         ordering = ["level"]
         constraints = [models.UniqueConstraint(fields=["name"], name="Unique Role Name")]
 
@@ -348,6 +502,13 @@ class Role(ResourceedObject):
 
         Returns:
             (Role): The trainee role object.
+
+
+        Examples:
+            Inspect the public interface in an interactive session::
+
+                >>> callable(Role.default)
+                True
         """
         return cls.objects.get(level=TRAINEE)
 
@@ -357,6 +518,13 @@ class Role(ResourceedObject):
 
         Returns:
             (Role): The trainee role object.
+
+
+        Examples:
+            Inspect the public interface in an interactive session::
+
+                >>> callable(Role.trainee)
+                True
         """
         return cls.objects.get(level=TRAINEE)
 
@@ -366,6 +534,13 @@ class Role(ResourceedObject):
 
         Returns:
             (Role): The user role object.
+
+
+        Examples:
+            Inspect the public interface in an interactive session::
+
+                >>> callable(Role.user)
+                True
         """
         return cls.objects.get(level=USER)
 
@@ -375,6 +550,13 @@ class Role(ResourceedObject):
 
         Returns:
             (Role): The advanced user role object.
+
+
+        Examples:
+            Inspect the public interface in an interactive session::
+
+                >>> callable(Role.advanced_user)
+                True
         """
         return cls.objects.get(level=ADVANCED_USER)
 
@@ -384,6 +566,13 @@ class Role(ResourceedObject):
 
         Returns:
             (Role): The instructor role object.
+
+
+        Examples:
+            Inspect the public interface in an interactive session::
+
+                >>> callable(Role.instructor)
+                True
         """
         return cls.objects.get(level=INSTRUCTOR)
 
@@ -393,5 +582,12 @@ class Role(ResourceedObject):
 
         Returns:
             (Role): The manager role object.
+
+
+        Examples:
+            Inspect the public interface in an interactive session::
+
+                >>> callable(Role.manager)
+                True
         """
         return cls.objects.get(level=MANAGER)

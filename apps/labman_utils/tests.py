@@ -26,7 +26,10 @@ class TestIsAuthenticatedViewMixin:
         from labman_utils.views import IsAuthenticaedViewMixin
 
         class ProtectedView(IsAuthenticaedViewMixin, View):
+            """Provide the ProtectedView implementation."""
+
             def get(self, request):
+                """Perform the get operation."""
                 return HttpResponse()
 
         request = RequestFactory().get("/protected/")

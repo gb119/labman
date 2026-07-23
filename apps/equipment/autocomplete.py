@@ -16,12 +16,36 @@ from .models import Equipment, Location
 
 
 class EquipmentAutocomplete(ModelAutocomplete):
-    """An Autocomplete class for Equipment objects."""
+    """An Autocomplete class for Equipment objects.
+
+    Examples:
+        Inspect the public interface in an interactive session::
+
+            >>> EquipmentAutocomplete.__name__
+            'EquipmentAutocomplete'
+    """
 
     model = Equipment
 
     @classmethod
     def get_query_filtered_queryset(cls, search, context):
+        """Perform the get query filtered queryset operation.
+
+        Args:
+            search (object):
+                Value supplied for ``search``.
+            context (object):
+                Value supplied for ``context``.
+        Returns:
+            (object):
+                The result of the operation.
+
+        Examples:
+            Inspect the public interface in an interactive session::
+
+                >>> callable(EquipmentAutocomplete.get_query_filtered_queryset)
+                True
+        """
         base_qs = cls.get_queryset()
         conditions = [Q(**{f"{attr}__icontains": search}) for attr in ["name", "description"]]
 
@@ -48,12 +72,36 @@ class EquipmentAutocomplete(ModelAutocomplete):
 
 
 class LocationAutocomplete(ModelAutocomplete):
-    """An Autocomplete class for Equipment objects."""
+    """An Autocomplete class for Equipment objects.
+
+    Examples:
+        Inspect the public interface in an interactive session::
+
+            >>> LocationAutocomplete.__name__
+            'LocationAutocomplete'
+    """
 
     model = Location
 
     @classmethod
     def get_query_filtered_queryset(cls, search, context):
+        """Perform the get query filtered queryset operation.
+
+        Args:
+            search (object):
+                Value supplied for ``search``.
+            context (object):
+                Value supplied for ``context``.
+        Returns:
+            (object):
+                The result of the operation.
+
+        Examples:
+            Inspect the public interface in an interactive session::
+
+                >>> callable(LocationAutocomplete.get_query_filtered_queryset)
+                True
+        """
         base_qs = cls.get_queryset()
         conditions = [Q(**{f"{attr}__icontains": search}) for attr in ["name", "description"]]
         condition_filter = reduce(operator.or_, conditions)

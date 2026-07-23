@@ -1,9 +1,5 @@
 # -*- coding: utf-8 -*-
-"""
-Created on Sun Jan  5 16:38:46 2025
-
-@author: phygbu
-"""
+"""Convert legacy people, equipment, and user-list records into the current import format."""
 
 # Python imports
 import os
@@ -40,6 +36,21 @@ userlist.level = userlist.level.apply(lambda x: 1000 if x >= 40 else x * 10)
 
 
 def match_entry(row):
+    """Match a legacy user-list row to current user and equipment records.
+
+    Args:
+        row (pandas.Series):
+            The legacy user-list row to convert.
+
+    Returns:
+        (pandas.Series | None):
+            The converted row, or ``None`` when its user or equipment cannot be matched.
+
+    Examples:
+        Convert one row from the legacy user-list data::
+
+            converted = match_entry(userlist.iloc[0])
+    """
     nrow = {}
     if row.user in people_new.index:
         nrow["user"] = people_new.loc[row.user, "username"]

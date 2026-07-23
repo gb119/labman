@@ -19,9 +19,9 @@ from .core import Autocomplete
 class ModelAutocomplete(Autocomplete):
     """Autocomplete implementation for Django ORM models.
 
-    This class provides a convenient way to create autocomplete components that
-    search and retrieve model instances. It automatically handles QuerySet filtering
-    using case-insensitive contains searches across specified model fields.
+        This class provides a convenient way to create autocomplete components that
+        search and retrieve model instances. It automatically handles QuerySet filtering
+        using case-insensitive contains searches across specified model fields.
 
     Attributes:
         model (Model):
@@ -53,6 +53,13 @@ class ModelAutocomplete(Autocomplete):
         Raises:
             ValueError:
                 If search_attrs is not defined.
+
+
+        Examples:
+            Inspect the public interface in an interactive session::
+
+                >>> callable(ModelAutocomplete.get_search_attrs)
+                True
         """
         if not cls.search_attrs:
             raise ValueError("ModelAutocomplete must have search_attrs")
@@ -68,6 +75,13 @@ class ModelAutocomplete(Autocomplete):
         Raises:
             ValueError:
                 If model is not defined.
+
+
+        Examples:
+            Inspect the public interface in an interactive session::
+
+                >>> callable(ModelAutocomplete.get_model)
+                True
         """
         if not cls.model:
             raise ValueError("ModelAutocomplete must have a model")
@@ -78,11 +92,18 @@ class ModelAutocomplete(Autocomplete):
     def get_queryset(cls):
         """Get the base QuerySet for searching.
 
-        Override this method to customise the base QuerySet, for example to add
-        filters, select_related, or prefetch_related calls.
+                        Override this method to customise the base QuerySet, for example to add
+                        filters, select_related, or prefetch_related calls.
 
         Returns:
             (QuerySet): The base QuerySet for this autocomplete.
+
+
+        Examples:
+            Inspect the public interface in an interactive session::
+
+                >>> callable(ModelAutocomplete.get_queryset)
+                True
         """
         return cls.get_model().objects.all()
 
@@ -90,8 +111,8 @@ class ModelAutocomplete(Autocomplete):
     def get_label_for_record(cls, record):
         """Generate a display label for a model instance.
 
-        Override this method to customise how model instances are displayed in
-        the autocomplete dropdown and selected items list.
+                        Override this method to customise how model instances are displayed in
+                        the autocomplete dropdown and selected items list.
 
         Args:
             record (Model):
@@ -99,6 +120,13 @@ class ModelAutocomplete(Autocomplete):
 
         Returns:
             (str): The display label for the model instance.
+
+
+        Examples:
+            Inspect the public interface in an interactive session::
+
+                >>> callable(ModelAutocomplete.get_label_for_record)
+                True
         """
         return str(record)
 
@@ -106,8 +134,8 @@ class ModelAutocomplete(Autocomplete):
     def get_query_filtered_queryset(cls, search, context):
         """Filter the base QuerySet by the search query.
 
-        Applies case-insensitive contains searches across all fields specified in
-        search_attrs, combining them with OR logic.
+                        Applies case-insensitive contains searches across all fields specified in
+                        search_attrs, combining them with OR logic.
 
         Args:
             search (str):
@@ -117,6 +145,13 @@ class ModelAutocomplete(Autocomplete):
 
         Returns:
             (QuerySet): Filtered QuerySet matching the search query.
+
+
+        Examples:
+            Inspect the public interface in an interactive session::
+
+                >>> callable(ModelAutocomplete.get_query_filtered_queryset)
+                True
         """
         base_qs = cls.get_queryset()
         conditions = [Q(**{f"{attr}__icontains": search}) for attr in cls.get_search_attrs()]
@@ -137,6 +172,13 @@ class ModelAutocomplete(Autocomplete):
         Returns:
             (QuerysetMappedIterable): An iterable wrapper around the filtered
                 QuerySet that provides efficient slicing and length operations.
+
+
+        Examples:
+            Inspect the public interface in an interactive session::
+
+                >>> callable(ModelAutocomplete.search_items)
+                True
         """
         filtered_queryset = cls.get_query_filtered_queryset(search, context)
 
@@ -156,6 +198,13 @@ class ModelAutocomplete(Autocomplete):
         Returns:
             (list): List of dictionaries with 'key' and 'label' fields for each
                 found model instance.
+
+
+        Examples:
+            Inspect the public interface in an interactive session::
+
+                >>> callable(ModelAutocomplete.get_items_from_keys)
+                True
         """
         queryset = cls.get_queryset()
         results = queryset.filter(id__in=keys)
@@ -166,9 +215,9 @@ class ModelAutocomplete(Autocomplete):
 class QuerysetMappedIterable:
     """Efficient iterable wrapper for Django QuerySets with lazy mapping.
 
-    This class provides an iterable interface over a QuerySet that lazily maps
-    model instances to dictionary format. It supports efficient slicing, length
-    operations, and iteration without loading all results into memory.
+            This class provides an iterable interface over a QuerySet that lazily maps
+            model instances to dictionary format. It supports efficient slicing, length
+            operations, and iteration without loading all results into memory.
 
     Attributes:
         queryset (QuerySet):
@@ -180,6 +229,13 @@ class QuerysetMappedIterable:
         Using this class avoids loading all QuerySet results into memory at once
         whilst still supporting operations like len() and slicing that are needed
         for pagination.
+
+
+    Examples:
+        Inspect the public interface in an interactive session::
+
+            >>> QuerysetMappedIterable.__name__
+            'QuerysetMappedIterable'
     """
 
     def __init__(self, queryset, label_for_record):
@@ -212,6 +268,13 @@ class QuerysetMappedIterable:
 
         Returns:
             (dict): Dictionary with 'key' (primary key) and 'label' (display label).
+
+
+        Examples:
+            Inspect the public interface in an interactive session::
+
+                >>> callable(QuerysetMappedIterable.map_record)
+                True
         """
         return {"key": record.id, "label": self.label_for_record(record)}
 

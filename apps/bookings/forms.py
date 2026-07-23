@@ -27,13 +27,20 @@ from .models import BookingEntry
 class CustomSlotWidget(RangeWidget):
     """A custom widget for entering booking time slots using date-time pickers.
 
-    This widget extends Django's RangeWidget to provide two Bootstrap
-    DateTimePickers for entering start and end times of booking slots.
-    It handles the decomposition of datetime ranges into separate date
-    and time components for display.
+            This widget extends Django's RangeWidget to provide two Bootstrap
+            DateTimePickers for entering start and end times of booking slots.
+            It handles the decomposition of datetime ranges into separate date
+            and time components for display.
 
     Attributes:
         input_type (str): The HTML input type, inherited from DateTimeCustomInput.
+
+
+    Examples:
+        Inspect the public interface in an interactive session::
+
+            >>> CustomSlotWidget.__name__
+            'CustomSlotWidget'
     """
 
     input_type = DateTimeCustomInput.input_type
@@ -41,9 +48,9 @@ class CustomSlotWidget(RangeWidget):
     def __init__(self, *args, **kargs):
         """Construct the widget with custom date-time input sub-widgets.
 
-        This constructor ensures that the widget uses DateTimeCustomInput
-        widgets for both the start and end of the range, even if different
-        widgets are specified.
+                This constructor ensures that the widget uses DateTimeCustomInput
+                widgets for both the start and end of the range, even if different
+                widgets are specified.
 
         Args:
             *args: Variable length argument list, first argument should be
@@ -60,9 +67,9 @@ class CustomSlotWidget(RangeWidget):
     def decompress(self, value):
         """Convert a date-time range to separate date and time components.
 
-        This method decomposes a datetime range into a format suitable for
-        display in the two DateTimePickers, splitting each datetime into
-        separate date and time values.
+                        This method decomposes a datetime range into a format suitable for
+                        display in the two DateTimePickers, splitting each datetime into
+                        separate date and time values.
 
         Args:
             value: A datetime range object with lower and upper bounds, or None.
@@ -71,6 +78,13 @@ class CustomSlotWidget(RangeWidget):
             (list): A list containing two sublists, each with [date, time]
                 for the start and end of the range. Returns [[None, None],
                 [None, None]] if value is None or empty.
+
+
+        Examples:
+            Inspect the public interface in an interactive session::
+
+                >>> callable(CustomSlotWidget.decompress)
+                True
         """
         if value:
             start, end = value.lower, value.upper
@@ -81,10 +95,10 @@ class CustomSlotWidget(RangeWidget):
 class BookingEntryAdminForm(forms.ModelForm):
     """A form for editing booking slots in the Django admin interface.
 
-    This ModelForm provides a comprehensive interface for administrators to
-    manage booking entries, including all fields from the BookingEntry model.
-    It uses the CustomSlotWidget for entering the time slot range and includes
-    necessary JavaScript and CSS resources for the date-time pickers.
+            This ModelForm provides a comprehensive interface for administrators to
+            manage booking entries, including all fields from the BookingEntry model.
+            It uses the CustomSlotWidget for entering the time slot range and includes
+            necessary JavaScript and CSS resources for the date-time pickers.
 
     Attributes:
         Meta.model (BookingEntry): The model class for this form.
@@ -95,9 +109,18 @@ class BookingEntryAdminForm(forms.ModelForm):
         Media.js (list): JavaScript files required for the form functionality,
             including jQuery and jQuery UI.
         Media.css (dict): CSS files required for styling the date-time pickers.
+
+
+    Examples:
+        Inspect the public interface in an interactive session::
+
+            >>> BookingEntryAdminForm.__name__
+            'BookingEntryAdminForm'
     """
 
     class Meta:
+        """Configure the Meta class."""
+
         model = BookingEntry
         exclude = []
         widgets = {
@@ -105,6 +128,8 @@ class BookingEntryAdminForm(forms.ModelForm):
         }
 
     class Media:
+        """Configure the Media class."""
+
         js = ["https://code.jquery.com/jquery-3.7.1.min.js", "https://code.jquery.com/ui/1.14.1/jquery-ui.min.js"]
         css = {
             "all": [
@@ -117,10 +142,10 @@ class BookingEntryAdminForm(forms.ModelForm):
 class BookinngDialogForm(forms.ModelForm):
     """A form for creating and editing booking entries in the front-end interface.
 
-    This ModelForm provides a user-friendly interface for managing bookings
-    directly from the front-end application. It includes autocomplete for
-    user selection and uses the CustomSlotWidget for time slot entry. The
-    equipment and ID fields are hidden as they are typically pre-populated.
+            This ModelForm provides a user-friendly interface for managing bookings
+            directly from the front-end application. It includes autocomplete for
+            user selection and uses the CustomSlotWidget for time slot entry. The
+            equipment and ID fields are hidden as they are typically pre-populated.
 
     Attributes:
         Meta.model (BookingEntry): The model class for this form.
@@ -129,9 +154,18 @@ class BookinngDialogForm(forms.ModelForm):
         Meta.widgets (dict): Custom widgets for form fields, including
             autocomplete for user selection, hidden fields for equipment and
             id, and CustomSlotWidget for the time slot.
+
+
+    Examples:
+        Inspect the public interface in an interactive session::
+
+            >>> BookinngDialogForm.__name__
+            'BookinngDialogForm'
     """
 
     class Meta:
+        """Configure the Meta class."""
+
         model = BookingEntry
         fields = ["equipment", "id", "user", "booker", "slot", "cost_centre"]
         widgets = {
@@ -145,11 +179,11 @@ class BookinngDialogForm(forms.ModelForm):
 class BookingEntryFilterForm(forms.Form):
     """A form for filtering and reporting on booking entries.
 
-    This form provides comprehensive filtering and output options for booking
-    entry reports. Users can filter by date range, users, equipment, user groups,
-    and cost centres, with options to control the ordering and output format of results.
-    Multiple selection is supported for user, equipment, user_group, and cost centre fields
-    using autocomplete widgets.
+            This form provides comprehensive filtering and output options for booking
+            entry reports. Users can filter by date range, users, equipment, user groups,
+            and cost centres, with options to control the ordering and output format of results.
+            Multiple selection is supported for user, equipment, user_group, and cost centre fields
+            using autocomplete widgets.
 
     Attributes:
         from_date (forms.DateField): The start date for the report period,
@@ -171,6 +205,13 @@ class BookingEntryFilterForm(forms.Form):
             sub-totals in the report.
         output (forms.ChoiceField): Selection of output format, including
             HTML, CSV, Excel, PDF, or raw Excel records.
+
+
+    Examples:
+        Inspect the public interface in an interactive session::
+
+            >>> BookingEntryFilterForm.__name__
+            'BookingEntryFilterForm'
     """
 
     from_date = forms.DateField(required=True, widget=DateCustomInput())

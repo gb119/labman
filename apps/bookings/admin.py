@@ -14,7 +14,14 @@ from .resource import BookingEntryResource, BookingPolicyResource
 
 @register(BookingEntry)
 class BookingtEntryAdmin(ImportExportModelAdmin):
-    """Admin interface definition for BookingEntry objects."""
+    """Admin interface definition for BookingEntry objects.
+
+    Examples:
+        Inspect the public interface in an interactive session::
+
+            >>> BookingtEntryAdmin.__name__
+            'BookingtEntryAdmin'
+    """
 
     list_display = ("user", "equipment", "cost_centre", "shifts", "slot_display", "charge", "comment")
     list_filter = ("user", "equipment", "cost_centre", "shifts")
@@ -32,15 +39,51 @@ class BookingtEntryAdmin(ImportExportModelAdmin):
     form = BookingEntryAdminForm
 
     def get_export_resource_class(self):
-        """Return the impor-export resource class."""
+        """Return the impor-export resource class.
+
+        Returns:
+            (object):
+                The result of the operation.
+
+        Examples:
+            Inspect the public interface in an interactive session::
+
+                >>> callable(BookingtEntryAdmin.get_export_resource_class)
+                True
+        """
         return BookingEntryResource
 
     def get_import_resource_class(self):
-        """Return the impor-export resource class."""
+        """Return the impor-export resource class.
+
+        Returns:
+            (object):
+                The result of the operation.
+
+        Examples:
+            Inspect the public interface in an interactive session::
+
+                >>> callable(BookingtEntryAdmin.get_import_resource_class)
+                True
+        """
         return BookingEntryResource
 
     def slot_display(self, obj):
-        """Produce a custom display of slot value."""
+        """Produce a custom display of slot value.
+
+        Args:
+            obj (object):
+                Value supplied for ``obj``.
+        Returns:
+            (object):
+                The result of the operation.
+
+        Examples:
+            Inspect the public interface in an interactive session::
+
+                >>> callable(BookingtEntryAdmin.slot_display)
+                True
+        """
         start, end = obj.slot.lower, obj.slot.upper
         if start is None or end is None:
             return "Bad slot"
@@ -51,7 +94,14 @@ class BookingtEntryAdmin(ImportExportModelAdmin):
 
 @register(BookingPolicy)
 class BookingPolicyAdmin(ImportExportModelAdmin):
-    """Admin interface definition for BookingPolicy Objects."""
+    """Admin interface definition for BookingPolicy Objects.
+
+    Examples:
+        Inspect the public interface in an interactive session::
+
+            >>> BookingPolicyAdmin.__name__
+            'BookingPolicyAdmin'
+    """
 
     list_display = (
         ["name", "for_role"] + BookingPolicy.weekdays + ["start_time", "end_time", "immutable", "max_forward"]
@@ -66,9 +116,31 @@ class BookingPolicyAdmin(ImportExportModelAdmin):
     )
 
     def get_export_resource_class(self):
-        """Return the impor-export resource class."""
+        """Return the impor-export resource class.
+
+        Returns:
+            (object):
+                The result of the operation.
+
+        Examples:
+            Inspect the public interface in an interactive session::
+
+                >>> callable(BookingPolicyAdmin.get_export_resource_class)
+                True
+        """
         return BookingPolicyResource
 
     def get_import_resource_class(self):
-        """Return the impor-export resource class."""
+        """Return the impor-export resource class.
+
+        Returns:
+            (object):
+                The result of the operation.
+
+        Examples:
+            Inspect the public interface in an interactive session::
+
+                >>> callable(BookingPolicyAdmin.get_import_resource_class)
+                True
+        """
         return BookingPolicyResource

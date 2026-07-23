@@ -12,13 +12,20 @@ from sitetree.sitetreeapp import SiteTree
 class CustomSiteTree(SiteTree):
     """Custom tree handler that provides dynamic access control for menu items.
 
-    This class extends the SiteTree base class to support custom access checks on menu items.
-    It allows items to have dynamic access control through callable attributes that can perform
-    runtime checks based on the current context.
+            This class extends the SiteTree base class to support custom access checks on menu items.
+            It allows items to have dynamic access control through callable attributes that can perform
+            runtime checks based on the current context.
 
     Attributes:
         context (dict):
             The current request context used for access checks.
+
+
+    Examples:
+        Inspect the public interface in an interactive session::
+
+            >>> CustomSiteTree.__name__
+            'CustomSiteTree'
     """
 
     def check_access_dyn(self, item, context):
@@ -39,6 +46,13 @@ class CustomSiteTree(SiteTree):
         Notes:
             The access_check callable, if present, receives the tree instance as a keyword
             argument and should return a boolean indicating whether access is granted.
+
+
+        Examples:
+            Inspect the public interface in an interactive session::
+
+                >>> callable(CustomSiteTree.check_access_dyn)
+                True
         """
         access_check_func = getattr(item, "access_check", None)
 

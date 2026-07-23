@@ -19,10 +19,19 @@ from .models import Account, ResearchGroup, Role
 class ResearchGroupSerializer(serializers.ModelSerializer):
     """Serializer for ResearchGroup objects.
 
-    Serializes research group data including name and code fields for API responses.
+            Serializes research group data including name and code fields for API responses.
+
+
+    Examples:
+        Inspect the public interface in an interactive session::
+
+            >>> ResearchGroupSerializer.__name__
+            'ResearchGroupSerializer'
     """
 
     class Meta:
+        """Configure the Meta class."""
+
         model = ResearchGroup
         fields = ("name", "code")
 
@@ -30,11 +39,20 @@ class ResearchGroupSerializer(serializers.ModelSerializer):
 class AccountSerializer(serializers.ModelSerializer):
     """Serializer for Account objects.
 
-    Serializes user account data including username, title, names, and email for
-    API responses.
+            Serializes user account data including username, title, names, and email for
+            API responses.
+
+
+    Examples:
+        Inspect the public interface in an interactive session::
+
+            >>> AccountSerializer.__name__
+            'AccountSerializer'
     """
 
     class Meta:
+        """Configure the Meta class."""
+
         model = Account
         fields = ("username", "title", "first_name", "last_name", "email")
 
@@ -42,10 +60,19 @@ class AccountSerializer(serializers.ModelSerializer):
 class GroupSerializer(serializers.ModelSerializer):
     """Serializer for Django Group objects.
 
-    Serializes Django authentication group data for API responses.
+            Serializes Django authentication group data for API responses.
+
+
+    Examples:
+        Inspect the public interface in an interactive session::
+
+            >>> GroupSerializer.__name__
+            'GroupSerializer'
     """
 
     class Meta:
+        """Configure the Meta class."""
+
         model = Group
         fields = ("name",)
 
@@ -53,10 +80,19 @@ class GroupSerializer(serializers.ModelSerializer):
 class RoleSerializer(serializers.ModelSerializer):
     """Serializer for Role objects.
 
-    Serializes all role fields for API responses.
+            Serializes all role fields for API responses.
+
+
+    Examples:
+        Inspect the public interface in an interactive session::
+
+            >>> RoleSerializer.__name__
+            'RoleSerializer'
     """
 
     class Meta:
+        """Configure the Meta class."""
+
         model = Role
         exclude = []
 
@@ -64,14 +100,21 @@ class RoleSerializer(serializers.ModelSerializer):
 class ResearchGroupViewSet(viewsets.ReadOnlyModelViewSet):
     """Read-only API viewset for ResearchGroup objects.
 
-    Provides list and detail views for research groups through the REST API.
-    Supports standard REST operations: GET (list and detail).
+            Provides list and detail views for research groups through the REST API.
+            Supports standard REST operations: GET (list and detail).
 
     Attributes:
         queryset (QuerySet):
             All ResearchGroup objects.
         serializer_class (class):
             ResearchGroupSerializer for object serialization.
+
+
+    Examples:
+        Inspect the public interface in an interactive session::
+
+            >>> ResearchGroupViewSet.__name__
+            'ResearchGroupViewSet'
     """
 
     queryset = ResearchGroup.objects.all()
@@ -81,14 +124,21 @@ class ResearchGroupViewSet(viewsets.ReadOnlyModelViewSet):
 class AccountViewSet(viewsets.ReadOnlyModelViewSet):
     """Read-only API viewset for Account objects.
 
-    Provides list and detail views for user accounts through the REST API.
-    Supports standard REST operations: GET (list and detail).
+            Provides list and detail views for user accounts through the REST API.
+            Supports standard REST operations: GET (list and detail).
 
     Attributes:
         queryset (QuerySet):
             All Account objects.
         serializer_class (class):
             AccountSerializer for object serialization.
+
+
+    Examples:
+        Inspect the public interface in an interactive session::
+
+            >>> AccountViewSet.__name__
+            'AccountViewSet'
     """
 
     queryset = Account.objects.all()
@@ -98,14 +148,21 @@ class AccountViewSet(viewsets.ReadOnlyModelViewSet):
 class GroupViewSet(viewsets.ReadOnlyModelViewSet):
     """Read-only API viewset for Django Group objects.
 
-    Provides list and detail views for authentication groups through the REST API.
-    Supports standard REST operations: GET (list and detail).
+            Provides list and detail views for authentication groups through the REST API.
+            Supports standard REST operations: GET (list and detail).
 
     Attributes:
         queryset (QuerySet):
             All Group objects.
         serializer_class (class):
             GroupSerializer for object serialization.
+
+
+    Examples:
+        Inspect the public interface in an interactive session::
+
+            >>> GroupViewSet.__name__
+            'GroupViewSet'
     """
 
     queryset = Group.objects.all()
@@ -115,14 +172,21 @@ class GroupViewSet(viewsets.ReadOnlyModelViewSet):
 class RoleViewSet(viewsets.ReadOnlyModelViewSet):
     """Read-only API viewset for Role objects.
 
-    Provides list and detail views for user roles through the REST API.
-    Supports standard REST operations: GET (list and detail).
+            Provides list and detail views for user roles through the REST API.
+            Supports standard REST operations: GET (list and detail).
 
     Attributes:
         queryset (QuerySet):
             All Role objects.
         serializer_class (class):
             RoleSerializer for object serialization.
+
+
+    Examples:
+        Inspect the public interface in an interactive session::
+
+            >>> RoleViewSet.__name__
+            'RoleViewSet'
     """
 
     queryset = Role.objects.all()

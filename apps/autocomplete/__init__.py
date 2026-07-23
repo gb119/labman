@@ -1,6 +1,4 @@
-"""
-Allow HTMXAutoComplete to be imported from the module directly
-"""
+"""Expose the public autocomplete classes, helpers, and widgets."""
 
 # app imports
 from .core import Autocomplete, register

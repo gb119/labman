@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+"""Configure the Sphinx documentation build, extensions, paths, and output formats."""
+
 #
 # django-project-skeleton documentation build configuration file, created by
 # sphinx-quickstart on Sat Feb 21 16:55:55 2015.

@@ -48,21 +48,32 @@ from sortedm2m.fields import SortedManyToManyField
 class Location(MPTTModel, ResourceedObject):
     """Represents a physical location or room in a hierarchical structure.
 
-    Locations can be nested to represent building/room/sub-location hierarchies.
-    Uses django-mptt for efficient hierarchical queries and tree management.
+            Locations can be nested to represent building/room/sub-location hierarchies.
+            Uses django-mptt for efficient hierarchical queries and tree management.
 
     Attributes:
         parent (Location or None):
             Parent location containing this location, or None for top-level locations.
+
+
+    Examples:
+        Inspect the public interface in an interactive session::
+
+            >>> Location.__name__
+            'Location'
     """
 
     class Meta:
+        """Configure the Meta class."""
+
         constraints = [
             models.UniqueConstraint(fields=["name"], name="Unique Location Name"),
         ]
         ordering = ["tree_id", "lft"]
 
     class MPTTMeta:
+        """Configure the MPTTMeta class."""
+
         order_insertion_by = ["name"]
 
     parent = TreeForeignKey("self", on_delete=models.CASCADE, null=True, blank=True, related_name="direct_children")
@@ -79,12 +90,19 @@ class Location(MPTTModel, ResourceedObject):
     def all_parents(self):
         """Retrieve all parent locations containing this location.
 
-        Returns the location hierarchy from the top-level location down to
-        this location, including self.
+                        Returns the location hierarchy from the top-level location down to
+                        this location, including self.
 
         Returns:
             (QuerySet):
                 QuerySet of Location objects representing this location and all parents.
+
+
+        Examples:
+            Inspect the public interface in an interactive session::
+
+                >>> callable(Location.all_parents)
+                True
         """
         # Use MPTT get_ancestors with include_self=True
         return self.get_ancestors(include_self=True)
@@ -93,9 +111,9 @@ class Location(MPTTModel, ResourceedObject):
     def children(self):
         """Retrieve all sub-locations contained within this location.
 
-        Returns this location and all descendant locations at any depth in the
-        hierarchy. This property returns a QuerySet that can be iterated directly
-        in templates without calling .all().
+                Returns this location and all descendant locations at any depth in the
+                hierarchy. This property returns a QuerySet that can be iterated directly
+                in templates without calling .all().
 
         Returns:
             (QuerySet):
@@ -123,6 +141,13 @@ class Location(MPTTModel, ResourceedObject):
         Returns:
             (QuerySet):
                 QuerySet of Document objects associated with this location or any parent.
+
+
+        Examples:
+            Inspect the public interface in an interactive session::
+
+                >>> callable(Location.all_files)
+                True
         """
         Document = apps.get_model("labman_utils", "document")
         return Document.objects.filter(location__in=self.all_parents.all())
@@ -134,6 +159,13 @@ class Location(MPTTModel, ResourceedObject):
         Returns:
             (QuerySet):
                 QuerySet of photo Document objects associated with this location or any parent.
+
+
+        Examples:
+            Inspect the public interface in an interactive session::
+
+                >>> callable(Location.all_photos)
+                True
         """
         Photo = apps.get_model("photologue", "photo")
         return Photo.objects.filter(location__in=self.all_parents.all())
@@ -145,6 +177,13 @@ class Location(MPTTModel, ResourceedObject):
         Returns:
             (QuerySet):
                 QuerySet of page Document objects associated with this location or any parent.
+
+
+        Examples:
+            Inspect the public interface in an interactive session::
+
+                >>> callable(Location.all_pages)
+                True
         """
         FlatPage = apps.get_model("flatpages", "flatpage")
         return FlatPage.objects.filter(location__in=self.all_parents.all())
@@ -156,6 +195,13 @@ class Location(MPTTModel, ResourceedObject):
         Returns:
             (str):
                 URL path to the location detail view.
+
+
+        Examples:
+            Inspect the public interface in an interactive session::
+
+                >>> callable(Location.url)
+                True
         """
         return f"/equipment/location_detail/{self.pk}/"
 
@@ -163,9 +209,9 @@ class Location(MPTTModel, ResourceedObject):
 class Shift(NamedObject):
     """Represents a time period for equipment booking slots.
 
-    Shifts define time windows during which equipment can be booked, with configurable
-    start and end times. They can span midnight and include a weighting factor for
-    cost calculations.
+            Shifts define time windows during which equipment can be booked, with configurable
+            start and end times. They can span midnight and include a weighting factor for
+            cost calculations.
 
     Attributes:
         start_time (time):
@@ -175,9 +221,18 @@ class Shift(NamedObject):
             shifts spanning midnight.
         weighting (float):
             Multiplier for cost calculations. Default is 1.0.
+
+
+    Examples:
+        Inspect the public interface in an interactive session::
+
+            >>> Shift.__name__
+            'Shift'
     """
 
     class Meta:
+        """Configure the Meta class."""
+
         verbose_name_plural = "Booking Shifts"
         verbose_name = "Booking Shift"
         ordering = ["start_time"]
@@ -187,18 +242,26 @@ class Shift(NamedObject):
     weighting = models.FloatField(default=1.0)
 
     def __str__(self):
+        """Perform the str operation."""
         return f"{self.name} {self.start_time}-{self.end_time}"
 
     @property
     def duration(self):
         """Calculate the duration of the shift, handling midnight crossover.
 
-        If the end time is before the start time, the shift is assumed to span
-        midnight and the duration includes the next day.
+                        If the end time is before the start time, the shift is assumed to span
+                        midnight and the duration includes the next day.
 
         Returns:
             (timedelta):
                 The duration of the shift.
+
+
+        Examples:
+            Inspect the public interface in an interactive session::
+
+                >>> callable(Shift.duration)
+                True
         """
         if (dt.combine(dt.today(), self.end_time) - dt.combine(dt.today(), self.start_time)).total_seconds() > 0:
             return dt.combine(dt.today(), self.end_time) - dt.combine(dt.today(), self.start_time)
@@ -207,7 +270,14 @@ class Shift(NamedObject):
 
 
 class Equipment(ResourceedObject):
-    """Class for representing an Equipment item."""
+    """Class for representing an Equipment item.
+
+    Examples:
+        Inspect the public interface in an interactive session::
+
+            >>> Equipment.__name__
+            'Equipment'
+    """
 
     CATEGORIES = {
         "deposition": "Thin film growth",
@@ -220,6 +290,8 @@ class Equipment(ResourceedObject):
     }
 
     class Meta:
+        """Configure the Meta class."""
+
         verbose_name_plural = "Equipment Items"
         verbose_name = "Equipment Item"
         constraints = [models.UniqueConstraint(fields=["name"], name="Unique Equipment Name")]
@@ -233,18 +305,26 @@ class Equipment(ResourceedObject):
     users = models.ManyToManyField("accounts.Account", related_name="user_of", through="equipment.UserListEntry")
 
     def __str__(self):
+        """Perform the str operation."""
         return f"{self.name}"
 
     @property
     def bookable(self):
         """Determine whether the equipment is currently available for booking.
 
-        Equipment is bookable if it has at least one policy defined and is not
-        marked as offline.
+                        Equipment is bookable if it has at least one policy defined and is not
+                        marked as offline.
 
         Returns:
             (bool):
                 True if the equipment can be booked, False otherwise.
+
+
+        Examples:
+            Inspect the public interface in an interactive session::
+
+                >>> callable(Equipment.bookable)
+                True
         """
         return self.policies.count() > 0 and not self.offline
 
@@ -255,6 +335,13 @@ class Equipment(ResourceedObject):
         Returns:
             (str):
                 URL path to the equipment detail view.
+
+
+        Examples:
+            Inspect the public interface in an interactive session::
+
+                >>> callable(Equipment.url)
+                True
         """
         return f"/equipment/equipment_detail/{self.pk}/"
 
@@ -265,6 +352,13 @@ class Equipment(ResourceedObject):
         Returns:
             (str):
                 URL path to the booking calendar view for today's date.
+
+
+        Examples:
+            Inspect the public interface in an interactive session::
+
+                >>> callable(Equipment.schedule)
+                True
         """
         date = tz.now().strftime("%Y%m%d")
 
@@ -277,6 +371,13 @@ class Equipment(ResourceedObject):
         Returns:
             (list or None):
                 List of time objects representing shift start times, or None if no shifts defined.
+
+
+        Examples:
+            Inspect the public interface in an interactive session::
+
+                >>> callable(Equipment.calendar_time_vector)
+                True
         """
         if self.shifts.all().count() == 0:
             return None
@@ -304,6 +405,13 @@ class Equipment(ResourceedObject):
             The queryset is evaluated to a list to ensure prefetch_related works
             correctly and to enable grouping. For equipment with very large userlists
             (1000+ entries), consider implementing pagination or lazy loading.
+
+
+        Examples:
+            Inspect the public interface in an interactive session::
+
+                >>> callable(Equipment.userlist_dict)
+                True
         """
         # Fetch all users once with role prefetched to avoid N+1 queries
         # Order by role level first, then prefetch role data
@@ -325,14 +433,21 @@ class Equipment(ResourceedObject):
         Returns:
             (ChargingRate):
                 The ChargingRate object using the default cost rate.
+
+
+        Examples:
+            Inspect the public interface in an interactive session::
+
+                >>> callable(Equipment.default_charge_rate)
+                True
         """
         return self.charge_rates.get_or_create(cost_rate=CostRate.default())[0]
 
     def __getattr__(self, name):
         """Dynamically resolve role-based user queries and document categories.
 
-        Enables access to users with specific roles (e.g., equipment.manager) and
-        document categories (e.g., equipment.sops, equipment.ras) as attributes.
+                Enables access to users with specific roles (e.g., equipment.manager) and
+                document categories (e.g., equipment.sops, equipment.ras) as attributes.
 
         Args:
             name (str):
@@ -371,9 +486,9 @@ class Equipment(ResourceedObject):
     def get_shift(self, time):
         """Determine which shift contains the specified time.
 
-        Identifies the appropriate Shift object based on whether the given time
-        falls within any of the equipment's defined shifts, handling midnight
-        crossover correctly.
+                        Identifies the appropriate Shift object based on whether the given time
+                        falls within any of the equipment's defined shifts, handling midnight
+                        crossover correctly.
 
         Args:
             time (datetime or time):
@@ -386,6 +501,13 @@ class Equipment(ResourceedObject):
         Raises:
             TypeError:
                 If time is neither a datetime nor a time object.
+
+
+        Examples:
+            Inspect the public interface in an interactive session::
+
+                >>> callable(Equipment.get_shift)
+                True
         """
         if self.shifts.all().count() == 0:
             return None
@@ -409,9 +531,9 @@ class Equipment(ResourceedObject):
     def get_charge_rate(self, other):
         """Determine the applicable charging rate for a given entity.
 
-        Matches the charging rate based on the cost centre associated with the entity
-        and the relevant date. Falls back to the default cost rate if no specific
-        match is found.
+                        Matches the charging rate based on the cost centre associated with the entity
+                        and the relevant date. Falls back to the default cost rate if no specific
+                        match is found.
 
         Args:
             other (CostCentre, BookingEntry, Account, or object):
@@ -425,6 +547,13 @@ class Equipment(ResourceedObject):
         Raises:
             TypeError:
                 If a cost centre cannot be extracted from the provided object.
+
+
+        Examples:
+            Inspect the public interface in an interactive session::
+
+                >>> callable(Equipment.get_charge_rate)
+                True
         """
         BookingEntry = self.bookings.model
         match other:
@@ -458,8 +587,8 @@ class Equipment(ResourceedObject):
     def can_edit(self, target):
         """Check whether a user has permission to edit this equipment.
 
-        Users can edit equipment if they are a superuser, the equipment owner,
-        or have a manager role for the equipment.
+                        Users can edit equipment if they are a superuser, the equipment owner,
+                        or have a manager role for the equipment.
 
         Args:
             target (Account):
@@ -468,6 +597,13 @@ class Equipment(ResourceedObject):
         Returns:
             (bool):
                 True if the user can edit the equipment, False otherwise.
+
+
+        Examples:
+            Inspect the public interface in an interactive session::
+
+                >>> callable(Equipment.can_edit)
+                True
         """
         return (target.is_superuser) or (self.owner == target) or (target in self.manager)
 
@@ -475,9 +611,9 @@ class Equipment(ResourceedObject):
 class UserListEntry(models.Model):
     """Represents a user's authorisation and role for a piece of equipment.
 
-    Links users to equipment with specific roles and manages authorisation holds.
-    Holds can be placed on users who have not yet signed off required documents
-    or by administrators. The entry tracks when permissions were last updated.
+            Links users to equipment with specific roles and manages authorisation holds.
+            Holds can be placed on users who have not yet signed off required documents
+            or by administrators. The entry tracks when permissions were last updated.
 
     Attributes:
         equipment (Equipment):
@@ -492,9 +628,18 @@ class UserListEntry(models.Model):
             Whether an administrative hold is in place. Default is False.
         updated (datetime):
             Timestamp of the last update to this entry. Updated automatically.
+
+
+    Examples:
+        Inspect the public interface in an interactive session::
+
+            >>> UserListEntry.__name__
+            'UserListEntry'
     """
 
     class Meta:
+        """Configure the Meta class."""
+
         ordering = ["equipment", "-role", "user"]
         unique_together = ["equipment", "user"]
         verbose_name = "User List Entry"
@@ -508,14 +653,15 @@ class UserListEntry(models.Model):
     updated = models.DateTimeField(auto_now=True)
 
     def __str__(self):
+        """Perform the str operation."""
         return f"{getattribute(self,'user.display_name')}: {getattribute(self,'role.name')} of {getattribute(self,'equipment.name')}"
 
     def save(self, force_insert=False, force_update=False, using=None, update_fields=None):
         """Save the entry and manage hold status based on role changes.
 
-        Automatically sets hold to True for new entries or when a user's role level
-        increases. For existing entries, checks whether hold should be maintained
-        based on document sign-off requirements.
+                        Automatically sets hold to True for new entries or when a user's role level
+                        increases. For existing entries, checks whether hold should be maintained
+                        based on document sign-off requirements.
 
         Keyword Parameters:
             force_insert (bool):
@@ -526,6 +672,23 @@ class UserListEntry(models.Model):
                 Database alias to use. Default is None.
             update_fields (list or None):
                 List of field names to update. Default is None.
+
+
+        Args:
+            force_insert (object):
+                Value supplied for ``force_insert``.
+            force_update (object):
+                Value supplied for ``force_update``.
+            using (object):
+                Value supplied for ``using``.
+            update_fields (object):
+                Value supplied for ``update_fields``.
+
+        Examples:
+            Inspect the public interface in an interactive session::
+
+                >>> callable(UserListEntry.save)
+                True
         """
         if self.role is None:
             Role = apps.get_model("accounts.role")
@@ -548,6 +711,13 @@ class UserListEntry(models.Model):
         Returns:
             (QuerySet):
                 QuerySet of Document objects for the equipment and its location.
+
+
+        Examples:
+            Inspect the public interface in an interactive session::
+
+                >>> callable(UserListEntry.documents)
+                True
         """
         return self.equipment.all_files.all()
 
@@ -555,20 +725,27 @@ class UserListEntry(models.Model):
     def sign_off_docs(self):
         """Retrieve documents requiring user sign-off.
 
-        Returns only risk assessments and standard operating procedures that
-        users must acknowledge before being cleared for equipment use.
+                        Returns only risk assessments and standard operating procedures that
+                        users must acknowledge before being cleared for equipment use.
 
         Returns:
             (QuerySet):
                 QuerySet of Document objects with categories "ra" or "sop".
+
+
+        Examples:
+            Inspect the public interface in an interactive session::
+
+                >>> callable(UserListEntry.sign_off_docs)
+                True
         """
         return self.documents.filter(category__in=["ra", "sop"])
 
     def check_for_hold(self):
         """Determine whether a hold should be placed on this user entry.
 
-        Checks if the user has signed off all required risk assessment and SOP
-        documents. Returns True if any required signatures are missing.
+                        Checks if the user has signed off all required risk assessment and SOP
+                        documents. Returns True if any required signatures are missing.
 
         Returns:
             (bool):
@@ -578,6 +755,13 @@ class UserListEntry(models.Model):
         Notes:
             This method does not modify the hold flag; it only returns what the
             value should be.
+
+
+        Examples:
+            Inspect the public interface in an interactive session::
+
+                >>> callable(UserListEntry.check_for_hold)
+                True
         """
         for doc in self.sign_off_docs:
             if doc.signatures.filter(user=self.user, version=doc.version).count() == 0:
@@ -589,9 +773,9 @@ class UserListEntry(models.Model):
 class DocumentSignOff(models.Model):
     """Records a user's acknowledgement of reading a specific document version.
 
-    Tracks when users have read and signed off on safety documents, SOPs, and
-    risk assessments. Each sign-off is tied to a specific document version to
-    ensure users review updated materials.
+            Tracks when users have read and signed off on safety documents, SOPs, and
+            risk assessments. Each sign-off is tied to a specific document version to
+            ensure users review updated materials.
 
     Attributes:
         document (Document):
@@ -602,6 +786,13 @@ class DocumentSignOff(models.Model):
             The user who signed off the document.
         created (datetime):
             Timestamp when the sign-off was created. Set automatically.
+
+
+    Examples:
+        Inspect the public interface in an interactive session::
+
+            >>> DocumentSignOff.__name__
+            'DocumentSignOff'
     """
 
     document = models.ForeignKey(Document, on_delete=models.CASCADE, related_name="signatures")
@@ -610,17 +801,20 @@ class DocumentSignOff(models.Model):
     created = models.DateTimeField(auto_now_add=True)
 
     class Meta:
+        """Configure the Meta class."""
+
         unique_together = ["document", "version", "user"]  # Enforce unique document/user/version
 
     def __str__(self):
+        """Perform the str operation."""
         return f"{getattribute(self,'document.title')} v{self.version} ({getattribute(self,'user.display_name')}) {self.created}"
 
     def save(self, force_insert=False, force_update=False, using=None, update_fields=None):
         """Save the sign-off and update related user list entry hold status.
 
-        After recording the sign-off, checks all equipment user list entries for
-        this user where the document is relevant. If all required documents are
-        now signed, removes the hold from those entries.
+                        After recording the sign-off, checks all equipment user list entries for
+                        this user where the document is relevant. If all required documents are
+                        now signed, removes the hold from those entries.
 
         Keyword Parameters:
             force_insert (bool):
@@ -631,6 +825,23 @@ class DocumentSignOff(models.Model):
                 Database alias to use. Default is None.
             update_fields (list or None):
                 List of field names to update. Default is None.
+
+
+        Args:
+            force_insert (object):
+                Value supplied for ``force_insert``.
+            force_update (object):
+                Value supplied for ``force_update``.
+            using (object):
+                Value supplied for ``using``.
+            update_fields (object):
+                Value supplied for ``update_fields``.
+
+        Examples:
+            Inspect the public interface in an interactive session::
+
+                >>> callable(DocumentSignOff.save)
+                True
         """
         super().save(force_insert=force_insert, force_update=force_update, using=using, update_fields=update_fields)
         # Find all items of equipment for which this is a file.
@@ -647,9 +858,9 @@ class DocumentSignOff(models.Model):
 class ChargingRate(models.Model):
     """Represents the cost of using equipment for a specific cost rate and date range.
 
-    Each charging rate associates equipment with a cost rate (e.g., internal, external,
-    commercial) and defines the charge per shift. Multiple charging rates can exist
-    for the same equipment with different date ranges to handle price changes over time.
+            Each charging rate associates equipment with a cost rate (e.g., internal, external,
+            commercial) and defines the charge per shift. Multiple charging rates can exist
+            for the same equipment with different date ranges to handle price changes over time.
 
     Attributes:
         equipment (Equipment):
@@ -663,6 +874,13 @@ class ChargingRate(models.Model):
         dates (DateRange or None):
             Date range during which this rate is applicable. Defaults to current date
             through end of year 2999 if not specified.
+
+
+    Examples:
+        Inspect the public interface in an interactive session::
+
+            >>> ChargingRate.__name__
+            'ChargingRate'
     """
 
     equipment = models.ForeignKey(Equipment, on_delete=models.CASCADE, related_name="charge_rates")
@@ -672,17 +890,20 @@ class ChargingRate(models.Model):
     dates = DateRangeField(blank=True, null=True, verbose_name="Applicable Dates")
 
     class Meta:
+        """Configure the Meta class."""
+
         unique_together = ["equipment", "cost_rate", "dates"]  # Enforce unique equipment, cost_rate, effective dates
 
     def __str__(self):
+        """Perform the str operation."""
         return f"{getattribute(self,'cost_rate.name')} for {getattribute(self, 'equipment.name')} £{self.charge_rate}/shift"
 
     def save(self, force_insert=False, force_update=False, using=None, update_fields=None):
         """Save the charging rate and manage overlapping date ranges.
 
-        Automatically sets default date ranges if not specified (today through year 2999).
-        If a charging rate with overlapping dates exists for the same equipment and
-        cost rate, truncates the old rate's date range to avoid conflicts.
+                        Automatically sets default date ranges if not specified (today through year 2999).
+                        If a charging rate with overlapping dates exists for the same equipment and
+                        cost rate, truncates the old rate's date range to avoid conflicts.
 
         Keyword Parameters:
             force_insert (bool):
@@ -693,6 +914,26 @@ class ChargingRate(models.Model):
                 Database alias to use. Default is None.
             update_fields (list or None):
                 List of field names to update. Default is None.
+
+
+        Args:
+            force_insert (object):
+                Value supplied for ``force_insert``.
+            force_update (object):
+                Value supplied for ``force_update``.
+            using (object):
+                Value supplied for ``using``.
+            update_fields (object):
+                Value supplied for ``update_fields``.
+        Returns:
+            (object):
+                The result of the operation.
+
+        Examples:
+            Inspect the public interface in an interactive session::
+
+                >>> callable(ChargingRate.save)
+                True
         """
         if not self.dates:
             self.dates = DateRange(lower=Date.today(), upper=Date(2999, 12, 31))
@@ -727,6 +968,13 @@ def slug(self):
     Returns:
         (str):
             Slugified version of the title (lowercase, hyphens instead of spaces).
+
+
+    Examples:
+        Inspect the public interface in an interactive session::
+
+            >>> callable(slug)
+            True
     """
     return slugify(self.title)
 
@@ -738,6 +986,13 @@ def signoffs(self):
     Returns:
         (QuerySet):
             QuerySet of UserListEntry objects with hold=True for this user.
+
+
+    Examples:
+        Inspect the public interface in an interactive session::
+
+            >>> callable(signoffs)
+            True
     """
     return self.equipmentlist.filter(hold=True)
 
@@ -749,5 +1004,12 @@ def management_holds(self):
     Returns:
         (QuerySet):
             QuerySet of Equipment objects where this user has admin_hold=True.
+
+
+    Examples:
+        Inspect the public interface in an interactive session::
+
+            >>> callable(management_holds)
+            True
     """
     return self.user_of.filter(admin_hold=True)

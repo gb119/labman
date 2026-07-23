@@ -26,13 +26,20 @@ logger = logging.getLogger(__file__)
 class ErrorView(TemplateView):
     """Base class for custom error views with automatic error code handling.
 
-    This view extracts the HTTP error code from the class name (e.g., E404View -> 404)
-    and returns the appropriate status code in the response. It also provides common
-    context data for error templates.
+            This view extracts the HTTP error code from the class name (e.g., E404View -> 404)
+            and returns the appropriate status code in the response. It also provides common
+            context data for error templates.
 
     Notes:
         The error code is derived from the class name by extracting characters 1-3
         (e.g., E404View extracts '404').
+
+
+    Examples:
+        Inspect the public interface in an interactive session::
+
+            >>> ErrorView.__name__
+            'ErrorView'
     """
 
     def __init__(self, *args, **kargs):
@@ -57,6 +64,13 @@ class ErrorView(TemplateView):
         Notes:
             Extracts characters 1-3 from the class name and converts to integer.
             For example, E404View becomes 404.
+
+
+        Examples:
+            Inspect the public interface in an interactive session::
+
+                >>> callable(ErrorView.get_error_code)
+                True
         """
         name = cls.__name__
         return int(name[1:4])
@@ -67,6 +81,13 @@ class ErrorView(TemplateView):
 
         Returns:
             (int): The HTTP error code.
+
+
+        Examples:
+            Inspect the public interface in an interactive session::
+
+                >>> callable(ErrorView.error_code)
+                True
         """
         return self.get_error_code()
 
@@ -78,6 +99,13 @@ class ErrorView(TemplateView):
 
         Returns:
             (dict): Context dictionary including request, user, and config.
+
+
+        Examples:
+            Inspect the public interface in an interactive session::
+
+                >>> callable(ErrorView.get_context_date)
+                True
         """
         context = super().get_context_date(**kwargs)
         context["request"] = self.request
@@ -88,9 +116,9 @@ class ErrorView(TemplateView):
     def dispatch(self, request, *args, **kwargs):
         """Dispatch any HTTP method to the get handler.
 
-        Error pages should be displayed regardless of the HTTP method used in the
-        original request. This override ensures all methods are handled by the
-        standard get() method.
+                        Error pages should be displayed regardless of the HTTP method used in the
+                        original request. This override ensures all methods are handled by the
+                        standard get() method.
 
         Args:
             request (HttpRequest):
@@ -102,6 +130,13 @@ class ErrorView(TemplateView):
 
         Returns:
             (HttpResponse): Response with the error status code set.
+
+
+        Examples:
+            Inspect the public interface in an interactive session::
+
+                >>> callable(ErrorView.dispatch)
+                True
         """
         return self.get(request, *args, **kwargs)
 
@@ -110,6 +145,13 @@ class ErrorView(TemplateView):
 
         Returns:
             (str): Template path in the format "errors/{code}View.html".
+
+
+        Examples:
+            Inspect the public interface in an interactive session::
+
+                >>> callable(ErrorView.get_template_names)
+                True
         """
         return f"errors/{self.error_code}View.html"
 
@@ -125,6 +167,13 @@ class ErrorView(TemplateView):
 
         Returns:
             (HttpResponse): Response with the error status code set.
+
+
+        Examples:
+            Inspect the public interface in an interactive session::
+
+                >>> callable(ErrorView.render_to_response)
+                True
         """
         response = super().render_to_response(context, **response_kwargs)
         response.status_code = self.get_error_code()
@@ -134,29 +183,57 @@ class ErrorView(TemplateView):
 class E400View(ErrorView):
     """Custom view for HTTP 400 Bad Request errors.
 
-    Renders a custom error page using the standard template with error code 400.
+            Renders a custom error page using the standard template with error code 400.
+
+
+    Examples:
+        Inspect the public interface in an interactive session::
+
+            >>> E400View.__name__
+            'E400View'
     """
 
 
 class E404View(ErrorView):
     """Custom view for HTTP 404 Not Found errors.
 
-    Renders a custom error page using the standard template with error code 404.
+            Renders a custom error page using the standard template with error code 404.
+
+
+    Examples:
+        Inspect the public interface in an interactive session::
+
+            >>> E404View.__name__
+            'E404View'
     """
 
 
 class E403View(ErrorView):
     """Custom view for HTTP 403 Forbidden errors.
 
-    Renders a custom error page using the standard template with error code 403.
+            Renders a custom error page using the standard template with error code 403.
+
+
+    Examples:
+        Inspect the public interface in an interactive session::
+
+            >>> E403View.__name__
+            'E403View'
     """
 
 
 class E500View(ErrorView):
     """Custom view for HTTP 500 Internal Server Error.
 
-    Renders a custom error page using the standard template with error code 500.
-    For superusers, displays the technical debug page with full traceback.
+            Renders a custom error page using the standard template with error code 500.
+            For superusers, displays the technical debug page with full traceback.
+
+
+    Examples:
+        Inspect the public interface in an interactive session::
+
+            >>> E500View.__name__
+            'E500View'
     """
 
     @classonlymethod
@@ -171,6 +248,13 @@ class E500View(ErrorView):
 
         Raises:
             TypeError: If invalid keyword arguments are provided.
+
+
+        Examples:
+            Inspect the public interface in an interactive session::
+
+                >>> callable(E500View.as_view)
+                True
         """
         for key in initkwargs:
             if key in cls.http_method_names:
@@ -199,6 +283,13 @@ class E500View(ErrorView):
 
             Raises:
                 AttributeError: If the view instance has no request attribute.
+
+
+            Examples:
+                Inspect the public interface in an interactive session::
+
+                    >>> callable(E500View.view)
+                    True
             """
             self = cls(**initkwargs)
             self.setup(request, *args, **kwargs)
@@ -234,6 +325,13 @@ class E500View(ErrorView):
         Returns:
             (HttpResponse): Technical debug page for superusers, or standard
                            error page for other users.
+
+
+        Examples:
+            Inspect the public interface in an interactive session::
+
+                >>> callable(E500View.get)
+                True
         """
         if request.user.is_superuser:
             return technical_500_response(request, *sys.exc_info())
@@ -244,12 +342,19 @@ class E500View(ErrorView):
 class FileServeView(View):
     """View for streaming file downloads from the media directory.
 
-    Provides a streaming response for serving files from the MEDIA_ROOT directory.
-    Files are sent in chunks to efficiently handle large files without loading
-    them entirely into memory.
+            Provides a streaming response for serving files from the MEDIA_ROOT directory.
+            Files are sent in chunks to efficiently handle large files without loading
+            them entirely into memory.
 
     Notes:
         Raises Http404 if the requested file does not exist.
+
+
+    Examples:
+        Inspect the public interface in an interactive session::
+
+            >>> FileServeView.__name__
+            'FileServeView'
     """
 
     def get(self, request, *args, **kwargs):
@@ -273,6 +378,13 @@ class FileServeView(View):
 
         Notes:
             Files are read in 8192-byte chunks for efficient streaming.
+
+
+        Examples:
+            Inspect the public interface in an interactive session::
+
+                >>> callable(FileServeView.get)
+                True
         """
         # Define the file path
         if file_path := kwargs.get("path"):
@@ -287,11 +399,20 @@ class FileServeView(View):
                 Args:
                     file_name (str):
                         Path to the file to read.
+
+                Keyword Parameters:
                     chunk_size (int):
                         Size of each chunk in bytes (default: 8192).
 
                 Yields:
                     (bytes): Chunks of the file content.
+
+
+                Examples:
+                    Inspect the public interface in an interactive session::
+
+                        >>> callable(FileServeView.file_iterator)
+                        True
                 """
                 with open(file_name, "rb") as f:
                     while chunk := f.read(chunk_size):

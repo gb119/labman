@@ -41,14 +41,21 @@ from .resource import (
 class UserListFilter(SimpleListFilter):
     """Custom admin filter for filtering objects by user account.
 
-    Provides a filter in the admin interface that allows filtering objects based
-    on user accounts, displaying users ordered by last name and first name.
+            Provides a filter in the admin interface that allows filtering objects based
+            on user accounts, displaying users ordered by last name and first name.
 
     Attributes:
         title (str):
             The human-readable title for the filter displayed in the admin sidebar.
         parameter_name (str):
             The URL parameter name used for this filter.
+
+
+    Examples:
+        Inspect the public interface in an interactive session::
+
+            >>> UserListFilter.__name__
+            'UserListFilter'
     """
 
     title = "user"
@@ -67,6 +74,13 @@ class UserListFilter(SimpleListFilter):
             (list):
                 List of tuples containing (username, user) pairs for all users
                 ordered by last name and first name.
+
+
+        Examples:
+            Inspect the public interface in an interactive session::
+
+                >>> callable(UserListFilter.lookups)
+                True
         """
         qs = Account.objects.all().order_by("last_name", "first_name")
         return [(user.username, user) for user in qs.all()]
@@ -84,6 +98,13 @@ class UserListFilter(SimpleListFilter):
             (QuerySet):
                 Filtered queryset containing only objects matching the selected
                 user, or unfiltered queryset if no user is selected.
+
+
+        Examples:
+            Inspect the public interface in an interactive session::
+
+                >>> callable(UserListFilter.queryset)
+                True
         """
         if not self.value():
             return queryset
@@ -97,9 +118,9 @@ site.unregister(Group)
 class RoleAdmin(ImportExportModelAdmin):
     """Admin interface configuration for Role objects.
 
-    Provides list display, filtering, searching, and import/export functionality
-    for user roles within the system. Roles represent different permission levels
-    and capabilities that can be assigned to users.
+            Provides list display, filtering, searching, and import/export functionality
+            for user roles within the system. Roles represent different permission levels
+            and capabilities that can be assigned to users.
 
     Attributes:
         list_display (tuple):
@@ -108,6 +129,13 @@ class RoleAdmin(ImportExportModelAdmin):
             Fields available for filtering in the admin sidebar.
         search_fields (tuple):
             Fields that can be searched in the admin search box.
+
+
+    Examples:
+        Inspect the public interface in an interactive session::
+
+            >>> RoleAdmin.__name__
+            'RoleAdmin'
     """
 
     list_display = ("name", "level")
@@ -120,6 +148,13 @@ class RoleAdmin(ImportExportModelAdmin):
         Returns:
             (type):
                 The RoleResource class used for exporting role data.
+
+
+        Examples:
+            Inspect the public interface in an interactive session::
+
+                >>> callable(RoleAdmin.get_export_resource_class)
+                True
         """
         return RoleResource
 
@@ -129,6 +164,13 @@ class RoleAdmin(ImportExportModelAdmin):
         Returns:
             (type):
                 The RoleResource class used for importing role data.
+
+
+        Examples:
+            Inspect the public interface in an interactive session::
+
+                >>> callable(RoleAdmin.get_import_resource_class)
+                True
         """
         return RoleResource
 
@@ -137,9 +179,9 @@ class RoleAdmin(ImportExportModelAdmin):
 class ResearchGroupAdmin(ImportExportModelAdmin):
     """Admin interface configuration for ResearchGroup objects.
 
-    Manages research group administration including display, filtering, and
-    import/export capabilities. Research groups organise users into teams or
-    departments for project management and resource allocation.
+            Manages research group administration including display, filtering, and
+            import/export capabilities. Research groups organise users into teams or
+            departments for project management and resource allocation.
 
     Attributes:
         list_display (tuple):
@@ -150,6 +192,13 @@ class ResearchGroupAdmin(ImportExportModelAdmin):
             Fields displayed as horizontal filters in Django Suit theme.
         search_fields (tuple):
             Fields that can be searched in the admin search box.
+
+
+    Examples:
+        Inspect the public interface in an interactive session::
+
+            >>> ResearchGroupAdmin.__name__
+            'ResearchGroupAdmin'
     """
 
     list_display = ("name", "code")
@@ -163,6 +212,13 @@ class ResearchGroupAdmin(ImportExportModelAdmin):
         Returns:
             (type):
                 The ResearchGroupResource class used for exporting research group data.
+
+
+        Examples:
+            Inspect the public interface in an interactive session::
+
+                >>> callable(ResearchGroupAdmin.get_export_resource_class)
+                True
         """
         return ResearchGroupResource
 
@@ -172,6 +228,13 @@ class ResearchGroupAdmin(ImportExportModelAdmin):
         Returns:
             (type):
                 The ResearchGroupResource class used for importing research group data.
+
+
+        Examples:
+            Inspect the public interface in an interactive session::
+
+                >>> callable(ResearchGroupAdmin.get_import_resource_class)
+                True
         """
         return ResearchGroupResource
 
@@ -179,12 +242,19 @@ class ResearchGroupAdmin(ImportExportModelAdmin):
 class PhotoInlineAdmin(TabularInline):
     """Inline admin interface for Photo objects.
 
-    Provides a tabular inline interface for managing Photo objects within
-    another model's admin page, typically used for managing user profile photos.
+            Provides a tabular inline interface for managing Photo objects within
+            another model's admin page, typically used for managing user profile photos.
 
     Attributes:
         model (Model):
             The Photo model class from photologue.
+
+
+    Examples:
+        Inspect the public interface in an interactive session::
+
+            >>> PhotoInlineAdmin.__name__
+            'PhotoInlineAdmin'
     """
 
     model = Photo
@@ -193,12 +263,19 @@ class PhotoInlineAdmin(TabularInline):
 class PageInlineAdmin(TabularInline):
     """Inline admin interface for FlatPage objects.
 
-    Provides a tabular inline interface for managing FlatPage objects within
-    another model's admin page, allowing management of associated static pages.
+            Provides a tabular inline interface for managing FlatPage objects within
+            another model's admin page, allowing management of associated static pages.
 
     Attributes:
         model (Model):
             The FlatPage model class from django.contrib.flatpages.
+
+
+    Examples:
+        Inspect the public interface in an interactive session::
+
+            >>> PageInlineAdmin.__name__
+            'PageInlineAdmin'
     """
 
     model = FlatPage
@@ -214,9 +291,9 @@ except sites.NotRegistered:
 class AccountrAdmin(ImportExportMixin, UserAdmin):
     """Admin interface configuration for user Account objects.
 
-    Provides comprehensive user account management including personal information,
-    permissions, resource associations, and import/export functionality. Extends
-    Django's UserAdmin with custom fields specific to the laboratory management system.
+            Provides comprehensive user account management including personal information,
+            permissions, resource associations, and import/export functionality. Extends
+            Django's UserAdmin with custom fields specific to the laboratory management system.
 
     Attributes:
         form (Form):
@@ -235,6 +312,13 @@ class AccountrAdmin(ImportExportMixin, UserAdmin):
             Fields that can be searched in the admin search box.
         inlines (list):
             Inline admin classes to display related objects.
+
+
+    Examples:
+        Inspect the public interface in an interactive session::
+
+            >>> AccountrAdmin.__name__
+            'AccountrAdmin'
     """
 
     form = UserAdminForm
@@ -317,6 +401,13 @@ class AccountrAdmin(ImportExportMixin, UserAdmin):
         Returns:
             (type):
                 The UserResource class used for exporting user account data.
+
+
+        Examples:
+            Inspect the public interface in an interactive session::
+
+                >>> callable(AccountrAdmin.get_export_resource_class)
+                True
         """
         return UserResource
 
@@ -326,6 +417,13 @@ class AccountrAdmin(ImportExportMixin, UserAdmin):
         Returns:
             (type):
                 The UserResource class used for importing user account data.
+
+
+        Examples:
+            Inspect the public interface in an interactive session::
+
+                >>> callable(AccountrAdmin.get_import_resource_class)
+                True
         """
         return UserResource
 
@@ -340,6 +438,13 @@ class AccountrAdmin(ImportExportMixin, UserAdmin):
             (SafeString):
                 HTML-safe string containing an img tag with the user's thumbnail,
                 or a non-breaking space if no mugshot is available.
+
+
+        Examples:
+            Inspect the public interface in an interactive session::
+
+                >>> callable(AccountrAdmin.photo_tag)
+                True
         """
         if obj.mugshot:
             return format_html(
@@ -355,9 +460,16 @@ class AccountrAdmin(ImportExportMixin, UserAdmin):
 class ImportExportGroupAdmin(ImportExportMixin, GroupAdmin):
     """Admin interface configuration for Django authentication Group objects.
 
-    Extends Django's built-in GroupAdmin with import/export functionality for
-    managing user groups and their permissions. Groups provide a way to categorise
-    users and assign permissions collectively.
+            Extends Django's built-in GroupAdmin with import/export functionality for
+            managing user groups and their permissions. Groups provide a way to categorise
+            users and assign permissions collectively.
+
+
+    Examples:
+        Inspect the public interface in an interactive session::
+
+            >>> ImportExportGroupAdmin.__name__
+            'ImportExportGroupAdmin'
     """
 
     def get_export_resource_class(self):
@@ -366,6 +478,13 @@ class ImportExportGroupAdmin(ImportExportMixin, GroupAdmin):
         Returns:
             (type):
                 The GroupResource class used for exporting group data.
+
+
+        Examples:
+            Inspect the public interface in an interactive session::
+
+                >>> callable(ImportExportGroupAdmin.get_export_resource_class)
+                True
         """
         return GroupResource
 
@@ -375,5 +494,12 @@ class ImportExportGroupAdmin(ImportExportMixin, GroupAdmin):
         Returns:
             (type):
                 The GroupResource class used for importing group data.
+
+
+        Examples:
+            Inspect the public interface in an interactive session::
+
+                >>> callable(ImportExportGroupAdmin.get_import_resource_class)
+                True
         """
         return GroupResource

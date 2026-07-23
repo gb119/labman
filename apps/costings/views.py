@@ -24,14 +24,35 @@ from .models import CostCentre
 
 
 class Cost_CentreView(IsAuthenticaedViewMixin, HTMXProcessMixin, TemplateView):
-    """Make a list of user CostCentre."""
+    """Make a list of user CostCentre.
+
+    Examples:
+        Inspect the public interface in an interactive session::
+
+            >>> Cost_CentreView.__name__
+            'Cost_CentreView'
+    """
 
     template_name_id_cost_centre = "costings/parts/cost_centres_options.html"
     template_name_full_description = "costings/parts/cost_centre_description_full.html"
     template_name_short_description = "costings/parts/cost_centre_description_short.html"
 
     def get_context_data_id_cost_centre(self, **kwargs):
-        """Add the cost_centres for this user."""
+        """Add the cost_centres for this user.
+
+        Keyword Parameters:
+            **kwargs (object):
+                Value supplied for ``kwargs``.
+        Returns:
+            (object):
+                The result of the operation.
+
+        Examples:
+            Inspect the public interface in an interactive session::
+
+                >>> callable(Cost_CentreView.get_context_data_id_cost_centre)
+                True
+        """
         context = super().get_context_data(**kwargs)
         form = BookinngDialogForm(self.request.GET)
         if form.is_valid() or getattr(form, "cleaned_data", {}).get("user", None):
@@ -44,7 +65,21 @@ class Cost_CentreView(IsAuthenticaedViewMixin, HTMXProcessMixin, TemplateView):
         return context
 
     def get_context_data_full_description(self, **kwargs):
-        """Add the cost_centres for this yser."""
+        """Add the cost_centres for this yser.
+
+        Keyword Parameters:
+            **kwargs (object):
+                Value supplied for ``kwargs``.
+        Returns:
+            (object):
+                The result of the operation.
+
+        Examples:
+            Inspect the public interface in an interactive session::
+
+                >>> callable(Cost_CentreView.get_context_data_full_description)
+                True
+        """
         context = super().get_context_data(**kwargs)
         if cost_centre_id := self.request.GET.get("cost_centre_id", self.request.GET.get("cost_centre_id", None)):
             try:
@@ -61,15 +96,22 @@ class Cost_CentreView(IsAuthenticaedViewMixin, HTMXProcessMixin, TemplateView):
 class CostCentreDialog(IsSuperuserViewMixin, HTMXFormMixin, UpdateView):
     """HTMX dialog for creating and editing cost centres.
 
-    Provides an HTMX-powered dialog interface for managing cost centres
-    (projects). Supports both creating new cost centres and editing existing ones.
-    Only accessible to superusers.
+            Provides an HTMX-powered dialog interface for managing cost centres
+            (projects). Supports both creating new cost centres and editing existing ones.
+            Only accessible to superusers.
 
     Attributes:
         model: CostCentre model class.
         template_name (str): Template for the cost centre form dialog.
         context_object_name (str): Name for the object in template context.
         form_class: Form class for cost centre entries.
+
+
+    Examples:
+        Inspect the public interface in an interactive session::
+
+            >>> CostCentreDialog.__name__
+            'CostCentreDialog'
     """
 
     model = CostCentre
@@ -85,6 +127,13 @@ class CostCentreDialog(IsSuperuserViewMixin, HTMXFormMixin, UpdateView):
 
         Returns:
             (dict): Context dictionary with URLs and edit state information.
+
+
+        Examples:
+            Inspect the public interface in an interactive session::
+
+                >>> callable(CostCentreDialog.get_context_data_dialog)
+                True
         """
         context = super().get_context_data(**kwargs)
         context["current_url"] = self.request.htmx.current_url
@@ -103,6 +152,17 @@ class CostCentreDialog(IsSuperuserViewMixin, HTMXFormMixin, UpdateView):
 
         Returns:
             (CostCentre or None): The cost centre if found, otherwise None.
+
+
+        Args:
+            queryset (object):
+                Value supplied for ``queryset``.
+
+        Examples:
+            Inspect the public interface in an interactive session::
+
+                >>> callable(CostCentreDialog.get_object)
+                True
         """
         try:
             return super().get_object(queryset)
@@ -114,6 +174,13 @@ class CostCentreDialog(IsSuperuserViewMixin, HTMXFormMixin, UpdateView):
 
         Returns:
             (dict): Initial form data with accounts if editing an existing cost centre.
+
+
+        Examples:
+            Inspect the public interface in an interactive session::
+
+                >>> callable(CostCentreDialog.get_initial)
+                True
         """
         initial = super().get_initial()
         if obj := self.get_object():
@@ -128,6 +195,13 @@ class CostCentreDialog(IsSuperuserViewMixin, HTMXFormMixin, UpdateView):
 
         Returns:
             (HttpResponse): Empty response with HTMX trigger to refresh projects list.
+
+
+        Examples:
+            Inspect the public interface in an interactive session::
+
+                >>> callable(CostCentreDialog.htmx_form_valid_costcentre)
+                True
         """
         self.object = form.save()
 
@@ -157,6 +231,17 @@ class CostCentreDialog(IsSuperuserViewMixin, HTMXFormMixin, UpdateView):
         Raises:
             HttpResponseNotFound: If the cost centre cannot be found.
             HttpResponseForbidden: If user lacks permission to delete the entry.
+
+
+        Keyword Parameters:
+            **kwargs (object):
+                Value supplied for ``kwargs``.
+
+        Examples:
+            Inspect the public interface in an interactive session::
+
+                >>> callable(CostCentreDialog.htmx_delete_costcentre)
+                True
         """
         if not (cost_centre := self.get_object()):
             return HttpResponseNotFound("Unable to locate cost centre.")

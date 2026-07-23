@@ -14,21 +14,75 @@ from .models import Account, ResearchGroup, Role
 
 
 class StrippedCharWidget(widgets.CharWidget):
-    """Hacked to make sure usernames don't have leading or trailing space spaces."""
+    """Hacked to make sure usernames don't have leading or trailing space spaces.
+
+    Examples:
+        Inspect the public interface in an interactive session::
+
+            >>> StrippedCharWidget.__name__
+            'StrippedCharWidget'
+    """
 
     def clean(self, value, row=None, **kwargs):
-        """Clean the value and then strip the resulting string."""
+        """Clean the value and then strip the resulting string.
+
+        Args:
+            value (object):
+                Value supplied for ``value``.
+            row (object):
+                Value supplied for ``row``.
+        Keyword Parameters:
+            **kwargs (object):
+                Value supplied for ``kwargs``.
+        Returns:
+            (object):
+                The result of the operation.
+
+        Examples:
+            Inspect the public interface in an interactive session::
+
+                >>> callable(StrippedCharWidget.clean)
+                True
+        """
         return super().clean(value, row, **kwargs).strip()
 
 
 class AccountWidget(widgets.ForeignKeyWidget):
-    """Try to match a user account."""
+    """Try to match a user account.
+
+    Examples:
+        Inspect the public interface in an interactive session::
+
+            >>> AccountWidget.__name__
+            'AccountWidget'
+    """
 
     display_name_pattern = re.compile(r"(?P<last_name>[^\,]+)\,(?P<first_name>[^\(]+)$")
     given_name_pattern = re.compile(r"(?P<last_name>[^\,]+)\,(?P<givenName>[^\(]+)\((?P<first_name>[^)]+)\)")
 
     def clean(self, value, row=None, *args, **kwargs):
-        """Attempt to match to a user account."""
+        """Attempt to match to a user account.
+
+        Args:
+            value (object):
+                Value supplied for ``value``.
+            row (object):
+                Value supplied for ``row``.
+            *args (object):
+                Value supplied for ``args``.
+        Keyword Parameters:
+            **kwargs (object):
+                Value supplied for ``kwargs``.
+        Returns:
+            (object):
+                The result of the operation.
+
+        Examples:
+            Inspect the public interface in an interactive session::
+
+                >>> callable(AccountWidget.clean)
+                True
+        """
         if not value:
             return None
 
@@ -94,10 +148,36 @@ class AccountWidget(widgets.ForeignKeyWidget):
 
 
 class AccountsWidget(widgets.ManyToManyWidget):
-    """An import-export widget that understands lists of user names."""
+    """An import-export widget that understands lists of user names.
+
+    Examples:
+        Inspect the public interface in an interactive session::
+
+            >>> AccountsWidget.__name__
+            'AccountsWidget'
+    """
 
     def clean(self, value, row=None, **kwargs):
-        """Perform lookups to match lists of user names or IDs."""
+        """Perform lookups to match lists of user names or IDs.
+
+        Args:
+            value (object):
+                Value supplied for ``value``.
+            row (object):
+                Value supplied for ``row``.
+        Keyword Parameters:
+            **kwargs (object):
+                Value supplied for ``kwargs``.
+        Returns:
+            (object):
+                The result of the operation.
+
+        Examples:
+            Inspect the public interface in an interactive session::
+
+                >>> callable(AccountsWidget.clean)
+                True
+        """
         if not value:
             return Account.objects.none()
 
@@ -172,23 +252,48 @@ class AccountsWidget(widgets.ManyToManyWidget):
 
 
 class ResearchGroupResource(resources.ModelResource):
-    """Import export resource for ResearchGroup objects."""
+    """Import export resource for ResearchGroup objects.
+
+    Examples:
+        Inspect the public interface in an interactive session::
+
+            >>> ResearchGroupResource.__name__
+            'ResearchGroupResource'
+    """
 
     class Meta:
+        """Configure the Meta class."""
+
         model = ResearchGroup
         import_id_fields = ["name"]
 
 
 class RoleResource(resources.ModelResource):
-    """Import-Export resource for Role objects."""
+    """Import-Export resource for Role objects.
+
+    Examples:
+        Inspect the public interface in an interactive session::
+
+            >>> RoleResource.__name__
+            'RoleResource'
+    """
 
     class Meta:
+        """Configure the Meta class."""
+
         model = Role
         import_id_fields = ["name"]
 
 
 class UserResource(resources.ModelResource):
-    """Import-export resource objects for User objects."""
+    """Import-export resource objects for User objects.
+
+    Examples:
+        Inspect the public interface in an interactive session::
+
+            >>> UserResource.__name__
+            'UserResource'
+    """
 
     groups = fields.Field(
         column_name="groups",
@@ -211,6 +316,8 @@ class UserResource(resources.ModelResource):
     )
 
     class Meta:
+        """Configure the Meta class."""
+
         model = Account
         fields = (
             "username",
@@ -230,7 +337,30 @@ class UserResource(resources.ModelResource):
         import_id_fields = ["username"]
 
     def import_row(self, row, instance_loader, using_transactions=True, dry_run=False, **kwargs):
-        """Match up bad fields."""
+        """Match up bad fields.
+
+        Args:
+            row (object):
+                Value supplied for ``row``.
+            instance_loader (object):
+                Value supplied for ``instance_loader``.
+            using_transactions (object):
+                Value supplied for ``using_transactions``.
+            dry_run (object):
+                Value supplied for ``dry_run``.
+        Keyword Parameters:
+            **kwargs (object):
+                Value supplied for ``kwargs``.
+        Returns:
+            (object):
+                The result of the operation.
+
+        Examples:
+            Inspect the public interface in an interactive session::
+
+                >>> callable(UserResource.import_row)
+                True
+        """
         if "username" not in row and "Email Address" in row:  # Create username and email columns
             parts = row["Email Address"].split("@")
             row["username"] = parts[0].strip().lower()
@@ -259,9 +389,18 @@ class UserResource(resources.ModelResource):
 
 
 class GroupResource(resources.ModelResource):
-    """Import-export resource for Group objects."""
+    """Import-export resource for Group objects.
+
+    Examples:
+        Inspect the public interface in an interactive session::
+
+            >>> GroupResource.__name__
+            'GroupResource'
+    """
 
     class Meta:
+        """Configure the Meta class."""
+
         model = Group
         fields = ("name", "permissions")
         import_id_fields = ["name"]

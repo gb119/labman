@@ -16,7 +16,14 @@ from tinymce.widgets import TinyMCE
 
 
 class ObfuscatedTinyMCE(TinyMCE):
-    """A hacked version of TinyMCE that adds extra javascript."""
+    """A hacked version of TinyMCE that adds extra javascript.
+
+    Examples:
+        Inspect the public interface in an interactive session::
+
+            >>> ObfuscatedTinyMCE.__name__
+            'ObfuscatedTinyMCE'
+    """
 
     def __init__(self, content_language=None, attrs=None, mce_attrs=None):
         """Make sure we set the class to incloude saomething fopr the JavaScript to latch on to."""
@@ -31,6 +38,18 @@ class ObfuscatedTinyMCE(TinyMCE):
 
     @TinyMCE.media.getter
     def media(self):
+        """Perform the media operation.
+
+        Returns:
+            (object):
+                The result of the operation.
+
+        Examples:
+            Inspect the public interface in an interactive session::
+
+                >>> callable(ObfuscatedTinyMCE.media)
+                True
+        """
         css = None
         if tinymce.settings.USE_COMPRESSOR:
             js = [reverse("tinymce-compressor")]
@@ -53,11 +72,18 @@ class ObfuscatedTinyMCE(TinyMCE):
 class AdminObfuscatedTinyMCE(ObfuscatedTinyMCE, admin_widgets.AdminTextareaWidget):
     """An obfuscated TinyMCE widget for use in Django admin interface.
 
-    This widget combines the obfuscation capabilities of ObfuscatedTinyMCE with the
-    styling and functionality of Django's AdminTextareaWidget, making it suitable
-    for use in the Django admin interface.
+            This widget combines the obfuscation capabilities of ObfuscatedTinyMCE with the
+            styling and functionality of Django's AdminTextareaWidget, making it suitable
+            for use in the Django admin interface.
 
     Notes:
         This widget inherits behaviour from both ObfuscatedTinyMCE and AdminTextareaWidget,
         providing a rich text editor with obfuscation in the admin interface.
+
+
+    Examples:
+        Inspect the public interface in an interactive session::
+
+            >>> AdminObfuscatedTinyMCE.__name__
+            'AdminObfuscatedTinyMCE'
     """

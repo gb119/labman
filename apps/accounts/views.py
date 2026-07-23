@@ -24,9 +24,9 @@ from .models import Account
 class UserAccountView(IsAuthenticaedViewMixin, HTMXProcessMixin, views.generic.DetailView):
     """Template detail view for displaying a specific user's account.
 
-    Provides a comprehensive account detail page with tabbed interface showing
-    user projects, underlings (supervised users), equipment user lists, and
-    future bookings. Supports HTMX for dynamic tab loading.
+            Provides a comprehensive account detail page with tabbed interface showing
+            user projects, underlings (supervised users), equipment user lists, and
+            future bookings. Supports HTMX for dynamic tab loading.
 
     Attributes:
         context_object_name (str): Name for the account object in context.
@@ -37,6 +37,13 @@ class UserAccountView(IsAuthenticaedViewMixin, HTMXProcessMixin, views.generic.D
         slug_field (str): Model field used for URL slug lookup.
         slug_url_kwarg (str): URL keyword argument for user lookup.
         model: Account model class.
+
+
+    Examples:
+        Inspect the public interface in an interactive session::
+
+            >>> UserAccountView.__name__
+            'UserAccountView'
     """
 
     context_object_name = "account"
@@ -49,7 +56,18 @@ class UserAccountView(IsAuthenticaedViewMixin, HTMXProcessMixin, views.generic.D
     model = Account
 
     def get_queryset(self):
-        """Ensure we get all user accounts."""
+        """Ensure we get all user accounts.
+
+        Returns:
+            (object):
+                The result of the operation.
+
+        Examples:
+            Inspect the public interface in an interactive session::
+
+                >>> callable(UserAccountView.get_queryset)
+                True
+        """
         return self.model.objects.all()
 
     def get_context_data(self, **kwargs):
@@ -60,6 +78,13 @@ class UserAccountView(IsAuthenticaedViewMixin, HTMXProcessMixin, views.generic.D
 
         Returns:
             (dict): Context dictionary with account and future bookings.
+
+
+        Examples:
+            Inspect the public interface in an interactive session::
+
+                >>> callable(UserAccountView.get_context_data)
+                True
         """
         context = super().get_context_data(**kwargs)
         me = context["account"]
@@ -71,9 +96,9 @@ class UserAccountView(IsAuthenticaedViewMixin, HTMXProcessMixin, views.generic.D
 class MyAccountView(UserAccountView):
     """Template detail view for the currently logged-in user's account.
 
-    Extends UserAccountView to always display the current user's account page
-    regardless of URL parameters. Provides the same tabbed interface showing
-    projects, underlings, user lists, and future bookings.
+            Extends UserAccountView to always display the current user's account page
+            regardless of URL parameters. Provides the same tabbed interface showing
+            projects, underlings, user lists, and future bookings.
 
     Attributes:
         context_object_name (str): Name for the account object in context.
@@ -81,6 +106,13 @@ class MyAccountView(UserAccountView):
         template_name_projecttab (str): Template for projects tab.
         template_name_underlingstab (str): Template for underlings tab.
         template_name_userlisttab (str): Template for user list tab.
+
+
+    Examples:
+        Inspect the public interface in an interactive session::
+
+            >>> MyAccountView.__name__
+            'MyAccountView'
     """
 
     context_object_name = "account"
@@ -97,6 +129,17 @@ class MyAccountView(UserAccountView):
 
         Returns:
             (Account): The currently authenticated user's account.
+
+
+        Args:
+            queryset (object):
+                Value supplied for ``queryset``.
+
+        Examples:
+            Inspect the public interface in an interactive session::
+
+                >>> callable(MyAccountView.get_object)
+                True
         """
         return self.request.user
 
@@ -108,6 +151,13 @@ class MyAccountView(UserAccountView):
 
         Returns:
             (dict): Context dictionary with account and future bookings.
+
+
+        Examples:
+            Inspect the public interface in an interactive session::
+
+                >>> callable(MyAccountView.get_context_data)
+                True
         """
         context = super().get_context_data(**kwargs)
         me = context["account"]
@@ -119,13 +169,20 @@ class MyAccountView(UserAccountView):
 class AccountListByGroupView(IsAuthenticaedViewMixin, ListView):
     """ListView for listing accounts grouped by user role or group.
 
-    Displays a list of user accounts filtered by their group membership,
-    such as Academic, Staff, PDRA, PostGrad, Visitor, or Project groups.
+            Displays a list of user accounts filtered by their group membership,
+            such as Academic, Staff, PDRA, PostGrad, Visitor, or Project groups.
 
     Attributes:
         template_name (str): Template for the account list display.
         model: Account model class.
         context_object_name (str): Name for the account list in context.
+
+
+    Examples:
+        Inspect the public interface in an interactive session::
+
+            >>> AccountListByGroupView.__name__
+            'AccountListByGroupView'
     """
 
     template_name = "accounts/parts/account_list_by_group.html"
@@ -135,11 +192,18 @@ class AccountListByGroupView(IsAuthenticaedViewMixin, ListView):
     def get_queryset(self):
         """Get the queryset based on the group name.
 
-        Filters accounts by the group name specified in the URL kwargs.
-        Defaults to 'Project' group if not specified.
+                        Filters accounts by the group name specified in the URL kwargs.
+                        Defaults to 'Project' group if not specified.
 
         Returns:
             (QuerySet): Filtered queryset of accounts in the specified group.
+
+
+        Examples:
+            Inspect the public interface in an interactive session::
+
+                >>> callable(AccountListByGroupView.get_queryset)
+                True
         """
         grp = self.kwargs.get("group", "Project")
         return self.model.objects.filter(groups__name=grp)

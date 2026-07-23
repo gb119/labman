@@ -1,3 +1,5 @@
+"""Provide labman suit functionality for the labman package."""
+
 # Python imports
 from os.path import basename, dirname
 
@@ -10,10 +12,28 @@ from suit.menu import ChildItem, ParentItem
 
 
 class AdminConfigConfig(AppConfig):
+    """Provide the AdminConfigConfig implementation.
+
+    Examples:
+        Inspect the public interface in an interactive session::
+
+            >>> AdminConfigConfig.__name__
+            'AdminConfigConfig'
+    """
+
     name = basename(dirname(__file__))
 
 
 class SuitConfig(DjangoSuitConfig):
+    """Provide the SuitConfig implementation.
+
+    Examples:
+        Inspect the public interface in an interactive session::
+
+            >>> SuitConfig.__name__
+            'SuitConfig'
+    """
+
     layout = "vertical"
     list_per_page = 150
     menu = [

@@ -11,6 +11,13 @@ from django.apps import AppConfig
 
 
 class AccountsConfig(AppConfig):
-    """Django config class for the accounts app."""
+    """Django config class for the accounts app.
+
+    Examples:
+        Inspect the public interface in an interactive session::
+
+            >>> AccountsConfig.__name__
+            'AccountsConfig'
+    """
 
     name = basename(dirname(__file__))

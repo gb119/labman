@@ -49,11 +49,18 @@ Account = apps.get_model(app_label="accounts", model_name="Account")
 class IsAuthenticaedViewMixin(UserPassesTestMixin):
     """Mixin class to enforce logged in users only.
 
-    This mixin restricts view access to authenticated users by checking if the user is logged in.
-    If the test fails, users are redirected to the login URL.
+            This mixin restricts view access to authenticated users by checking if the user is logged in.
+            If the test fails, users are redirected to the login URL.
 
-    The login URL is taken from Django's ``LOGIN_URL`` setting so production
-    requests enter the configured ADFS authentication flow.
+            The login URL is taken from Django's ``LOGIN_URL`` setting so production
+            requests enter the configured ADFS authentication flow.
+
+
+    Examples:
+        Inspect the public interface in an interactive session::
+
+            >>> IsAuthenticaedViewMixin.__name__
+            'IsAuthenticaedViewMixin'
     """
 
     def test_func(self):
@@ -62,6 +69,13 @@ class IsAuthenticaedViewMixin(UserPassesTestMixin):
         Returns:
             (bool):
                 True if the request has a user attribute and the user is authenticated, False otherwise.
+
+
+        Examples:
+            Inspect the public interface in an interactive session::
+
+                >>> callable(IsAuthenticaedViewMixin.test_func)
+                True
         """
         return hasattr(self, "request") and not self.request.user.is_anonymous
 
@@ -69,8 +83,15 @@ class IsAuthenticaedViewMixin(UserPassesTestMixin):
 class IsSuperuserViewMixin(IsAuthenticaedViewMixin):
     """Mixin class to enforce the user is a super user.
 
-    This mixin extends IsAuthenticaedViewMixin and adds an additional check to ensure the user
-    has superuser privileges.
+            This mixin extends IsAuthenticaedViewMixin and adds an additional check to ensure the user
+            has superuser privileges.
+
+
+    Examples:
+        Inspect the public interface in an interactive session::
+
+            >>> IsSuperuserViewMixin.__name__
+            'IsSuperuserViewMixin'
     """
 
     def test_func(self):
@@ -79,6 +100,13 @@ class IsSuperuserViewMixin(IsAuthenticaedViewMixin):
         Returns:
             (bool):
                 True if the user is authenticated and is a superuser, False otherwise.
+
+
+        Examples:
+            Inspect the public interface in an interactive session::
+
+                >>> callable(IsSuperuserViewMixin.test_func)
+                True
         """
         return super().test_func() and self.request.user.is_superuser
 
@@ -86,7 +114,14 @@ class IsSuperuserViewMixin(IsAuthenticaedViewMixin):
 class IsStaffViewMixin(IsSuperuserViewMixin):
     """Mixin to enforce that the user is a staff user.
 
-    This mixin checks whether the user is authenticated and either a staff member or a superuser.
+            This mixin checks whether the user is authenticated and either a staff member or a superuser.
+
+
+    Examples:
+        Inspect the public interface in an interactive session::
+
+            >>> IsStaffViewMixin.__name__
+            'IsStaffViewMixin'
     """
 
     def test_func(self):
@@ -95,6 +130,13 @@ class IsStaffViewMixin(IsSuperuserViewMixin):
         Returns:
             (bool):
                 True if the user is authenticated and is either staff or superuser, False otherwise.
+
+
+        Examples:
+            Inspect the public interface in an interactive session::
+
+                >>> callable(IsStaffViewMixin.test_func)
+                True
         """
         return IsAuthenticaedViewMixin.test_func(self) and (self.request.user.is_staff or super().test_func())
 
@@ -102,11 +144,11 @@ class IsStaffViewMixin(IsSuperuserViewMixin):
 class RedirectView(View):
     """Redirects the view to another class depending on the request user's attributes.
 
-    This view provides a flexible routing mechanism that selects the appropriate view class based on
-    user authentication status and permissions. The selection process checks conditions in order:
-    superuser, staff, authenticated, and group membership.
+            This view provides a flexible routing mechanism that selects the appropriate view class based on
+            user authentication status and permissions. The selection process checks conditions in order:
+            superuser, staff, authenticated, and group membership.
 
-    The first condition that matches and returns a non-None view class is used to dispatch the request.
+            The first condition that matches and returns a non-None view class is used to dispatch the request.
 
     Attributes:
         superuser_view (View, optional):
@@ -125,6 +167,13 @@ class RedirectView(View):
     Notes:
         The selection order is: superuser → staff → logged-in/anonymous → group-based.
         Each get_*_view method can be overridden to customise the selection logic.
+
+
+    Examples:
+        Inspect the public interface in an interactive session::
+
+            >>> RedirectView.__name__
+            'RedirectView'
     """
 
     def get_superuser_view(self, request):
@@ -137,6 +186,13 @@ class RedirectView(View):
         Returns:
             (View or None):
                 The superuser_view attribute if the user is a superuser, otherwise None.
+
+
+        Examples:
+            Inspect the public interface in an interactive session::
+
+                >>> callable(RedirectView.get_superuser_view)
+                True
         """
         if self.request.user.is_authenticated and self.request.user.is_superuser:
             return getattr(self, "superuser_view", None)
@@ -152,6 +208,13 @@ class RedirectView(View):
         Returns:
             (View or None):
                 The staff_view attribute if the user is a staff member, otherwise None.
+
+
+        Examples:
+            Inspect the public interface in an interactive session::
+
+                >>> callable(RedirectView.get_staff_view)
+                True
         """
         if self.request.user.is_authenticated and self.request.user.is_staff:
             return getattr(self, "staff_view", None)
@@ -167,6 +230,13 @@ class RedirectView(View):
         Returns:
             (View or None):
                 The logged_in_view attribute if authenticated, otherwise the result of get_anonymous_view.
+
+
+        Examples:
+            Inspect the public interface in an interactive session::
+
+                >>> callable(RedirectView.get_logged_in_view)
+                True
         """
         if self.request.user.is_authenticated:
             return getattr(self, "logged_in_view", None)
@@ -182,6 +252,13 @@ class RedirectView(View):
         Returns:
             (View or None):
                 The anonymous_view attribute or None if not set.
+
+
+        Examples:
+            Inspect the public interface in an interactive session::
+
+                >>> callable(RedirectView.get_anonymous_view)
+                True
         """
         return getattr(self, "anonymous_view", None)
 
@@ -195,6 +272,13 @@ class RedirectView(View):
         Returns:
             (View or None):
                 The view class associated with the first matching group, or None if no match is found.
+
+
+        Examples:
+            Inspect the public interface in an interactive session::
+
+                >>> callable(RedirectView.get_group_view)
+                True
         """
         if not self.request.user.is_authenticated:  # Not logged in, so no groups -> None
             return None
@@ -219,6 +303,17 @@ class RedirectView(View):
             (HttpResponse):
                 The response from the selected view's dispatch method, or the superclass dispatch
                 if no matching view is found.
+
+
+        Keyword Parameters:
+            **kwargs (object):
+                Value supplied for ``kwargs``.
+
+        Examples:
+            Inspect the public interface in an interactive session::
+
+                >>> callable(RedirectView.dispatch)
+                True
         """
         self.kwargs.update(kwargs)
         kwargs = self.kwargs
@@ -232,8 +327,8 @@ class RedirectView(View):
 class MultiFormMixin(ContextMixin):
     """Mixin class that handles multiple forms within a view.
 
-    This mixin enables a single view to manage multiple forms, each with its own validation,
-    initial values, prefixes, and success URLs. Forms can be processed individually or in groups.
+            This mixin enables a single view to manage multiple forms, each with its own validation,
+            initial values, prefixes, and success URLs. Forms can be processed individually or in groups.
 
     Attributes:
         form_classes (dict):
@@ -261,6 +356,13 @@ class MultiFormMixin(ContextMixin):
         - create_{form_name}_form(**kwargs) for custom form creation
         - {form_name}_form_valid(form) for custom valid form handling
         - {form_name}_form_invalid(form) for custom invalid form handling
+
+
+    Examples:
+        Inspect the public interface in an interactive session::
+
+            >>> MultiFormMixin.__name__
+            'MultiFormMixin'
     """
 
     form_classes = {}
@@ -285,6 +387,13 @@ class MultiFormMixin(ContextMixin):
         Returns:
             (dict):
                 The context dictionary with forms added under the forms_context_name key.
+
+
+        Examples:
+            Inspect the public interface in an interactive session::
+
+                >>> callable(MultiFormMixin.get_context_data)
+                True
         """
         context = super(MultiFormMixin, self).get_context_data(**kwargs)
         context[self.get_forms_context_name()] = self.get_forms(self.get_form_classes(), bind_all=True)
@@ -296,6 +405,13 @@ class MultiFormMixin(ContextMixin):
         Returns:
             (dict):
                 Dictionary of form names to form classes from the form_classes attribute.
+
+
+        Examples:
+            Inspect the public interface in an interactive session::
+
+                >>> callable(MultiFormMixin.get_form_classes)
+                True
         """
         return self.form_classes
 
@@ -315,6 +431,13 @@ class MultiFormMixin(ContextMixin):
         Returns:
             (dict):
                 Dictionary mapping form names to instantiated form objects.
+
+
+        Examples:
+            Inspect the public interface in an interactive session::
+
+                >>> callable(MultiFormMixin.get_forms)
+                True
         """
         return dict(
             [
@@ -329,6 +452,13 @@ class MultiFormMixin(ContextMixin):
         Returns:
             (str):
                 The context variable name for the forms dictionary.
+
+
+        Examples:
+            Inspect the public interface in an interactive session::
+
+                >>> callable(MultiFormMixin.get_forms_context_name)
+                True
         """
         return self.forms_context_name
 
@@ -346,6 +476,13 @@ class MultiFormMixin(ContextMixin):
         Returns:
             (dict):
                 Keyword arguments dictionary for form instantiation.
+
+
+        Examples:
+            Inspect the public interface in an interactive session::
+
+                >>> callable(MultiFormMixin.get_form_kwargs)
+                True
         """
         kwargs = {}
         kwargs.update({"initial": self.get_initial(form_name)})
@@ -368,6 +505,13 @@ class MultiFormMixin(ContextMixin):
         Returns:
             (HttpResponse):
                 Response from the custom form_valid method or a redirect to the success URL.
+
+
+        Examples:
+            Inspect the public interface in an interactive session::
+
+                >>> callable(MultiFormMixin.forms_valid)
+                True
         """
         form_valid_method = "%s_form_valid" % form_name
         self._forms = forms
@@ -388,6 +532,13 @@ class MultiFormMixin(ContextMixin):
         Returns:
             (HttpResponse):
                 Response from the custom form_invalid method or a re-render with form errors.
+
+
+        Examples:
+            Inspect the public interface in an interactive session::
+
+                >>> callable(MultiFormMixin.forms_invalid)
+                True
         """
         form_invalid_method = "%s_form_invalid" % form_name
         self._forms = forms
@@ -406,6 +557,13 @@ class MultiFormMixin(ContextMixin):
         Returns:
             (dict):
                 Initial values dictionary for the specified form.
+
+
+        Examples:
+            Inspect the public interface in an interactive session::
+
+                >>> callable(MultiFormMixin.get_initial)
+                True
         """
         initial_method = f"get_{form_name}_initial"
         if hasattr(self, initial_method):
@@ -423,6 +581,13 @@ class MultiFormMixin(ContextMixin):
         Returns:
             (str or None):
                 The prefix for the form's fields, or None if not set.
+
+
+        Examples:
+            Inspect the public interface in an interactive session::
+
+                >>> callable(MultiFormMixin.get_prefix)
+                True
         """
         return self.prefixes.get(form_name, self.prefix)
 
@@ -436,6 +601,17 @@ class MultiFormMixin(ContextMixin):
         Returns:
             (str):
                 The success URL for the specified form or the default success URL.
+
+
+        Args:
+            form_name (object):
+                Value supplied for ``form_name``.
+
+        Examples:
+            Inspect the public interface in an interactive session::
+
+                >>> callable(MultiFormMixin.get_success_url)
+                True
         """
         return self.success_urls.get(form_name, self.success_url)
 
@@ -480,15 +656,22 @@ class MultiFormMixin(ContextMixin):
 class FormListView(FormMixin, ListView):
     """Provide a ListView with a form.
 
-    This view combines a list view with form handling, enabling filtering or searching of list results
-    through a form. The form is available in both GET and POST requests, with POST requests validating
-    the form before rendering the filtered list.
+            This view combines a list view with form handling, enabling filtering or searching of list results
+            through a form. The form is available in both GET and POST requests, with POST requests validating
+            the form before rendering the filtered list.
 
     Attributes:
         success_url (str):
             Default success URL (not actually used as the view always re-renders). Defaults to "/".
         form (Form):
             The instantiated form object, available after get() or post() is called.
+
+
+    Examples:
+        Inspect the public interface in an interactive session::
+
+            >>> FormListView.__name__
+            'FormListView'
     """
 
     success_url = "/"  # Not actually used since we never redirect here
@@ -500,6 +683,13 @@ class FormListView(FormMixin, ListView):
         Returns:
             (QuerySet):
                 The queryset from get_queryset().
+
+
+        Examples:
+            Inspect the public interface in an interactive session::
+
+                >>> callable(FormListView.object_list)
+                True
         """
         return self.get_queryset()
 
@@ -510,6 +700,13 @@ class FormListView(FormMixin, ListView):
         Args:
             valiue:
                 The value to set (ignored).
+
+
+        Examples:
+            Inspect the public interface in an interactive session::
+
+                >>> callable(FormListView.object_list)
+                True
         """
 
     def get(self, request, *args, **kwargs):
@@ -526,6 +723,17 @@ class FormListView(FormMixin, ListView):
         Returns:
             (HttpResponse):
                 The rendered list view with an unbound form.
+
+
+        Keyword Parameters:
+            **kwargs (object):
+                Value supplied for ``kwargs``.
+
+        Examples:
+            Inspect the public interface in an interactive session::
+
+                >>> callable(FormListView.get)
+                True
         """
         form_class = self.get_form_class()
         if not getattr(self, "form", None):
@@ -536,8 +744,8 @@ class FormListView(FormMixin, ListView):
     def post(self, request, *args, **kwargs):
         """Handle POST requests.
 
-        Instantiates a form instance with the passed POST variables and then checked for validity.
-        Before going to ListView.get for rendering.
+                        Instantiates a form instance with the passed POST variables and then checked for validity.
+                        Before going to ListView.get for rendering.
 
         Args:
             request (HttpRequest):
@@ -550,6 +758,17 @@ class FormListView(FormMixin, ListView):
         Returns:
             (HttpResponse):
                 The rendered list view with the bound form, showing validation errors if invalid.
+
+
+        Keyword Parameters:
+            **kwargs (object):
+                Value supplied for ``kwargs``.
+
+        Examples:
+            Inspect the public interface in an interactive session::
+
+                >>> callable(FormListView.post)
+                True
         """
         form_class = self.get_form_class()
         self.form = self.get_form(form_class)
@@ -571,6 +790,13 @@ class FormListView(FormMixin, ListView):
         Returns:
             (dict):
                 The context dictionary with the form added under the 'form' key.
+
+
+        Examples:
+            Inspect the public interface in an interactive session::
+
+                >>> callable(FormListView.get_context_data)
+                True
         """
         context = super().get_context_data(**kwargs)
         context["form"] = self.form
@@ -580,8 +806,15 @@ class FormListView(FormMixin, ListView):
 class ProcessMultipleFormsView(ProcessFormView):
     """Subclass of ProcessFormView to deal with multiple forms on a page.
 
-    This view processes multiple forms that can be submitted individually, in groups, or all together.
-    The form to process is determined by the 'action' POST parameter.
+            This view processes multiple forms that can be submitted individually, in groups, or all together.
+            The form to process is determined by the 'action' POST parameter.
+
+
+    Examples:
+        Inspect the public interface in an interactive session::
+
+            >>> ProcessMultipleFormsView.__name__
+            'ProcessMultipleFormsView'
     """
 
     def get(self, request, *args, **kwargs):
@@ -598,6 +831,17 @@ class ProcessMultipleFormsView(ProcessFormView):
         Returns:
             (HttpResponse):
                 The rendered response with all unbound forms in context.
+
+
+        Keyword Parameters:
+            **kwargs (object):
+                Value supplied for ``kwargs``.
+
+        Examples:
+            Inspect the public interface in an interactive session::
+
+                >>> callable(ProcessMultipleFormsView.get)
+                True
         """
         form_classes = self.get_form_classes()
         forms = self.get_forms(form_classes)
@@ -617,6 +861,17 @@ class ProcessMultipleFormsView(ProcessFormView):
         Returns:
             (HttpResponse):
                 The response after processing the submitted form(s).
+
+
+        Keyword Parameters:
+            **kwargs (object):
+                Value supplied for ``kwargs``.
+
+        Examples:
+            Inspect the public interface in an interactive session::
+
+                >>> callable(ProcessMultipleFormsView.post)
+                True
         """
         form_classes = self.get_form_classes()
         form_name = request.POST.get("action")
@@ -720,24 +975,38 @@ class ProcessMultipleFormsView(ProcessFormView):
 class BaseMultipleFormsView(MultiFormMixin, ProcessMultipleFormsView):
     """A base view for displaying several forms.
 
-    This class combines MultiFormMixin and ProcessMultipleFormsView to provide a complete
-    view implementation for handling multiple forms without template rendering.
+            This class combines MultiFormMixin and ProcessMultipleFormsView to provide a complete
+            view implementation for handling multiple forms without template rendering.
+
+
+    Examples:
+        Inspect the public interface in an interactive session::
+
+            >>> BaseMultipleFormsView.__name__
+            'BaseMultipleFormsView'
     """
 
 
 class MultiFormsView(TemplateResponseMixin, BaseMultipleFormsView):
     """A view for displaying several forms, and rendering a template response.
 
-    This class adds template rendering capability to BaseMultipleFormsView, making it
-    a complete solution for views that need to display and process multiple forms.
+            This class adds template rendering capability to BaseMultipleFormsView, making it
+            a complete solution for views that need to display and process multiple forms.
+
+
+    Examples:
+        Inspect the public interface in an interactive session::
+
+            >>> MultiFormsView.__name__
+            'MultiFormsView'
     """
 
 
 class PhotoDisplay(DetailView):
     """Return just the image tag for an image.
 
-    This view renders a simple template containing only the photo's image tag, useful for
-    embedding or displaying photos in isolation.
+            This view renders a simple template containing only the photo's image tag, useful for
+            embedding or displaying photos in isolation.
 
     Attributes:
         model (Model):
@@ -746,6 +1015,13 @@ class PhotoDisplay(DetailView):
             Template path, defaults to "labman_utils/photo_tag.html".
         context_object_name (str):
             Context variable name for the photo object.
+
+
+    Examples:
+        Inspect the public interface in an interactive session::
+
+            >>> PhotoDisplay.__name__
+            'PhotoDisplay'
     """
 
     model = Photo
@@ -756,8 +1032,8 @@ class PhotoDisplay(DetailView):
 class DocumentDialog(IsAuthenticaedViewMixin, HTMXFormMixin, UpdateView):
     """Produce the HTML for a document form in a dialog.
 
-    This HTMX-enabled view handles creating and editing documents associated with equipment or locations.
-    It provides dialog-based forms that can be embedded in other pages without full page reloads.
+            This HTMX-enabled view handles creating and editing documents associated with equipment or locations.
+            It provides dialog-based forms that can be embedded in other pages without full page reloads.
 
     Attributes:
         model (Model):
@@ -766,6 +1042,13 @@ class DocumentDialog(IsAuthenticaedViewMixin, HTMXFormMixin, UpdateView):
             Template path for the dialog, defaults to "labman_utils/document_form.html".
         context_object_name (str):
             Context variable name for the document object.
+
+
+    Examples:
+        Inspect the public interface in an interactive session::
+
+            >>> DocumentDialog.__name__
+            'DocumentDialog'
     """
 
     model = Document
@@ -778,6 +1061,13 @@ class DocumentDialog(IsAuthenticaedViewMixin, HTMXFormMixin, UpdateView):
         Returns:
             (Form):
                 The DocumentDialogForm class.
+
+
+        Examples:
+            Inspect the public interface in an interactive session::
+
+                >>> callable(DocumentDialog.get_form_class)
+                True
         """
         forms = import_module("labman_utils.forms")
         return forms.DocumentDialogForm
@@ -792,6 +1082,13 @@ class DocumentDialog(IsAuthenticaedViewMixin, HTMXFormMixin, UpdateView):
         Returns:
             (dict):
                 Context dictionary containing the document, related objects, and URLs for form submission.
+
+
+        Examples:
+            Inspect the public interface in an interactive session::
+
+                >>> callable(DocumentDialog.get_context_data_dialog)
+                True
         """
         context = super().get_context_data(**kwargs)
         context["current_url"] = self.request.htmx.current_url
@@ -832,6 +1129,17 @@ class DocumentDialog(IsAuthenticaedViewMixin, HTMXFormMixin, UpdateView):
         Returns:
             (Document or None):
                 The document instance if found, otherwise None.
+
+
+        Args:
+            queryset (object):
+                Value supplied for ``queryset``.
+
+        Examples:
+            Inspect the public interface in an interactive session::
+
+                >>> callable(DocumentDialog.get_object)
+                True
         """
         try:
             return super().get_object(queryset)
@@ -844,6 +1152,13 @@ class DocumentDialog(IsAuthenticaedViewMixin, HTMXFormMixin, UpdateView):
         Returns:
             (dict):
                 Initial form values with equipment and/or location if specified in URL kwargs.
+
+
+        Examples:
+            Inspect the public interface in an interactive session::
+
+                >>> callable(DocumentDialog.get_initial)
+                True
         """
         if "equipment" in self.kwargs:
             equipment = Equipment.objects.get(pk=self.kwargs.get("equipment", None))
@@ -865,6 +1180,13 @@ class DocumentDialog(IsAuthenticaedViewMixin, HTMXFormMixin, UpdateView):
         Returns:
             (HttpResponse):
                 HTTP 204 response with a header to trigger a refresh of the files list.
+
+
+        Examples:
+            Inspect the public interface in an interactive session::
+
+                >>> callable(DocumentDialog.htmx_form_valid_document)
+                True
         """
         self.object = form.save()
         if equipment := form.cleaned_data.get("equipment", None):
@@ -893,6 +1215,17 @@ class DocumentDialog(IsAuthenticaedViewMixin, HTMXFormMixin, UpdateView):
             (HttpResponse):
                 HttpResponseNotFound if document not found, HttpResponseForbidden if permission denied,
                 otherwise HTTP 204 response with a header to trigger a refresh.
+
+
+        Keyword Parameters:
+            **kwargs (object):
+                Value supplied for ``kwargs``.
+
+        Examples:
+            Inspect the public interface in an interactive session::
+
+                >>> callable(DocumentDialog.htmx_delete_document)
+                True
         """
         if not (document := self.get_object()):
             return HttpResponseNotFound("Unable to locate document.")
@@ -919,14 +1252,21 @@ class DocumentDialog(IsAuthenticaedViewMixin, HTMXFormMixin, UpdateView):
 class DocumentLinkDialog(IsAuthenticaedViewMixin, HTMXFormMixin, UpdateView):
     """Produce the HTML for linking documents to equipment or locations in a dialog.
 
-    This HTMX-enabled view handles linking existing documents to equipment or locations through
-    a dialog interface. It dynamically generates the form based on the object being linked.
+            This HTMX-enabled view handles linking existing documents to equipment or locations through
+            a dialog interface. It dynamically generates the form based on the object being linked.
 
     Attributes:
         template_name (str):
             Template path for the dialog, defaults to "labman_utils/link_document_form.html".
         context_object_name (str):
             Context variable name for the object being linked.
+
+
+    Examples:
+        Inspect the public interface in an interactive session::
+
+            >>> DocumentLinkDialog.__name__
+            'DocumentLinkDialog'
     """
 
     template_name = "labman_utils/link_document_form.html"
@@ -938,6 +1278,13 @@ class DocumentLinkDialog(IsAuthenticaedViewMixin, HTMXFormMixin, UpdateView):
         Returns:
             (Form):
                 A dynamically created ModelForm for the appropriate model (Equipment, Location, or Document).
+
+
+        Examples:
+            Inspect the public interface in an interactive session::
+
+                >>> callable(DocumentLinkDialog.get_form_class)
+                True
         """
         if "equipment" in self.kwargs:
             model = Equipment
@@ -967,6 +1314,13 @@ class DocumentLinkDialog(IsAuthenticaedViewMixin, HTMXFormMixin, UpdateView):
         Returns:
             (dict):
                 Context dictionary containing the object, related data, and post URL.
+
+
+        Examples:
+            Inspect the public interface in an interactive session::
+
+                >>> callable(DocumentLinkDialog.get_context_data_dialog)
+                True
         """
         context = super().get_context_data(**kwargs)
         context["current_url"] = self.request.htmx.current_url
@@ -1000,6 +1354,17 @@ class DocumentLinkDialog(IsAuthenticaedViewMixin, HTMXFormMixin, UpdateView):
         Returns:
             (Model):
                 The Equipment, Location, or Document instance based on URL kwargs.
+
+
+        Args:
+            queryset (object):
+                Value supplied for ``queryset``.
+
+        Examples:
+            Inspect the public interface in an interactive session::
+
+                >>> callable(DocumentLinkDialog.get_object)
+                True
         """
         if equipment := self.kwargs.get("equipment", None):
             return Equipment.objects.get(pk=equipment)
@@ -1013,6 +1378,13 @@ class DocumentLinkDialog(IsAuthenticaedViewMixin, HTMXFormMixin, UpdateView):
         Returns:
             (dict):
                 Initial form values with linked objects pre-populated.
+
+
+        Examples:
+            Inspect the public interface in an interactive session::
+
+                >>> callable(DocumentLinkDialog.get_initial)
+                True
         """
         if "equipment" in self.kwargs:
             thing = Equipment.objects.get(pk=self.kwargs.get("equipment", None))
@@ -1036,6 +1408,13 @@ class DocumentLinkDialog(IsAuthenticaedViewMixin, HTMXFormMixin, UpdateView):
         Returns:
             (HttpResponse):
                 HTTP 204 response with a header to trigger a refresh of the files list.
+
+
+        Examples:
+            Inspect the public interface in an interactive session::
+
+                >>> callable(DocumentLinkDialog.htmx_form_valid_document)
+                True
         """
         self.object = form.save()
         this = self.object
@@ -1064,8 +1443,8 @@ class DocumentLinkDialog(IsAuthenticaedViewMixin, HTMXFormMixin, UpdateView):
 class PhotoDialog(IsAuthenticaedViewMixin, HTMXFormMixin, UpdateView):
     """Produce the HTML for a photo form in a dialog.
 
-    This HTMX-enabled view handles creating and editing photos associated with equipment, locations,
-    or user accounts. It provides dialog-based forms for photo management.
+            This HTMX-enabled view handles creating and editing photos associated with equipment, locations,
+            or user accounts. It provides dialog-based forms for photo management.
 
     Attributes:
         model (Model):
@@ -1074,6 +1453,13 @@ class PhotoDialog(IsAuthenticaedViewMixin, HTMXFormMixin, UpdateView):
             Template path for the dialog, defaults to "labman_utils/photo_form.html".
         context_object_name (str):
             Context variable name for the photo object.
+
+
+    Examples:
+        Inspect the public interface in an interactive session::
+
+            >>> PhotoDialog.__name__
+            'PhotoDialog'
     """
 
     model = Photo
@@ -1086,6 +1472,13 @@ class PhotoDialog(IsAuthenticaedViewMixin, HTMXFormMixin, UpdateView):
         Returns:
             (Form):
                 The PhotoDialogForm class.
+
+
+        Examples:
+            Inspect the public interface in an interactive session::
+
+                >>> callable(PhotoDialog.get_form_class)
+                True
         """
         forms = import_module("labman_utils.forms")
         return forms.PhotoDialogForm
@@ -1101,6 +1494,13 @@ class PhotoDialog(IsAuthenticaedViewMixin, HTMXFormMixin, UpdateView):
             (dict):
                 Context dictionary containing the photo, related objects (equipment, location, or account),
                 and URLs for form submission.
+
+
+        Examples:
+            Inspect the public interface in an interactive session::
+
+                >>> callable(PhotoDialog.get_context_data_dialog)
+                True
         """
         context = super().get_context_data(**kwargs)
         context["current_url"] = self.request.htmx.current_url
@@ -1137,6 +1537,17 @@ class PhotoDialog(IsAuthenticaedViewMixin, HTMXFormMixin, UpdateView):
         Returns:
             (Photo or None):
                 The photo instance if found, otherwise None.
+
+
+        Args:
+            queryset (object):
+                Value supplied for ``queryset``.
+
+        Examples:
+            Inspect the public interface in an interactive session::
+
+                >>> callable(PhotoDialog.get_object)
+                True
         """
         try:
             return super().get_object(queryset)
@@ -1150,6 +1561,13 @@ class PhotoDialog(IsAuthenticaedViewMixin, HTMXFormMixin, UpdateView):
             (dict):
                 Initial form values with equipment, location, or account if specified in URL kwargs.
                 Also sets the title to the object's name if available.
+
+
+        Examples:
+            Inspect the public interface in an interactive session::
+
+                >>> callable(PhotoDialog.get_initial)
+                True
         """
         initial = {}
         for arg, model in {"equipment": Equipment, "location": Location, "account": Account}.items():
@@ -1170,6 +1588,13 @@ class PhotoDialog(IsAuthenticaedViewMixin, HTMXFormMixin, UpdateView):
         Returns:
             (HttpResponse):
                 HTTP 204 response with a header to trigger a refresh of the photos list.
+
+
+        Examples:
+            Inspect the public interface in an interactive session::
+
+                >>> callable(PhotoDialog.htmx_form_valid_dialog)
+                True
         """
         self.object = form.save()
         for objname in ["equipment", "location", "account"]:
@@ -1197,6 +1622,17 @@ class PhotoDialog(IsAuthenticaedViewMixin, HTMXFormMixin, UpdateView):
             (HttpResponse):
                 HttpResponseNotFound if photo not found, HttpResponseForbidden if permission denied,
                 otherwise HTTP 204 response with a header to trigger a refresh.
+
+
+        Keyword Parameters:
+            **kwargs (object):
+                Value supplied for ``kwargs``.
+
+        Examples:
+            Inspect the public interface in an interactive session::
+
+                >>> callable(PhotoDialog.htmx_delete_photo)
+                True
         """
         if not (photo := self.get_object()):
             return HttpResponseNotFound("Unable to locate photo.")
@@ -1221,14 +1657,21 @@ class PhotoDialog(IsAuthenticaedViewMixin, HTMXFormMixin, UpdateView):
 class PhotoLinkDialog(IsAuthenticaedViewMixin, HTMXFormMixin, UpdateView):
     """Produce the HTML for linking photos to equipment, locations, or accounts in a dialog.
 
-    This HTMX-enabled view handles linking existing photos to equipment, locations, or user accounts
-    through a dialog interface. It dynamically generates the form based on the object being linked.
+            This HTMX-enabled view handles linking existing photos to equipment, locations, or user accounts
+            through a dialog interface. It dynamically generates the form based on the object being linked.
 
     Attributes:
         template_name (str):
             Template path for the dialog, defaults to "labman_utils/link_photo_form.html".
         context_object_name (str):
             Context variable name for the object being linked.
+
+
+    Examples:
+        Inspect the public interface in an interactive session::
+
+            >>> PhotoLinkDialog.__name__
+            'PhotoLinkDialog'
     """
 
     template_name = "labman_utils/link_photo_form.html"
@@ -1240,6 +1683,13 @@ class PhotoLinkDialog(IsAuthenticaedViewMixin, HTMXFormMixin, UpdateView):
         Returns:
             (Form):
                 A dynamically created ModelForm for the appropriate model (Equipment, Location, Account, or Photo).
+
+
+        Examples:
+            Inspect the public interface in an interactive session::
+
+                >>> callable(PhotoLinkDialog.get_form_class)
+                True
         """
         for name, model in {"equipment": Equipment, "location": Location, "account": Account}.items():
             if name in self.kwargs:
@@ -1264,6 +1714,13 @@ class PhotoLinkDialog(IsAuthenticaedViewMixin, HTMXFormMixin, UpdateView):
         Returns:
             (dict):
                 Context dictionary containing the object, related data, and post URL.
+
+
+        Examples:
+            Inspect the public interface in an interactive session::
+
+                >>> callable(PhotoLinkDialog.get_context_data_dialog)
+                True
         """
         context = super().get_context_data(**kwargs)
         context["current_url"] = self.request.htmx.current_url
@@ -1290,6 +1747,17 @@ class PhotoLinkDialog(IsAuthenticaedViewMixin, HTMXFormMixin, UpdateView):
         Returns:
             (Model):
                 The Equipment, Location, Account, or Photo instance based on URL kwargs.
+
+
+        Args:
+            queryset (object):
+                Value supplied for ``queryset``.
+
+        Examples:
+            Inspect the public interface in an interactive session::
+
+                >>> callable(PhotoLinkDialog.get_object)
+                True
         """
         if equipment := self.kwargs.get("equipment", None):
             return Equipment.objects.get(pk=equipment)
@@ -1305,6 +1773,13 @@ class PhotoLinkDialog(IsAuthenticaedViewMixin, HTMXFormMixin, UpdateView):
         Returns:
             (dict):
                 Initial form values with linked photos pre-populated.
+
+
+        Examples:
+            Inspect the public interface in an interactive session::
+
+                >>> callable(PhotoLinkDialog.get_initial)
+                True
         """
         for name, model in {"equipment": Equipment, "location": Location, "account": Account}.items():
             if name in self.kwargs:
@@ -1326,6 +1801,13 @@ class PhotoLinkDialog(IsAuthenticaedViewMixin, HTMXFormMixin, UpdateView):
         Returns:
             (HttpResponse):
                 HTTP 204 response with a header to trigger a refresh of the photos list.
+
+
+        Examples:
+            Inspect the public interface in an interactive session::
+
+                >>> callable(PhotoLinkDialog.htmx_form_valid_photo)
+                True
         """
         self.object = form.save()
         this = self.object
@@ -1360,8 +1842,8 @@ class PhotoLinkDialog(IsAuthenticaedViewMixin, HTMXFormMixin, UpdateView):
 class FlatPageDialog(IsAuthenticaedViewMixin, HTMXFormMixin, UpdateView):
     """Produce the HTML for a flat page form in a dialog.
 
-    This HTMX-enabled view handles creating and editing flat pages associated with equipment or locations.
-    It provides dialog-based forms for content page management.
+            This HTMX-enabled view handles creating and editing flat pages associated with equipment or locations.
+            It provides dialog-based forms for content page management.
 
     Attributes:
         model (Model):
@@ -1372,6 +1854,13 @@ class FlatPageDialog(IsAuthenticaedViewMixin, HTMXFormMixin, UpdateView):
             Context variable name for the flat page object.
         form_class (Form):
             The form class to use, defaults to FlatPageForm.
+
+
+    Examples:
+        Inspect the public interface in an interactive session::
+
+            >>> FlatPageDialog.__name__
+            'FlatPageDialog'
     """
 
     model = FlatPage
@@ -1390,6 +1879,13 @@ class FlatPageDialog(IsAuthenticaedViewMixin, HTMXFormMixin, UpdateView):
             (dict):
                 Context dictionary containing the flat page, related objects (equipment or location),
                 and URLs for form submission.
+
+
+        Examples:
+            Inspect the public interface in an interactive session::
+
+                >>> callable(FlatPageDialog.get_context_data_dialog)
+                True
         """
         context = super().get_context_data(**kwargs)
         context["current_url"] = self.request.htmx.current_url
@@ -1426,6 +1922,17 @@ class FlatPageDialog(IsAuthenticaedViewMixin, HTMXFormMixin, UpdateView):
         Returns:
             (FlatPage or None):
                 The flat page instance if found, otherwise None.
+
+
+        Args:
+            queryset (object):
+                Value supplied for ``queryset``.
+
+        Examples:
+            Inspect the public interface in an interactive session::
+
+                >>> callable(FlatPageDialog.get_object)
+                True
         """
         try:
             return super().get_object(queryset)
@@ -1438,6 +1945,13 @@ class FlatPageDialog(IsAuthenticaedViewMixin, HTMXFormMixin, UpdateView):
         Returns:
             (dict):
                 Initial form values with equipment or location if specified in URL kwargs.
+
+
+        Examples:
+            Inspect the public interface in an interactive session::
+
+                >>> callable(FlatPageDialog.get_initial)
+                True
         """
         initial = {}
         for arg, model in {"equipment": Equipment, "location": Location}.items():
@@ -1457,6 +1971,13 @@ class FlatPageDialog(IsAuthenticaedViewMixin, HTMXFormMixin, UpdateView):
         Returns:
             (HttpResponse):
                 HTTP 204 response with a header to trigger a refresh of the pages list.
+
+
+        Examples:
+            Inspect the public interface in an interactive session::
+
+                >>> callable(FlatPageDialog.htmx_form_valid_dialog)
+                True
         """
         self.object = form.save()
         for objname in ["equipment", "location"]:
@@ -1484,6 +2005,17 @@ class FlatPageDialog(IsAuthenticaedViewMixin, HTMXFormMixin, UpdateView):
             (HttpResponse):
                 HttpResponseNotFound if flat page not found, HttpResponseForbidden if permission denied,
                 otherwise HTTP 204 response with a header to trigger a refresh.
+
+
+        Keyword Parameters:
+            **kwargs (object):
+                Value supplied for ``kwargs``.
+
+        Examples:
+            Inspect the public interface in an interactive session::
+
+                >>> callable(FlatPageDialog.htmx_delete_flatpage)
+                True
         """
         if not (flatpage := self.get_object()):
             return HttpResponseNotFound("Unable to locate flatpage.")
@@ -1508,8 +2040,8 @@ class FlatPageDialog(IsAuthenticaedViewMixin, HTMXFormMixin, UpdateView):
 class FlatPageLinkDialog(IsAuthenticaedViewMixin, HTMXFormMixin, UpdateView):
     """Link pages to objects.
 
-    This HTMX-enabled view handles linking existing flat pages to equipment or locations through
-    a dialog interface. It dynamically generates the form based on the object being linked.
+            This HTMX-enabled view handles linking existing flat pages to equipment or locations through
+            a dialog interface. It dynamically generates the form based on the object being linked.
 
     Attributes:
         template_name (str):
@@ -1518,6 +2050,13 @@ class FlatPageLinkDialog(IsAuthenticaedViewMixin, HTMXFormMixin, UpdateView):
             Context variable name for the object being linked.
         linked_objects (dict):
             Dictionary mapping object type names to their model classes (equipment and location).
+
+
+    Examples:
+        Inspect the public interface in an interactive session::
+
+            >>> FlatPageLinkDialog.__name__
+            'FlatPageLinkDialog'
     """
 
     template_name = "labman_utils/link_flatpage_form.html"
@@ -1530,6 +2069,13 @@ class FlatPageLinkDialog(IsAuthenticaedViewMixin, HTMXFormMixin, UpdateView):
         Returns:
             (Form):
                 A dynamically created ModelForm for the appropriate model (Equipment, Location, or FlatPage).
+
+
+        Examples:
+            Inspect the public interface in an interactive session::
+
+                >>> callable(FlatPageLinkDialog.get_form_class)
+                True
         """
         for name, model in self.linked_objects.items():
             if name in self.kwargs:
@@ -1554,6 +2100,13 @@ class FlatPageLinkDialog(IsAuthenticaedViewMixin, HTMXFormMixin, UpdateView):
         Returns:
             (dict):
                 Context dictionary containing the object, related data, and post URL.
+
+
+        Examples:
+            Inspect the public interface in an interactive session::
+
+                >>> callable(FlatPageLinkDialog.get_context_data_dialog)
+                True
         """
         context = super().get_context_data(**kwargs)
         context["current_url"] = self.request.htmx.current_url
@@ -1580,6 +2133,17 @@ class FlatPageLinkDialog(IsAuthenticaedViewMixin, HTMXFormMixin, UpdateView):
         Returns:
             (Model):
                 The Equipment, Location, or FlatPage instance based on URL kwargs.
+
+
+        Args:
+            queryset (object):
+                Value supplied for ``queryset``.
+
+        Examples:
+            Inspect the public interface in an interactive session::
+
+                >>> callable(FlatPageLinkDialog.get_object)
+                True
         """
         for name, model in self.linked_objects.items():
             if thing := self.kwargs.get(name, None):
@@ -1592,6 +2156,13 @@ class FlatPageLinkDialog(IsAuthenticaedViewMixin, HTMXFormMixin, UpdateView):
         Returns:
             (dict):
                 Initial form values with linked flat pages pre-populated.
+
+
+        Examples:
+            Inspect the public interface in an interactive session::
+
+                >>> callable(FlatPageLinkDialog.get_initial)
+                True
         """
         for name, model in self.linked_objects.items():
             if name in self.kwargs:
@@ -1613,6 +2184,13 @@ class FlatPageLinkDialog(IsAuthenticaedViewMixin, HTMXFormMixin, UpdateView):
         Returns:
             (HttpResponse):
                 HTTP 204 response with a header to trigger a refresh of the pages list.
+
+
+        Examples:
+            Inspect the public interface in an interactive session::
+
+                >>> callable(FlatPageLinkDialog.htmx_form_valid_flatpage)
+                True
         """
         self.object = form.save()
         this = self.object

@@ -1,5 +1,4 @@
-"""
-WSGI config for labman project.
+"""Expose the Labman WSGI application for deployment servers.
 
 It exposes the WSGI callable as a module-level variable named ``application``.
 

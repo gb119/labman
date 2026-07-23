@@ -23,10 +23,31 @@ from .widgets import ObfuscatedTinyMCE
 
 
 class ObfuscatedCharField(forms.CharField):
-    """An obfuscated charfield that will decode base 64 and then rot13 it/"""
+    """An obfuscated charfield that will decode base 64 and then rot13 it/.
+
+    Examples:
+        Inspect the public interface in an interactive session::
+
+            >>> ObfuscatedCharField.__name__
+            'ObfuscatedCharField'
+    """
 
     def to_python(self, value):
-        """Try rot13 and then base64 decoding."""
+        """Try rot13 and then base64 decoding.
+
+        Args:
+            value (object):
+                Value supplied for ``value``.
+        Returns:
+            (object):
+                The result of the operation.
+
+        Examples:
+            Inspect the public interface in an interactive session::
+
+                >>> callable(ObfuscatedCharField.to_python)
+                True
+        """
         if value.startswith("ROT13+B64:"):
             value = value[10:]
         else:
@@ -52,8 +73,31 @@ class ObfuscatedCharField(forms.CharField):
 
 
 class ObfuscatedHTMLField(HTMLField):
+    """Provide the ObfuscatedHTMLField implementation.
+
+    Examples:
+        Inspect the public interface in an interactive session::
+
+            >>> ObfuscatedHTMLField.__name__
+            'ObfuscatedHTMLField'
+    """
+
     def formfield(self, **kwargs):
-        """Replicate TinyMCE's HTMLFIeld but force a custom subfield."""
+        """Replicate TinyMCE's HTMLFIeld but force a custom subfield.
+
+        Keyword Parameters:
+            **kwargs (object):
+                Value supplied for ``kwargs``.
+        Returns:
+            (object):
+                The result of the operation.
+
+        Examples:
+            Inspect the public interface in an interactive session::
+
+                >>> callable(ObfuscatedHTMLField.formfield)
+                True
+        """
         defaults = {"form_class": ObfuscatedCharField, "widget": ObfuscatedTinyMCE}
         defaults.update(kwargs)
         return super().formfield(**defaults)

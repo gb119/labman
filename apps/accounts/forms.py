@@ -11,7 +11,14 @@ from .models import Account
 
 
 class StaffSelectForm(forms.Form):
-    """Restrict selection of user accounts to staff user accounts."""
+    """Restrict selection of user accounts to staff user accounts.
+
+    Examples:
+        Inspect the public interface in an interactive session::
+
+            >>> StaffSelectForm.__name__
+            'StaffSelectForm'
+    """
 
     staff = forms.ModelChoiceField(
         queryset=Account.objects.filter(is_staff=True).order_by("last_name"),
@@ -20,9 +27,18 @@ class StaffSelectForm(forms.Form):
 
 
 class UserAdminForm(forms.ModelForm):
-    """Model form definition for user accounts."""
+    """Model form definition for user accounts.
+
+    Examples:
+        Inspect the public interface in an interactive session::
+
+            >>> UserAdminForm.__name__
+            'UserAdminForm'
+    """
 
     class Meta:
+        """Configure the Meta class."""
+
         model = Account
         widgets = {
             "first_name": forms.TextInput(attrs={"size": 20}),

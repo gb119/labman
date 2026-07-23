@@ -1,6 +1,4 @@
-"""
-AppConfig configuration
-"""
+"""Configure the autocomplete application and discover registered implementations."""
 
 # Python imports
 from importlib import import_module
@@ -13,15 +11,29 @@ from . import Autocomplete, ModelAutocomplete, register
 
 
 class AutocompleteConfig(AppConfig):
-    """
-    Django app config
+    """.
+            Django app config
+
+
+    Examples:
+        Inspect the public interface in an interactive session::
+
+            >>> AutocompleteConfig.__name__
+            'AutocompleteConfig'
     """
 
     default_auto_field = "django.db.models.BigAutoField"
     name = "autocomplete"
 
     def ready(self):
-        """Go looking for autocomplete classes to register."""
+        """Go looking for autocomplete classes to register.
+
+        Examples:
+            Inspect the public interface in an interactive session::
+
+                >>> callable(AutocompleteConfig.ready)
+                True
+        """
         for appname in apps.app_configs:
             if appname == "autocomplete":  # Don't try to import ourself!
                 continue

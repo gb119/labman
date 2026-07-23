@@ -13,16 +13,51 @@ app_name = basename(dirname(__file__))
 
 
 class FloatUrlParameterConverter:
-    """Allows paths to capture floats in urls."""
+    """Allows paths to capture floats in urls.
+
+    Examples:
+        Inspect the public interface in an interactive session::
+
+            >>> FloatUrlParameterConverter.__name__
+            'FloatUrlParameterConverter'
+    """
 
     regex = r"[0-9]+\.?[0-9]+"
 
     def to_python(self, value):
-        """Convert string to floating point value."""
+        """Convert string to floating point value.
+
+        Args:
+            value (object):
+                Value supplied for ``value``.
+        Returns:
+            (object):
+                The result of the operation.
+
+        Examples:
+            Inspect the public interface in an interactive session::
+
+                >>> callable(FloatUrlParameterConverter.to_python)
+                True
+        """
         return float(value)
 
     def to_url(self, value):
-        """Convert the float to a string."""
+        """Convert the float to a string.
+
+        Args:
+            value (object):
+                Value supplied for ``value``.
+        Returns:
+            (object):
+                The result of the operation.
+
+        Examples:
+            Inspect the public interface in an interactive session::
+
+                >>> callable(FloatUrlParameterConverter.to_url)
+                True
+        """
         return str(value)
 
 

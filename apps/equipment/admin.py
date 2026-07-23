@@ -44,15 +44,22 @@ from .resource import (
 class LocationListFilter(SimpleListFilter):
     """Custom admin filter for hierarchical location filtering.
 
-    Filters equipment and location objects by location code, supporting
-    hierarchical location structures where child locations can be filtered
-    based on parent location codes using a prefix matching approach.
+            Filters equipment and location objects by location code, supporting
+            hierarchical location structures where child locations can be filtered
+            based on parent location codes using a prefix matching approach.
 
     Attributes:
         title (str):
             The human-readable title displayed in the admin sidebar.
         parameter_name (str):
             The URL parameter name used for this filter.
+
+
+    Examples:
+        Inspect the public interface in an interactive session::
+
+            >>> LocationListFilter.__name__
+            'LocationListFilter'
     """
 
     title = "Location"
@@ -71,6 +78,13 @@ class LocationListFilter(SimpleListFilter):
             (list):
                 List of tuples containing (id, location) pairs for all locations
                 ordered by tree structure.
+
+
+        Examples:
+            Inspect the public interface in an interactive session::
+
+                >>> callable(LocationListFilter.lookups)
+                True
         """
         qs = Location.objects.all().order_by("tree_id", "lft")
         return [(loc.pk, loc) for loc in qs.all()]
@@ -78,10 +92,10 @@ class LocationListFilter(SimpleListFilter):
     def queryset(self, request, queryset):
         """Filter queryset based on location hierarchy.
 
-        Applies different filtering logic based on the model being filtered:
-        - For Location model: returns descendant locations (excluding self)
-        - For Equipment model: returns equipment in the selected location and descendants
-        - For other models: returns unfiltered queryset
+                        Applies different filtering logic based on the model being filtered:
+                        - For Location model: returns descendant locations (excluding self)
+                        - For Equipment model: returns equipment in the selected location and descendants
+                        - For other models: returns unfiltered queryset
 
         Args:
             request (HttpRequest):
@@ -93,6 +107,13 @@ class LocationListFilter(SimpleListFilter):
             (QuerySet):
                 Filtered queryset based on location hierarchy, or unfiltered
                 queryset if no location is selected.
+
+
+        Examples:
+            Inspect the public interface in an interactive session::
+
+                >>> callable(LocationListFilter.queryset)
+                True
         """
         if not self.value():
             return queryset
@@ -116,14 +137,21 @@ class LocationListFilter(SimpleListFilter):
 class EquipmentListFilter(SimpleListFilter):
     """Custom admin filter for filtering objects by equipment.
 
-    Provides a filter in the admin interface that allows filtering objects
-    based on equipment, displaying all equipment ordered by name.
+            Provides a filter in the admin interface that allows filtering objects
+            based on equipment, displaying all equipment ordered by name.
 
     Attributes:
         title (str):
             The human-readable title displayed in the admin sidebar.
         parameter_name (str):
             The URL parameter name used for this filter.
+
+
+    Examples:
+        Inspect the public interface in an interactive session::
+
+            >>> EquipmentListFilter.__name__
+            'EquipmentListFilter'
     """
 
     title = "Equipment"
@@ -142,6 +170,13 @@ class EquipmentListFilter(SimpleListFilter):
             (list):
                 List of tuples containing (pk, equipment) pairs for all equipment
                 ordered by name.
+
+
+        Examples:
+            Inspect the public interface in an interactive session::
+
+                >>> callable(EquipmentListFilter.lookups)
+                True
         """
         qs = Equipment.objects.all().order_by("name")
         return [(loc.pk, loc) for loc in qs.all()]
@@ -159,6 +194,13 @@ class EquipmentListFilter(SimpleListFilter):
             (QuerySet):
                 Filtered queryset containing only objects associated with the
                 selected equipment, or unfiltered queryset if no equipment is selected.
+
+
+        Examples:
+            Inspect the public interface in an interactive session::
+
+                >>> callable(EquipmentListFilter.queryset)
+                True
         """
         if not self.value():
             return queryset
@@ -168,9 +210,9 @@ class EquipmentListFilter(SimpleListFilter):
 class UserListInlineAdmin(TabularInline):
     """Inline admin interface for UserListEntry objects.
 
-    Provides a tabular inline interface for managing user list entries within
-    equipment or account admin pages. User list entries define which users have
-    access to specific equipment and their associated roles.
+            Provides a tabular inline interface for managing user list entries within
+            equipment or account admin pages. User list entries define which users have
+            access to specific equipment and their associated roles.
 
     Attributes:
         model (Model):
@@ -179,6 +221,13 @@ class UserListInlineAdmin(TabularInline):
             CSS classes for Django Suit theme styling and tab organisation.
         extra (int):
             Number of empty forms to display for adding new entries.
+
+
+    Examples:
+        Inspect the public interface in an interactive session::
+
+            >>> UserListInlineAdmin.__name__
+            'UserListInlineAdmin'
     """
 
     model = UserListEntry
@@ -189,9 +238,9 @@ class UserListInlineAdmin(TabularInline):
 class DocumentSignOffInlineAdmin(TabularInline):
     """Inline admin interface for DocumentSignOff objects.
 
-    Provides a tabular inline interface for managing document sign-offs within
-    document admin pages. Sign-offs track which users have acknowledged or approved
-    specific document versions.
+            Provides a tabular inline interface for managing document sign-offs within
+            document admin pages. Sign-offs track which users have acknowledged or approved
+            specific document versions.
 
     Attributes:
         model (Model):
@@ -200,6 +249,13 @@ class DocumentSignOffInlineAdmin(TabularInline):
             CSS classes for Django Suit theme styling and tab organisation.
         extra (int):
             Number of empty forms to display for adding new entries.
+
+
+    Examples:
+        Inspect the public interface in an interactive session::
+
+            >>> DocumentSignOffInlineAdmin.__name__
+            'DocumentSignOffInlineAdmin'
     """
 
     model = DocumentSignOff
@@ -210,9 +266,9 @@ class DocumentSignOffInlineAdmin(TabularInline):
 class ChargingRateInlineAdmin(TabularInline):
     """Inline admin interface for ChargingRate objects.
 
-    Provides a tabular inline interface for managing charging rates within
-    equipment admin pages. Charging rates define the cost structure for using
-    specific equipment over time.
+            Provides a tabular inline interface for managing charging rates within
+            equipment admin pages. Charging rates define the cost structure for using
+            specific equipment over time.
 
     Attributes:
         model (Model):
@@ -221,6 +277,13 @@ class ChargingRateInlineAdmin(TabularInline):
             CSS classes for Django Suit theme styling and tab organisation.
         extra (int):
             Number of empty forms to display for adding new entries.
+
+
+    Examples:
+        Inspect the public interface in an interactive session::
+
+            >>> ChargingRateInlineAdmin.__name__
+            'ChargingRateInlineAdmin'
     """
 
     model = ChargingRate
@@ -232,9 +295,9 @@ class ChargingRateInlineAdmin(TabularInline):
 class DocumentSignOffAdmin(ImportExportModelAdmin):
     """Admin interface configuration for DocumentSignOff objects.
 
-    Manages document sign-off records tracking which users have acknowledged or
-    approved specific document versions. Provides filtering by user, document,
-    version, and creation date along with import/export capabilities.
+            Manages document sign-off records tracking which users have acknowledged or
+            approved specific document versions. Provides filtering by user, document,
+            version, and creation date along with import/export capabilities.
 
     Attributes:
         list_display (tuple):
@@ -245,6 +308,13 @@ class DocumentSignOffAdmin(ImportExportModelAdmin):
             Fields displayed as horizontal filters in Django Suit theme.
         search_fields (list):
             Fields that can be searched in the admin search box.
+
+
+    Examples:
+        Inspect the public interface in an interactive session::
+
+            >>> DocumentSignOffAdmin.__name__
+            'DocumentSignOffAdmin'
     """
 
     list_display = ("user", "document", "version", "created")
@@ -258,6 +328,13 @@ class DocumentSignOffAdmin(ImportExportModelAdmin):
         Returns:
             (type):
                 The DocumentSignOffResource class used for exporting sign-off data.
+
+
+        Examples:
+            Inspect the public interface in an interactive session::
+
+                >>> callable(DocumentSignOffAdmin.get_export_resource_class)
+                True
         """
         return DocumentSignOffResource
 
@@ -267,6 +344,13 @@ class DocumentSignOffAdmin(ImportExportModelAdmin):
         Returns:
             (type):
                 The DocumentSignOffResource class used for importing sign-off data.
+
+
+        Examples:
+            Inspect the public interface in an interactive session::
+
+                >>> callable(DocumentSignOffAdmin.get_import_resource_class)
+                True
         """
         return DocumentSignOffResource
 
@@ -275,9 +359,9 @@ class DocumentSignOffAdmin(ImportExportModelAdmin):
 class DocumentAdmin(ImportExportModelAdmin):
     """Admin interface configuration for Document objects.
 
-    Manages equipment-related documents such as SOPs, safety procedures, and
-    training materials. Provides comprehensive document management including
-    versioning, categorisation, file attachments, and sign-off tracking.
+            Manages equipment-related documents such as SOPs, safety procedures, and
+            training materials. Provides comprehensive document management including
+            versioning, categorisation, file attachments, and sign-off tracking.
 
     Attributes:
         actions (None):
@@ -300,6 +384,13 @@ class DocumentAdmin(ImportExportModelAdmin):
             Default ordering for the document list view.
         inlines (list):
             Inline admin classes to display related sign-off objects.
+
+
+    Examples:
+        Inspect the public interface in an interactive session::
+
+            >>> DocumentAdmin.__name__
+            'DocumentAdmin'
     """
 
     actions = None
@@ -369,6 +460,13 @@ class DocumentAdmin(ImportExportModelAdmin):
         Returns:
             (type):
                 The DocumentResource class used for exporting document data.
+
+
+        Examples:
+            Inspect the public interface in an interactive session::
+
+                >>> callable(DocumentAdmin.get_export_resource_class)
+                True
         """
         return DocumentResource
 
@@ -378,6 +476,13 @@ class DocumentAdmin(ImportExportModelAdmin):
         Returns:
             (type):
                 The DocumentResource class used for importing document data.
+
+
+        Examples:
+            Inspect the public interface in an interactive session::
+
+                >>> callable(DocumentAdmin.get_import_resource_class)
+                True
         """
         return DocumentResource
 
@@ -386,9 +491,9 @@ class DocumentAdmin(ImportExportModelAdmin):
 class LocationAdmin(ImportExportModelAdmin):
     """Admin interface configuration for Location objects.
 
-    Manages hierarchical laboratory locations such as buildings, rooms, and
-    specific areas. Supports nested location structures with code-based
-    organisation and parent-child relationships.
+            Manages hierarchical laboratory locations such as buildings, rooms, and
+            specific areas. Supports nested location structures with code-based
+            organisation and parent-child relationships.
 
     Attributes:
         list_display (list):
@@ -401,6 +506,13 @@ class LocationAdmin(ImportExportModelAdmin):
             Fields that can be searched in the admin search box.
         ordering (list):
             Default ordering for the location list view.
+
+
+    Examples:
+        Inspect the public interface in an interactive session::
+
+            >>> LocationAdmin.__name__
+            'LocationAdmin'
     """
 
     list_display = ["name", "parent"]
@@ -419,6 +531,13 @@ class LocationAdmin(ImportExportModelAdmin):
         Returns:
             (type):
                 The LocationResource class used for exporting location data.
+
+
+        Examples:
+            Inspect the public interface in an interactive session::
+
+                >>> callable(LocationAdmin.get_export_resource_class)
+                True
         """
         return LocationResource
 
@@ -428,6 +547,13 @@ class LocationAdmin(ImportExportModelAdmin):
         Returns:
             (type):
                 The LocationResource class used for importing location data.
+
+
+        Examples:
+            Inspect the public interface in an interactive session::
+
+                >>> callable(LocationAdmin.get_import_resource_class)
+                True
         """
         return LocationResource
 
@@ -436,9 +562,9 @@ class LocationAdmin(ImportExportModelAdmin):
 class ShiftAdmin(ImportExportModelAdmin):
     """Admin interface configuration for Shift objects.
 
-    Manages time shift definitions for equipment booking, including start and
-    end times and weighting factors for different time periods (e.g., day shifts,
-    night shifts, weekend shifts).
+            Manages time shift definitions for equipment booking, including start and
+            end times and weighting factors for different time periods (e.g., day shifts,
+            night shifts, weekend shifts).
 
     Attributes:
         list_display (list):
@@ -449,6 +575,13 @@ class ShiftAdmin(ImportExportModelAdmin):
             Fields displayed as horizontal filters in Django Suit theme.
         search_fields (list):
             Fields that can be searched in the admin search box.
+
+
+    Examples:
+        Inspect the public interface in an interactive session::
+
+            >>> ShiftAdmin.__name__
+            'ShiftAdmin'
     """
 
     list_display = ["name", "start_time", "end_time", "weighting"]
@@ -462,6 +595,13 @@ class ShiftAdmin(ImportExportModelAdmin):
         Returns:
             (type):
                 The ShiftReource class used for exporting shift data.
+
+
+        Examples:
+            Inspect the public interface in an interactive session::
+
+                >>> callable(ShiftAdmin.get_export_resource_class)
+                True
         """
         return ShiftReource
 
@@ -471,6 +611,13 @@ class ShiftAdmin(ImportExportModelAdmin):
         Returns:
             (type):
                 The ShiftReource class used for importing shift data.
+
+
+        Examples:
+            Inspect the public interface in an interactive session::
+
+                >>> callable(ShiftAdmin.get_import_resource_class)
+                True
         """
         return ShiftReource
 
@@ -479,9 +626,9 @@ class ShiftAdmin(ImportExportModelAdmin):
 class EquipmentAdmin(ImportExportModelAdmin):
     """Admin interface configuration for Equipment objects.
 
-    Manages laboratory equipment including details, location, ownership, booking
-    policies, charging rates, and user access lists. Provides comprehensive equipment
-    administration with tabbed interface for different aspects of equipment management.
+            Manages laboratory equipment including details, location, ownership, booking
+            policies, charging rates, and user access lists. Provides comprehensive equipment
+            administration with tabbed interface for different aspects of equipment management.
 
     Attributes:
         list_display (list):
@@ -500,6 +647,13 @@ class EquipmentAdmin(ImportExportModelAdmin):
             Field groupings and layout for the equipment edit form.
         inlines (list):
             Inline admin classes to display related objects.
+
+
+    Examples:
+        Inspect the public interface in an interactive session::
+
+            >>> EquipmentAdmin.__name__
+            'EquipmentAdmin'
     """
 
     list_display = ["name", "category", "location", "owner", "offline"]
@@ -571,6 +725,13 @@ class EquipmentAdmin(ImportExportModelAdmin):
         Returns:
             (type):
                 The EquipmentResource class used for exporting equipment data.
+
+
+        Examples:
+            Inspect the public interface in an interactive session::
+
+                >>> callable(EquipmentAdmin.get_export_resource_class)
+                True
         """
         return EquipmentResource
 
@@ -580,6 +741,13 @@ class EquipmentAdmin(ImportExportModelAdmin):
         Returns:
             (type):
                 The EquipmentResource class used for importing equipment data.
+
+
+        Examples:
+            Inspect the public interface in an interactive session::
+
+                >>> callable(EquipmentAdmin.get_import_resource_class)
+                True
         """
         return EquipmentResource
 
@@ -588,9 +756,9 @@ class EquipmentAdmin(ImportExportModelAdmin):
 class UserListAdmin(ImportExportModelAdmin):
     """Admin interface configuration for UserListEntry objects.
 
-    Manages user access lists for equipment, defining which users have permission
-    to use specific equipment, their roles, and any access restrictions or holds.
-    Supports bulk editing of roles and administrative holds.
+            Manages user access lists for equipment, defining which users have permission
+            to use specific equipment, their roles, and any access restrictions or holds.
+            Supports bulk editing of roles and administrative holds.
 
     Attributes:
         list_display (list):
@@ -603,6 +771,13 @@ class UserListAdmin(ImportExportModelAdmin):
             Fields displayed as horizontal filters in Django Suit theme.
         search_fields (tuple):
             Fields that can be searched in the admin search box.
+
+
+    Examples:
+        Inspect the public interface in an interactive session::
+
+            >>> UserListAdmin.__name__
+            'UserListAdmin'
     """
 
     list_display = ["user", "equipment", "role", "hold", "admin_hold"]
@@ -624,6 +799,13 @@ class UserListAdmin(ImportExportModelAdmin):
         Returns:
             (type):
                 The UserListEntryResource class used for exporting user list data.
+
+
+        Examples:
+            Inspect the public interface in an interactive session::
+
+                >>> callable(UserListAdmin.get_export_resource_class)
+                True
         """
         return UserListEntryResource
 
@@ -633,6 +815,13 @@ class UserListAdmin(ImportExportModelAdmin):
         Returns:
             (type):
                 The UserListEntryResource class used for importing user list data.
+
+
+        Examples:
+            Inspect the public interface in an interactive session::
+
+                >>> callable(UserListAdmin.get_import_resource_class)
+                True
         """
         return UserListEntryResource
 
@@ -641,9 +830,9 @@ class UserListAdmin(ImportExportModelAdmin):
 class ChargingRateAdmin(ImportExportModelAdmin):
     """Admin interface configuration for ChargingRate objects.
 
-    Manages equipment charging rates that define costs for equipment usage.
-    Associates cost rates with equipment and tracks rate validity periods.
-    Supports bulk editing of charge rates directly in the list view.
+            Manages equipment charging rates that define costs for equipment usage.
+            Associates cost rates with equipment and tracks rate validity periods.
+            Supports bulk editing of charge rates directly in the list view.
 
     Attributes:
         list_display (list):
@@ -656,6 +845,13 @@ class ChargingRateAdmin(ImportExportModelAdmin):
             Fields displayed as horizontal filters in Django Suit theme.
         search_fields (list):
             Fields that can be searched in the admin search box.
+
+
+    Examples:
+        Inspect the public interface in an interactive session::
+
+            >>> ChargingRateAdmin.__name__
+            'ChargingRateAdmin'
     """
 
     list_display = ["equipment", "cost_rate", "charge_rate", "dates", "comment"]
@@ -670,6 +866,13 @@ class ChargingRateAdmin(ImportExportModelAdmin):
         Returns:
             (type):
                 The ChargingRateResource class used for exporting charging rate data.
+
+
+        Examples:
+            Inspect the public interface in an interactive session::
+
+                >>> callable(ChargingRateAdmin.get_export_resource_class)
+                True
         """
         return ChargingRateResource
 
@@ -679,6 +882,13 @@ class ChargingRateAdmin(ImportExportModelAdmin):
         Returns:
             (type):
                 The ChargingRateResource class used for importing charging rate data.
+
+
+        Examples:
+            Inspect the public interface in an interactive session::
+
+                >>> callable(ChargingRateAdmin.get_import_resource_class)
+                True
         """
         return ChargingRateResource
 

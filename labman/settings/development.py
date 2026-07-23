@@ -1,3 +1,5 @@
+"""Provide development functionality for the labman.settings package."""
+
 # Python imports
 
 # app imports

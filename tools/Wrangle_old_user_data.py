@@ -1,9 +1,5 @@
 # -*- coding: utf-8 -*-
-"""
-Created on Sun Jan  5 10:35:05 2025
-
-@author: phygbu
-"""
+"""Transform legacy user data into the current import format."""
 
 # Python imports
 from pathlib import Path
@@ -17,7 +13,21 @@ parse = parser().parse
 
 
 def sort_nbame(row):
-    """Intelligently work out title, first_name, last_name fields."""
+    """Derive normalised account and group fields from a legacy user row.
+
+    Args:
+        row (pandas.Series):
+            The legacy user row to transform.
+
+    Returns:
+        (pandas.Series):
+            The normalised account data corresponding to the legacy row.
+
+    Examples:
+        Transform one row from the legacy people data::
+
+            normalised = sort_nbame(people.iloc[0])
+    """
     try:
         name = row.Name.strip()
     except AttributeError:

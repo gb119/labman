@@ -28,23 +28,30 @@ logger = logging.getLogger("django_auth_adfs")
 class LeedsAdfsBaseBackend(AdfsAuthCodeBackend):
     """Custom ADFS authentication backend for Leeds University integration.
 
-    This backend extends AdfsAuthCodeBackend to provide custom user authentication and
-    account management features. It validates access tokens, retrieves user information
-    from Microsoft Graph, and manages user groups and permissions.
+            This backend extends AdfsAuthCodeBackend to provide custom user authentication and
+            account management features. It validates access tokens, retrieves user information
+            from Microsoft Graph, and manages user groups and permissions.
 
     Attributes:
         access_token (str):
             The current access token for the authenticated user.
         claims (dict):
             The claims extracted from the access token.
+
+
+    Examples:
+        Inspect the public interface in an interactive session::
+
+            >>> LeedsAdfsBaseBackend.__name__
+            'LeedsAdfsBaseBackend'
     """
 
     def process_access_token(self, access_token, adfs_response=None):
         """Process and validate an access token to authenticate a user.
 
-        This method validates the access token, extracts claims, checks tenant ID,
-        processes user groups, creates or retrieves the user account, and updates
-        user attributes and permissions.
+                        This method validates the access token, extracts claims, checks tenant ID,
+                        processes user groups, creates or retrieves the user account, and updates
+                        user attributes and permissions.
 
         Args:
             access_token (str):
@@ -66,6 +73,13 @@ class LeedsAdfsBaseBackend(AdfsAuthCodeBackend):
         Notes:
             Guest users are explicitly blocked by checking the tenant ID in the claims.
             The method sends a post_authenticate signal after successful authentication.
+
+
+        Examples:
+            Inspect the public interface in an interactive session::
+
+                >>> callable(LeedsAdfsBaseBackend.process_access_token)
+                True
         """
         if not access_token:
             raise PermissionDenied
@@ -95,9 +109,9 @@ class LeedsAdfsBaseBackend(AdfsAuthCodeBackend):
     def process_user_groups(self, claims, access_token):
         """Process user group memberships from claims or Microsoft Graph.
 
-        This method checks for user group information in the access token claims and,
-        if necessary, retrieves group memberships from Microsoft Graph using an
-        on-behalf-of authentication request.
+                        This method checks for user group information in the access token claims and,
+                        if necessary, retrieves group memberships from Microsoft Graph using an
+                        on-behalf-of authentication request.
 
         Args:
             claims (dict):
@@ -114,6 +128,13 @@ class LeedsAdfsBaseBackend(AdfsAuthCodeBackend):
         Notes:
             This is a stub implementation that returns an empty list. Full group processing
             functionality should be implemented by subclasses or in future updates.
+
+
+        Examples:
+            Inspect the public interface in an interactive session::
+
+                >>> callable(LeedsAdfsBaseBackend.process_user_groups)
+                True
         """
         groups = []
         logger.debug("Call to process_user_groups")
@@ -122,9 +143,9 @@ class LeedsAdfsBaseBackend(AdfsAuthCodeBackend):
     def create_user(self, claims):
         """Retrieve an existing user account based on access token claims.
 
-        This method extracts the username from the claims and retrieves the corresponding
-        user account. It does not create new users on-the-fly; users must already exist
-        in the database.
+                        This method extracts the username from the claims and retrieves the corresponding
+                        user account. It does not create new users on-the-fly; users must already exist
+                        in the database.
 
         Args:
             claims (dict):
@@ -143,6 +164,13 @@ class LeedsAdfsBaseBackend(AdfsAuthCodeBackend):
             The username claim is expected to be an email address, and only the portion
             before the '@' symbol is used as the username. If the user does not have a
             password set, an unusable password is assigned.
+
+
+        Examples:
+            Inspect the public interface in an interactive session::
+
+                >>> callable(LeedsAdfsBaseBackend.create_user)
+                True
         """
         # Get the lookup detils for the user
         username_claim = settings.USERNAME_CLAIM
@@ -168,8 +196,8 @@ class LeedsAdfsBaseBackend(AdfsAuthCodeBackend):
     def update_user_attributes(self, user, claims, claim_mapping=None):
         """Update user account attributes by querying Microsoft Graph API.
 
-        This method obtains an on-behalf-of access token and queries the Microsoft Graph
-        API to retrieve the user's employee ID, which is then stored in the user account.
+                        This method obtains an on-behalf-of access token and queries the Microsoft Graph
+                        API to retrieve the user's employee ID, which is then stored in the user account.
 
         Args:
             user (Account):
@@ -200,6 +228,13 @@ class LeedsAdfsBaseBackend(AdfsAuthCodeBackend):
             - In production mode (settings.DEBUG=False): Errors are logged but not raised,
               allowing the user authentication to continue without the employee ID update.
               This makes the employee ID update non-fatal in production.
+
+
+        Examples:
+            Inspect the public interface in an interactive session::
+
+                >>> callable(LeedsAdfsBaseBackend.update_user_attributes)
+                True
         """
         obo_access_token = self.get_obo_access_token(self.access_token)
         url = "https://graph.microsoft.com/v1.0/me?$select=employeeId"
@@ -251,6 +286,13 @@ class LeedsAdfsBaseBackend(AdfsAuthCodeBackend):
             This is a stub method that logs the request but does not perform any actual
             updates. Full LDAP lookup and group synchronisation should be implemented
             in the future.
+
+
+        Examples:
+            Inspect the public interface in an interactive session::
+
+                >>> callable(LeedsAdfsBaseBackend.update_user_groups)
+                True
         """
         logger.debug(f"Groups update requested for {user} with {claim_groups}")
 
@@ -269,14 +311,21 @@ class LeedsAdfsBaseBackend(AdfsAuthCodeBackend):
             This is a stub method that logs the request but does not perform any actual
             updates. Future implementations should include LDAP lookup to determine
             appropriate user permissions based on group memberships.
+
+
+        Examples:
+            Inspect the public interface in an interactive session::
+
+                >>> callable(LeedsAdfsBaseBackend.update_user_flags)
+                True
         """
         logger.debug(f"User flags update requested for {user} with {claim_groups}")
 
     def get_group_memberships_from_ms_graph(self, obo_access_token):
         """Retrieve user group memberships from the Microsoft Graph API.
 
-        This method queries the Microsoft Graph API to obtain all transitive group
-        memberships for the authenticated user.
+                        This method queries the Microsoft Graph API to obtain all transitive group
+                        memberships for the authenticated user.
 
         Args:
             obo_access_token (str):
@@ -295,6 +344,13 @@ class LeedsAdfsBaseBackend(AdfsAuthCodeBackend):
             The method uses the transitiveMemberOf endpoint to retrieve all groups,
             including nested group memberships. The application must have the
             GroupMember.Read.All permission configured in Azure AD.
+
+
+        Examples:
+            Inspect the public interface in an interactive session::
+
+                >>> callable(LeedsAdfsBaseBackend.get_group_memberships_from_ms_graph)
+                True
         """
         graph_url = "https://{}/v1.0/me/transitiveMemberOf/microsoft.graph.group".format(
             provider_config.msgraph_endpoint

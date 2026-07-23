@@ -23,18 +23,25 @@ Account = apps.get_model(app_label="accounts", model_name="account")
 class CostCentreDialogForm(forms.ModelForm):
     """Form for creating and editing cost centres.
 
-    This form allows users to add or modify cost centre information including
-    name, description, short name, account code, parent, rate, contact, and
-    associated accounts (people).
+            This form allows users to add or modify cost centre information including
+            name, description, short name, account code, parent, rate, contact, and
+            associated accounts (people).
 
-    The description field uses ObfuscatedTinyMCE widget and ObfuscatedCharField to
-    handle ROT13 and Base64 encoding/decoding, allowing safe transmission of HTML
-    content through the web application firewall.
+            The description field uses ObfuscatedTinyMCE widget and ObfuscatedCharField to
+            handle ROT13 and Base64 encoding/decoding, allowing safe transmission of HTML
+            content through the web application firewall.
 
     Attributes:
         accounts (SortedCheckboxMultipleChoiceField): Field for selecting multiple
             accounts to associate with this cost centre.
         Meta (class): Meta configuration for the ModelForm.
+
+
+    Examples:
+        Inspect the public interface in an interactive session::
+
+            >>> CostCentreDialogForm.__name__
+            'CostCentreDialogForm'
     """
 
     accounts = SortedCheckboxMultipleChoiceField(
@@ -42,6 +49,8 @@ class CostCentreDialogForm(forms.ModelForm):
     )
 
     class Meta:
+        """Configure the Meta class."""
+
         model = CostCentre
         fields = ["name", "short_name", "account_code", "description", "parent", "rate", "contact"]
         widgets = {"description": ObfuscatedTinyMCE()}
