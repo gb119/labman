@@ -23,6 +23,7 @@ class CostCentreResource(resources.ModelResource):
 
             >>> CostCentreResource.__name__
             'CostCentreResource'
+
     """
 
     parent = fields.Field(
@@ -49,6 +50,7 @@ class CostRateResource(resources.ModelResource):
 
             >>> CostRateResource.__name__
             'CostRateResource'
+
     """
 
     class Meta:

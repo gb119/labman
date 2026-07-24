@@ -31,6 +31,7 @@ class Cost_CentreView(IsAuthenticaedViewMixin, HTMXProcessMixin, TemplateView):
 
             >>> Cost_CentreView.__name__
             'Cost_CentreView'
+
     """
 
     template_name_id_cost_centre = "costings/parts/cost_centres_options.html"
@@ -43,6 +44,7 @@ class Cost_CentreView(IsAuthenticaedViewMixin, HTMXProcessMixin, TemplateView):
         Keyword Parameters:
             **kwargs (object):
                 Value supplied for ``kwargs``.
+
         Returns:
             (object):
                 The result of the operation.
@@ -52,6 +54,7 @@ class Cost_CentreView(IsAuthenticaedViewMixin, HTMXProcessMixin, TemplateView):
 
                 >>> callable(Cost_CentreView.get_context_data_id_cost_centre)
                 True
+
         """
         context = super().get_context_data(**kwargs)
         form = BookinngDialogForm(self.request.GET)
@@ -70,6 +73,7 @@ class Cost_CentreView(IsAuthenticaedViewMixin, HTMXProcessMixin, TemplateView):
         Keyword Parameters:
             **kwargs (object):
                 Value supplied for ``kwargs``.
+
         Returns:
             (object):
                 The result of the operation.
@@ -79,6 +83,7 @@ class Cost_CentreView(IsAuthenticaedViewMixin, HTMXProcessMixin, TemplateView):
 
                 >>> callable(Cost_CentreView.get_context_data_full_description)
                 True
+
         """
         context = super().get_context_data(**kwargs)
         if cost_centre_id := self.request.GET.get("cost_centre_id", self.request.GET.get("cost_centre_id", None)):
@@ -112,6 +117,7 @@ class CostCentreDialog(IsSuperuserViewMixin, HTMXFormMixin, UpdateView):
 
             >>> CostCentreDialog.__name__
             'CostCentreDialog'
+
     """
 
     model = CostCentre
@@ -134,6 +140,7 @@ class CostCentreDialog(IsSuperuserViewMixin, HTMXFormMixin, UpdateView):
 
                 >>> callable(CostCentreDialog.get_context_data_dialog)
                 True
+
         """
         context = super().get_context_data(**kwargs)
         context["current_url"] = self.request.htmx.current_url
@@ -163,6 +170,7 @@ class CostCentreDialog(IsSuperuserViewMixin, HTMXFormMixin, UpdateView):
 
                 >>> callable(CostCentreDialog.get_object)
                 True
+
         """
         try:
             return super().get_object(queryset)
@@ -181,6 +189,7 @@ class CostCentreDialog(IsSuperuserViewMixin, HTMXFormMixin, UpdateView):
 
                 >>> callable(CostCentreDialog.get_initial)
                 True
+
         """
         initial = super().get_initial()
         if obj := self.get_object():
@@ -202,6 +211,7 @@ class CostCentreDialog(IsSuperuserViewMixin, HTMXFormMixin, UpdateView):
 
                 >>> callable(CostCentreDialog.htmx_form_valid_costcentre)
                 True
+
         """
         self.object = form.save()
 
@@ -242,6 +252,7 @@ class CostCentreDialog(IsSuperuserViewMixin, HTMXFormMixin, UpdateView):
 
                 >>> callable(CostCentreDialog.htmx_delete_costcentre)
                 True
+
         """
         if not (cost_centre := self.get_object()):
             return HttpResponseNotFound("Unable to locate cost centre.")

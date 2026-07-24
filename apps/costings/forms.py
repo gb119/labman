@@ -42,6 +42,7 @@ class CostCentreDialogForm(forms.ModelForm):
 
             >>> CostCentreDialogForm.__name__
             'CostCentreDialogForm'
+
     """
 
     accounts = SortedCheckboxMultipleChoiceField(

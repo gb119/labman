@@ -16,6 +16,7 @@ class CostCentreAutocomplete(ModelAutocomplete):
 
             >>> CostCentreAutocomplete.__name__
             'CostCentreAutocomplete'
+
     """
 
     model = CostCentre

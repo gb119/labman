@@ -26,6 +26,7 @@ class UserListAutoComplete(ModelAutocomplete):
 
             >>> UserListAutoComplete.__name__
             'UserListAutoComplete'
+
     """
 
     model = Account
@@ -40,6 +41,7 @@ class UserListAutoComplete(ModelAutocomplete):
                 Value supplied for ``search``.
             context (object):
                 Value supplied for ``context``.
+
         Returns:
             (object):
                 The result of the operation.
@@ -49,6 +51,7 @@ class UserListAutoComplete(ModelAutocomplete):
 
                 >>> callable(UserListAutoComplete.get_query_filtered_queryset)
                 True
+
         """
         base_qs = cls.get_queryset()
         if equipment := context.request.GET.get("equipment", None):
@@ -74,6 +77,7 @@ class AllUsersComplete(ModelAutocomplete):
 
             >>> AllUsersComplete.__name__
             'AllUsersComplete'
+
     """
 
     model = Account

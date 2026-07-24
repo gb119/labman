@@ -26,6 +26,7 @@ class CustomSiteTree(SiteTree):
 
             >>> CustomSiteTree.__name__
             'CustomSiteTree'
+
     """
 
     def check_access_dyn(self, item, context):
@@ -53,6 +54,7 @@ class CustomSiteTree(SiteTree):
 
                 >>> callable(CustomSiteTree.check_access_dyn)
                 True
+
         """
         access_check_func = getattr(item, "access_check", None)
 

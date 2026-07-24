@@ -41,6 +41,7 @@ class CustomSlotWidget(RangeWidget):
 
             >>> CustomSlotWidget.__name__
             'CustomSlotWidget'
+
     """
 
     input_type = DateTimeCustomInput.input_type
@@ -56,6 +57,7 @@ class CustomSlotWidget(RangeWidget):
             *args: Variable length argument list, first argument should be
                 a widget class for the sub-widgets.
             **kargs: Arbitrary keyword arguments passed to parent class.
+
         """
         if len(args) < 1:
             args = (DateTimeCustomInput,)
@@ -85,6 +87,7 @@ class CustomSlotWidget(RangeWidget):
 
                 >>> callable(CustomSlotWidget.decompress)
                 True
+
         """
         if value:
             start, end = value.lower, value.upper
@@ -116,6 +119,7 @@ class BookingEntryAdminForm(forms.ModelForm):
 
             >>> BookingEntryAdminForm.__name__
             'BookingEntryAdminForm'
+
     """
 
     class Meta:
@@ -161,6 +165,7 @@ class BookinngDialogForm(forms.ModelForm):
 
             >>> BookinngDialogForm.__name__
             'BookinngDialogForm'
+
     """
 
     class Meta:
@@ -212,6 +217,7 @@ class BookingEntryFilterForm(forms.Form):
 
             >>> BookingEntryFilterForm.__name__
             'BookingEntryFilterForm'
+
     """
 
     from_date = forms.DateField(required=True, widget=DateCustomInput())

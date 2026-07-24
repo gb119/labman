@@ -30,6 +30,7 @@ def temp_attr(obj, attr, value):
 
             >>> callable(temp_attr)
             True
+
     """
     # Check if the attribute originally exists on the object
     has_attr = hasattr(obj, attr)
@@ -70,6 +71,7 @@ def dispatch(self, request, *args, **kwargs):
     Keyword Parameters:
         **kwargs (object):
             Value supplied for ``kwargs``.
+
     Returns:
         (object):
             The result of the operation.
@@ -79,6 +81,7 @@ def dispatch(self, request, *args, **kwargs):
 
             >>> callable(dispatch)
             True
+
     """
     if not getattr(request, "htmx", False):  # Not an HTMX aware request
         return self._non_htmx_dispatch(request, *args, **kwargs)
@@ -108,6 +111,7 @@ class HTMXProcessMixin:
 
             >>> HTMXProcessMixin.__name__
             'HTMXProcessMixin'
+
     """
 
     def __init__(self, *args, **kwargs):
@@ -125,6 +129,7 @@ class HTMXProcessMixin:
 
                 >>> callable(HTMXProcessMixin.htmx_elements)
                 True
+
         """
         for attr in ["trigger_name", "trigger", "target"]:
             if elem := getattr(self.request.htmx, attr, None):
@@ -139,6 +144,7 @@ class HTMXProcessMixin:
         Keyword Parameters:
             **kwargs (object):
                 Value supplied for ``kwargs``.
+
         Returns:
             (object):
                 The result of the operation.
@@ -148,6 +154,7 @@ class HTMXProcessMixin:
 
                 >>> callable(HTMXProcessMixin.get_context_data)
                 True
+
         """
         if not getattr(self.request, "htmx", False) or self._htmx_get_context_data:  # Default behaviour
             return super().get_context_data(**kwargs)
@@ -170,6 +177,7 @@ class HTMXProcessMixin:
         Args:
             object_list (object):
                 Value supplied for ``object_list``.
+
         Returns:
             (object):
                 The result of the operation.
@@ -179,13 +187,14 @@ class HTMXProcessMixin:
 
                 >>> callable(HTMXProcessMixin.get_context_object_name)
                 True
+
         """
         if not getattr(self.request, "htmx", False) or self._htmx_get_context_object_name:  # Default behaviour
             return super().get_context_object_name(object_list)
 
         # Look for a request specifc to the element involved.
         for elem in self.htmx_elements():
-            if handler := getattr(self, f"get_context_object_name{elem}", False):
+            if callable(handler := getattr(self, f"get_context_object_name{elem}", None)):
                 with temp_attr(self, "_htmx_get_context_object_name", True):
                     return handler(object_list)
             if sub_name := getattr(self, f"context_object_{elem}", False):
@@ -207,6 +216,7 @@ class HTMXProcessMixin:
 
                 >>> callable(HTMXProcessMixin.get_template_names)
                 True
+
         """
         if not getattr(self.request, "htmx", False) or self._htmx_get_template_names:  # Default behaviour
             return super().get_template_names()
@@ -242,6 +252,7 @@ class HTMXProcessMixin:
         Keyword Parameters:
             **kwargs (object):
                 Value supplied for ``kwargs``.
+
         Returns:
             (object):
                 The result of the operation.
@@ -251,6 +262,7 @@ class HTMXProcessMixin:
 
                 >>> callable(HTMXProcessMixin.htmx_delete)
                 True
+
         """
         for elem in self.htmx_elements():
             handler = getattr(self, f"htmx_delete_{elem}", False)
@@ -278,6 +290,7 @@ class HTMXProcessMixin:
         Keyword Parameters:
             **kwargs (object):
                 Value supplied for ``kwargs``.
+
         Returns:
             (object):
                 The result of the operation.
@@ -287,6 +300,7 @@ class HTMXProcessMixin:
 
                 >>> callable(HTMXProcessMixin.htmx_get)
                 True
+
         """
         for elem in self.htmx_elements():
             handler = getattr(self, f"htmx_get_{elem}", False)
@@ -314,6 +328,7 @@ class HTMXProcessMixin:
         Keyword Parameters:
             **kwargs (object):
                 Value supplied for ``kwargs``.
+
         Returns:
             (object):
                 The result of the operation.
@@ -323,6 +338,7 @@ class HTMXProcessMixin:
 
                 >>> callable(HTMXProcessMixin.htmx_patch)
                 True
+
         """
         for elem in self.htmx_elements():
             handler = getattr(self, f"htmx_patch_{elem}", False)
@@ -350,6 +366,7 @@ class HTMXProcessMixin:
         Keyword Parameters:
             **kwargs (object):
                 Value supplied for ``kwargs``.
+
         Returns:
             (object):
                 The result of the operation.
@@ -359,6 +376,7 @@ class HTMXProcessMixin:
 
                 >>> callable(HTMXProcessMixin.htmx_post)
                 True
+
         """
         for elem in self.htmx_elements():
             handler = getattr(self, f"htmx_post_{elem}", False)
@@ -386,6 +404,7 @@ class HTMXProcessMixin:
         Keyword Parameters:
             **kwargs (object):
                 Value supplied for ``kwargs``.
+
         Returns:
             (object):
                 The result of the operation.
@@ -395,6 +414,7 @@ class HTMXProcessMixin:
 
                 >>> callable(HTMXProcessMixin.htmx_put)
                 True
+
         """
         for elem in self.htmx_elements():
             handler = getattr(self, f"htmx_put_{elem}", False)
@@ -415,6 +435,7 @@ class HTMXFormMixin(HTMXProcessMixin):
 
             >>> HTMXFormMixin.__name__
             'HTMXFormMixin'
+
     """
 
     def __init__(self, *args, **kwargs):
@@ -437,6 +458,7 @@ class HTMXFormMixin(HTMXProcessMixin):
         Args:
             form (object):
                 Value supplied for ``form``.
+
         Returns:
             (object):
                 The result of the operation.
@@ -446,17 +468,18 @@ class HTMXFormMixin(HTMXProcessMixin):
 
                 >>> callable(HTMXFormMixin.form_valid)
                 True
+
         """
         if not getattr(self.request, "htmx", False) or self._htmx_form_valid:  # Non HTMX requests
             return super().form_valid(form)
         for elem in self.htmx_elements():
             if settings.DEBUG:
                 logger.debug(f"Looking for htmx_form_valid_{elem}")
-            handler = getattr(self, f"htmx_form_valid_{elem}", False)
-            if handler:
+            handler = getattr(self, f"htmx_form_valid_{elem}", None)
+            if callable(handler):
                 with temp_attr(self, "_htmx_form_valid", True):
                     return handler(form)
-        if handler := getattr(self, "htmx_form_valid", False):
+        if callable(handler := getattr(self, "htmx_form_valid", None)):
             with temp_attr(self, "_htmx_form_valid", True):
                 return handler(form)
         return super().form_valid(form)
@@ -475,6 +498,7 @@ class HTMXFormMixin(HTMXProcessMixin):
         Args:
             form (object):
                 Value supplied for ``form``.
+
         Returns:
             (object):
                 The result of the operation.
@@ -484,18 +508,19 @@ class HTMXFormMixin(HTMXProcessMixin):
 
                 >>> callable(HTMXFormMixin.form_invalid)
                 True
+
         """
         if not getattr(self.request, "htmx", False) or self._htmx_form_invalid:  # Non HTMX requests
             return super().form_invalid(form)
 
         for elem in self.htmx_elements():
-            handler = getattr(self, f"htmx_form_invalid_{elem}", False)
+            handler = getattr(self, f"htmx_form_invalid_{elem}", None)
             if settings.DEBUG:
                 logger.debug(f"Looking for htmx_form_invalid_{elem}")
-            if handler:
+            if callable(handler):
                 with temp_attr(self, "_htmx_form_invalid", True):
                     return handler(form)
-        if handler := getattr(self, "htmx_form_invalid", False):
+        if callable(handler := getattr(self, "htmx_form_invalid", None)):
             with temp_attr(self, "_htmx_form_invalid", True):
                 return handler(form)
         return super().form_invalid(form)

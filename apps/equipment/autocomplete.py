@@ -23,6 +23,7 @@ class EquipmentAutocomplete(ModelAutocomplete):
 
             >>> EquipmentAutocomplete.__name__
             'EquipmentAutocomplete'
+
     """
 
     model = Equipment
@@ -36,6 +37,7 @@ class EquipmentAutocomplete(ModelAutocomplete):
                 Value supplied for ``search``.
             context (object):
                 Value supplied for ``context``.
+
         Returns:
             (object):
                 The result of the operation.
@@ -45,6 +47,7 @@ class EquipmentAutocomplete(ModelAutocomplete):
 
                 >>> callable(EquipmentAutocomplete.get_query_filtered_queryset)
                 True
+
         """
         base_qs = cls.get_queryset()
         conditions = [Q(**{f"{attr}__icontains": search}) for attr in ["name", "description"]]
@@ -79,6 +82,7 @@ class LocationAutocomplete(ModelAutocomplete):
 
             >>> LocationAutocomplete.__name__
             'LocationAutocomplete'
+
     """
 
     model = Location
@@ -92,6 +96,7 @@ class LocationAutocomplete(ModelAutocomplete):
                 Value supplied for ``search``.
             context (object):
                 Value supplied for ``context``.
+
         Returns:
             (object):
                 The result of the operation.
@@ -101,6 +106,7 @@ class LocationAutocomplete(ModelAutocomplete):
 
                 >>> callable(LocationAutocomplete.get_query_filtered_queryset)
                 True
+
         """
         base_qs = cls.get_queryset()
         conditions = [Q(**{f"{attr}__icontains": search}) for attr in ["name", "description"]]

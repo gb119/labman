@@ -17,6 +17,7 @@ class EquipmentConfig(AppConfig):
 
             >>> EquipmentConfig.__name__
             'EquipmentConfig'
+
     """
 
     name = basename(dirname(__file__))

@@ -40,6 +40,7 @@ class ErrorView(TemplateView):
 
             >>> ErrorView.__name__
             'ErrorView'
+
     """
 
     def __init__(self, *args, **kargs):
@@ -50,6 +51,7 @@ class ErrorView(TemplateView):
 
         Keyword Parameters:
             **kargs: Variable keyword arguments.
+
         """
         logger.error(f"Entered Error view as {self.__class__.__name__} with {args} and {kargs}")
         super().__init__(*args, **kargs)
@@ -71,6 +73,7 @@ class ErrorView(TemplateView):
 
                 >>> callable(ErrorView.get_error_code)
                 True
+
         """
         name = cls.__name__
         return int(name[1:4])
@@ -88,6 +91,7 @@ class ErrorView(TemplateView):
 
                 >>> callable(ErrorView.error_code)
                 True
+
         """
         return self.get_error_code()
 
@@ -106,6 +110,7 @@ class ErrorView(TemplateView):
 
                 >>> callable(ErrorView.get_context_date)
                 True
+
         """
         context = super().get_context_date(**kwargs)
         context["request"] = self.request
@@ -137,6 +142,7 @@ class ErrorView(TemplateView):
 
                 >>> callable(ErrorView.dispatch)
                 True
+
         """
         return self.get(request, *args, **kwargs)
 
@@ -152,6 +158,7 @@ class ErrorView(TemplateView):
 
                 >>> callable(ErrorView.get_template_names)
                 True
+
         """
         return f"errors/{self.error_code}View.html"
 
@@ -174,6 +181,7 @@ class ErrorView(TemplateView):
 
                 >>> callable(ErrorView.render_to_response)
                 True
+
         """
         response = super().render_to_response(context, **response_kwargs)
         response.status_code = self.get_error_code()
@@ -191,6 +199,7 @@ class E400View(ErrorView):
 
             >>> E400View.__name__
             'E400View'
+
     """
 
 
@@ -205,6 +214,7 @@ class E404View(ErrorView):
 
             >>> E404View.__name__
             'E404View'
+
     """
 
 
@@ -219,6 +229,7 @@ class E403View(ErrorView):
 
             >>> E403View.__name__
             'E403View'
+
     """
 
 
@@ -234,6 +245,7 @@ class E500View(ErrorView):
 
             >>> E500View.__name__
             'E500View'
+
     """
 
     @classonlymethod
@@ -255,6 +267,7 @@ class E500View(ErrorView):
 
                 >>> callable(E500View.as_view)
                 True
+
         """
         for key in initkwargs:
             if key in cls.http_method_names:
@@ -290,6 +303,7 @@ class E500View(ErrorView):
 
                     >>> callable(E500View.view)
                     True
+
             """
             self = cls(**initkwargs)
             self.setup(request, *args, **kwargs)
@@ -332,6 +346,7 @@ class E500View(ErrorView):
 
                 >>> callable(E500View.get)
                 True
+
         """
         if request.user.is_superuser:
             return technical_500_response(request, *sys.exc_info())
@@ -355,6 +370,7 @@ class FileServeView(View):
 
             >>> FileServeView.__name__
             'FileServeView'
+
     """
 
     def get(self, request, *args, **kwargs):
@@ -385,6 +401,7 @@ class FileServeView(View):
 
                 >>> callable(FileServeView.get)
                 True
+
         """
         # Define the file path
         if file_path := kwargs.get("path"):
@@ -413,6 +430,7 @@ class FileServeView(View):
 
                         >>> callable(FileServeView.file_iterator)
                         True
+
                 """
                 with open(file_name, "rb") as f:
                     while chunk := f.read(chunk_size):

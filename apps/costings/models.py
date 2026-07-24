@@ -26,6 +26,7 @@ class CostRate(NamedObject):
 
             >>> CostRate.__name__
             'CostRate'
+
     """
 
     @classmethod
@@ -45,6 +46,7 @@ class CostRate(NamedObject):
 
                 >>> callable(CostRate.default)
                 True
+
         """
         std, _ = cls.objects.get_or_create(name="standard")
         if std.description == "":
@@ -57,6 +59,7 @@ class CostRate(NamedObject):
 
         Returns:
             (str): The cost rate name.
+
         """
         return self.name
 
@@ -90,6 +93,7 @@ class CostCentre(MPTTModel, NamedObject):
 
             >>> CostCentre.__name__
             'CostCentre'
+
     """
 
     class Meta:
@@ -128,6 +132,7 @@ class CostCentre(MPTTModel, NamedObject):
 
                 >>> callable(CostCentre.all_parents)
                 True
+
         """
         # Use MPTT get_ancestors with include_self=True
         return self.get_ancestors(include_self=True)
@@ -153,6 +158,7 @@ class CostCentre(MPTTModel, NamedObject):
             This returns all descendants including self via MPTT's get_descendants().
             For direct children only, access the reverse relation via
             `self.direct_children.all()`.
+
         """
         # Use MPTT get_descendants with include_self=True
         return self.get_descendants(include_self=True)
@@ -170,6 +176,7 @@ class CostCentre(MPTTModel, NamedObject):
 
         Raises:
             AttributeError: If the attribute doesn't exist or doesn't start with 'all_'.
+
         """
         if not name.startswith("all_"):
             return super().__getrattr__(name)
@@ -190,6 +197,7 @@ class CostCentre(MPTTModel, NamedObject):
 
         Returns:
             (str): String in the format "ShortName:Name (AccountCode)".
+
         """
         return f"{self.short_name}:{self.name} ({self.account_code})"
 
@@ -206,10 +214,11 @@ class CostCentre(MPTTModel, NamedObject):
 
                 >>> callable(CostCentre.url)
                 True
+
         """
         return f"/costings/cost_centre_detail/{self.pk}/"
 
-    def save(self, force_insert=False, force_update=False, using=None, update_fields=None):
+    def save(self, *args, force_insert=False, force_update=False, using=None, update_fields=None):
         """Save the cost centre, assigning default rate if needed.
 
         Keyword Parameters:
@@ -242,10 +251,12 @@ class CostCentre(MPTTModel, NamedObject):
 
                 >>> callable(CostCentre.save)
                 True
+
         """
         if self.rate is None:
             self.rate = CostRate.default()
         super().save(
+            *args,
             force_insert=force_insert,
             force_update=force_update,
             using=using,
@@ -277,6 +288,7 @@ class ChargeableItem(models.Model):
 
             >>> ChargeableItem.__name__
             'ChargeableItem'
+
     """
 
     class Meta:
@@ -303,6 +315,7 @@ class ChargeableItem(models.Model):
 
                 >>> callable(ChargeableItem.calculate_charge)
                 True
+
         """
         raise NotImplementedError(f"{self.__class__.__name__} should implement a calculate_charge method!")
 
@@ -318,10 +331,11 @@ class ChargeableItem(models.Model):
 
                 >>> callable(ChargeableItem.get_default_cost_centre)
                 True
+
         """
         raise NotImplementedError(f"{self.__class__.__name__} should have implemented get_default_cost_centre method")
 
-    def save(self, force_insert=False, force_update=False, using=None, update_fields=None):
+    def save(self, *args, force_insert=False, force_update=False, using=None, update_fields=None):
         """Enforce charge calculation and cost_centre allocation.
 
         Keyword Parameters:
@@ -339,11 +353,13 @@ class ChargeableItem(models.Model):
 
                 >>> callable(ChargeableItem.save)
                 True
+
         """
         self.charge = self.calculate_charge()
         if not self.cost_centre:
-            self.const_centre = self.get_default_cost_centre()
+            self.cost_centre = self.get_default_cost_centre()
         super().save(
+            *args,
             force_insert=force_insert,
             force_update=force_update,
             using=using,

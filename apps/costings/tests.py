@@ -5,7 +5,14 @@ This module tests the CostRate and CostCentre models including creation,
 string representations, hierarchical MPTT structure, and the default rate logic,
 as well as the costings views.
 """
+# Python imports
+import inspect
+from datetime import date
+from unittest.mock import Mock, patch
+
 # Django imports
+from django.db import models
+from django.db.backends.postgresql.psycopg_any import DateRange
 from django.urls import reverse
 
 # external imports
@@ -76,7 +83,7 @@ class TestCostCentre:
     def test_default_rate_assigned_on_save(self, db):
         """CostCentre.save() assigns default CostRate when none is given."""
         # external imports
-        from costings.models import CostCentre, CostRate
+        from costings.models import CostCentre
 
         cc = CostCentre.objects.create(name="Rate Test CC", short_name="RTCC", account_code="ACC999")
         assert cc.rate is not None
@@ -139,6 +146,78 @@ class TestCostCentre:
 
         with pytest.raises(IntegrityError):
             CostCentre.objects.create(name="Test Project", short_name="TP2", account_code="ACC099")
+
+
+class TestModelSaveContracts:
+    """Tests for custom model save signatures and derived charge fields."""
+
+    def test_overrides_accept_django_positional_save_arguments(self):
+        """Every custom save override retains Django's transitional ``*args`` contract."""
+        # external imports
+        from accounts.models import ResearchGroup
+        from bookings.models import BookingEntry
+        from costings.models import ChargeableItem, CostCentre
+        from equipment.models import (
+            ChargingRate,
+            DocumentSignOff,
+            UserListEntry,
+        )
+        from labman_utils.models import Document
+
+        overrides = (
+            ResearchGroup.save,
+            BookingEntry.save,
+            ChargeableItem.save,
+            CostCentre.save,
+            ChargingRate.save,
+            DocumentSignOff.save,
+            UserListEntry.save,
+            Document.save,
+        )
+
+        for save in overrides:
+            parameters = inspect.signature(save).parameters.values()
+            assert any(parameter.kind is inspect.Parameter.VAR_POSITIONAL for parameter in parameters)
+
+    def test_chargeable_item_assigns_default_cost_centre(self):
+        """ChargeableItem.save stores its default in the correctly named field."""
+        # external imports
+        from bookings.models import BookingEntry
+        from costings.models import ChargeableItem, CostCentre
+
+        booking = BookingEntry()
+        default_cost_centre = CostCentre()
+        booking.calculate_charge = lambda: 12.5
+        booking.get_default_cost_centre = lambda: default_cost_centre
+
+        with patch.object(models.Model, "save", autospec=True):
+            ChargeableItem.save(booking)
+
+        assert booking.charge == 12.5
+        assert booking.cost_centre is default_cost_centre
+
+    def test_charging_rate_rollover_saves_existing_rate_without_positional_arguments(self):
+        """ChargingRate.save closes an old range with a normal model save."""
+        # external imports
+        from equipment.models import ChargingRate
+
+        old_rate = Mock(dates=DateRange(date(2025, 1, 1), date(2026, 1, 1)))
+        new_rate = ChargingRate(
+            equipment_id=1,
+            cost_rate_id=1,
+            charge_rate=10.0,
+            dates=DateRange(date(2025, 6, 1), date(2026, 6, 1)),
+        )
+        new_rate._state.fields_cache["equipment"] = Mock()
+        new_rate._state.fields_cache["cost_rate"] = Mock()
+
+        with (
+            patch.object(ChargingRate.objects, "get", return_value=old_rate),
+            patch.object(models.Model, "save", autospec=True),
+        ):
+            new_rate.save()
+
+        old_rate.save.assert_called_once_with()
 
 
 class TestCostingsViews:

@@ -21,6 +21,7 @@ class BookingtEntryAdmin(ImportExportModelAdmin):
 
             >>> BookingtEntryAdmin.__name__
             'BookingtEntryAdmin'
+
     """
 
     list_display = ("user", "equipment", "cost_centre", "shifts", "slot_display", "charge", "comment")
@@ -50,6 +51,7 @@ class BookingtEntryAdmin(ImportExportModelAdmin):
 
                 >>> callable(BookingtEntryAdmin.get_export_resource_class)
                 True
+
         """
         return BookingEntryResource
 
@@ -65,6 +67,7 @@ class BookingtEntryAdmin(ImportExportModelAdmin):
 
                 >>> callable(BookingtEntryAdmin.get_import_resource_class)
                 True
+
         """
         return BookingEntryResource
 
@@ -74,6 +77,7 @@ class BookingtEntryAdmin(ImportExportModelAdmin):
         Args:
             obj (object):
                 Value supplied for ``obj``.
+
         Returns:
             (object):
                 The result of the operation.
@@ -83,6 +87,7 @@ class BookingtEntryAdmin(ImportExportModelAdmin):
 
                 >>> callable(BookingtEntryAdmin.slot_display)
                 True
+
         """
         start, end = obj.slot.lower, obj.slot.upper
         if start is None or end is None:
@@ -101,6 +106,7 @@ class BookingPolicyAdmin(ImportExportModelAdmin):
 
             >>> BookingPolicyAdmin.__name__
             'BookingPolicyAdmin'
+
     """
 
     list_display = (
@@ -127,6 +133,7 @@ class BookingPolicyAdmin(ImportExportModelAdmin):
 
                 >>> callable(BookingPolicyAdmin.get_export_resource_class)
                 True
+
         """
         return BookingPolicyResource
 
@@ -142,5 +149,6 @@ class BookingPolicyAdmin(ImportExportModelAdmin):
 
                 >>> callable(BookingPolicyAdmin.get_import_resource_class)
                 True
+
         """
         return BookingPolicyResource

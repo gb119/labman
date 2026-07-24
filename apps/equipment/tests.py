@@ -297,6 +297,20 @@ class TestEquipmentViews:
         assert response.context["location"] == location
 
     @pytest.mark.django_db
+    def test_location_detail_htmx_location_tab_returns_200(self, client_logged_in, location):
+        """The location-specific HTMX context handler returns its context."""
+        url = reverse("equipment:location_detail", kwargs={"pk": location.pk})
+
+        response = client_logged_in.get(
+            url,
+            HTTP_HX_REQUEST="true",
+            HTTP_HX_TRIGGER_NAME="locationtab",
+        )
+
+        assert response.status_code == 200
+        assert response.context["location"] == location
+
+    @pytest.mark.django_db
     def test_equipment_detail_htmx_tab_returns_200(self, client_logged_in, equipment):
         """Verify that EquipmentDetailView returns 200 for an HTMX request with a tab trigger."""
         url = reverse("equipment:equipment_detail", kwargs={"pk": equipment.pk})

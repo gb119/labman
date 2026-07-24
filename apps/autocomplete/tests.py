@@ -100,9 +100,6 @@ class TestAutocompleteViews:
 
     def _make_authenticated_request(self):
         """Return an authenticated GET request using a mock user (no DB required)."""
-        # Python imports
-        from unittest.mock import MagicMock
-
         rf = RequestFactory()
         request = rf.get("/", {"field_name": "my_field", "component_prefix": ""})
         user = MagicMock()
@@ -327,6 +324,7 @@ def _register_test_ac(name):
 
     Returns:
         (type): The registered autocomplete class.
+
     """
     # external imports
     from autocomplete.core import Autocomplete, _ac_registry, register
@@ -368,6 +366,7 @@ class TestAutocompleteBaseView:
 
         Returns:
             (AutocompleteBaseView): A configured view instance.
+
         """
         # external imports
         from autocomplete.views import AutocompleteBaseView
@@ -488,6 +487,7 @@ class TestItemsView:
 
         Returns:
             (HttpRequest): A ready-to-use request.
+
         """
         rf = RequestFactory()
         request = rf.get(
@@ -551,6 +551,7 @@ class TestToggleView:
 
         Returns:
             (HttpRequest): A ready-to-use request.
+
         """
         rf = RequestFactory()
         params = {
@@ -629,6 +630,7 @@ class TestQuerysetMappedIterable:
 
         Returns:
             (MagicMock): A mock that behaves like a Django QuerySet.
+
         """
         qs = MagicMock()
         qs.__iter__ = MagicMock(return_value=iter(records))
@@ -645,6 +647,7 @@ class TestQuerysetMappedIterable:
 
         Returns:
             (MagicMock): A mock record.
+
         """
         r = MagicMock()
         r.id = pk
@@ -780,6 +783,7 @@ class TestAutocompleteWidget:
 
         Returns:
             (MagicMock): A mock autocomplete class.
+
         """
         ac = MagicMock()
         ac.route_name = route_name
@@ -920,14 +924,14 @@ class TestMakeIdFilter:
     """Tests for the ``make_id`` template filter."""
 
     def test_returns_consistent_hash(self):
-        """make_id returns the same SHA1 hex digest for the same input."""
+        """make_id returns the same SHA-256 hex digest for the same input."""
         # external imports
         from autocomplete.templatetags.autocomplete import make_id
 
         result1 = make_id("hello")
         result2 = make_id("hello")
         assert result1 == result2
-        assert len(result1) == 40  # SHA1 hex digest is always 40 chars
+        assert len(result1) == 64
 
     def test_different_inputs_give_different_hashes(self):
         """make_id returns different hashes for different inputs."""
@@ -1049,6 +1053,7 @@ class TestBaseConfigurableHxParams:
 
         Returns:
             (str): The rendered output.
+
         """
         # Django imports
         from django.template import Context
@@ -1136,18 +1141,12 @@ class TestBaseConfigurableHxValsExtraBranches:
 
     def test_disabled_flag_included_in_json(self):
         """When disabled=True, 'disabled' key is included in the JSON output."""
-        # Python imports
-        import json
-
         result = self._render_tag("myfield", "", disabled=True)
         parsed = json.loads("{" + result + "}")
         assert parsed.get("disabled") is True
 
     def test_multiselect_flag_included_in_json(self):
         """When multiselect=True, 'multiselect' key is included in the JSON output."""
-        # Python imports
-        import json
-
         result = self._render_tag("myfield", "", multiselect=True)
         parsed = json.loads("{" + result + "}")
         assert parsed.get("multiselect") is True
@@ -1182,10 +1181,8 @@ class TestTextInputHxVals:
 
         Returns:
             (Context): A Django template context.
-        """
-        # Python imports
-        from unittest.mock import MagicMock
 
+        """
         # Django imports
         from django.template import Context
 
@@ -1293,6 +1290,7 @@ class TestToggleViewAdvanced:
 
         Returns:
             (tuple): ``(view, request)`` ready for testing.
+
         """
         # external imports
         from autocomplete.views import ToggleView

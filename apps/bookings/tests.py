@@ -30,6 +30,7 @@ class TestBookingPolicy:
 
         Returns:
             (BookingPolicy): A saved BookingPolicy named 'Test Policy'.
+
         """
         # external imports
         from bookings.models import BookingPolicy
@@ -162,6 +163,34 @@ class TestBookingViews:
         url = reverse("bookings:all_equipment_calendar")
         response = client_logged_in.get(url)
         assert response.status_code == 200
+
+    @pytest.mark.django_db
+    def test_category_calendar_populates_each_equipment(
+        self,
+        client_logged_in,
+        equipment,
+        role_trainee,
+        shift,
+    ):
+        """The category calendar eagerly fills the table for every matching item."""
+        # external imports
+        from bookings.models import BookingPolicy
+
+        policy = BookingPolicy.objects.create(
+            name="Calendar policy",
+            for_role=role_trainee,
+            booker_role=role_trainee,
+        )
+        equipment.policies.add(policy)
+        equipment.shifts.add(shift)
+        url = reverse("bookings:equipment_calendar_cat", kwargs={"cat": equipment.category})
+
+        with patch("bookings.views.CalTable.fill_entries", autospec=True, return_value=[]) as fill_entries:
+            response = client_logged_in.get(url)
+
+        assert response.status_code == 200
+        fill_entries.assert_called_once()
+        assert fill_entries.call_args.args[1] == equipment
 
     @pytest.mark.django_db
     def test_booking_records_view_requires_login(self, client):

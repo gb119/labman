@@ -18,6 +18,7 @@ class FloatUrlParameterConverter:
 
             >>> FloatUrlParameterConverter.__name__
             'FloatUrlParameterConverter'
+
     """
 
     regex = r"[0-9]+\.?[0-9]+"
@@ -28,6 +29,7 @@ class FloatUrlParameterConverter:
         Args:
             value (object):
                 Value supplied for ``value``.
+
         Returns:
             (object):
                 The result of the operation.
@@ -37,6 +39,7 @@ class FloatUrlParameterConverter:
 
                 >>> callable(FloatUrlParameterConverter.to_python)
                 True
+
         """
         return float(value)
 
@@ -46,6 +49,7 @@ class FloatUrlParameterConverter:
         Args:
             value (object):
                 Value supplied for ``value``.
+
         Returns:
             (object):
                 The result of the operation.
@@ -55,6 +59,7 @@ class FloatUrlParameterConverter:
 
                 >>> callable(FloatUrlParameterConverter.to_url)
                 True
+
         """
         return str(value)
 

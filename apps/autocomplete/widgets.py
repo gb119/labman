@@ -34,6 +34,7 @@ class AutocompleteWidget(Widget):
         ...     MyAutocomplete,
         ...     options={'multiselect': True, 'placeholder': 'Search...'}
         ... )
+
     """
 
     template_name = "autocomplete/component.html"
@@ -65,6 +66,7 @@ class AutocompleteWidget(Widget):
         Raises:
             ValueError:
                 If an invalid option key is provided.
+
         """
         self.ac_class = ac_class
         super().__init__(attrs)
@@ -103,6 +105,7 @@ class AutocompleteWidget(Widget):
 
                 >>> callable(AutocompleteWidget.value_from_datadict)
                 True
+
         """
         if self.is_multi:
             try:
@@ -141,6 +144,7 @@ class AutocompleteWidget(Widget):
 
                 >>> callable(AutocompleteWidget.value_omitted_from_data)
                 True
+
         """
         # An unselected <select multiple> doesn't appear in POST data, so it's
         # never known if the value is actually omitted.
@@ -162,6 +166,7 @@ class AutocompleteWidget(Widget):
 
                 >>> callable(AutocompleteWidget.get_component_id)
                 True
+
         """
         prefix = self.get_configurable_value("component_prefix")
 
@@ -186,6 +191,7 @@ class AutocompleteWidget(Widget):
 
                 >>> callable(AutocompleteWidget.get_configurable_value)
                 True
+
         """
         if key in self.config:
             return self.config.get(key)
@@ -208,6 +214,7 @@ class AutocompleteWidget(Widget):
 
                 >>> callable(AutocompleteWidget.is_multi)
                 True
+
         """
         return self.get_configurable_value("multiselect")
 
@@ -233,6 +240,7 @@ class AutocompleteWidget(Widget):
 
                 >>> callable(AutocompleteWidget.get_context)
                 True
+
         """
         context = super().get_context(name, value, attrs)
 

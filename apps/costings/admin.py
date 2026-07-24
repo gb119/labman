@@ -42,6 +42,7 @@ class CosRateAdmin(ImportExportModelAdmin):
 
             >>> CosRateAdmin.__name__
             'CosRateAdmin'
+
     """
 
     list_display = ("name", "description")
@@ -61,6 +62,7 @@ class CosRateAdmin(ImportExportModelAdmin):
 
                 >>> callable(CosRateAdmin.get_export_resource_class)
                 True
+
         """
         return CostRateResource
 
@@ -77,6 +79,7 @@ class CosRateAdmin(ImportExportModelAdmin):
 
                 >>> callable(CosRateAdmin.get_import_resource_class)
                 True
+
         """
         return CostRateResource
 
@@ -103,6 +106,7 @@ class CostCentreAdmin(ImportExportModelAdmin):
 
             >>> CostCentreAdmin.__name__
             'CostCentreAdmin'
+
     """
 
     list_display = ("short_name", "name", "parent")
@@ -122,6 +126,7 @@ class CostCentreAdmin(ImportExportModelAdmin):
 
                 >>> callable(CostCentreAdmin.get_export_resource_class)
                 True
+
         """
         return CostCentreResource
 
@@ -138,5 +143,6 @@ class CostCentreAdmin(ImportExportModelAdmin):
 
                 >>> callable(CostCentreAdmin.get_import_resource_class)
                 True
+
         """
         return CostCentreResource

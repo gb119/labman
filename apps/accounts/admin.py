@@ -56,6 +56,7 @@ class UserListFilter(SimpleListFilter):
 
             >>> UserListFilter.__name__
             'UserListFilter'
+
     """
 
     title = "user"
@@ -81,6 +82,7 @@ class UserListFilter(SimpleListFilter):
 
                 >>> callable(UserListFilter.lookups)
                 True
+
         """
         qs = Account.objects.all().order_by("last_name", "first_name")
         return [(user.username, user) for user in qs.all()]
@@ -105,6 +107,7 @@ class UserListFilter(SimpleListFilter):
 
                 >>> callable(UserListFilter.queryset)
                 True
+
         """
         if not self.value():
             return queryset
@@ -136,6 +139,7 @@ class RoleAdmin(ImportExportModelAdmin):
 
             >>> RoleAdmin.__name__
             'RoleAdmin'
+
     """
 
     list_display = ("name", "level")
@@ -155,6 +159,7 @@ class RoleAdmin(ImportExportModelAdmin):
 
                 >>> callable(RoleAdmin.get_export_resource_class)
                 True
+
         """
         return RoleResource
 
@@ -171,6 +176,7 @@ class RoleAdmin(ImportExportModelAdmin):
 
                 >>> callable(RoleAdmin.get_import_resource_class)
                 True
+
         """
         return RoleResource
 
@@ -199,6 +205,7 @@ class ResearchGroupAdmin(ImportExportModelAdmin):
 
             >>> ResearchGroupAdmin.__name__
             'ResearchGroupAdmin'
+
     """
 
     list_display = ("name", "code")
@@ -219,6 +226,7 @@ class ResearchGroupAdmin(ImportExportModelAdmin):
 
                 >>> callable(ResearchGroupAdmin.get_export_resource_class)
                 True
+
         """
         return ResearchGroupResource
 
@@ -235,6 +243,7 @@ class ResearchGroupAdmin(ImportExportModelAdmin):
 
                 >>> callable(ResearchGroupAdmin.get_import_resource_class)
                 True
+
         """
         return ResearchGroupResource
 
@@ -255,6 +264,7 @@ class PhotoInlineAdmin(TabularInline):
 
             >>> PhotoInlineAdmin.__name__
             'PhotoInlineAdmin'
+
     """
 
     model = Photo
@@ -276,6 +286,7 @@ class PageInlineAdmin(TabularInline):
 
             >>> PageInlineAdmin.__name__
             'PageInlineAdmin'
+
     """
 
     model = FlatPage
@@ -319,6 +330,7 @@ class AccountrAdmin(ImportExportMixin, UserAdmin):
 
             >>> AccountrAdmin.__name__
             'AccountrAdmin'
+
     """
 
     form = UserAdminForm
@@ -408,6 +420,7 @@ class AccountrAdmin(ImportExportMixin, UserAdmin):
 
                 >>> callable(AccountrAdmin.get_export_resource_class)
                 True
+
         """
         return UserResource
 
@@ -424,6 +437,7 @@ class AccountrAdmin(ImportExportMixin, UserAdmin):
 
                 >>> callable(AccountrAdmin.get_import_resource_class)
                 True
+
         """
         return UserResource
 
@@ -445,6 +459,7 @@ class AccountrAdmin(ImportExportMixin, UserAdmin):
 
                 >>> callable(AccountrAdmin.photo_tag)
                 True
+
         """
         if obj.mugshot:
             return format_html(
@@ -470,6 +485,7 @@ class ImportExportGroupAdmin(ImportExportMixin, GroupAdmin):
 
             >>> ImportExportGroupAdmin.__name__
             'ImportExportGroupAdmin'
+
     """
 
     def get_export_resource_class(self):
@@ -485,6 +501,7 @@ class ImportExportGroupAdmin(ImportExportMixin, GroupAdmin):
 
                 >>> callable(ImportExportGroupAdmin.get_export_resource_class)
                 True
+
         """
         return GroupResource
 
@@ -501,5 +518,6 @@ class ImportExportGroupAdmin(ImportExportMixin, GroupAdmin):
 
                 >>> callable(ImportExportGroupAdmin.get_import_resource_class)
                 True
+
         """
         return GroupResource

@@ -30,6 +30,7 @@ class ObfuscatedCharField(forms.CharField):
 
             >>> ObfuscatedCharField.__name__
             'ObfuscatedCharField'
+
     """
 
     def to_python(self, value):
@@ -38,6 +39,7 @@ class ObfuscatedCharField(forms.CharField):
         Args:
             value (object):
                 Value supplied for ``value``.
+
         Returns:
             (object):
                 The result of the operation.
@@ -47,6 +49,7 @@ class ObfuscatedCharField(forms.CharField):
 
                 >>> callable(ObfuscatedCharField.to_python)
                 True
+
         """
         if value.startswith("ROT13+B64:"):
             value = value[10:]
@@ -80,6 +83,7 @@ class ObfuscatedHTMLField(HTMLField):
 
             >>> ObfuscatedHTMLField.__name__
             'ObfuscatedHTMLField'
+
     """
 
     def formfield(self, **kwargs):
@@ -88,6 +92,7 @@ class ObfuscatedHTMLField(HTMLField):
         Keyword Parameters:
             **kwargs (object):
                 Value supplied for ``kwargs``.
+
         Returns:
             (object):
                 The result of the operation.
@@ -97,6 +102,7 @@ class ObfuscatedHTMLField(HTMLField):
 
                 >>> callable(ObfuscatedHTMLField.formfield)
                 True
+
         """
         defaults = {"form_class": ObfuscatedCharField, "widget": ObfuscatedTinyMCE}
         defaults.update(kwargs)

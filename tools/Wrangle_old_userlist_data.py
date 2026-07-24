@@ -50,6 +50,7 @@ def match_entry(row):
         Convert one row from the legacy user-list data::
 
             converted = match_entry(userlist.iloc[0])
+
     """
     nrow = {}
     if row.user in people_new.index:

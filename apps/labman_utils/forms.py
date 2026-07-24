@@ -48,6 +48,7 @@ class SortedCheckboxMultipleChoiceField(SortedMultipleChoiceField):
 
             >>> SortedCheckboxMultipleChoiceField.__name__
             'SortedCheckboxMultipleChoiceField'
+
     """
 
     widget = SortedCheckboxSelectMultiple
@@ -66,6 +67,7 @@ class DateTimeCustomInput(forms.DateTimeInput):
 
             >>> DateTimeCustomInput.__name__
             'DateTimeCustomInput'
+
     """
 
     input_type = "datetime-local"
@@ -84,6 +86,7 @@ class DateCustomInput(forms.DateInput):
 
             >>> DateCustomInput.__name__
             'DateCustomInput'
+
     """
 
     input_type = "date"
@@ -102,6 +105,7 @@ class TimeCustomInput(forms.TimeInput):
 
             >>> TimeCustomInput.__name__
             'TimeCustomInput'
+
     """
 
     input_type = "time"
@@ -126,6 +130,7 @@ class DocumentDialogForm(forms.ModelForm):
 
             >>> DocumentDialogForm.__name__
             'DocumentDialogForm'
+
     """
 
     equipment = forms.ModelChoiceField(queryset=Equipment.objects.all(), required=False, widget=forms.HiddenInput())
@@ -162,6 +167,7 @@ class DocumentLinksForm(forms.ModelForm):
 
             >>> DocumentLinksForm.__name__
             'DocumentLinksForm'
+
     """
 
     class Meta:
@@ -198,6 +204,7 @@ class PhotoDialogForm(forms.ModelForm):
 
             >>> PhotoDialogForm.__name__
             'PhotoDialogForm'
+
     """
 
     equipment = forms.ModelChoiceField(queryset=Equipment.objects.all(), required=False, widget=forms.HiddenInput())
@@ -225,6 +232,7 @@ class PhotoDialogForm(forms.ModelForm):
         Notes:
             The slug field is marked as not required since it can be automatically
             generated from the associated entity's name during form validation.
+
         """
         super().__init__(*args, **kwargs)
         self.fields["slug"].required = False
@@ -249,6 +257,7 @@ class PhotoDialogForm(forms.ModelForm):
 
                 >>> callable(PhotoDialogForm.clean)
                 True
+
         """
         cleaned_data = super().clean()
         for fld in ["equipment", "location", "account"]:
@@ -279,6 +288,7 @@ class PhotoLinksForm(forms.ModelForm):
 
             >>> PhotoLinksForm.__name__
             'PhotoLinksForm'
+
     """
 
     class Meta:
@@ -318,6 +328,7 @@ class FlatPageForm(forms.ModelForm):
 
             >>> FlatPageForm.__name__
             'FlatPageForm'
+
     """
 
     class Meta:
@@ -350,6 +361,7 @@ class FlatPagesLinksForm(forms.ModelForm):
 
             >>> FlatPagesLinksForm.__name__
             'FlatPagesLinksForm'
+
     """
 
     class Meta:

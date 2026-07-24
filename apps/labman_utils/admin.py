@@ -34,6 +34,7 @@ class CustomTreeItemAdmin(TreeItemAdmin):
 
             >>> CustomTreeItemAdmin.__name__
             'CustomTreeItemAdmin'
+
     """
 
     fieldsets = (
@@ -91,6 +92,7 @@ class CustomTreeAdmin(TreeAdmin):
 
             >>> CustomTreeAdmin.__name__
             'CustomTreeAdmin'
+
     """
 
 
@@ -110,6 +112,7 @@ class TinyMCEFlatPageAdmin(FlatPageAdmin):
 
             >>> TinyMCEFlatPageAdmin.__name__
             'TinyMCEFlatPageAdmin'
+
     """
 
     list_display = ["url", "title", "enable_comments"]
@@ -142,6 +145,7 @@ class TinyMCEFlatPageAdmin(FlatPageAdmin):
         Keyword Parameters:
             **kwargs (object):
                 Value supplied for ``kwargs``.
+
         Returns:
             (object):
                 The result of the operation.
@@ -151,6 +155,7 @@ class TinyMCEFlatPageAdmin(FlatPageAdmin):
 
                 >>> callable(TinyMCEFlatPageAdmin.formfield_for_dbfield)
                 True
+
         """
         if db_field.name == "content":
             ret = ObfuscatedCharField(

@@ -15,6 +15,7 @@ def zip_lists(a, b):
             Value supplied for ``a``.
         b (object):
             Value supplied for ``b``.
+
     Returns:
         (object):
             The result of the operation.
@@ -24,6 +25,7 @@ def zip_lists(a, b):
 
             >>> callable(zip_lists)
             True
+
     """
     return zip(a, b)
 
@@ -37,6 +39,7 @@ def item(mapping, key):
             Value supplied for ``mapping``.
         key (object):
             Value supplied for ``key``.
+
     Returns:
         (object):
             The result of the operation.
@@ -46,6 +49,7 @@ def item(mapping, key):
 
             >>> callable(item)
             True
+
     """
     if key.isnumeric():
         key = int(key)
@@ -64,6 +68,7 @@ def can_edit(thing, target):
             Value supplied for ``thing``.
         target (object):
             Value supplied for ``target``.
+
     Returns:
         (object):
             The result of the operation.
@@ -73,6 +78,7 @@ def can_edit(thing, target):
 
             >>> callable(can_edit)
             True
+
     """
     try:
         return thing.can_edit(target)
@@ -93,6 +99,7 @@ def modulus(number1, number2):
             Value supplied for ``number1``.
         number2 (object):
             Value supplied for ``number2``.
+
     Returns:
         (object):
             The result of the operation.
@@ -102,5 +109,6 @@ def modulus(number1, number2):
 
             >>> callable(modulus)
             True
+
     """
     return int(number1) % int(number2)

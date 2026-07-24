@@ -17,6 +17,7 @@ class BookingsConfig(AppConfig):
 
             >>> BookingsConfig.__name__
             'BookingsConfig'
+
     """
 
     name = basename(dirname(__file__))

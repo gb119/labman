@@ -1,0 +1,19 @@
+strictness: medium
+test-warnings: true
+doc-warnings: true
+
+# Django migrations are generated historical records. Reformatting them creates
+# noisy migrations without improving the application code.
+ignore-patterns:
+  - (^|.*[\\/])migrations([\\/]|$)
+
+pydocstyle:
+  disable:
+    # The repository uses Google-style docstrings with no blank line between a
+    # class declaration and its docstring.
+    - D203
+    # Summaries start on the opening-quote line.
+    - D213
+    # Google-style section names end in colons and are not underlined.
+    - D406
+    - D407

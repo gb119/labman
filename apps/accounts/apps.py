@@ -18,6 +18,7 @@ class AccountsConfig(AppConfig):
 
             >>> AccountsConfig.__name__
             'AccountsConfig'
+
     """
 
     name = basename(dirname(__file__))

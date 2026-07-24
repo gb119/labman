@@ -21,6 +21,7 @@ def research_group(db):
 
     Returns:
         (ResearchGroup): A saved ResearchGroup with code 'TEST'.
+
     """
     # external imports
     from accounts.models import ResearchGroup
@@ -37,6 +38,7 @@ def superuser(db):
 
     Returns:
         (Account): A saved superuser account with username 'admin'.
+
     """
     # external imports
     from accounts.models import Account
@@ -60,6 +62,7 @@ def regular_user(db, research_group):
 
     Returns:
         (Account): A saved regular user account with username 'testuser'.
+
     """
     # external imports
     from accounts.models import Account
@@ -83,6 +86,7 @@ def cost_rate(db):
 
     Returns:
         (CostRate): A saved CostRate with name 'standard'.
+
     """
     # external imports
     from costings.models import CostRate
@@ -102,6 +106,7 @@ def cost_centre(db, cost_rate, regular_user):
 
     Returns:
         (CostCentre): A saved CostCentre with name 'Test Project'.
+
     """
     # external imports
     from costings.models import CostCentre
@@ -124,6 +129,7 @@ def location(db):
 
     Returns:
         (Location): A saved top-level Location with name 'Test Lab'.
+
     """
     # external imports
     from equipment.models import Location
@@ -141,6 +147,7 @@ def child_location(db, location):
 
     Returns:
         (Location): A saved child Location with name 'Test Room'.
+
     """
     # external imports
     from equipment.models import Location
@@ -157,6 +164,7 @@ def shift(db):
 
     Returns:
         (Shift): A saved Shift covering 09:00–17:00.
+
     """
     # external imports
     from equipment.models import Shift
@@ -173,6 +181,7 @@ def role_trainee(db):
 
     Returns:
         (Role): A saved Role at trainee level (0).
+
     """
     # external imports
     from accounts.models import Role
@@ -190,6 +199,7 @@ def role_user(db):
 
     Returns:
         (Role): A saved Role at user level (100).
+
     """
     # external imports
     from accounts.models import Role
@@ -209,6 +219,7 @@ def equipment(db, location, regular_user):
 
     Returns:
         (Equipment): A saved Equipment item named 'Test Instrument'.
+
     """
     # external imports
     from equipment.models import Equipment
@@ -231,6 +242,7 @@ def client_logged_in(client, regular_user):
 
     Returns:
         (Client): A Django test client with an active session.
+
     """
     client.force_login(regular_user)
     return client
@@ -246,6 +258,7 @@ def client_superuser(client, superuser):
 
     Returns:
         (Client): A Django test client logged in as superuser.
+
     """
     client.force_login(superuser)
     return client

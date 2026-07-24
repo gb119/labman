@@ -15,12 +15,10 @@ from django.contrib.auth import get_user_model
 from django.core.exceptions import PermissionDenied
 
 # external imports
+from django_auth_adfs import signals
 from django_auth_adfs.backend import AdfsAuthCodeBackend
 from django_auth_adfs.config import provider_config, settings
 from requests.exceptions import SSLError
-
-# app imports
-from django_auth_adfs import signals
 
 logger = logging.getLogger("django_auth_adfs")
 
@@ -44,6 +42,7 @@ class LeedsAdfsBaseBackend(AdfsAuthCodeBackend):
 
             >>> LeedsAdfsBaseBackend.__name__
             'LeedsAdfsBaseBackend'
+
     """
 
     def process_access_token(self, access_token, adfs_response=None):
@@ -80,6 +79,7 @@ class LeedsAdfsBaseBackend(AdfsAuthCodeBackend):
 
                 >>> callable(LeedsAdfsBaseBackend.process_access_token)
                 True
+
         """
         if not access_token:
             raise PermissionDenied
@@ -135,6 +135,7 @@ class LeedsAdfsBaseBackend(AdfsAuthCodeBackend):
 
                 >>> callable(LeedsAdfsBaseBackend.process_user_groups)
                 True
+
         """
         groups = []
         logger.debug("Call to process_user_groups")
@@ -171,6 +172,7 @@ class LeedsAdfsBaseBackend(AdfsAuthCodeBackend):
 
                 >>> callable(LeedsAdfsBaseBackend.create_user)
                 True
+
         """
         # Get the lookup detils for the user
         username_claim = settings.USERNAME_CLAIM
@@ -235,6 +237,7 @@ class LeedsAdfsBaseBackend(AdfsAuthCodeBackend):
 
                 >>> callable(LeedsAdfsBaseBackend.update_user_attributes)
                 True
+
         """
         obo_access_token = self.get_obo_access_token(self.access_token)
         url = "https://graph.microsoft.com/v1.0/me?$select=employeeId"
@@ -293,6 +296,7 @@ class LeedsAdfsBaseBackend(AdfsAuthCodeBackend):
 
                 >>> callable(LeedsAdfsBaseBackend.update_user_groups)
                 True
+
         """
         logger.debug(f"Groups update requested for {user} with {claim_groups}")
 
@@ -318,6 +322,7 @@ class LeedsAdfsBaseBackend(AdfsAuthCodeBackend):
 
                 >>> callable(LeedsAdfsBaseBackend.update_user_flags)
                 True
+
         """
         logger.debug(f"User flags update requested for {user} with {claim_groups}")
 
@@ -351,6 +356,7 @@ class LeedsAdfsBaseBackend(AdfsAuthCodeBackend):
 
                 >>> callable(LeedsAdfsBaseBackend.get_group_memberships_from_ms_graph)
                 True
+
         """
         graph_url = "https://{}/v1.0/me/transitiveMemberOf/microsoft.graph.group".format(
             provider_config.msgraph_endpoint

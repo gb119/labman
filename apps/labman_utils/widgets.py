@@ -23,6 +23,7 @@ class ObfuscatedTinyMCE(TinyMCE):
 
             >>> ObfuscatedTinyMCE.__name__
             'ObfuscatedTinyMCE'
+
     """
 
     def __init__(self, content_language=None, attrs=None, mce_attrs=None):
@@ -49,6 +50,7 @@ class ObfuscatedTinyMCE(TinyMCE):
 
                 >>> callable(ObfuscatedTinyMCE.media)
                 True
+
         """
         css = None
         if tinymce.settings.USE_COMPRESSOR:
@@ -86,4 +88,5 @@ class AdminObfuscatedTinyMCE(ObfuscatedTinyMCE, admin_widgets.AdminTextareaWidge
 
             >>> AdminObfuscatedTinyMCE.__name__
             'AdminObfuscatedTinyMCE'
+
     """

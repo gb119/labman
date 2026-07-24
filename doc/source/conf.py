@@ -58,7 +58,7 @@ master_doc = "index"
 
 # General information about the project.
 project = "LabMan"
-copyright = "2026, LabMan contributors"
+copyright = "2026, LabMan contributors"  # pylint: disable=redefined-builtin
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the

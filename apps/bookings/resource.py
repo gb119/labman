@@ -19,6 +19,7 @@ class BookingEntryResource(resources.ModelResource):
 
             >>> BookingEntryResource.__name__
             'BookingEntryResource'
+
     """
 
     class Meta:
@@ -44,6 +45,7 @@ class BookingPolicyResource(resources.ModelResource):
 
             >>> BookingPolicyResource.__name__
             'BookingPolicyResource'
+
     """
 
     class Meta:

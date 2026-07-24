@@ -38,6 +38,7 @@ class ModelAutocomplete(Autocomplete):
         ...     @classmethod
         ...     def get_label_for_record(cls, record):
         ...         return f"{record.username} ({record.email})"
+
     """
 
     model = None
@@ -60,6 +61,7 @@ class ModelAutocomplete(Autocomplete):
 
                 >>> callable(ModelAutocomplete.get_search_attrs)
                 True
+
         """
         if not cls.search_attrs:
             raise ValueError("ModelAutocomplete must have search_attrs")
@@ -82,6 +84,7 @@ class ModelAutocomplete(Autocomplete):
 
                 >>> callable(ModelAutocomplete.get_model)
                 True
+
         """
         if not cls.model:
             raise ValueError("ModelAutocomplete must have a model")
@@ -104,6 +107,7 @@ class ModelAutocomplete(Autocomplete):
 
                 >>> callable(ModelAutocomplete.get_queryset)
                 True
+
         """
         return cls.get_model().objects.all()
 
@@ -127,6 +131,7 @@ class ModelAutocomplete(Autocomplete):
 
                 >>> callable(ModelAutocomplete.get_label_for_record)
                 True
+
         """
         return str(record)
 
@@ -152,6 +157,7 @@ class ModelAutocomplete(Autocomplete):
 
                 >>> callable(ModelAutocomplete.get_query_filtered_queryset)
                 True
+
         """
         base_qs = cls.get_queryset()
         conditions = [Q(**{f"{attr}__icontains": search}) for attr in cls.get_search_attrs()]
@@ -179,6 +185,7 @@ class ModelAutocomplete(Autocomplete):
 
                 >>> callable(ModelAutocomplete.search_items)
                 True
+
         """
         filtered_queryset = cls.get_query_filtered_queryset(search, context)
 
@@ -205,6 +212,7 @@ class ModelAutocomplete(Autocomplete):
 
                 >>> callable(ModelAutocomplete.get_items_from_keys)
                 True
+
         """
         queryset = cls.get_queryset()
         results = queryset.filter(id__in=keys)
@@ -236,6 +244,7 @@ class QuerysetMappedIterable:
 
             >>> QuerysetMappedIterable.__name__
             'QuerysetMappedIterable'
+
     """
 
     def __init__(self, queryset, label_for_record):
@@ -246,6 +255,7 @@ class QuerysetMappedIterable:
                 The Django QuerySet to wrap.
             label_for_record (callable):
                 Function that takes a model instance and returns a display label.
+
         """
         self.queryset = queryset
         self.label_for_record = label_for_record
@@ -256,6 +266,7 @@ class QuerysetMappedIterable:
         Returns:
             (generator): Generator yielding dictionaries with 'key' and 'label'
                 fields for each model instance.
+
         """
         return (self.map_record(r) for r in self.queryset)
 
@@ -275,6 +286,7 @@ class QuerysetMappedIterable:
 
                 >>> callable(QuerysetMappedIterable.map_record)
                 True
+
         """
         return {"key": record.id, "label": self.label_for_record(record)}
 
@@ -292,6 +304,7 @@ class QuerysetMappedIterable:
         Raises:
             TypeError:
                 If key is neither an integer nor a slice.
+
         """
         # Handle both single index and slice objects
         if isinstance(key, int):
@@ -313,6 +326,7 @@ class QuerysetMappedIterable:
 
         Returns:
             (int): The count of items in the QuerySet.
+
         """
         # Return the length of the sequence
         return self.queryset.count()

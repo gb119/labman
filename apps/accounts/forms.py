@@ -18,6 +18,7 @@ class StaffSelectForm(forms.Form):
 
             >>> StaffSelectForm.__name__
             'StaffSelectForm'
+
     """
 
     staff = forms.ModelChoiceField(
@@ -34,6 +35,7 @@ class UserAdminForm(forms.ModelForm):
 
             >>> UserAdminForm.__name__
             'UserAdminForm'
+
     """
 
     class Meta:

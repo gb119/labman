@@ -18,6 +18,7 @@ class AutocompleteConfig(AppConfig):
 
             >>> AutocompleteConfig.__name__
             'AutocompleteConfig'
+
     """
 
     default_auto_field = "django.db.models.BigAutoField"
@@ -31,6 +32,7 @@ class AutocompleteConfig(AppConfig):
 
                 >>> callable(AutocompleteConfig.ready)
                 True
+
         """
         for appname in apps.app_configs:
             if appname == "autocomplete":  # Don't try to import ourself!

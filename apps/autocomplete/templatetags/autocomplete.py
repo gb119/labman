@@ -23,6 +23,7 @@ def make_id(value):
     Args:
         value (object):
             Value supplied for ``value``.
+
     Returns:
         (object):
             The result of the operation.
@@ -32,8 +33,9 @@ def make_id(value):
 
             >>> callable(make_id)
             True
+
     """
-    return hashlib.sha1(value.encode("utf-8")).hexdigest()
+    return hashlib.sha256(value.encode("utf-8")).hexdigest()
 
 
 @register.filter()
@@ -46,6 +48,7 @@ def search_highlight(value, search):
             Value supplied for ``value``.
         search (object):
             Value supplied for ``search``.
+
     Returns:
         (object):
             The result of the operation.
@@ -55,6 +58,7 @@ def search_highlight(value, search):
 
             >>> callable(search_highlight)
             True
+
     """
     if search == "":
         return value
@@ -92,6 +96,7 @@ def use_string(context, name, strings):
             Value supplied for ``name``.
         strings (object):
             Value supplied for ``strings``.
+
     Returns:
         (object):
             The result of the operation.
@@ -101,6 +106,7 @@ def use_string(context, name, strings):
 
             >>> callable(use_string)
             True
+
     """
     if name in strings:
         return strings[name]
@@ -118,6 +124,7 @@ def substitute_string(template_str, **kwargs):
     Keyword Parameters:
         **kwargs (object):
             Value supplied for ``kwargs``.
+
     Returns:
         (object):
             The result of the operation.
@@ -127,6 +134,7 @@ def substitute_string(template_str, **kwargs):
 
             >>> callable(substitute_string)
             True
+
     """
     as_strings = {k: str(v) for k, v in kwargs.items()}
     return template_str % as_strings
@@ -153,6 +161,7 @@ def autocomplete(name, selected=None):
 
             >>> callable(autocomplete)
             True
+
     """
     options_selected = ",".join([str(x) for x in selected]) if selected is not None else ""
 
@@ -170,6 +179,7 @@ def js_boolean(value):
     Args:
         value (object):
             Value supplied for ``value``.
+
     Returns:
         (object):
             The result of the operation.
@@ -179,6 +189,7 @@ def js_boolean(value):
 
             >>> callable(js_boolean)
             True
+
     """
     return "true" if value else "false"
 
@@ -200,6 +211,7 @@ def autocomplete_head(bootstrap=False):
 
             >>> callable(autocomplete_head)
             True
+
     """
     return loader.get_template("autocomplete/head.html", using="django").render({"bootstrap": bootstrap})
 
@@ -229,6 +241,7 @@ def autocomplete_scripts(context, bootstrap=False, htmx=False, htmx_csrf=False):
 
             >>> callable(autocomplete_scripts)
             True
+
     """
     return loader.get_template("autocomplete/scripts.html", using="django").render(
         {
@@ -263,6 +276,7 @@ def value_if_truthy(test, value, default=""):
 
             >>> callable(value_if_truthy)
             True
+
     """
     return value if test else default
 
@@ -274,6 +288,7 @@ def base_configurable_values_hx_params(context):
     Args:
         context (object):
             Value supplied for ``context``.
+
     Returns:
         (object):
             The result of the operation.
@@ -283,6 +298,7 @@ def base_configurable_values_hx_params(context):
 
             >>> callable(base_configurable_values_hx_params)
             True
+
     """
     field_name = context.get("field_name")
     required = context.get("required")
@@ -304,7 +320,8 @@ def base_configurable_values_hx_params(context):
     if multiselect:
         hx_params += ",multiselect"
 
-    return mark_safe(hx_params)
+    # Values are code-defined field names, not user-provided HTML.
+    return mark_safe(hx_params)  # nosec B308, B703
 
 
 @register.simple_tag(takes_context=True)
@@ -318,6 +335,7 @@ def base_configurable_hx_vals(context):
     Args:
         context (object):
             Value supplied for ``context``.
+
     Returns:
         (object):
             The result of the operation.
@@ -327,6 +345,7 @@ def base_configurable_hx_vals(context):
 
             >>> callable(base_configurable_hx_vals)
             True
+
     """
     field_name = context.get("field_name")
     required = context.get("required")
@@ -354,7 +373,8 @@ def base_configurable_hx_vals(context):
 
     hx_vals = json.dumps(props).replace("{", "").replace("}", "")
 
-    return mark_safe(hx_vals)
+    # json.dumps() encodes values and escape() handles the single-quoted HTML attribute boundary.
+    return mark_safe(hx_vals)  # nosec B308, B703
 
 
 def stringify_extra_hx_vals(extra_hx_vals_dict):
@@ -363,6 +383,7 @@ def stringify_extra_hx_vals(extra_hx_vals_dict):
     Args:
         extra_hx_vals_dict (object):
             Value supplied for ``extra_hx_vals_dict``.
+
     Returns:
         (object):
             The result of the operation.
@@ -376,6 +397,7 @@ def stringify_extra_hx_vals(extra_hx_vals_dict):
 
             >>> callable(stringify_extra_hx_vals)
             True
+
     """
     if any("'" in val for val in extra_hx_vals_dict.values()):
         raise ValueError(
@@ -397,6 +419,7 @@ def text_input_hx_vals(context):
     Args:
         context (object):
             Value supplied for ``context``.
+
     Returns:
         (object):
             The result of the operation.
@@ -406,6 +429,7 @@ def text_input_hx_vals(context):
 
             >>> callable(text_input_hx_vals)
             True
+
     """
     base_hx_vals_str = base_configurable_hx_vals(context)
 
@@ -420,4 +444,5 @@ def text_input_hx_vals(context):
 
     val = val + "}"
 
-    return mark_safe(val)
+    # Component IDs are escaped and extension expressions are application code validated above.
+    return mark_safe(val)  # nosec B308, B703

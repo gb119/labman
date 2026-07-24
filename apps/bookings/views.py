@@ -11,7 +11,6 @@ import json
 import operator
 from datetime import datetime as dt, time as Time, timedelta as td
 from functools import reduce
-from itertools import chain
 
 # Django imports
 from django import views
@@ -68,6 +67,7 @@ def delta_time(time_1: Time, time_2: Time) -> int:
 
             >>> callable(delta_time)
             True
+
     """
     if not isinstance(time_1, dt):
         dtime_1 = dt.combine(dt.today(), time_1, tzinfo=DEFAULT_TZ)
@@ -100,6 +100,7 @@ class CalendarView(IsAuthenticaedViewMixin, views.generic.DetailView):
 
             >>> CalendarView.__name__
             'CalendarView'
+
     """
 
     template_name = "bookings/equipment_calendar.html"
@@ -126,6 +127,7 @@ class CalendarView(IsAuthenticaedViewMixin, views.generic.DetailView):
 
                 >>> callable(CalendarView.get_context_data)
                 True
+
         """
         context = super().get_context_data(**kwargs)
         # Build the calendar rows from the shifts.
@@ -156,6 +158,7 @@ class AllCalendarView(IsAuthenticaedViewMixin, views.generic.TemplateView):
 
             >>> AllCalendarView.__name__
             'AllCalendarView'
+
     """
 
     template_name = "bookings/equipment_all_calendar.html"
@@ -179,6 +182,7 @@ class AllCalendarView(IsAuthenticaedViewMixin, views.generic.TemplateView):
 
                 >>> callable(AllCalendarView.get_context_data)
                 True
+
         """
         context = super().get_context_data(**kwargs)
         # Build the calendar rows from the shifts.
@@ -215,6 +219,7 @@ class CategoryCalendarView(IsAuthenticaedViewMixin, views.generic.TemplateView):
 
             >>> CategoryCalendarView.__name__
             'CategoryCalendarView'
+
     """
 
     template_name = "bookings/parts/equipment_calendar_category.html"
@@ -237,6 +242,7 @@ class CategoryCalendarView(IsAuthenticaedViewMixin, views.generic.TemplateView):
 
                 >>> callable(CategoryCalendarView.get_context_data)
                 True
+
         """
         context = super().get_context_data(**kwargs)
         # Build the calendar rows from the shifts.
@@ -260,7 +266,8 @@ class CategoryCalendarView(IsAuthenticaedViewMixin, views.generic.TemplateView):
             table_contents="&nbsp;",
         )
         table.classes += " table-bordered"
-        entries = chain(*(table.fill_entries(equipment) for equipment in equip_vec))
+        for equipment in equip_vec:
+            table.fill_entries(equipment)
         context["cal"] = table
         return context
 
@@ -284,6 +291,7 @@ class BookingDialog(IsAuthenticaedViewMixin, HTMXFormMixin, views.generic.Update
 
             >>> BookingDialog.__name__
             'BookingDialog'
+
     """
 
     model = models.BookingEntry
@@ -307,6 +315,7 @@ class BookingDialog(IsAuthenticaedViewMixin, HTMXFormMixin, views.generic.Update
 
                 >>> callable(BookingDialog.get_context_data_dialog)
                 True
+
         """
         context = super().get_context_data(**kwargs)
         context["current_url"] = self.request.htmx.current_url
@@ -337,6 +346,7 @@ class BookingDialog(IsAuthenticaedViewMixin, HTMXFormMixin, views.generic.Update
 
                 >>> callable(BookingDialog.get_object)
                 True
+
         """
         equipment = self.kwargs.get("equipment")
         start = dt.fromtimestamp(self.kwargs.get("ts"), DEFAULT_TZ)
@@ -367,6 +377,7 @@ class BookingDialog(IsAuthenticaedViewMixin, HTMXFormMixin, views.generic.Update
 
                 >>> callable(BookingDialog.get_initial)
                 True
+
         """
         if (this := self.get_object()) is not None:
             return {
@@ -406,6 +417,7 @@ class BookingDialog(IsAuthenticaedViewMixin, HTMXFormMixin, views.generic.Update
 
                 >>> callable(BookingDialog.htmx_form_valid_booking)
                 True
+
         """
         self.object = form.save()
         equipment = self.object.equipment
@@ -444,6 +456,7 @@ class BookingDialog(IsAuthenticaedViewMixin, HTMXFormMixin, views.generic.Update
 
                 >>> callable(BookingDialog.htmx_delete_booking)
                 True
+
         """
         pk = self.request.GET.get("booking", None)
         if not pk or not pk.isnumeric():
@@ -489,6 +502,7 @@ class BookingRecordsView(IsAuthenticaedViewMixin, FormListView):
 
             >>> BookingRecordsView.__name__
             'BookingRecordsView'
+
     """
 
     form_class = forms.BookingEntryFilterForm
@@ -520,6 +534,7 @@ class BookingRecordsView(IsAuthenticaedViewMixin, FormListView):
 
                 >>> callable(BookingRecordsView.get)
                 True
+
         """
         form_class = self.get_form_class()
         if not getattr(self, "form", None):
@@ -568,6 +583,7 @@ class BookingRecordsView(IsAuthenticaedViewMixin, FormListView):
 
                 >>> callable(BookingRecordsView.get_queryset)
                 True
+
         """
         if not self.form.is_valid():
             return self.model.objects.none()
@@ -622,6 +638,7 @@ class BookingRecordsView(IsAuthenticaedViewMixin, FormListView):
 
                 >>> callable(BookingRecordsView.get_context_data)
                 True
+
         """
         context = super().get_context_data(**kwargs)
         entries = context["entries"]
@@ -629,8 +646,6 @@ class BookingRecordsView(IsAuthenticaedViewMixin, FormListView):
         if len(df) == 0:
             self.df = df
             return context
-        bad = df["slot"]
-
         # Bulk load all related objects to avoid N+1 queries
         equipment_ids = df["equipment"].unique()
         user_ids = df["user"].unique()

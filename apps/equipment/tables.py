@@ -29,6 +29,7 @@ def calendar_date_vector(date: Union[Date, dt]) -> List[Date]:
     Args:
         date (Union[Date, dt]):
             Value supplied for ``date``.
+
     Returns:
         (List[Date]):
             The result of the operation.
@@ -38,6 +39,7 @@ def calendar_date_vector(date: Union[Date, dt]) -> List[Date]:
 
             >>> callable(calendar_date_vector)
             True
+
     """
     start_day = int(config.CALENDAR_START_DAY)
     if isinstance(date, Date):
@@ -59,6 +61,7 @@ def calendar_time_vector() -> List[Time]:
 
             >>> callable(calendar_time_vector)
             True
+
     """
     start = config.CALENDAR_START_TIME
     end = config.CALENDAR_END_TIME
@@ -76,6 +79,7 @@ def yyyymmdd_to_date(value: int) -> Date:
     Args:
         value (int):
             Value supplied for ``value``.
+
     Returns:
         (Date):
             The result of the operation.
@@ -85,6 +89,7 @@ def yyyymmdd_to_date(value: int) -> Date:
 
             >>> callable(yyyymmdd_to_date)
             True
+
     """
     value = str(value).strip()
     return DEFAULT_TZ.localize(dt.strptime(value, "%Y%m%d")).date()
@@ -106,6 +111,7 @@ def datetime_to_coord(
     Keyword Parameters:
         mode (str):
             Value supplied for ``mode``.
+
     Returns:
         (Tuple[int, int]):
             The result of the operation.
@@ -115,6 +121,7 @@ def datetime_to_coord(
 
             >>> callable(datetime_to_coord)
             True
+
     """
     data = np.zeros(len(date_vec) * len(time_vec))
     for idt, date in enumerate(date_vec):
@@ -153,6 +160,7 @@ class CalTable(Table):
 
             >>> CalTable.__name__
             'CalTable'
+
     """
 
     def __init__(self, *args, **kargs):
@@ -204,6 +212,7 @@ class CalTable(Table):
 
                 >>> callable(CalTable.build_table)
                 True
+
         """
         self[0].header = True
         self[:, 0].header = True
@@ -238,7 +247,7 @@ class CalTable(Table):
                 case 3:
                     label = (
                         f"<a href='{equipment.url}'>{equipment.name}</a><br/>"
-                        + f"<span style='font-size:smaller;'>{time.strftime("%I:%M %p")}</span>"
+                        + f"<span style='font-size:smaller;'>{time.strftime('%I:%M %p')}</span>"
                     )
                     self[idx_row, 0].content = format_html(label)
             self[idx_row, 0].classes += " table-dark"
@@ -251,6 +260,7 @@ class CalTable(Table):
         Args:
             equipment (object):
                 Value supplied for ``equipment``.
+
         Returns:
             (object):
                 The result of the operation.
@@ -264,6 +274,7 @@ class CalTable(Table):
 
                 >>> callable(CalTable.fill_entries)
                 True
+
         """
         # Locate the bit of the table relevant to this equipment
         for ix, equip in enumerate(self.equip_vec):

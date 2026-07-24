@@ -19,6 +19,7 @@ class AdminConfigConfig(AppConfig):
 
             >>> AdminConfigConfig.__name__
             'AdminConfigConfig'
+
     """
 
     name = basename(dirname(__file__))
@@ -32,6 +33,7 @@ class SuitConfig(DjangoSuitConfig):
 
             >>> SuitConfig.__name__
             'SuitConfig'
+
     """
 
     layout = "vertical"

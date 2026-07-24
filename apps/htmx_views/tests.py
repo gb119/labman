@@ -44,6 +44,7 @@ def _make_request(method="GET", htmx=None):
 
     Returns:
         (MagicMock): A mock request object.
+
     """
     req = MagicMock()
     req.method = method
@@ -118,8 +119,6 @@ class TestTempAttr:
         class Plain:
             """Provide the Plain implementation."""
 
-            pass
-
         obj = Plain()
         with temp_attr(obj, "new_attr", 42):
             assert obj.new_attr == 42
@@ -131,8 +130,6 @@ class TestTempAttr:
 
         class Plain:
             """Provide the Plain implementation."""
-
-            pass
 
         obj = Plain()
         with temp_attr(obj, "new_attr", 42):
@@ -581,6 +578,20 @@ class TestHTMXFormMixinFormValid:
         result = view.form_valid(form)
         assert result is expected
 
+    def test_htmx_ignores_truthy_non_callable_handlers(self):
+        """form_valid ignores truthy attributes that are not handlers."""
+        view = self._make_view(
+            htmx=_MockHtmx(trigger_name="save"),
+            extra_attrs={
+                "htmx_form_valid_save": "not callable",
+                "htmx_form_valid": object(),
+            },
+        )
+
+        result = view.form_valid(MagicMock())
+
+        assert result.content == b"super_form_valid"
+
     def test_htmx_falls_back_to_super_when_no_handler(self):
         """form_valid falls back to super() when no HTMX handler is found."""
         view = self._make_view(htmx=_MockHtmx(trigger_name="unknown_element"))
@@ -647,6 +658,20 @@ class TestHTMXFormMixinFormInvalid:
         form = MagicMock()
         result = view.form_invalid(form)
         assert result is expected
+
+    def test_htmx_ignores_truthy_non_callable_invalid_handlers(self):
+        """form_invalid ignores truthy attributes that are not handlers."""
+        view = self._make_view(
+            htmx=_MockHtmx(trigger_name="save"),
+            extra_attrs={
+                "htmx_form_invalid_save": "not callable",
+                "htmx_form_invalid": object(),
+            },
+        )
+
+        result = view.form_invalid(MagicMock())
+
+        assert result.content == b"super_form_invalid"
 
     def test_htmx_falls_back_to_super_when_no_handler(self):
         """form_invalid falls back to super() when no HTMX handler is found."""
@@ -778,6 +803,15 @@ class TestHTMXProcessMixinContextObjectNameHandler:
         view.get_context_object_nametable = lambda obj_list: "custom_list"
         result = view.get_context_object_name([])
         assert result == "custom_list"
+
+    def test_htmx_ignores_truthy_non_callable_context_name_handler(self):
+        """get_context_object_name falls back when a matching attribute is not callable."""
+        view = self._make_view(
+            htmx=_MockHtmx(trigger_name="table"),
+            extra_attrs={"get_context_object_nametable": "not callable"},
+        )
+
+        assert view.get_context_object_name([]) == "base_list"
 
 
 class TestHTMXProcessMixinDebugLogging:

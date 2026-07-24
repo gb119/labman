@@ -25,6 +25,7 @@ class UserListEntrySeriqlizer(serializers.ModelSerializer):
 
             >>> UserListEntrySeriqlizer.__name__
             'UserListEntrySeriqlizer'
+
     """
 
     class Meta:
@@ -51,6 +52,7 @@ class EquipmentSerializer(serializers.ModelSerializer):
 
             >>> EquipmentSerializer.__name__
             'EquipmentSerializer'
+
     """
 
     users = serializers.SerializerMethodField("get_users")
@@ -78,6 +80,7 @@ class EquipmentSerializer(serializers.ModelSerializer):
 
                 >>> callable(EquipmentSerializer.get_users)
                 True
+
         """
         return UserListEntrySeriqlizer(instance=equipment.users.all(), many=True).data
 
@@ -93,6 +96,7 @@ class LocationSerializer(serializers.ModelSerializer):
 
             >>> LocationSerializer.__name__
             'LocationSerializer'
+
     """
 
     class Meta:
@@ -120,6 +124,7 @@ class EquipmentViewSet(viewsets.ReadOnlyModelViewSet):
 
             >>> EquipmentViewSet.__name__
             'EquipmentViewSet'
+
     """
 
     queryset = Equipment.objects.all()
@@ -144,6 +149,7 @@ class UserListEntryViewSet(viewsets.ReadOnlyModelViewSet):
 
             >>> UserListEntryViewSet.__name__
             'UserListEntryViewSet'
+
     """
 
     queryset = UserListEntry.objects.all()
@@ -168,6 +174,7 @@ class LocationViewSet(viewsets.ReadOnlyModelViewSet):
 
             >>> LocationViewSet.__name__
             'LocationViewSet'
+
     """
 
     queryset = Location.objects.all()

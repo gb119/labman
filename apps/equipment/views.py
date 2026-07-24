@@ -73,6 +73,7 @@ class SignOffFormSetView(IsAuthenticaedViewMixin, FormSetView):
 
             >>> SignOffFormSetView.__name__
             'SignOffFormSetView'
+
     """
 
     template_name = "equipment/sign-off.html"
@@ -96,6 +97,7 @@ class SignOffFormSetView(IsAuthenticaedViewMixin, FormSetView):
 
                 >>> callable(SignOffFormSetView.get_initial)
                 True
+
         """
         equipment_id = int(self.kwargs["equipment"])
         equipment = Equipment.objects.get(pk=equipment_id)
@@ -132,6 +134,7 @@ class SignOffFormSetView(IsAuthenticaedViewMixin, FormSetView):
 
                 >>> callable(SignOffFormSetView.formset_valid)
                 True
+
         """
         equipment_id = int(self.kwargs["equipment"])
         equipment = Equipment.objects.get(pk=equipment_id)
@@ -163,6 +166,7 @@ class SignOffFormSetView(IsAuthenticaedViewMixin, FormSetView):
 
                 >>> callable(SignOffFormSetView.get_context_data)
                 True
+
         """
         context = super().get_context_data(**kwargs)
         docs = [x.initial["document"] for x in context["formset"].forms]
@@ -195,6 +199,7 @@ class EquipmentDetailView(HTMXProcessMixin, IsAuthenticaedViewMixin, views.gener
 
             >>> EquipmentDetailView.__name__
             'EquipmentDetailView'
+
     """
 
     template_name = "equipment/equipment_detail.html"
@@ -229,6 +234,7 @@ class EquipmentDetailView(HTMXProcessMixin, IsAuthenticaedViewMixin, views.gener
 
                 >>> callable(EquipmentDetailView.get_context_data_scheduletab)
                 True
+
         """
         context = super().get_context_data(**kwargs)
         # Build the calendar rows from the shifts.
@@ -317,6 +323,7 @@ class EquipmentDetailView(HTMXProcessMixin, IsAuthenticaedViewMixin, views.gener
 
                 >>> callable(EquipmentDetailView.get_context_data_userlisttab)
                 True
+
         """
         context = super().get_context_data(**kwargs)
         context["opentab"] = slugify(self.request.GET.get("opentab", "Manager"))
@@ -343,6 +350,7 @@ class LocationDetailView(HTMXProcessMixin, IsAuthenticaedViewMixin, views.generi
 
             >>> LocationDetailView.__name__
             'LocationDetailView'
+
     """
 
     template_name = "equipment/location_detail.html"
@@ -368,8 +376,10 @@ class LocationDetailView(HTMXProcessMixin, IsAuthenticaedViewMixin, views.generi
 
                 >>> callable(LocationDetailView.get_context_data_locationtab)
                 True
+
         """
         context = super().get_context_data(**kwargs)
+        return context
 
 
 class ModelListView(HTMXProcessMixin, IsAuthenticaedViewMixin, views.generic.ListView):
@@ -398,6 +408,7 @@ class ModelListView(HTMXProcessMixin, IsAuthenticaedViewMixin, views.generic.Lis
 
             >>> ModelListView.__name__
             'ModelListView'
+
     """
 
     template_name = "equipment/lists.html"
@@ -429,6 +440,7 @@ class ModelListView(HTMXProcessMixin, IsAuthenticaedViewMixin, views.generic.Lis
 
                 >>> callable(ModelListView.get_queryset)
                 True
+
         """
         if not getattr(self.request, "htmx", False):
             ret = {}
@@ -474,6 +486,7 @@ class ModelListView(HTMXProcessMixin, IsAuthenticaedViewMixin, views.generic.Lis
 
                 >>> callable(ModelListView.get_context_data_equipmenttab)
                 True
+
         """
         context = super().get_context_data(**kwargs)
         data = {}
@@ -500,6 +513,7 @@ class ModelListView(HTMXProcessMixin, IsAuthenticaedViewMixin, views.generic.Lis
 
                 >>> callable(ModelListView.get_context_data_documentstab)
                 True
+
         """
         context = super().get_context_data(**kwargs)
         context["categories"] = dict(Document.CATEGORIES)
@@ -525,6 +539,7 @@ class UserlisttDialog(IsAuthenticaedViewMixin, HTMXFormMixin, UpdateView):
 
             >>> UserlisttDialog.__name__
             'UserlisttDialog'
+
     """
 
     model = UserListEntry
@@ -538,6 +553,7 @@ class UserlisttDialog(IsAuthenticaedViewMixin, HTMXFormMixin, UpdateView):
         Keyword Parameters:
             **kwargs (object):
                 Value supplied for ``kwargs``.
+
         Returns:
             (object):
                 The result of the operation.
@@ -547,6 +563,7 @@ class UserlisttDialog(IsAuthenticaedViewMixin, HTMXFormMixin, UpdateView):
 
                 >>> callable(UserlisttDialog.get_context_data_dialog)
                 True
+
         """
         context = super().get_context_data(**kwargs)
         context["current_url"] = self.request.htmx.current_url
@@ -568,6 +585,7 @@ class UserlisttDialog(IsAuthenticaedViewMixin, HTMXFormMixin, UpdateView):
         Keyword Parameters:
             queryset (object):
                 Value supplied for ``queryset``.
+
         Returns:
             (object):
                 The result of the operation.
@@ -577,6 +595,7 @@ class UserlisttDialog(IsAuthenticaedViewMixin, HTMXFormMixin, UpdateView):
 
                 >>> callable(UserlisttDialog.get_object)
                 True
+
         """
         try:
             return UserListEntry.objects.get(equipment=self.kwargs["equipment"], user=self.kwargs["user"])
@@ -595,10 +614,10 @@ class UserlisttDialog(IsAuthenticaedViewMixin, HTMXFormMixin, UpdateView):
 
                 >>> callable(UserlisttDialog.get_initial)
                 True
+
         """
         equipment = Equipment.objects.get(pk=self.kwargs.get("equipment", None))
         if "user" in self.kwargs:
-            dd = self.kwargs
             user = Account.objects.get(pk=self.kwargs["user"])
             return {"equipment": equipment, "user": user}
         return {"equipment": equipment}
@@ -624,6 +643,7 @@ class UserlisttDialog(IsAuthenticaedViewMixin, HTMXFormMixin, UpdateView):
 
                 >>> callable(UserlisttDialog.htmx_form_valid_userlistentry)
                 True
+
         """
         entry = form.instance
         if not entry.equipment.can_edit(self.request.user):
@@ -661,6 +681,7 @@ class UserlisttDialog(IsAuthenticaedViewMixin, HTMXFormMixin, UpdateView):
 
                 >>> callable(UserlisttDialog.htmx_delete_userlistentry)
                 True
+
         """
         if not (entry := self.get_object()):
             return HttpResponseNotFound("Unable to locate userlist entry.")
@@ -697,6 +718,7 @@ class EquipmentDialog(IsAcademicOrStaffViewMixin, HTMXFormMixin, UpdateView):
 
             >>> EquipmentDialog.__name__
             'EquipmentDialog'
+
     """
 
     model = Equipment
@@ -710,6 +732,7 @@ class EquipmentDialog(IsAcademicOrStaffViewMixin, HTMXFormMixin, UpdateView):
         Keyword Parameters:
             **kwargs (object):
                 Value supplied for ``kwargs``.
+
         Returns:
             (object):
                 The result of the operation.
@@ -719,6 +742,7 @@ class EquipmentDialog(IsAcademicOrStaffViewMixin, HTMXFormMixin, UpdateView):
 
                 >>> callable(EquipmentDialog.get_context_data_dialog)
                 True
+
         """
         context = super().get_context_data(**kwargs)
         context["current_url"] = self.request.htmx.current_url
@@ -734,6 +758,7 @@ class EquipmentDialog(IsAcademicOrStaffViewMixin, HTMXFormMixin, UpdateView):
         Keyword Parameters:
             queryset (object):
                 Value supplied for ``queryset``.
+
         Returns:
             (object):
                 The result of the operation.
@@ -743,6 +768,7 @@ class EquipmentDialog(IsAcademicOrStaffViewMixin, HTMXFormMixin, UpdateView):
 
                 >>> callable(EquipmentDialog.get_object)
                 True
+
         """
         try:
             return Equipment.objects.get(pk=self.kwargs.get("pk"))
@@ -764,6 +790,7 @@ class EquipmentDialog(IsAcademicOrStaffViewMixin, HTMXFormMixin, UpdateView):
 
                 >>> callable(EquipmentDialog.htmx_form_valid_equipment)
                 True
+
         """
         form.save()
         return HttpResponse(
@@ -781,6 +808,7 @@ class ToggleAccountActiveView(IsSuperuserViewMixin, views.View):
     Examples:
         POST /equipment/account/toggle-active/42/ toggles the is_active flag on Account pk=42
         and returns the updated toggle switch HTML fragment.
+
     """
 
     def post(self, request, pk, *args, **kwargs):
@@ -805,6 +833,7 @@ class ToggleAccountActiveView(IsSuperuserViewMixin, views.View):
 
                 >>> callable(ToggleAccountActiveView.post)
                 True
+
         """
         if (accounts := Account.objects.filter(pk=pk)).count():
             account = accounts.last()

@@ -49,6 +49,7 @@ class ResearchGroup(ResourceedObject):
 
             >>> ResearchGroup.__name__
             'ResearchGroup'
+
     """
 
     code = models.CharField(max_length=10, primary_key=True)
@@ -64,11 +65,13 @@ class ResearchGroup(ResourceedObject):
 
         Returns:
             (str): The research group name.
+
         """
         return self.name
 
     def save(
         self,
+        *args,
         force_insert=False,
         force_update=False,
         using=None,
@@ -102,9 +105,11 @@ class ResearchGroup(ResourceedObject):
 
                 >>> callable(ResearchGroup.save)
                 True
+
         """
         self.code = self.code.upper()
         super().save(
+            *args,
             force_insert=force_insert,
             force_update=force_update,
             using=using,
@@ -120,6 +125,7 @@ class ActiveUsersManager(models.Manager):
 
             >>> ActiveUsersManager.__name__
             'ActiveUsersManager'
+
     """
 
     def get_queryset(self):
@@ -134,6 +140,7 @@ class ActiveUsersManager(models.Manager):
 
                 >>> callable(ActiveUsersManager.get_queryset)
                 True
+
         """
         return super().get_queryset().filter(is_active=True)
 
@@ -169,6 +176,7 @@ class Account(AbstractUser):
 
             >>> Account.__name__
             'Account'
+
     """
 
     class Meta:
@@ -206,6 +214,7 @@ class Account(AbstractUser):
 
                 >>> callable(Account.natural_key)
                 True
+
         """
         return self.username
 
@@ -222,6 +231,7 @@ class Account(AbstractUser):
 
                 >>> callable(Account.display_name)
                 True
+
         """
         return f"{self.first_name} {self.last_name}"
 
@@ -238,6 +248,7 @@ class Account(AbstractUser):
 
                 >>> callable(Account.default_project)
                 True
+
         """
         return self.project.first()
 
@@ -255,6 +266,7 @@ class Account(AbstractUser):
 
                 >>> callable(Account.mugshot)
                 True
+
         """
         if self.photos.all().count() > 0:
             return self.photos.first()
@@ -276,6 +288,7 @@ class Account(AbstractUser):
 
                 >>> callable(Account.mugshot_edit_link)
                 True
+
         """
         if self.photos.all().count() > 0:
             return reverse("labman_utils:edit_account_photo", args=(self.pk, self.mugshot.pk))
@@ -295,6 +308,7 @@ class Account(AbstractUser):
 
                 >>> callable(Account.formal_name)
                 True
+
         """
         if self.title is None:
             title = ""
@@ -316,6 +330,7 @@ class Account(AbstractUser):
 
                 >>> callable(Account.name)
                 True
+
         """
         return self.formal_name
 
@@ -332,6 +347,7 @@ class Account(AbstractUser):
 
                 >>> callable(Account.url)
                 True
+
         """
         return f"/accounts/user/{self.username}/"
 
@@ -340,6 +356,7 @@ class Account(AbstractUser):
 
         Returns:
             (str): String in the format "LastName, FirstName (username)".
+
         """
         return f"{self.last_name}, {self.first_name} ({self.username})"
 
@@ -359,6 +376,7 @@ class Account(AbstractUser):
 
                 >>> callable(Account.is_member)
                 True
+
         """
         if not self.pk:
             return False
@@ -387,6 +405,7 @@ class Account(AbstractUser):
 
                 >>> callable(Account.initials)
                 True
+
         """
         if "." in self.email.split("@")[0]:
             userfield = self.email.split("@")[0]
@@ -411,6 +430,7 @@ class Account(AbstractUser):
 
                 >>> callable(Account.is_supervisor)
                 True
+
         """
         return self.managing.count() > 0
 
@@ -427,6 +447,7 @@ class Account(AbstractUser):
 
                 >>> callable(Account.primary_project)
                 True
+
         """
         if self.project.all().count() > 0:
             return self.project.all().first()
@@ -453,6 +474,7 @@ class Account(AbstractUser):
 
                 >>> callable(Account.can_edit)
                 True
+
         """
         return other == self or other == self.menager or other.is_superuser
 
@@ -477,6 +499,7 @@ class Role(ResourceedObject):
 
             >>> Role.__name__
             'Role'
+
     """
 
     class Meta:
@@ -493,6 +516,7 @@ class Role(ResourceedObject):
 
         Returns:
             (str): The role name.
+
         """
         return self.name
 
@@ -509,6 +533,7 @@ class Role(ResourceedObject):
 
                 >>> callable(Role.default)
                 True
+
         """
         return cls.objects.get(level=TRAINEE)
 
@@ -525,6 +550,7 @@ class Role(ResourceedObject):
 
                 >>> callable(Role.trainee)
                 True
+
         """
         return cls.objects.get(level=TRAINEE)
 
@@ -541,6 +567,7 @@ class Role(ResourceedObject):
 
                 >>> callable(Role.user)
                 True
+
         """
         return cls.objects.get(level=USER)
 
@@ -557,6 +584,7 @@ class Role(ResourceedObject):
 
                 >>> callable(Role.advanced_user)
                 True
+
         """
         return cls.objects.get(level=ADVANCED_USER)
 
@@ -573,6 +601,7 @@ class Role(ResourceedObject):
 
                 >>> callable(Role.instructor)
                 True
+
         """
         return cls.objects.get(level=INSTRUCTOR)
 
@@ -589,5 +618,6 @@ class Role(ResourceedObject):
 
                 >>> callable(Role.manager)
                 True
+
         """
         return cls.objects.get(level=MANAGER)

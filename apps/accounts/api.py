@@ -27,6 +27,7 @@ class ResearchGroupSerializer(serializers.ModelSerializer):
 
             >>> ResearchGroupSerializer.__name__
             'ResearchGroupSerializer'
+
     """
 
     class Meta:
@@ -48,6 +49,7 @@ class AccountSerializer(serializers.ModelSerializer):
 
             >>> AccountSerializer.__name__
             'AccountSerializer'
+
     """
 
     class Meta:
@@ -68,6 +70,7 @@ class GroupSerializer(serializers.ModelSerializer):
 
             >>> GroupSerializer.__name__
             'GroupSerializer'
+
     """
 
     class Meta:
@@ -88,6 +91,7 @@ class RoleSerializer(serializers.ModelSerializer):
 
             >>> RoleSerializer.__name__
             'RoleSerializer'
+
     """
 
     class Meta:
@@ -115,6 +119,7 @@ class ResearchGroupViewSet(viewsets.ReadOnlyModelViewSet):
 
             >>> ResearchGroupViewSet.__name__
             'ResearchGroupViewSet'
+
     """
 
     queryset = ResearchGroup.objects.all()
@@ -139,6 +144,7 @@ class AccountViewSet(viewsets.ReadOnlyModelViewSet):
 
             >>> AccountViewSet.__name__
             'AccountViewSet'
+
     """
 
     queryset = Account.objects.all()
@@ -163,6 +169,7 @@ class GroupViewSet(viewsets.ReadOnlyModelViewSet):
 
             >>> GroupViewSet.__name__
             'GroupViewSet'
+
     """
 
     queryset = Group.objects.all()
@@ -187,6 +194,7 @@ class RoleViewSet(viewsets.ReadOnlyModelViewSet):
 
             >>> RoleViewSet.__name__
             'RoleViewSet'
+
     """
 
     queryset = Role.objects.all()

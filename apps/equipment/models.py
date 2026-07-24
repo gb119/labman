@@ -61,6 +61,7 @@ class Location(MPTTModel, ResourceedObject):
 
             >>> Location.__name__
             'Location'
+
     """
 
     class Meta:
@@ -83,6 +84,7 @@ class Location(MPTTModel, ResourceedObject):
 
         Returns:
             (str): The location name.
+
         """
         return self.name
 
@@ -103,6 +105,7 @@ class Location(MPTTModel, ResourceedObject):
 
                 >>> callable(Location.all_parents)
                 True
+
         """
         # Use MPTT get_ancestors with include_self=True
         return self.get_ancestors(include_self=True)
@@ -130,6 +133,7 @@ class Location(MPTTModel, ResourceedObject):
             This returns all descendants including self via MPTT's get_descendants().
             For direct children only, access the reverse relation via
             `self.direct_children.all()`.
+
         """
         # Use MPTT get_descendants with include_self=True
         return self.get_descendants(include_self=True)
@@ -148,6 +152,7 @@ class Location(MPTTModel, ResourceedObject):
 
                 >>> callable(Location.all_files)
                 True
+
         """
         Document = apps.get_model("labman_utils", "document")
         return Document.objects.filter(location__in=self.all_parents.all())
@@ -166,6 +171,7 @@ class Location(MPTTModel, ResourceedObject):
 
                 >>> callable(Location.all_photos)
                 True
+
         """
         Photo = apps.get_model("photologue", "photo")
         return Photo.objects.filter(location__in=self.all_parents.all())
@@ -184,6 +190,7 @@ class Location(MPTTModel, ResourceedObject):
 
                 >>> callable(Location.all_pages)
                 True
+
         """
         FlatPage = apps.get_model("flatpages", "flatpage")
         return FlatPage.objects.filter(location__in=self.all_parents.all())
@@ -202,6 +209,7 @@ class Location(MPTTModel, ResourceedObject):
 
                 >>> callable(Location.url)
                 True
+
         """
         return f"/equipment/location_detail/{self.pk}/"
 
@@ -228,6 +236,7 @@ class Shift(NamedObject):
 
             >>> Shift.__name__
             'Shift'
+
     """
 
     class Meta:
@@ -262,6 +271,7 @@ class Shift(NamedObject):
 
                 >>> callable(Shift.duration)
                 True
+
         """
         if (dt.combine(dt.today(), self.end_time) - dt.combine(dt.today(), self.start_time)).total_seconds() > 0:
             return dt.combine(dt.today(), self.end_time) - dt.combine(dt.today(), self.start_time)
@@ -277,6 +287,7 @@ class Equipment(ResourceedObject):
 
             >>> Equipment.__name__
             'Equipment'
+
     """
 
     CATEGORIES = {
@@ -325,6 +336,7 @@ class Equipment(ResourceedObject):
 
                 >>> callable(Equipment.bookable)
                 True
+
         """
         return self.policies.count() > 0 and not self.offline
 
@@ -342,6 +354,7 @@ class Equipment(ResourceedObject):
 
                 >>> callable(Equipment.url)
                 True
+
         """
         return f"/equipment/equipment_detail/{self.pk}/"
 
@@ -359,6 +372,7 @@ class Equipment(ResourceedObject):
 
                 >>> callable(Equipment.schedule)
                 True
+
         """
         date = tz.now().strftime("%Y%m%d")
 
@@ -378,6 +392,7 @@ class Equipment(ResourceedObject):
 
                 >>> callable(Equipment.calendar_time_vector)
                 True
+
         """
         if self.shifts.all().count() == 0:
             return None
@@ -412,6 +427,7 @@ class Equipment(ResourceedObject):
 
                 >>> callable(Equipment.userlist_dict)
                 True
+
         """
         # Fetch all users once with role prefetched to avoid N+1 queries
         # Order by role level first, then prefetch role data
@@ -440,6 +456,7 @@ class Equipment(ResourceedObject):
 
                 >>> callable(Equipment.default_charge_rate)
                 True
+
         """
         return self.charge_rates.get_or_create(cost_rate=CostRate.default())[0]
 
@@ -460,6 +477,7 @@ class Equipment(ResourceedObject):
         Raises:
             AttributeError:
                 If the name cannot be resolved to a role or document category.
+
         """
         Role = apps.get_model(app_label="accounts", model_name="role")
 
@@ -508,6 +526,7 @@ class Equipment(ResourceedObject):
 
                 >>> callable(Equipment.get_shift)
                 True
+
         """
         if self.shifts.all().count() == 0:
             return None
@@ -554,6 +573,7 @@ class Equipment(ResourceedObject):
 
                 >>> callable(Equipment.get_charge_rate)
                 True
+
         """
         BookingEntry = self.bookings.model
         match other:
@@ -604,6 +624,7 @@ class Equipment(ResourceedObject):
 
                 >>> callable(Equipment.can_edit)
                 True
+
         """
         return (target.is_superuser) or (self.owner == target) or (target in self.manager)
 
@@ -635,6 +656,7 @@ class UserListEntry(models.Model):
 
             >>> UserListEntry.__name__
             'UserListEntry'
+
     """
 
     class Meta:
@@ -656,7 +678,7 @@ class UserListEntry(models.Model):
         """Perform the str operation."""
         return f"{getattribute(self,'user.display_name')}: {getattribute(self,'role.name')} of {getattribute(self,'equipment.name')}"
 
-    def save(self, force_insert=False, force_update=False, using=None, update_fields=None):
+    def save(self, *args, force_insert=False, force_update=False, using=None, update_fields=None):
         """Save the entry and manage hold status based on role changes.
 
                         Automatically sets hold to True for new entries or when a user's role level
@@ -689,6 +711,7 @@ class UserListEntry(models.Model):
 
                 >>> callable(UserListEntry.save)
                 True
+
         """
         if self.role is None:
             Role = apps.get_model("accounts.role")
@@ -702,7 +725,13 @@ class UserListEntry(models.Model):
         else:
             self.hold = self.check_for_hold()
 
-        super().save(force_insert=force_insert, force_update=force_update, using=using, update_fields=update_fields)
+        super().save(
+            *args,
+            force_insert=force_insert,
+            force_update=force_update,
+            using=using,
+            update_fields=update_fields,
+        )
 
     @property
     def documents(self):
@@ -718,6 +747,7 @@ class UserListEntry(models.Model):
 
                 >>> callable(UserListEntry.documents)
                 True
+
         """
         return self.equipment.all_files.all()
 
@@ -738,6 +768,7 @@ class UserListEntry(models.Model):
 
                 >>> callable(UserListEntry.sign_off_docs)
                 True
+
         """
         return self.documents.filter(category__in=["ra", "sop"])
 
@@ -762,12 +793,12 @@ class UserListEntry(models.Model):
 
                 >>> callable(UserListEntry.check_for_hold)
                 True
+
         """
         for doc in self.sign_off_docs:
             if doc.signatures.filter(user=self.user, version=doc.version).count() == 0:
                 return True
-        else:
-            return False
+        return False
 
 
 class DocumentSignOff(models.Model):
@@ -793,6 +824,7 @@ class DocumentSignOff(models.Model):
 
             >>> DocumentSignOff.__name__
             'DocumentSignOff'
+
     """
 
     document = models.ForeignKey(Document, on_delete=models.CASCADE, related_name="signatures")
@@ -809,7 +841,7 @@ class DocumentSignOff(models.Model):
         """Perform the str operation."""
         return f"{getattribute(self,'document.title')} v{self.version} ({getattribute(self,'user.display_name')}) {self.created}"
 
-    def save(self, force_insert=False, force_update=False, using=None, update_fields=None):
+    def save(self, *args, force_insert=False, force_update=False, using=None, update_fields=None):
         """Save the sign-off and update related user list entry hold status.
 
                         After recording the sign-off, checks all equipment user list entries for
@@ -842,8 +874,15 @@ class DocumentSignOff(models.Model):
 
                 >>> callable(DocumentSignOff.save)
                 True
+
         """
-        super().save(force_insert=force_insert, force_update=force_update, using=using, update_fields=update_fields)
+        super().save(
+            *args,
+            force_insert=force_insert,
+            force_update=force_update,
+            using=using,
+            update_fields=update_fields,
+        )
         # Find all items of equipment for which this is a file.
         search_Q = models.Q(equipment__files=self.document)
         # If this document is attached to a location, find all equipment in this and child locations.
@@ -881,6 +920,7 @@ class ChargingRate(models.Model):
 
             >>> ChargingRate.__name__
             'ChargingRate'
+
     """
 
     equipment = models.ForeignKey(Equipment, on_delete=models.CASCADE, related_name="charge_rates")
@@ -898,7 +938,7 @@ class ChargingRate(models.Model):
         """Perform the str operation."""
         return f"{getattribute(self,'cost_rate.name')} for {getattribute(self, 'equipment.name')} £{self.charge_rate}/shift"
 
-    def save(self, force_insert=False, force_update=False, using=None, update_fields=None):
+    def save(self, *args, force_insert=False, force_update=False, using=None, update_fields=None):
         """Save the charging rate and manage overlapping date ranges.
 
                         Automatically sets default date ranges if not specified (today through year 2999).
@@ -925,6 +965,7 @@ class ChargingRate(models.Model):
                 Value supplied for ``using``.
             update_fields (object):
                 Value supplied for ``update_fields``.
+
         Returns:
             (object):
                 The result of the operation.
@@ -934,6 +975,7 @@ class ChargingRate(models.Model):
 
                 >>> callable(ChargingRate.save)
                 True
+
         """
         if not self.dates:
             self.dates = DateRange(lower=Date.today(), upper=Date(2999, 12, 31))
@@ -953,11 +995,19 @@ class ChargingRate(models.Model):
             old.dates = DateRange(lower=old.dates.lower, upper=self.dates.lower)
         except self.__class__.DoesNotExist:  # No overlapping charge_)rate
             return super().save(
-                force_insert=force_insert, force_update=force_update, using=using, update_fields=update_fields
+                *args,
+                force_insert=force_insert,
+                force_update=force_update,
+                using=using,
+                update_fields=update_fields,
             )
-        old.save(old)
+        old.save()
         return super().save(
-            force_insert=force_insert, force_update=force_update, using=using, update_fields=update_fields
+            *args,
+            force_insert=force_insert,
+            force_update=force_update,
+            using=using,
+            update_fields=update_fields,
         )
 
 
@@ -975,6 +1025,7 @@ def slug(self):
 
             >>> callable(slug)
             True
+
     """
     return slugify(self.title)
 
@@ -993,6 +1044,7 @@ def signoffs(self):
 
             >>> callable(signoffs)
             True
+
     """
     return self.equipmentlist.filter(hold=True)
 
@@ -1011,5 +1063,6 @@ def management_holds(self):
 
             >>> callable(management_holds)
             True
+
     """
     return self.user_of.filter(admin_hold=True)

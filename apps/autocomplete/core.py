@@ -57,6 +57,7 @@ def register(ac_class: type, route_name: str = None):
         ... class MyAutocomplete(Autocomplete):
         ...     pass
         >>> register(MyAutocomplete, route_name='custom-name')
+
     """
     if not route_name:
         route_name = ac_class.__name__
@@ -112,6 +113,7 @@ class Autocomplete:
         ...     @classmethod
         ...     def get_items_from_keys(cls, keys, context):
         ...         return [{"key": k, "label": f"Item {k}"} for k in keys]
+
     """
 
     no_result_text = _("No results found.")
@@ -144,11 +146,10 @@ class Autocomplete:
 
                 >>> callable(Autocomplete.auth_check)
                 True
+
         """
         if not getattr(settings, "AUTOCOMPLETE_ALLOW_UNAUTHENTICATED", False) and not request.user.is_authenticated:
             raise PermissionDenied("Must be logged in to use autocomplete")
-
-        pass
 
     @classmethod
     def validate(cls):
@@ -165,6 +166,7 @@ class Autocomplete:
 
                 >>> callable(Autocomplete.validate)
                 True
+
         """
         if not hasattr(cls, "search_items"):
             raise ValueError("You must implement a search_items method.")
@@ -203,6 +205,7 @@ class Autocomplete:
 
                 >>> callable(Autocomplete.map_search_results)
                 True
+
         """
         return [
             {  # this is the default mapping
@@ -227,6 +230,7 @@ class Autocomplete:
 
                 >>> callable(Autocomplete.get_custom_strings)
                 True
+
         """
         return {
             "no_results": cls.no_result_text,
@@ -256,6 +260,7 @@ class Autocomplete:
 
                 >>> callable(Autocomplete.get_extra_text_input_hx_vals)
                 True
+
         """
         return {}
 
@@ -274,6 +279,7 @@ class ContextArg:
     Examples:
         >>> context = ContextArg(request=request, client_kwargs=request.GET)
         >>> results = MyAutocomplete.search_items("query", context)
+
     """
 
     request: HttpRequest

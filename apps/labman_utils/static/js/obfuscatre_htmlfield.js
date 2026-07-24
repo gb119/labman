@@ -19,7 +19,7 @@ $(document).ready(function() {
             var originalText = $(this).val();
             var base64EncodedText = base64Encode(originalText);
             if (originalText.length > 8000) {
-                alert("Your entry is too long ("+original.length+")- please shorten it and try again!\n Lots of formatting and images will very likely push you over the 8000 character limit.");
+                alert("Your entry is too long ("+originalText.length+")- please shorten it and try again!\n Lots of formatting and images will very likely push you over the 8000 character limit.");
                 ret=true;
                 return true;
             }
@@ -46,6 +46,6 @@ $(document).ready(function() {
 
             event.preventDefault();
             event.stopPropagation();
-        };
+        }
     });
 });

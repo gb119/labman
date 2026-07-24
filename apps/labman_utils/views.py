@@ -61,6 +61,7 @@ class IsAuthenticaedViewMixin(UserPassesTestMixin):
 
             >>> IsAuthenticaedViewMixin.__name__
             'IsAuthenticaedViewMixin'
+
     """
 
     def test_func(self):
@@ -76,6 +77,7 @@ class IsAuthenticaedViewMixin(UserPassesTestMixin):
 
                 >>> callable(IsAuthenticaedViewMixin.test_func)
                 True
+
         """
         return hasattr(self, "request") and not self.request.user.is_anonymous
 
@@ -92,6 +94,7 @@ class IsSuperuserViewMixin(IsAuthenticaedViewMixin):
 
             >>> IsSuperuserViewMixin.__name__
             'IsSuperuserViewMixin'
+
     """
 
     def test_func(self):
@@ -107,6 +110,7 @@ class IsSuperuserViewMixin(IsAuthenticaedViewMixin):
 
                 >>> callable(IsSuperuserViewMixin.test_func)
                 True
+
         """
         return super().test_func() and self.request.user.is_superuser
 
@@ -130,6 +134,7 @@ def is_academic_or_staff(user):
 
             >>> callable(is_academic_or_staff)
             True
+
     """
     return bool(
         getattr(user, "is_authenticated", False)
@@ -156,6 +161,7 @@ def can_edit_equipment_resource(user, resource):
 
             >>> callable(can_edit_equipment_resource)
             True
+
     """
     if is_academic_or_staff(user):
         return True
@@ -181,6 +187,7 @@ class IsAcademicOrStaffViewMixin(IsAuthenticaedViewMixin):
 
                 >>> callable(IsAcademicOrStaffViewMixin.test_func)
                 True
+
         """
         return super().test_func() and is_academic_or_staff(self.request.user)
 
@@ -208,6 +215,7 @@ class ResourceEditorViewMixin(IsAuthenticaedViewMixin):
 
                 >>> callable(ResourceEditorViewMixin.test_func)
                 True
+
         """
         if not super().test_func():
             return False
@@ -241,6 +249,7 @@ class ResourceEditorViewMixin(IsAuthenticaedViewMixin):
 
                 >>> callable(ResourceEditorViewMixin.can_submit_resource_form)
                 True
+
         """
         user = self.request.user
         if is_academic_or_staff(user):
@@ -269,6 +278,7 @@ class ResourceEditorViewMixin(IsAuthenticaedViewMixin):
 
                 >>> callable(ResourceEditorViewMixin.can_submit_resource_links)
                 True
+
         """
         user = self.request.user
         if is_academic_or_staff(user) or "equipment" in self.kwargs:
@@ -292,6 +302,7 @@ class IsStaffViewMixin(IsSuperuserViewMixin):
 
             >>> IsStaffViewMixin.__name__
             'IsStaffViewMixin'
+
     """
 
     def test_func(self):
@@ -307,6 +318,7 @@ class IsStaffViewMixin(IsSuperuserViewMixin):
 
                 >>> callable(IsStaffViewMixin.test_func)
                 True
+
         """
         return IsAuthenticaedViewMixin.test_func(self) and (self.request.user.is_staff or super().test_func())
 
@@ -344,6 +356,7 @@ class RedirectView(View):
 
             >>> RedirectView.__name__
             'RedirectView'
+
     """
 
     def get_superuser_view(self, request):
@@ -363,6 +376,7 @@ class RedirectView(View):
 
                 >>> callable(RedirectView.get_superuser_view)
                 True
+
         """
         if self.request.user.is_authenticated and self.request.user.is_superuser:
             return getattr(self, "superuser_view", None)
@@ -385,6 +399,7 @@ class RedirectView(View):
 
                 >>> callable(RedirectView.get_staff_view)
                 True
+
         """
         if self.request.user.is_authenticated and self.request.user.is_staff:
             return getattr(self, "staff_view", None)
@@ -407,6 +422,7 @@ class RedirectView(View):
 
                 >>> callable(RedirectView.get_logged_in_view)
                 True
+
         """
         if self.request.user.is_authenticated:
             return getattr(self, "logged_in_view", None)
@@ -429,6 +445,7 @@ class RedirectView(View):
 
                 >>> callable(RedirectView.get_anonymous_view)
                 True
+
         """
         return getattr(self, "anonymous_view", None)
 
@@ -449,6 +466,7 @@ class RedirectView(View):
 
                 >>> callable(RedirectView.get_group_view)
                 True
+
         """
         if not self.request.user.is_authenticated:  # Not logged in, so no groups -> None
             return None
@@ -484,6 +502,7 @@ class RedirectView(View):
 
                 >>> callable(RedirectView.dispatch)
                 True
+
         """
         self.kwargs.update(kwargs)
         kwargs = self.kwargs
@@ -533,6 +552,7 @@ class MultiFormMixin(ContextMixin):
 
             >>> MultiFormMixin.__name__
             'MultiFormMixin'
+
     """
 
     form_classes = {}
@@ -564,6 +584,7 @@ class MultiFormMixin(ContextMixin):
 
                 >>> callable(MultiFormMixin.get_context_data)
                 True
+
         """
         context = super(MultiFormMixin, self).get_context_data(**kwargs)
         context[self.get_forms_context_name()] = self.get_forms(self.get_form_classes(), bind_all=True)
@@ -582,6 +603,7 @@ class MultiFormMixin(ContextMixin):
 
                 >>> callable(MultiFormMixin.get_form_classes)
                 True
+
         """
         return self.form_classes
 
@@ -608,6 +630,7 @@ class MultiFormMixin(ContextMixin):
 
                 >>> callable(MultiFormMixin.get_forms)
                 True
+
         """
         return dict(
             [
@@ -629,6 +652,7 @@ class MultiFormMixin(ContextMixin):
 
                 >>> callable(MultiFormMixin.get_forms_context_name)
                 True
+
         """
         return self.forms_context_name
 
@@ -653,6 +677,7 @@ class MultiFormMixin(ContextMixin):
 
                 >>> callable(MultiFormMixin.get_form_kwargs)
                 True
+
         """
         kwargs = {}
         kwargs.update({"initial": self.get_initial(form_name)})
@@ -682,6 +707,7 @@ class MultiFormMixin(ContextMixin):
 
                 >>> callable(MultiFormMixin.forms_valid)
                 True
+
         """
         form_valid_method = "%s_form_valid" % form_name
         self._forms = forms
@@ -709,6 +735,7 @@ class MultiFormMixin(ContextMixin):
 
                 >>> callable(MultiFormMixin.forms_invalid)
                 True
+
         """
         form_invalid_method = "%s_form_invalid" % form_name
         self._forms = forms
@@ -734,6 +761,7 @@ class MultiFormMixin(ContextMixin):
 
                 >>> callable(MultiFormMixin.get_initial)
                 True
+
         """
         initial_method = f"get_{form_name}_initial"
         if hasattr(self, initial_method):
@@ -758,6 +786,7 @@ class MultiFormMixin(ContextMixin):
 
                 >>> callable(MultiFormMixin.get_prefix)
                 True
+
         """
         return self.prefixes.get(form_name, self.prefix)
 
@@ -782,6 +811,7 @@ class MultiFormMixin(ContextMixin):
 
                 >>> callable(MultiFormMixin.get_success_url)
                 True
+
         """
         return self.success_urls.get(form_name, self.success_url)
 
@@ -799,6 +829,7 @@ class MultiFormMixin(ContextMixin):
         Returns:
             (Form):
                 The instantiated form object.
+
         """
         form_kwargs = self.get_form_kwargs(form_name, bind_form)
         form_create_method = "create_%s_form" % form_name
@@ -815,6 +846,7 @@ class MultiFormMixin(ContextMixin):
             (dict):
                 Dictionary containing 'data' and 'files' keys if the request method matches
                 bind_data_methods, otherwise an empty dictionary.
+
         """
         if self.request.method in ("POST", "PUT") and self.request.method in self.bind_data_methods:
             return {"data": self.request.POST, "files": self.request.FILES}
@@ -842,6 +874,7 @@ class FormListView(FormMixin, ListView):
 
             >>> FormListView.__name__
             'FormListView'
+
     """
 
     success_url = "/"  # Not actually used since we never redirect here
@@ -860,6 +893,7 @@ class FormListView(FormMixin, ListView):
 
                 >>> callable(FormListView.object_list)
                 True
+
         """
         return self.get_queryset()
 
@@ -877,6 +911,7 @@ class FormListView(FormMixin, ListView):
 
                 >>> callable(FormListView.object_list)
                 True
+
         """
 
     def get(self, request, *args, **kwargs):
@@ -904,6 +939,7 @@ class FormListView(FormMixin, ListView):
 
                 >>> callable(FormListView.get)
                 True
+
         """
         form_class = self.get_form_class()
         if not getattr(self, "form", None):
@@ -939,6 +975,7 @@ class FormListView(FormMixin, ListView):
 
                 >>> callable(FormListView.post)
                 True
+
         """
         form_class = self.get_form_class()
         self.form = self.get_form(form_class)
@@ -967,6 +1004,7 @@ class FormListView(FormMixin, ListView):
 
                 >>> callable(FormListView.get_context_data)
                 True
+
         """
         context = super().get_context_data(**kwargs)
         context["form"] = self.form
@@ -985,6 +1023,7 @@ class ProcessMultipleFormsView(ProcessFormView):
 
             >>> ProcessMultipleFormsView.__name__
             'ProcessMultipleFormsView'
+
     """
 
     def get(self, request, *args, **kwargs):
@@ -1012,6 +1051,7 @@ class ProcessMultipleFormsView(ProcessFormView):
 
                 >>> callable(ProcessMultipleFormsView.get)
                 True
+
         """
         form_classes = self.get_form_classes()
         forms = self.get_forms(form_classes)
@@ -1042,6 +1082,7 @@ class ProcessMultipleFormsView(ProcessFormView):
 
                 >>> callable(ProcessMultipleFormsView.post)
                 True
+
         """
         form_classes = self.get_form_classes()
         form_name = request.POST.get("action")
@@ -1062,6 +1103,7 @@ class ProcessMultipleFormsView(ProcessFormView):
         Returns:
             (bool):
                 True if the form name exists in form_classes, False otherwise.
+
         """
         return form_name in self.form_classes
 
@@ -1075,6 +1117,7 @@ class ProcessMultipleFormsView(ProcessFormView):
         Returns:
             (bool):
                 True if the group name exists in grouped_forms, False otherwise.
+
         """
         return group_name in self.grouped_forms
 
@@ -1090,6 +1133,7 @@ class ProcessMultipleFormsView(ProcessFormView):
         Returns:
             (HttpResponse):
                 HttpResponseForbidden if form not found, otherwise the result of forms_valid or forms_invalid.
+
         """
         forms = self.get_forms(form_classes, (form_name,))
         form = forms.get(form_name)
@@ -1112,6 +1156,7 @@ class ProcessMultipleFormsView(ProcessFormView):
         Returns:
             (HttpResponse):
                 The result of forms_valid if all forms in the group are valid, otherwise forms_invalid.
+
         """
         form_names = self.grouped_forms[group_name]
         forms = self.get_forms(form_classes, form_names)
@@ -1134,6 +1179,7 @@ class ProcessMultipleFormsView(ProcessFormView):
         Returns:
             (HttpResponse):
                 The result of forms_valid if all forms are valid, otherwise forms_invalid.
+
         """
         forms = self.get_forms(form_classes, None, True)
         if all([form.is_valid() for form in forms.values()]):
@@ -1154,6 +1200,7 @@ class BaseMultipleFormsView(MultiFormMixin, ProcessMultipleFormsView):
 
             >>> BaseMultipleFormsView.__name__
             'BaseMultipleFormsView'
+
     """
 
 
@@ -1169,6 +1216,7 @@ class MultiFormsView(TemplateResponseMixin, BaseMultipleFormsView):
 
             >>> MultiFormsView.__name__
             'MultiFormsView'
+
     """
 
 
@@ -1192,6 +1240,7 @@ class PhotoDisplay(DetailView):
 
             >>> PhotoDisplay.__name__
             'PhotoDisplay'
+
     """
 
     model = Photo
@@ -1219,6 +1268,7 @@ class DocumentDialog(ResourceEditorViewMixin, HTMXFormMixin, UpdateView):
 
             >>> DocumentDialog.__name__
             'DocumentDialog'
+
     """
 
     model = Document
@@ -1239,6 +1289,7 @@ class DocumentDialog(ResourceEditorViewMixin, HTMXFormMixin, UpdateView):
 
                 >>> callable(DocumentDialog.get_form_class)
                 True
+
         """
         forms = import_module("labman_utils.forms")
         return forms.DocumentDialogForm
@@ -1260,6 +1311,7 @@ class DocumentDialog(ResourceEditorViewMixin, HTMXFormMixin, UpdateView):
 
                 >>> callable(DocumentDialog.get_context_data_dialog)
                 True
+
         """
         context = super().get_context_data(**kwargs)
         context["current_url"] = self.request.htmx.current_url
@@ -1311,6 +1363,7 @@ class DocumentDialog(ResourceEditorViewMixin, HTMXFormMixin, UpdateView):
 
                 >>> callable(DocumentDialog.get_object)
                 True
+
         """
         try:
             return super().get_object(queryset)
@@ -1330,6 +1383,7 @@ class DocumentDialog(ResourceEditorViewMixin, HTMXFormMixin, UpdateView):
 
                 >>> callable(DocumentDialog.get_initial)
                 True
+
         """
         if "equipment" in self.kwargs:
             equipment = Equipment.objects.get(pk=self.kwargs.get("equipment", None))
@@ -1358,6 +1412,7 @@ class DocumentDialog(ResourceEditorViewMixin, HTMXFormMixin, UpdateView):
 
                 >>> callable(DocumentDialog.htmx_form_valid_document)
                 True
+
         """
         if not self.can_submit_resource_form(form):
             return HttpResponseForbidden("You do not have permission to edit this document.")
@@ -1401,6 +1456,7 @@ class DocumentDialog(ResourceEditorViewMixin, HTMXFormMixin, UpdateView):
 
                 >>> callable(DocumentDialog.htmx_delete_document)
                 True
+
         """
         if not (document := self.get_object()):
             return HttpResponseNotFound("Unable to locate document.")
@@ -1442,6 +1498,7 @@ class DocumentLinkDialog(ResourceEditorViewMixin, HTMXFormMixin, UpdateView):
 
             >>> DocumentLinkDialog.__name__
             'DocumentLinkDialog'
+
     """
 
     template_name = "labman_utils/link_document_form.html"
@@ -1461,6 +1518,7 @@ class DocumentLinkDialog(ResourceEditorViewMixin, HTMXFormMixin, UpdateView):
 
                 >>> callable(DocumentLinkDialog.get_form_class)
                 True
+
         """
         if "equipment" in self.kwargs:
             model = Equipment
@@ -1497,6 +1555,7 @@ class DocumentLinkDialog(ResourceEditorViewMixin, HTMXFormMixin, UpdateView):
 
                 >>> callable(DocumentLinkDialog.get_context_data_dialog)
                 True
+
         """
         context = super().get_context_data(**kwargs)
         context["current_url"] = self.request.htmx.current_url
@@ -1541,6 +1600,7 @@ class DocumentLinkDialog(ResourceEditorViewMixin, HTMXFormMixin, UpdateView):
 
                 >>> callable(DocumentLinkDialog.get_object)
                 True
+
         """
         if equipment := self.kwargs.get("equipment", None):
             return Equipment.objects.get(pk=equipment)
@@ -1561,18 +1621,17 @@ class DocumentLinkDialog(ResourceEditorViewMixin, HTMXFormMixin, UpdateView):
 
                 >>> callable(DocumentLinkDialog.get_initial)
                 True
+
         """
-        if "equipment" in self.kwargs:
-            thing = Equipment.objects.get(pk=self.kwargs.get("equipment", None))
-        elif "location" in self.kwargs:
-            thing = Location.objects.get(pk=self.kwargs.get("location", None))
-        else:
-            this = self.get_object()
-            equipment = [x for x in this.equipment.all()]
-            locations = [x for x in this.location.all()]
-            return {"id": this.id, "equipment": equipment, "location": locations}
-        ret = {}  # {"id": thing.pk, "files": thing.files.all()}
-        return ret
+        if "equipment" in self.kwargs or "location" in self.kwargs:
+            return super().get_initial()
+
+        document = self.get_object()
+        return {
+            "id": document.id,
+            "equipment": list(document.equipment.all()),
+            "location": list(document.location.all()),
+        }
 
     def htmx_form_valid_document(self, form):
         """Handle the HTMX submitted linking form if it's all ok.
@@ -1591,6 +1650,7 @@ class DocumentLinkDialog(ResourceEditorViewMixin, HTMXFormMixin, UpdateView):
 
                 >>> callable(DocumentLinkDialog.htmx_form_valid_document)
                 True
+
         """
         if not self.can_submit_resource_links(form):
             return HttpResponseForbidden("You do not have permission to change these document links.")
@@ -1638,6 +1698,7 @@ class PhotoDialog(ResourceEditorViewMixin, HTMXFormMixin, UpdateView):
 
             >>> PhotoDialog.__name__
             'PhotoDialog'
+
     """
 
     model = Photo
@@ -1658,6 +1719,7 @@ class PhotoDialog(ResourceEditorViewMixin, HTMXFormMixin, UpdateView):
 
                 >>> callable(PhotoDialog.get_form_class)
                 True
+
         """
         forms = import_module("labman_utils.forms")
         return forms.PhotoDialogForm
@@ -1680,6 +1742,7 @@ class PhotoDialog(ResourceEditorViewMixin, HTMXFormMixin, UpdateView):
 
                 >>> callable(PhotoDialog.get_context_data_dialog)
                 True
+
         """
         context = super().get_context_data(**kwargs)
         context["current_url"] = self.request.htmx.current_url
@@ -1727,6 +1790,7 @@ class PhotoDialog(ResourceEditorViewMixin, HTMXFormMixin, UpdateView):
 
                 >>> callable(PhotoDialog.get_object)
                 True
+
         """
         try:
             return super().get_object(queryset)
@@ -1747,6 +1811,7 @@ class PhotoDialog(ResourceEditorViewMixin, HTMXFormMixin, UpdateView):
 
                 >>> callable(PhotoDialog.get_initial)
                 True
+
         """
         initial = {}
         for arg, model in {"equipment": Equipment, "location": Location, "account": Account}.items():
@@ -1774,6 +1839,7 @@ class PhotoDialog(ResourceEditorViewMixin, HTMXFormMixin, UpdateView):
 
                 >>> callable(PhotoDialog.htmx_form_valid_dialog)
                 True
+
         """
         if not self.can_submit_resource_form(form):
             return HttpResponseForbidden("You do not have permission to edit this photo.")
@@ -1814,6 +1880,7 @@ class PhotoDialog(ResourceEditorViewMixin, HTMXFormMixin, UpdateView):
 
                 >>> callable(PhotoDialog.htmx_delete_photo)
                 True
+
         """
         if not (photo := self.get_object()):
             return HttpResponseNotFound("Unable to locate photo.")
@@ -1853,6 +1920,7 @@ class PhotoLinkDialog(ResourceEditorViewMixin, HTMXFormMixin, UpdateView):
 
             >>> PhotoLinkDialog.__name__
             'PhotoLinkDialog'
+
     """
 
     template_name = "labman_utils/link_photo_form.html"
@@ -1872,6 +1940,7 @@ class PhotoLinkDialog(ResourceEditorViewMixin, HTMXFormMixin, UpdateView):
 
                 >>> callable(PhotoLinkDialog.get_form_class)
                 True
+
         """
         for name, model in {"equipment": Equipment, "location": Location, "account": Account}.items():
             if name in self.kwargs:
@@ -1903,6 +1972,7 @@ class PhotoLinkDialog(ResourceEditorViewMixin, HTMXFormMixin, UpdateView):
 
                 >>> callable(PhotoLinkDialog.get_context_data_dialog)
                 True
+
         """
         context = super().get_context_data(**kwargs)
         context["current_url"] = self.request.htmx.current_url
@@ -1940,6 +2010,7 @@ class PhotoLinkDialog(ResourceEditorViewMixin, HTMXFormMixin, UpdateView):
 
                 >>> callable(PhotoLinkDialog.get_object)
                 True
+
         """
         if equipment := self.kwargs.get("equipment", None):
             return Equipment.objects.get(pk=equipment)
@@ -1962,6 +2033,7 @@ class PhotoLinkDialog(ResourceEditorViewMixin, HTMXFormMixin, UpdateView):
 
                 >>> callable(PhotoLinkDialog.get_initial)
                 True
+
         """
         for name, model in {"equipment": Equipment, "location": Location, "account": Account}.items():
             if name in self.kwargs:
@@ -1990,6 +2062,7 @@ class PhotoLinkDialog(ResourceEditorViewMixin, HTMXFormMixin, UpdateView):
 
                 >>> callable(PhotoLinkDialog.htmx_form_valid_photo)
                 True
+
         """
         if not self.can_submit_resource_links(form):
             return HttpResponseForbidden("You do not have permission to change these photo links.")
@@ -2045,6 +2118,7 @@ class FlatPageDialog(ResourceEditorViewMixin, HTMXFormMixin, UpdateView):
 
             >>> FlatPageDialog.__name__
             'FlatPageDialog'
+
     """
 
     model = FlatPage
@@ -2071,6 +2145,7 @@ class FlatPageDialog(ResourceEditorViewMixin, HTMXFormMixin, UpdateView):
 
                 >>> callable(FlatPageDialog.get_context_data_dialog)
                 True
+
         """
         context = super().get_context_data(**kwargs)
         context["current_url"] = self.request.htmx.current_url
@@ -2118,6 +2193,7 @@ class FlatPageDialog(ResourceEditorViewMixin, HTMXFormMixin, UpdateView):
 
                 >>> callable(FlatPageDialog.get_object)
                 True
+
         """
         try:
             return super().get_object(queryset)
@@ -2137,6 +2213,7 @@ class FlatPageDialog(ResourceEditorViewMixin, HTMXFormMixin, UpdateView):
 
                 >>> callable(FlatPageDialog.get_initial)
                 True
+
         """
         initial = {}
         for arg, model in {"equipment": Equipment, "location": Location}.items():
@@ -2163,6 +2240,7 @@ class FlatPageDialog(ResourceEditorViewMixin, HTMXFormMixin, UpdateView):
 
                 >>> callable(FlatPageDialog.htmx_form_valid_dialog)
                 True
+
         """
         if not self.can_submit_resource_form(form):
             return HttpResponseForbidden("You do not have permission to edit this flat page.")
@@ -2203,6 +2281,7 @@ class FlatPageDialog(ResourceEditorViewMixin, HTMXFormMixin, UpdateView):
 
                 >>> callable(FlatPageDialog.htmx_delete_flatpage)
                 True
+
         """
         if not (flatpage := self.get_object()):
             return HttpResponseNotFound("Unable to locate flatpage.")
@@ -2244,6 +2323,7 @@ class FlatPageLinkDialog(ResourceEditorViewMixin, HTMXFormMixin, UpdateView):
 
             >>> FlatPageLinkDialog.__name__
             'FlatPageLinkDialog'
+
     """
 
     template_name = "labman_utils/link_flatpage_form.html"
@@ -2264,6 +2344,7 @@ class FlatPageLinkDialog(ResourceEditorViewMixin, HTMXFormMixin, UpdateView):
 
                 >>> callable(FlatPageLinkDialog.get_form_class)
                 True
+
         """
         for name, model in self.linked_objects.items():
             if name in self.kwargs:
@@ -2295,6 +2376,7 @@ class FlatPageLinkDialog(ResourceEditorViewMixin, HTMXFormMixin, UpdateView):
 
                 >>> callable(FlatPageLinkDialog.get_context_data_dialog)
                 True
+
         """
         context = super().get_context_data(**kwargs)
         context["current_url"] = self.request.htmx.current_url
@@ -2332,6 +2414,7 @@ class FlatPageLinkDialog(ResourceEditorViewMixin, HTMXFormMixin, UpdateView):
 
                 >>> callable(FlatPageLinkDialog.get_object)
                 True
+
         """
         for name, model in self.linked_objects.items():
             if thing := self.kwargs.get(name, None):
@@ -2351,6 +2434,7 @@ class FlatPageLinkDialog(ResourceEditorViewMixin, HTMXFormMixin, UpdateView):
 
                 >>> callable(FlatPageLinkDialog.get_initial)
                 True
+
         """
         for name, model in self.linked_objects.items():
             if name in self.kwargs:
@@ -2379,6 +2463,7 @@ class FlatPageLinkDialog(ResourceEditorViewMixin, HTMXFormMixin, UpdateView):
 
                 >>> callable(FlatPageLinkDialog.htmx_form_valid_flatpage)
                 True
+
         """
         if not self.can_submit_resource_links(form):
             return HttpResponseForbidden("You do not have permission to change these flat-page links.")

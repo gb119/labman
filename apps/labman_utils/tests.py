@@ -269,3 +269,40 @@ class TestObfuscatedCharField:
         result = field.to_python(encoded)
         assert "<script>" not in result
         assert "Safe" in result
+
+
+class TestDocumentLinkDialogInitialValues:
+    """Tests for initial values used by the document-linking forms."""
+
+    def test_equipment_form_uses_standard_model_form_initial_values(self):
+        """Equipment linking delegates initial-value handling to UpdateView."""
+        # external imports
+        from labman_utils.views import DocumentLinkDialog
+
+        view = DocumentLinkDialog()
+        view.kwargs = {"equipment": 42}
+        view.initial = {"sentinel": "value"}
+
+        assert view.get_initial() == {"sentinel": "value"}
+
+    def test_document_form_populates_existing_reverse_links(self):
+        """Document linking includes its current equipment and location links."""
+        # external imports
+        from labman_utils.views import DocumentLinkDialog
+
+        equipment = [object()]
+        locations = [object()]
+        document = SimpleNamespace(
+            id=42,
+            equipment=Mock(all=Mock(return_value=equipment)),
+            location=Mock(all=Mock(return_value=locations)),
+        )
+        view = DocumentLinkDialog()
+        view.kwargs = {"pk": document.id}
+        view.get_object = Mock(return_value=document)
+
+        assert view.get_initial() == {
+            "id": document.id,
+            "equipment": equipment,
+            "location": locations,
+        }

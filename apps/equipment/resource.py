@@ -27,6 +27,7 @@ class ShiftReource(resources.ModelResource):
 
             >>> ShiftReource.__name__
             'ShiftReource'
+
     """
 
     class Meta:
@@ -48,6 +49,7 @@ class LocationResource(resources.ModelResource):
 
             >>> LocationResource.__name__
             'LocationResource'
+
     """
 
     parent = fields.Field(
@@ -74,6 +76,7 @@ class DocumentResource(resources.ModelResource):
 
             >>> DocumentResource.__name__
             'DocumentResource'
+
     """
 
     class Meta:
@@ -91,6 +94,7 @@ class DocumentSignOffResource(resources.ModelResource):
 
             >>> DocumentSignOffResource.__name__
             'DocumentSignOffResource'
+
     """
 
     class Meta:
@@ -108,6 +112,7 @@ class EquipmentResource(resources.ModelResource):
 
             >>> EquipmentResource.__name__
             'EquipmentResource'
+
     """
 
     owner = fields.Field(
@@ -149,6 +154,7 @@ class UserListEntryResource(resources.ModelResource):
 
             >>> UserListEntryResource.__name__
             'UserListEntryResource'
+
     """
 
     user = fields.Field(
@@ -183,6 +189,7 @@ class ChargingRateResource(resources.ModelResource):
 
             >>> ChargingRateResource.__name__
             'ChargingRateResource'
+
     """
 
     equipment = fields.Field(

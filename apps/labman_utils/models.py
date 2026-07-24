@@ -51,6 +51,7 @@ def getattribute(obj, attr):
 
             >>> callable(getattribute)
             True
+
     """
     attrs = attr.split(",")
     for attr in attrs:
@@ -76,6 +77,7 @@ class ObfuscatedHTMLField(HTMLField):
 
             >>> ObfuscatedHTMLField.__name__
             'ObfuscatedHTMLField'
+
     """
 
     def formfield(self, **kwargs):
@@ -94,6 +96,7 @@ class ObfuscatedHTMLField(HTMLField):
 
                 >>> callable(ObfuscatedHTMLField.formfield)
                 True
+
         """
         defaults = {"form_class": ObfuscatedCharField, "widget": ObfuscatedTinyMCE}
         defaults.update(kwargs)
@@ -125,6 +128,7 @@ def to_seconds(value):
 
             >>> callable(to_seconds)
             True
+
     """
     return value.second + value.minute * 60 + value.hour * 3600
 
@@ -152,6 +156,7 @@ def delta_t(time1, time2):
 
             >>> callable(delta_t)
             True
+
     """
     if isinstance(time1, dt):
         time1 = time1.time()
@@ -181,6 +186,7 @@ def replace_time(date_time, seconds):
 
             >>> callable(replace_time)
             True
+
     """
     day = date_time.date()
     delta_time = td(seconds=seconds)
@@ -208,6 +214,7 @@ def ensure_tz(time):
 
             >>> callable(ensure_tz)
             True
+
     """
     if time.tzinfo is None:
         time = DEFAULT_TZ.localize(time)
@@ -235,6 +242,7 @@ def patch_model(model, name=None, prep=None):
         @patch_model(MyModel, name='custom_method')
         def my_function(self):
             return self.field * 2
+
     """
 
     def patch_model_decorator(func):
@@ -249,6 +257,7 @@ def patch_model(model, name=None, prep=None):
 
                 >>> callable(patch_model_decorator)
                 True
+
         """
         if name is None:
             attr_name = func.__name__
@@ -282,6 +291,7 @@ class NamedObject(models.Model):
 
             >>> NamedObject.__name__
             'NamedObject'
+
     """
 
     class Meta:
@@ -297,6 +307,7 @@ class NamedObject(models.Model):
 
         Returns:
             (str): String in the format "ClassName:object_name".
+
         """
         return f"{self.__class__.__name__}:{self.name}"
 
@@ -330,6 +341,7 @@ class Document(dsfh.BaseMixin, dsfh.TitledMixin, dsfh.PublicMixin, dsfh.RenameMi
 
             >>> Document.__name__
             'Document'
+
     """
 
     CATEGORIES = [
@@ -367,6 +379,7 @@ class Document(dsfh.BaseMixin, dsfh.TitledMixin, dsfh.PublicMixin, dsfh.RenameMi
 
                 >>> callable(Document.category_name)
                 True
+
         """
         return self.CATAGORIES_DICT[self.category]
 
@@ -383,6 +396,7 @@ class Document(dsfh.BaseMixin, dsfh.TitledMixin, dsfh.PublicMixin, dsfh.RenameMi
 
                 >>> callable(Document.all_locations)
                 True
+
         """
         if not hasattr(self, "location"):
             return None
@@ -421,6 +435,7 @@ class Document(dsfh.BaseMixin, dsfh.TitledMixin, dsfh.PublicMixin, dsfh.RenameMi
 
                 >>> callable(Document.needs_review)
                 True
+
         """
         return self.review_date and self.review_date < dt.today().date()
 
@@ -437,6 +452,7 @@ class Document(dsfh.BaseMixin, dsfh.TitledMixin, dsfh.PublicMixin, dsfh.RenameMi
 
                 >>> callable(Document.review_soon)
                 True
+
         """
         return self.review_date and (self.review_date - dt.today().date()) < td(days=30)
 
@@ -445,10 +461,11 @@ class Document(dsfh.BaseMixin, dsfh.TitledMixin, dsfh.PublicMixin, dsfh.RenameMi
 
         Returns:
             (str): String combining title and category name.
+
         """
         return f"{self.title} ({self.CATAGORIES_DICT[self.category]})"
 
-    def save(self, force_insert=False, force_update=False, using=None, update_fields=None):
+    def save(self, *args, force_insert=False, force_update=False, using=None, update_fields=None):
         """Save the document and handle version changes for risk assessments and SOPs.
 
                         If the version has increased for RA or SOP documents, puts a hold on all
@@ -480,6 +497,7 @@ class Document(dsfh.BaseMixin, dsfh.TitledMixin, dsfh.PublicMixin, dsfh.RenameMi
 
                 >>> callable(Document.save)
                 True
+
         """
         if self.pk and self.category in ["ra", "sop"]:
             old = Document.objects.get(pk=self.pk)
@@ -526,7 +544,13 @@ class Document(dsfh.BaseMixin, dsfh.TitledMixin, dsfh.PublicMixin, dsfh.RenameMi
                         UserListEntry = apps.get_model("equipment", "userlistentry")
                         UserListEntry.objects.filter(equipment_id__in=equipment_ids).update(hold=True)
 
-        super().save(force_insert=force_insert, force_update=force_update, using=using, update_fields=update_fields)
+        super().save(
+            *args,
+            force_insert=force_insert,
+            force_update=force_update,
+            using=using,
+            update_fields=update_fields,
+        )
 
 
 class ResourceedObject(NamedObject):
@@ -555,6 +579,7 @@ class ResourceedObject(NamedObject):
 
             >>> ResourceedObject.__name__
             'ResourceedObject'
+
     """
 
     photos = SortedManyToManyField(Photo, related_name="%(class)s", blank=True)
@@ -579,6 +604,7 @@ class ResourceedObject(NamedObject):
 
                 >>> callable(ResourceedObject.thumbnail)
                 True
+
         """
         if self.photos.all().count() == 0:
             return ""
@@ -597,6 +623,7 @@ class ResourceedObject(NamedObject):
 
                 >>> callable(ResourceedObject.photo)
                 True
+
         """
         if self.photos.all().count() == 0:
             return ""
@@ -616,6 +643,7 @@ class ResourceedObject(NamedObject):
 
                 >>> callable(ResourceedObject.all_files_dict)
                 True
+
         """
         ret = {}
         for key, name in Document.CATAGORIES_DICT.items():
@@ -637,6 +665,7 @@ class ResourceedObject(NamedObject):
 
         Raises:
             AttributeError: If the attribute is not a valid document category accessor.
+
         """
         if name in [f"{x}s" for x in Document.CATAGORIES_DICT.keys()] + ["all_files"]:
             category = name[:-1]
@@ -661,6 +690,7 @@ class GroupedTree(TreeBase):
 
             >>> GroupedTree.__name__
             'GroupedTree'
+
     """
 
 
@@ -689,6 +719,7 @@ class GroupedTreeItem(TreeItemBase):
 
             >>> GroupedTreeItem.__name__
             'GroupedTreeItem'
+
     """
 
     TRISTATE = [(0, "--"), (1, "Grant"), (2, "Block")]
@@ -727,6 +758,7 @@ class GroupedTreeItem(TreeItemBase):
 
                 >>> callable(GroupedTreeItem.access_check)
                 True
+
         """
         auth = tree.check_access_auth(self, tree.context)
         user = tree.current_request.user
@@ -774,6 +806,7 @@ def displaY_tag(self, size):
     Examples:
         photo.displaY_tag('thumbnail')
         photo.displaY_tag('display')
+
     """
     url = getattr(self, f"get_{size}_url", lambda: "")()
     return f'<img src="{url}" alt="self.caption" class="photo-display" id="{self.slug}" />'

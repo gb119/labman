@@ -44,6 +44,7 @@ class UserAccountView(IsAuthenticaedViewMixin, HTMXProcessMixin, views.generic.D
 
             >>> UserAccountView.__name__
             'UserAccountView'
+
     """
 
     context_object_name = "account"
@@ -67,6 +68,7 @@ class UserAccountView(IsAuthenticaedViewMixin, HTMXProcessMixin, views.generic.D
 
                 >>> callable(UserAccountView.get_queryset)
                 True
+
         """
         return self.model.objects.all()
 
@@ -85,6 +87,7 @@ class UserAccountView(IsAuthenticaedViewMixin, HTMXProcessMixin, views.generic.D
 
                 >>> callable(UserAccountView.get_context_data)
                 True
+
         """
         context = super().get_context_data(**kwargs)
         me = context["account"]
@@ -113,6 +116,7 @@ class MyAccountView(UserAccountView):
 
             >>> MyAccountView.__name__
             'MyAccountView'
+
     """
 
     context_object_name = "account"
@@ -140,6 +144,7 @@ class MyAccountView(UserAccountView):
 
                 >>> callable(MyAccountView.get_object)
                 True
+
         """
         return self.request.user
 
@@ -158,6 +163,7 @@ class MyAccountView(UserAccountView):
 
                 >>> callable(MyAccountView.get_context_data)
                 True
+
         """
         context = super().get_context_data(**kwargs)
         me = context["account"]
@@ -183,6 +189,7 @@ class AccountListByGroupView(IsAuthenticaedViewMixin, ListView):
 
             >>> AccountListByGroupView.__name__
             'AccountListByGroupView'
+
     """
 
     template_name = "accounts/parts/account_list_by_group.html"
@@ -204,6 +211,7 @@ class AccountListByGroupView(IsAuthenticaedViewMixin, ListView):
 
                 >>> callable(AccountListByGroupView.get_queryset)
                 True
+
         """
         grp = self.kwargs.get("group", "Project")
         return self.model.objects.filter(groups__name=grp)

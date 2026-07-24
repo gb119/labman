@@ -43,6 +43,7 @@ class BookingError(ValidationError):
 
             >>> BookingError.__name__
             'BookingError'
+
     """
 
 
@@ -59,6 +60,7 @@ class PolicyDoesNotApply(BookingError):
 
             >>> PolicyDoesNotApply.__name__
             'PolicyDoesNotApply'
+
     """
 
 
@@ -75,6 +77,7 @@ class PolicyNotFound(BookingError):
 
             >>> PolicyNotFound.__name__
             'PolicyNotFound'
+
     """
 
 
@@ -91,6 +94,7 @@ class UserBookingHeld(BookingError):
 
             >>> UserBookingHeld.__name__
             'UserBookingHeld'
+
     """
 
 
@@ -106,6 +110,7 @@ class AdminBookingHeld(BookingError):
 
             >>> AdminBookingHeld.__name__
             'AdminBookingHeld'
+
     """
 
 
@@ -157,6 +162,7 @@ class BookingPolicy(NamedObject):
 
             >>> BookingPolicy.__name__
             'BookingPolicy'
+
     """
 
     class Meta:
@@ -202,6 +208,7 @@ class BookingPolicy(NamedObject):
 
                 >>> callable(BookingPolicy.applies)
                 True
+
         """
         role = booking.user_role
         if getattr(booking, "booker", None) is None or booking.booker.is_superuser:
@@ -228,6 +235,7 @@ class BookingPolicy(NamedObject):
 
                 >>> callable(BookingPolicy.rationalise)
                 True
+
         """
         return booking.rationalise(self)
 
@@ -257,6 +265,7 @@ class BookingPolicy(NamedObject):
 
                 >>> callable(BookingPolicy.quantise)
                 True
+
         """
         start, end = booking.slot.lower, booking.slot.upper
         if start.tzinfo is None:
@@ -300,6 +309,7 @@ class BookingPolicy(NamedObject):
 
                 >>> callable(BookingPolicy.fix_times)
                 True
+
         """
         start = booking.slot.lower + td(seconds=0.1)
         end = booking.slot.upper - td(seconds=0.1)
@@ -348,6 +358,7 @@ class BookingPolicy(NamedObject):
 
                 >>> callable(BookingPolicy.permitted)
                 True
+
         """
         superuser = booking.booker.is_superuser
         if not self.applies(booking):  # Role doesn't apply
@@ -420,6 +431,7 @@ class BookingPolicy(NamedObject):
 
                 >>> callable(BookingPolicy.get_policy)
                 True
+
         """
         if booking.user_hold and not no_holds:
             raise UserBookingHeld(
@@ -468,6 +480,7 @@ class BookingEntry(ChargeableItem):
 
             >>> BookingEntry.__name__
             'BookingEntry'
+
     """
 
     class Meta:
@@ -505,6 +518,7 @@ class BookingEntry(ChargeableItem):
 
                 >>> callable(BookingEntry.duration)
                 True
+
         """
         return self.slot.upper - self.slot.lower
 
@@ -522,6 +536,7 @@ class BookingEntry(ChargeableItem):
 
                 >>> callable(BookingEntry.booker_role)
                 True
+
         """
         if self.equipment.userlist.filter(user=self.booker).count() == 0:
             return None
@@ -541,6 +556,7 @@ class BookingEntry(ChargeableItem):
 
                 >>> callable(BookingEntry.user_role)
                 True
+
         """
         if self.equipment.userlist.filter(user=self.user).count() == 0:
             return None
@@ -561,6 +577,7 @@ class BookingEntry(ChargeableItem):
 
                 >>> callable(BookingEntry.calendar_css)
                 True
+
         """
         if self.user_role:
             return self.user_role.css
@@ -581,6 +598,7 @@ class BookingEntry(ChargeableItem):
 
                 >>> callable(BookingEntry.user_hold)
                 True
+
         """
         if self.equipment.userlist.filter(user=self.user).count() == 0:
             return True
@@ -601,6 +619,7 @@ class BookingEntry(ChargeableItem):
 
                 >>> callable(BookingEntry.admin_hold)
                 True
+
         """
         if self.equipment.userlist.filter(user=self.user).count() == 0:
             return True
@@ -621,6 +640,7 @@ class BookingEntry(ChargeableItem):
 
                 >>> callable(BookingEntry.policy)
                 True
+
         """
         return self.get_policy()
 
@@ -644,13 +664,13 @@ class BookingEntry(ChargeableItem):
 
                 >>> callable(BookingEntry.calculate_charge)
                 True
+
         """
         charge_rate = self.equipment.get_charge_rate(self)
         self.comment = (
             f"{self.shifts} shifts @ £{charge_rate.charge_rate:.2f}/shift ({charge_rate.cost_rate.name} rate)"
         )
         return self.shifts * charge_rate.charge_rate
-        return 0.0
 
     def get_default_cost_centre(self):
         """Get a default cost centre for this booking.
@@ -668,6 +688,7 @@ class BookingEntry(ChargeableItem):
 
                 >>> callable(BookingEntry.get_default_cost_centre)
                 True
+
         """
         return None
 
@@ -693,6 +714,7 @@ class BookingEntry(ChargeableItem):
 
                 >>> callable(BookingEntry.get_policy)
                 True
+
         """
         try:
             return BookingPolicy.get_policy(self, no_holds)
@@ -726,6 +748,7 @@ class BookingEntry(ChargeableItem):
 
                 >>> callable(BookingEntry.rationalise)
                 True
+
         """
         if self.slot.isempty or policy is None:  # Bugout for the empty slot or no policy
             return self
@@ -750,12 +773,13 @@ class BookingEntry(ChargeableItem):
 
                 >>> callable(BookingEntry.fix_project)
                 True
+
         """
         if not self.user_id:
             return None
         if self.user.project.count() == 0:
             return None
-        if not hasattr(self, "cost_centre") or self.cost_centre is None:
+        if getattr(self, "cost_centre", None) is None:
             self.cost_centre = self.user.default_project
         if self.cost_centre not in self.user.project.all() and not self.user.is_superuser:
             return self.user.default_project
@@ -780,6 +804,7 @@ class BookingEntry(ChargeableItem):
 
                 >>> callable(BookingEntry.count_shifts)
                 True
+
         """
         if not (policy := self.get_policy(no_holds=True)):
             return None
@@ -821,6 +846,7 @@ class BookingEntry(ChargeableItem):
         Args:
             no_holds (object):
                 Value supplied for ``no_holds``.
+
         Returns:
             (object):
                 The result of the operation.
@@ -830,6 +856,7 @@ class BookingEntry(ChargeableItem):
 
                 >>> callable(BookingEntry.clean)
                 True
+
         """
         self.fix_project()
         # Swap start and end times to ensure positive duration
@@ -859,7 +886,15 @@ class BookingEntry(ChargeableItem):
             raise ValidationError("No booking slot defined!")
         return super().clean()
 
-    def save(self, force_insert=False, force_update=False, using=None, update_fields=None, force_clean=False):
+    def save(
+        self,
+        *args,
+        force_insert=False,
+        force_update=False,
+        using=None,
+        update_fields=None,
+        force_clean=False,
+    ):
         """Force model.clean to be called before saving.
 
         Keyword Parameters:
@@ -897,10 +932,17 @@ class BookingEntry(ChargeableItem):
 
                 >>> callable(BookingEntry.save)
                 True
+
         """
         if force_clean is not None:
             self.clean(no_holds=force_clean)
-        super().save(force_insert=force_insert, force_update=force_update, using=using, update_fields=update_fields)
+        super().save(
+            *args,
+            force_insert=force_insert,
+            force_update=force_update,
+            using=using,
+            update_fields=update_fields,
+        )
 
     def delete(self, using=None, keep_parents=False, force=True):
         """Check whether we can delete this object.
@@ -940,8 +982,9 @@ class BookingEntry(ChargeableItem):
 
                 >>> callable(BookingEntry.delete)
                 True
+
         """
         if force:
             return super().delete(using=using, keep_parents=keep_parents)
-        policy = BookingPolicy.get_policy(self, no_holds=True)
+        BookingPolicy.get_policy(self, no_holds=True)
         return super().delete(using=using, keep_parents=keep_parents)

@@ -23,6 +23,7 @@ class ResearchGroupLookup(LookupChannel):
 
             >>> ResearchGroupLookup.__name__
             'ResearchGroupLookup'
+
     """
 
     model = ResearchGroup
@@ -35,6 +36,7 @@ class ResearchGroupLookup(LookupChannel):
                 Value supplied for ``querystring``.
             request (object):
                 Value supplied for ``request``.
+
         Returns:
             (object):
                 The result of the operation.
@@ -44,6 +46,7 @@ class ResearchGroupLookup(LookupChannel):
 
                 >>> callable(ResearchGroupLookup.get_query)
                 True
+
         """
         code = Q(code__istartswith=querystring)
         name = Q(name__istartswith=querystring)
@@ -55,6 +58,7 @@ class ResearchGroupLookup(LookupChannel):
         Args:
             obj (object):
                 Value supplied for ``obj``.
+
         Returns:
             (object):
                 The result of the operation.
@@ -64,6 +68,7 @@ class ResearchGroupLookup(LookupChannel):
 
                 >>> callable(ResearchGroupLookup.format_item_display)
                 True
+
         """
         return obj.name
 
@@ -73,6 +78,7 @@ class ResearchGroupLookup(LookupChannel):
         Args:
             obj (object):
                 Value supplied for ``obj``.
+
         Returns:
             (object):
                 The result of the operation.
@@ -82,6 +88,7 @@ class ResearchGroupLookup(LookupChannel):
 
                 >>> callable(ResearchGroupLookup.format_match)
                 True
+
         """
         return obj.name
 
@@ -101,6 +108,7 @@ class ResearchGroupLookup(LookupChannel):
 
                 >>> callable(ResearchGroupLookup.check_auth)
                 True
+
         """
         if not request.user.is_authenticated:
             raise PermissionDenied
@@ -115,6 +123,7 @@ class AccountLookup(LookupChannel):
 
             >>> AccountLookup.__name__
             'AccountLookup'
+
     """
 
     model = Account
@@ -127,6 +136,7 @@ class AccountLookup(LookupChannel):
                 Value supplied for ``querystring``.
             request (object):
                 Value supplied for ``request``.
+
         Returns:
             (object):
                 The result of the operation.
@@ -136,6 +146,7 @@ class AccountLookup(LookupChannel):
 
                 >>> callable(AccountLookup.get_query)
                 True
+
         """
         username = Q(username__istartswith=querystring)
         name = Q(first_name__istartswith=querystring) | Q(last_name__istartswith=querystring)
@@ -148,6 +159,7 @@ class AccountLookup(LookupChannel):
         Args:
             obj (object):
                 Value supplied for ``obj``.
+
         Returns:
             (object):
                 The result of the operation.
@@ -157,6 +169,7 @@ class AccountLookup(LookupChannel):
 
                 >>> callable(AccountLookup.format_item_display)
                 True
+
         """
         return obj.display_name
 
@@ -166,6 +179,7 @@ class AccountLookup(LookupChannel):
         Args:
             obj (object):
                 Value supplied for ``obj``.
+
         Returns:
             (object):
                 The result of the operation.
@@ -175,6 +189,7 @@ class AccountLookup(LookupChannel):
 
                 >>> callable(AccountLookup.format_match)
                 True
+
         """
         return obj.display_name
 
@@ -194,6 +209,7 @@ class AccountLookup(LookupChannel):
 
                 >>> callable(AccountLookup.check_auth)
                 True
+
         """
         if not request.user.is_authenticated:
             raise PermissionDenied
@@ -207,6 +223,7 @@ class UserAutocomplete(autocomplete.Select2QuerySetView):
 
             >>> UserAutocomplete.__name__
             'UserAutocomplete'
+
     """
 
     def get_queryset(self):
@@ -221,6 +238,7 @@ class UserAutocomplete(autocomplete.Select2QuerySetView):
 
                 >>> callable(UserAutocomplete.get_queryset)
                 True
+
         """
         if not self.request.user.is_authenticated:
             return Account.objects.none()

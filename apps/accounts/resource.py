@@ -21,6 +21,7 @@ class StrippedCharWidget(widgets.CharWidget):
 
             >>> StrippedCharWidget.__name__
             'StrippedCharWidget'
+
     """
 
     def clean(self, value, row=None, **kwargs):
@@ -34,6 +35,7 @@ class StrippedCharWidget(widgets.CharWidget):
         Keyword Parameters:
             **kwargs (object):
                 Value supplied for ``kwargs``.
+
         Returns:
             (object):
                 The result of the operation.
@@ -43,6 +45,7 @@ class StrippedCharWidget(widgets.CharWidget):
 
                 >>> callable(StrippedCharWidget.clean)
                 True
+
         """
         return super().clean(value, row, **kwargs).strip()
 
@@ -55,6 +58,7 @@ class AccountWidget(widgets.ForeignKeyWidget):
 
             >>> AccountWidget.__name__
             'AccountWidget'
+
     """
 
     display_name_pattern = re.compile(r"(?P<last_name>[^\,]+)\,(?P<first_name>[^\(]+)$")
@@ -73,6 +77,7 @@ class AccountWidget(widgets.ForeignKeyWidget):
         Keyword Parameters:
             **kwargs (object):
                 Value supplied for ``kwargs``.
+
         Returns:
             (object):
                 The result of the operation.
@@ -82,6 +87,7 @@ class AccountWidget(widgets.ForeignKeyWidget):
 
                 >>> callable(AccountWidget.clean)
                 True
+
         """
         if not value:
             return None
@@ -155,6 +161,7 @@ class AccountsWidget(widgets.ManyToManyWidget):
 
             >>> AccountsWidget.__name__
             'AccountsWidget'
+
     """
 
     def clean(self, value, row=None, **kwargs):
@@ -168,6 +175,7 @@ class AccountsWidget(widgets.ManyToManyWidget):
         Keyword Parameters:
             **kwargs (object):
                 Value supplied for ``kwargs``.
+
         Returns:
             (object):
                 The result of the operation.
@@ -177,6 +185,7 @@ class AccountsWidget(widgets.ManyToManyWidget):
 
                 >>> callable(AccountsWidget.clean)
                 True
+
         """
         if not value:
             return Account.objects.none()
@@ -259,6 +268,7 @@ class ResearchGroupResource(resources.ModelResource):
 
             >>> ResearchGroupResource.__name__
             'ResearchGroupResource'
+
     """
 
     class Meta:
@@ -276,6 +286,7 @@ class RoleResource(resources.ModelResource):
 
             >>> RoleResource.__name__
             'RoleResource'
+
     """
 
     class Meta:
@@ -293,6 +304,7 @@ class UserResource(resources.ModelResource):
 
             >>> UserResource.__name__
             'UserResource'
+
     """
 
     groups = fields.Field(
@@ -351,6 +363,7 @@ class UserResource(resources.ModelResource):
         Keyword Parameters:
             **kwargs (object):
                 Value supplied for ``kwargs``.
+
         Returns:
             (object):
                 The result of the operation.
@@ -360,6 +373,7 @@ class UserResource(resources.ModelResource):
 
                 >>> callable(UserResource.import_row)
                 True
+
         """
         if "username" not in row and "Email Address" in row:  # Create username and email columns
             parts = row["Email Address"].split("@")
@@ -396,6 +410,7 @@ class GroupResource(resources.ModelResource):
 
             >>> GroupResource.__name__
             'GroupResource'
+
     """
 
     class Meta:

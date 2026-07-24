@@ -36,7 +36,6 @@ function phac_aspc_autocomplete_hide_results(container) {
     results.classList.remove('show');
 }
 
-var phac_aspc_autocomplete_blur_skip = {};
 function phac_aspc_autocomplete_blur_handler(event, name, sync = false, item = false) {
     // Handler responsible for blur events
     // Will remove the results when focus is no longer on the component, and update
@@ -44,15 +43,14 @@ function phac_aspc_autocomplete_blur_handler(event, name, sync = false, item = f
     requestAnimationFrame(function () {
         const parent = document.getElementById(`${name}__container`);
         const id = parent.getAttribute('id');
-        if (phac_aspc_autocomplete_blur_skip[id]) return false;
         if (!parent.contains(document.activeElement)) {
             // Focus has left the component
 
             // Reset the component's state
-            phac_aspc_autocomplete_closed[id] = false;
-            if (phac_aspc_autocomplete_keyup_debounce[id]) {
-                clearTimeout(phac_aspc_autocomplete_keyup_debounce[id]);
-                phac_aspc_autocomplete_keyup_debounce[id] = false;
+            phac_aspc_autocomplete_closed.set(id, false);
+            if (phac_aspc_autocomplete_keyup_debounce.get(id)) {
+                clearTimeout(phac_aspc_autocomplete_keyup_debounce.get(id));
+                phac_aspc_autocomplete_keyup_debounce.delete(id);
             }
 
             // Get reference to <input> box
@@ -119,24 +117,24 @@ function phac_aspc_autocomplete_focus_handler(event) {
     setTimeout(() => {
         // Announce selected items to screen readers.  (if any)
         const info = container.querySelector('.live-info');
-        info.innerHTML += '&nbsp;';    
+        info.innerHTML += '&nbsp;';
     }, 100);
 }
 
-const phac_aspc_autocomplete_initial_value = {};
+const phac_aspc_autocomplete_initial_value = new Map();
 function phac_aspc_autocomplete_set_initial_value(container, reset = false) {
     const id = container.getAttribute('id');
     const el = container.querySelector('.textinput');
     if (reset) {
-        phac_aspc_autocomplete_initial_value[id] = undefined;
+        phac_aspc_autocomplete_initial_value.delete(id);
         return;
     }
-    if (phac_aspc_autocomplete_initial_value[id] === undefined) {
-        phac_aspc_autocomplete_initial_value[id] = el.value;
+    if (!phac_aspc_autocomplete_initial_value.has(id)) {
+        phac_aspc_autocomplete_initial_value.set(id, el.value);
     }
 }
 
-var phac_aspc_autocomplete_closed = {};
+const phac_aspc_autocomplete_closed = new Map();
 function phac_aspc_autocomplete_click_handler(event) {
     if (event.target.classList.contains('item')) return true;
     const container = event.target.closest('.phac-aspc-form-autocomplete');
@@ -148,7 +146,7 @@ function phac_aspc_autocomplete_click_handler(event) {
     phac_aspc_autocomplete_set_initial_value(container);
     phac_aspc_autocomplete_clear_focus(container, true);
 
-    phac_aspc_autocomplete_closed[id] = open;
+    phac_aspc_autocomplete_closed.set(id, open);
     if (open) {
         phac_aspc_autocomplete_hide_results(container);
     } else {
@@ -157,7 +155,7 @@ function phac_aspc_autocomplete_click_handler(event) {
     return false;
 }
 
-const phac_aspc_autocomplete_keyup_debounce = {};
+const phac_aspc_autocomplete_keyup_debounce = new Map();
 function phac_aspc_autocomplete_keyup_handler(event) {
     if (event.keyCode === 13) return false;
     const debounce = phac_aspc_autocomplete_keyup_debounce;
@@ -169,29 +167,29 @@ function phac_aspc_autocomplete_keyup_handler(event) {
 
     phac_aspc_autocomplete_set_initial_value(container);
 
-    if (debounce[id]) {
-        clearTimeout(debounce[id]);
-        debounce[id] = false;
+    if (debounce.get(id)) {
+        clearTimeout(debounce.get(id));
+        debounce.delete(id);
     }
 
     const v = elem.value;
 
-    debounce[id] = setTimeout(() => {
-        if (!phac_aspc_autocomplete_closed[id] && v !== value[id]) {
+    debounce.set(id, setTimeout(() => {
+        if (!phac_aspc_autocomplete_closed.get(id) && v !== value.get(id)) {
             elem.dispatchEvent(new Event('phac_aspc_autocomplete_trigger'));
         } else if (
-            phac_aspc_autocomplete_closed[id] &&
-            v !== value[id] &&
+            phac_aspc_autocomplete_closed.get(id) &&
+            v !== value.get(id) &&
             v === ''
         ) {
-            phac_aspc_autocomplete_closed[id] = false;
+            phac_aspc_autocomplete_closed.set(id, false);
         }
-        value[id] = v;
-    }, 250);
+        value.set(id, v);
+    }, 250));
     return true;
 }
 
-const phac_aspc_autocomplete_keydown_debounce = {};
+const phac_aspc_autocomplete_keydown_debounce = new Map();
 function phac_aspc_autocomplete_keydown_handler(event) {
     if (event.target.classList.contains('textinput') && event.keyCode > 47) {
         // Expands the min-width of text input to a reasonable size when typing
@@ -251,18 +249,20 @@ function phac_aspc_autocomplete_keydown_handler(event) {
         const results = container.querySelector('.results');
         if (!results || !results.classList.contains('show')) {
             if (timeout > 0) {
-                if (debounce[id])
-                    clearTimeout(debounce[id]);
-                debounce[id] =
+                if (debounce.get(id))
+                    clearTimeout(debounce.get(id));
+                debounce.set(
+                    id,
                     setTimeout(
                         () => focusWhenResultsShown(container, timeout - 100, up),
                         100
-                    );
+                    )
+                );
             }
             return false;
         }
-        debounce[id] = undefined;
-        phac_aspc_autocomplete_closed[id] = false;
+        debounce.delete(id);
+        phac_aspc_autocomplete_closed.set(id, false);
         if (up) {
             const prev = whereTo(container, false);
             if (prev) switchFocus(prev, container);
@@ -289,7 +289,7 @@ function phac_aspc_autocomplete_keydown_handler(event) {
         if (results && results.classList.contains('show')) {
             phac_aspc_autocomplete_clear_focus(container, true);
             phac_aspc_autocomplete_hide_results(container);
-            phac_aspc_autocomplete_closed[id] = true;
+            phac_aspc_autocomplete_closed.set(id, true);
         } else {
             event.target.value = '';
         }
@@ -338,7 +338,7 @@ function phac_aspc_autocomplete_keydown_handler(event) {
         if (!results || !results.classList.contains('show')) {
             event.target.dispatchEvent(new Event('phac_aspc_autocomplete_trigger'));
             if (event.altKey) {
-                phac_aspc_autocomplete_closed[id] = false;
+                phac_aspc_autocomplete_closed.set(id, false);
             } else {
                 focusWhenResultsShown(container, 3000);
             }
@@ -353,7 +353,7 @@ function phac_aspc_autocomplete_keydown_handler(event) {
         if (!results || !results.classList.contains('show')) {
             event.target.dispatchEvent(new Event('phac_aspc_autocomplete_trigger'));
             if (event.altKey) {
-                phac_aspc_autocomplete_closed[id] = false;
+                phac_aspc_autocomplete_closed.set(id, false);
             } else {
                 focusWhenResultsShown(container, 3000, true);
             }
@@ -363,7 +363,7 @@ function phac_aspc_autocomplete_keydown_handler(event) {
         }
         return false;
     } else {
-        phac_aspc_autocomplete_closed[id] = false;
+        phac_aspc_autocomplete_closed.set(id, false);
     }
     phac_aspc_autocomplete_clear_focus(container, true);
     return true;

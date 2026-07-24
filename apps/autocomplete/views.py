@@ -35,6 +35,7 @@ class AutocompleteBaseView(View):
 
             >>> AutocompleteBaseView.__name__
             'AutocompleteBaseView'
+
     """
 
     @cached_property
@@ -54,6 +55,7 @@ class AutocompleteBaseView(View):
 
                 >>> callable(AutocompleteBaseView.ac_class)
                 True
+
         """
         ac_name = self.kwargs["ac_name"]
 
@@ -91,6 +93,7 @@ class AutocompleteBaseView(View):
 
                 >>> callable(AutocompleteBaseView.dispatch)
                 True
+
         """
         self.ac_class.auth_check(request)
 
@@ -109,6 +112,7 @@ class AutocompleteBaseView(View):
 
                 >>> callable(AutocompleteBaseView.request_dict)
                 True
+
         """
         # convert the request's QueryDict into a regular dict
         return self.request.GET.dict()
@@ -125,6 +129,7 @@ class AutocompleteBaseView(View):
 
                 >>> callable(AutocompleteBaseView.get_field_name)
                 True
+
         """
         return self.request_dict["field_name"]
 
@@ -140,6 +145,7 @@ class AutocompleteBaseView(View):
 
                 >>> callable(AutocompleteBaseView.get_hx_attrs)
                 True
+
         """
         return self.request_dict.get("hx_attrs", {})
 
@@ -155,6 +161,7 @@ class AutocompleteBaseView(View):
 
                 >>> callable(AutocompleteBaseView.get_component_id)
                 True
+
         """
         prefix = self.get_configurable_value("component_prefix")
 
@@ -179,6 +186,7 @@ class AutocompleteBaseView(View):
 
                 >>> callable(AutocompleteBaseView.get_configurable_value)
                 True
+
         """
         if key in self.request_dict:
             return self.request.GET.get(key)
@@ -201,6 +209,7 @@ class AutocompleteBaseView(View):
 
                 >>> callable(AutocompleteBaseView.get_template_context)
                 True
+
         """
         # many things will come from the request
         # others will be picked up from the AC class
@@ -242,6 +251,7 @@ def toggle_set(_set, item):
 
             >>> callable(toggle_set)
             True
+
     """
     s = _set.copy()
 
@@ -285,6 +295,7 @@ def replace_or_toggle(_set, item):
 
             >>> callable(replace_or_toggle)
             True
+
     """
     if len(_set) > 1:
         raise Exception("this function is only for sets with one item")
@@ -310,6 +321,7 @@ class ToggleView(AutocompleteBaseView):
 
             >>> ToggleView.__name__
             'ToggleView'
+
     """
 
     def get(self, request, *args, **kwargs):
@@ -344,6 +356,7 @@ class ToggleView(AutocompleteBaseView):
 
                 >>> callable(ToggleView.get)
                 True
+
         """
         field_name = self.request_dict["field_name"]
 
@@ -384,6 +397,7 @@ class ToggleView(AutocompleteBaseView):
             Args:
                 item (object):
                     Value supplied for ``item``.
+
             Returns:
                 (object):
                     The result of the operation.
@@ -393,6 +407,7 @@ class ToggleView(AutocompleteBaseView):
 
                     >>> callable(ToggleView.sort_items)
                     True
+
             """
             try:
                 return current_items.index(f"{item['key']}")
@@ -444,6 +459,7 @@ class ItemsView(AutocompleteBaseView):
 
             >>> ItemsView.__name__
             'ItemsView'
+
     """
 
     def get(self, request, *args, **kwargs):
@@ -475,6 +491,7 @@ class ItemsView(AutocompleteBaseView):
 
                 >>> callable(ItemsView.get)
                 True
+
         """
         context_obj = ContextArg(request=request, client_kwargs=request.GET)
 

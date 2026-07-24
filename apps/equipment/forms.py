@@ -35,6 +35,7 @@ class SelectDatefForm(forms.Form):
 
             >>> SelectDatefForm.__name__
             'SelectDatefForm'
+
     """
 
     date = forms.DateField(widget=DateCustomInput(attrs={"onChange": "this.form.submit();"}))
@@ -63,6 +64,7 @@ class SignOffForm(forms.Form):
 
             >>> SignOffForm.__name__
             'SignOffForm'
+
     """
 
     user = forms.ModelChoiceField(Account.objects.all(), widget=forms.HiddenInput)
@@ -91,6 +93,7 @@ class UserListEnryForm(forms.ModelForm):
 
             >>> UserListEnryForm.__name__
             'UserListEnryForm'
+
     """
 
     class Meta:
@@ -125,6 +128,7 @@ class EquipmentForm(forms.ModelForm):
 
             >>> EquipmentForm.__name__
             'EquipmentForm'
+
     """
 
     class Meta:

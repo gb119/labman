@@ -12,6 +12,7 @@ class CostingsConfig(AppConfig):
 
             >>> CostingsConfig.__name__
             'CostingsConfig'
+
     """
 
     default_auto_field = "django.db.models.BigAutoField"

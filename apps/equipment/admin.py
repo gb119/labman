@@ -60,6 +60,7 @@ class LocationListFilter(SimpleListFilter):
 
             >>> LocationListFilter.__name__
             'LocationListFilter'
+
     """
 
     title = "Location"
@@ -85,6 +86,7 @@ class LocationListFilter(SimpleListFilter):
 
                 >>> callable(LocationListFilter.lookups)
                 True
+
         """
         qs = Location.objects.all().order_by("tree_id", "lft")
         return [(loc.pk, loc) for loc in qs.all()]
@@ -114,6 +116,7 @@ class LocationListFilter(SimpleListFilter):
 
                 >>> callable(LocationListFilter.queryset)
                 True
+
         """
         if not self.value():
             return queryset
@@ -152,6 +155,7 @@ class EquipmentListFilter(SimpleListFilter):
 
             >>> EquipmentListFilter.__name__
             'EquipmentListFilter'
+
     """
 
     title = "Equipment"
@@ -177,6 +181,7 @@ class EquipmentListFilter(SimpleListFilter):
 
                 >>> callable(EquipmentListFilter.lookups)
                 True
+
         """
         qs = Equipment.objects.all().order_by("name")
         return [(loc.pk, loc) for loc in qs.all()]
@@ -201,6 +206,7 @@ class EquipmentListFilter(SimpleListFilter):
 
                 >>> callable(EquipmentListFilter.queryset)
                 True
+
         """
         if not self.value():
             return queryset
@@ -228,6 +234,7 @@ class UserListInlineAdmin(TabularInline):
 
             >>> UserListInlineAdmin.__name__
             'UserListInlineAdmin'
+
     """
 
     model = UserListEntry
@@ -256,6 +263,7 @@ class DocumentSignOffInlineAdmin(TabularInline):
 
             >>> DocumentSignOffInlineAdmin.__name__
             'DocumentSignOffInlineAdmin'
+
     """
 
     model = DocumentSignOff
@@ -284,6 +292,7 @@ class ChargingRateInlineAdmin(TabularInline):
 
             >>> ChargingRateInlineAdmin.__name__
             'ChargingRateInlineAdmin'
+
     """
 
     model = ChargingRate
@@ -315,6 +324,7 @@ class DocumentSignOffAdmin(ImportExportModelAdmin):
 
             >>> DocumentSignOffAdmin.__name__
             'DocumentSignOffAdmin'
+
     """
 
     list_display = ("user", "document", "version", "created")
@@ -335,6 +345,7 @@ class DocumentSignOffAdmin(ImportExportModelAdmin):
 
                 >>> callable(DocumentSignOffAdmin.get_export_resource_class)
                 True
+
         """
         return DocumentSignOffResource
 
@@ -351,6 +362,7 @@ class DocumentSignOffAdmin(ImportExportModelAdmin):
 
                 >>> callable(DocumentSignOffAdmin.get_import_resource_class)
                 True
+
         """
         return DocumentSignOffResource
 
@@ -391,6 +403,7 @@ class DocumentAdmin(ImportExportModelAdmin):
 
             >>> DocumentAdmin.__name__
             'DocumentAdmin'
+
     """
 
     actions = None
@@ -467,6 +480,7 @@ class DocumentAdmin(ImportExportModelAdmin):
 
                 >>> callable(DocumentAdmin.get_export_resource_class)
                 True
+
         """
         return DocumentResource
 
@@ -483,6 +497,7 @@ class DocumentAdmin(ImportExportModelAdmin):
 
                 >>> callable(DocumentAdmin.get_import_resource_class)
                 True
+
         """
         return DocumentResource
 
@@ -513,6 +528,7 @@ class LocationAdmin(ImportExportModelAdmin):
 
             >>> LocationAdmin.__name__
             'LocationAdmin'
+
     """
 
     list_display = ["name", "parent"]
@@ -538,6 +554,7 @@ class LocationAdmin(ImportExportModelAdmin):
 
                 >>> callable(LocationAdmin.get_export_resource_class)
                 True
+
         """
         return LocationResource
 
@@ -554,6 +571,7 @@ class LocationAdmin(ImportExportModelAdmin):
 
                 >>> callable(LocationAdmin.get_import_resource_class)
                 True
+
         """
         return LocationResource
 
@@ -582,6 +600,7 @@ class ShiftAdmin(ImportExportModelAdmin):
 
             >>> ShiftAdmin.__name__
             'ShiftAdmin'
+
     """
 
     list_display = ["name", "start_time", "end_time", "weighting"]
@@ -602,6 +621,7 @@ class ShiftAdmin(ImportExportModelAdmin):
 
                 >>> callable(ShiftAdmin.get_export_resource_class)
                 True
+
         """
         return ShiftReource
 
@@ -618,6 +638,7 @@ class ShiftAdmin(ImportExportModelAdmin):
 
                 >>> callable(ShiftAdmin.get_import_resource_class)
                 True
+
         """
         return ShiftReource
 
@@ -654,6 +675,7 @@ class EquipmentAdmin(ImportExportModelAdmin):
 
             >>> EquipmentAdmin.__name__
             'EquipmentAdmin'
+
     """
 
     list_display = ["name", "category", "location", "owner", "offline"]
@@ -732,6 +754,7 @@ class EquipmentAdmin(ImportExportModelAdmin):
 
                 >>> callable(EquipmentAdmin.get_export_resource_class)
                 True
+
         """
         return EquipmentResource
 
@@ -748,6 +771,7 @@ class EquipmentAdmin(ImportExportModelAdmin):
 
                 >>> callable(EquipmentAdmin.get_import_resource_class)
                 True
+
         """
         return EquipmentResource
 
@@ -778,6 +802,7 @@ class UserListAdmin(ImportExportModelAdmin):
 
             >>> UserListAdmin.__name__
             'UserListAdmin'
+
     """
 
     list_display = ["user", "equipment", "role", "hold", "admin_hold"]
@@ -806,6 +831,7 @@ class UserListAdmin(ImportExportModelAdmin):
 
                 >>> callable(UserListAdmin.get_export_resource_class)
                 True
+
         """
         return UserListEntryResource
 
@@ -822,6 +848,7 @@ class UserListAdmin(ImportExportModelAdmin):
 
                 >>> callable(UserListAdmin.get_import_resource_class)
                 True
+
         """
         return UserListEntryResource
 
@@ -852,6 +879,7 @@ class ChargingRateAdmin(ImportExportModelAdmin):
 
             >>> ChargingRateAdmin.__name__
             'ChargingRateAdmin'
+
     """
 
     list_display = ["equipment", "cost_rate", "charge_rate", "dates", "comment"]
@@ -873,6 +901,7 @@ class ChargingRateAdmin(ImportExportModelAdmin):
 
                 >>> callable(ChargingRateAdmin.get_export_resource_class)
                 True
+
         """
         return ChargingRateResource
 
@@ -889,6 +918,7 @@ class ChargingRateAdmin(ImportExportModelAdmin):
 
                 >>> callable(ChargingRateAdmin.get_import_resource_class)
                 True
+
         """
         return ChargingRateResource
 

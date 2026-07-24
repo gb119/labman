@@ -27,6 +27,7 @@ def sort_nbame(row):
         Transform one row from the legacy people data::
 
             normalised = sort_nbame(people.iloc[0])
+
     """
     try:
         name = row.Name.strip()
