@@ -9,6 +9,7 @@ properties such as bookability and URL generation, as well as the equipment view
 from datetime import time, timedelta
 
 # Django imports
+from django.contrib.auth.models import Group
 from django.urls import reverse
 
 # external imports
@@ -171,7 +172,7 @@ class TestEquipmentViews:
         url = reverse("equipment:equipment_detail", kwargs={"pk": equipment.pk})
         response = client.get(url)
         assert response.status_code in (302, 301)
-        assert "/login" in response["Location"]
+        assert response["Location"].startswith(f"{reverse('core_login')}?")
 
     @pytest.mark.django_db
     def test_equipment_detail_view_returns_200(self, client_logged_in, equipment):
@@ -193,7 +194,7 @@ class TestEquipmentViews:
         url = reverse("equipment:location_detail", kwargs={"pk": location.pk})
         response = client.get(url)
         assert response.status_code in (302, 301)
-        assert "/login" in response["Location"]
+        assert response["Location"].startswith(f"{reverse('core_login')}?")
 
     @pytest.mark.django_db
     def test_location_detail_view_returns_200(self, client_logged_in, location):
@@ -208,7 +209,7 @@ class TestEquipmentViews:
         url = reverse("equipment:lists")
         response = client.get(url)
         assert response.status_code in (302, 301)
-        assert "/login" in response["Location"]
+        assert response["Location"].startswith(f"{reverse('core_login')}?")
 
     @pytest.mark.django_db
     def test_model_list_view_returns_200(self, client_logged_in):
@@ -239,7 +240,7 @@ class TestEquipmentViews:
         url = reverse("equipment:sign-off", kwargs={"equipment": equipment.pk})
         response = client.get(url)
         assert response.status_code in (302, 301)
-        assert "/login" in response["Location"]
+        assert response["Location"].startswith(f"{reverse('core_login')}?")
 
     @pytest.mark.django_db
     def test_sign_off_view_returns_200_for_authenticated_user(self, client_logged_in, equipment):
@@ -254,7 +255,7 @@ class TestEquipmentViews:
         url = reverse("equipment:userlist_new", kwargs={"equipment": equipment.pk})
         response = client.get(url)
         assert response.status_code in (302, 301)
-        assert "/login" in response["Location"]
+        assert response["Location"].startswith(f"{reverse('core_login')}?")
 
     @pytest.mark.django_db
     def test_userlist_new_view_returns_200_for_authenticated_user(self, client_logged_in, equipment):
@@ -269,11 +270,20 @@ class TestEquipmentViews:
         url = reverse("equipment:edit_equipment", kwargs={"pk": equipment.pk})
         response = client.get(url)
         assert response.status_code in (302, 301)
-        assert "/login" in response["Location"]
+        assert response["Location"].startswith(f"{reverse('core_login')}?")
 
     @pytest.mark.django_db
-    def test_equipment_edit_view_returns_200_for_authenticated_user(self, client_logged_in, equipment):
-        """Verify that EquipmentDialog (edit) returns 200 for an authenticated user."""
+    def test_equipment_edit_view_forbids_ordinary_user(self, client_logged_in, equipment):
+        """Verify that EquipmentDialog forbids an ordinary authenticated user."""
+        url = reverse("equipment:edit_equipment", kwargs={"pk": equipment.pk})
+        response = client_logged_in.get(url)
+        assert response.status_code == 403
+
+    @pytest.mark.django_db
+    def test_equipment_edit_view_returns_200_for_academic_user(self, client_logged_in, equipment, regular_user):
+        """Verify that EquipmentDialog permits an authenticated Academic user."""
+        academic, _ = Group.objects.get_or_create(name="Academic")
+        regular_user.groups.add(academic)
         url = reverse("equipment:edit_equipment", kwargs={"pk": equipment.pk})
         response = client_logged_in.get(url)
         assert response.status_code == 200

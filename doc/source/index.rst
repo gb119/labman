@@ -16,8 +16,3 @@ Contents
 
     project_overview
     api
-    quickstart
-    structure
-    settings
-    apache2_vhost
-    versions

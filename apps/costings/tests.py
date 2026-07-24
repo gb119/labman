@@ -150,7 +150,7 @@ class TestCostingsViews:
         url = reverse("costings:cost_centre_filter")
         response = client.get(url)
         assert response.status_code in (302, 301)
-        assert "/login" in response["Location"]
+        assert response["Location"].startswith(f"{reverse('core_login')}?")
 
     @pytest.mark.django_db
     def test_cost_centre_filter_view_returns_200_via_htmx(self, client_logged_in):
@@ -186,7 +186,7 @@ class TestCostingsViews:
         url = reverse("costings:new_cost_centre")
         response = client.get(url)
         assert response.status_code in (302, 301)
-        assert "/login" in response["Location"]
+        assert response["Location"].startswith(f"{reverse('core_login')}?")
 
     @pytest.mark.django_db
     def test_cost_centre_full_description_context_via_htmx(self, client_logged_in, cost_centre):

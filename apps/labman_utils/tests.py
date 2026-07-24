@@ -9,6 +9,8 @@ logic, and the NamedObject base model.
 import base64
 import codecs
 from datetime import datetime, time, timedelta
+from types import SimpleNamespace
+from unittest.mock import Mock
 
 
 class TestIsAuthenticatedViewMixin:
@@ -40,6 +42,72 @@ class TestIsAuthenticatedViewMixin:
 
         assert response.status_code == 302
         assert response.url == "/oauth2/login?next=/protected/"
+
+
+class TestResourceEditingPermissions:
+    """Tests for the shared content-editing permission rules."""
+
+    @staticmethod
+    def _user(*, superuser=False, editor_group=False):
+        """Build a mock account with configurable editing privileges."""
+        user = Mock(is_authenticated=True, is_superuser=superuser)
+        user.groups.filter.return_value.exists.return_value = editor_group
+        return user
+
+    def test_academic_or_staff_group_members_are_editors(self):
+        """Academic and Staff group membership grants general editing access."""
+        # external imports
+        from labman_utils.views import is_academic_or_staff
+
+        user = self._user(editor_group=True)
+
+        assert is_academic_or_staff(user)
+        user.groups.filter.assert_called_once_with(name__in=("Academic", "Staff"))
+
+    def test_equipment_manager_can_edit_linked_resource(self):
+        """An equipment owner or manager can edit a resource linked to their equipment."""
+        # external imports
+        from labman_utils.views import can_edit_equipment_resource
+
+        user = self._user()
+        equipment = Mock()
+        equipment.can_edit.return_value = True
+        resource = SimpleNamespace(equipment=Mock())
+        resource.equipment.all.return_value = [equipment]
+
+        assert can_edit_equipment_resource(user, resource)
+
+    def test_unrelated_account_cannot_edit_linked_resource(self):
+        """An unrelated authenticated account cannot edit an equipment resource."""
+        # external imports
+        from labman_utils.views import can_edit_equipment_resource
+
+        user = self._user()
+        equipment = Mock()
+        equipment.can_edit.return_value = False
+        resource = SimpleNamespace(equipment=Mock())
+        resource.equipment.all.return_value = [equipment]
+
+        assert not can_edit_equipment_resource(user, resource)
+
+    def test_unrelated_account_cannot_delete_photo(self):
+        """A non-editor who does not manage the equipment cannot delete its photo."""
+        # external imports
+        from labman_utils.views import PhotoDialog
+
+        user = self._user()
+        equipment = Mock()
+        equipment.can_edit.return_value = False
+        photo = Mock()
+        photo.equipment.all.return_value = [equipment]
+        view = PhotoDialog()
+        view.request = SimpleNamespace(user=user)
+        view.get_object = Mock(return_value=photo)
+
+        response = view.htmx_delete_photo(view.request)
+
+        assert response.status_code == 403
+        photo.delete.assert_not_called()
 
 
 class TestToSeconds:
@@ -158,7 +226,7 @@ class TestObfuscatedCharField:
     def _encode(text):
         """Encode text mirroring the JavaScript client: ROT13(Base64(text))."""
         base64_text = base64.b64encode(text.encode("utf-8")).decode("ascii")
-        return codecs.encode(base64_text, "rot_13")
+        return f"ROT13+B64:{codecs.encode(base64_text, 'rot_13')}"
 
     def test_valid_encoded_value_decoded(self):
         """to_python decodes a properly Base64+ROT13 encoded value."""

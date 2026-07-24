@@ -10,11 +10,14 @@ djhtml:
 	find . -name '*.html' | xargs -I {} echo '"{}"' | xargs djhtml
 
 black: isort djhtml
-	find . -name '*.py' | xargs -I {} echo '"{}"' | xargs black -l 119
+	find . -name '*.py' | xargs -I {} echo '"{}"' | xargs black -W 1 -l 119
 
 
 check:
 	python manage.py check
+
+test:
+	pytest --reuse-db
 
 commit:	_commit
 

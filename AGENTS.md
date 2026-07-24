@@ -7,6 +7,10 @@
   naming, Markdown, and issue reporting.
 - Work from the repository root.
 - Use the `django` Conda environment at `/usr/lib/miniconda3/envs/django` for Python and Django commands.
+  Interactive SSH sessions normally activate this environment automatically; verify with `command -v python`.
+  Non-interactive agent shells may instead start in the Conda `base` environment. In that case, prefix `PATH` with
+  `/usr/lib/miniconda3/envs/django/bin` rather than using `conda run`, whose output capture can delay otherwise
+  completed commands.
 - Preserve unrelated changes in the working tree.
 
 ## Available commands
@@ -16,17 +20,19 @@ The root `Makefile` provides the standard development commands:
 - `make check` runs Django's system checks.
 - `make black` runs import sorting, Django template formatting, and Black with the repository's 119-character line
   length.
+- `make test` runs the pytest suite against the pre-provisioned PostgreSQL test database.
 - `make isort` sorts Python imports.
 - `make djhtml` formats Django HTML templates.
 - `make spell` checks Python spelling with `codespell`.
 - `make restart` restarts the `labman` systemd service.
 
-Run Make commands in the Django Conda environment, for example:
+Run Make commands in the active Django Conda environment. For non-interactive shells where it is not already active,
+prefix `PATH`, for example:
 
 ```shell
-conda run -p /usr/lib/miniconda3/envs/django make check
-conda run -p /usr/lib/miniconda3/envs/django make black
-conda run -p /usr/lib/miniconda3/envs/django make restart
+env PATH=/usr/lib/miniconda3/envs/django/bin:/usr/bin:/bin make check
+env PATH=/usr/lib/miniconda3/envs/django/bin:/usr/bin:/bin make black
+env PATH=/usr/lib/miniconda3/envs/django/bin:/usr/bin:/bin make restart
 ```
 
 ## Required workflow

@@ -145,16 +145,28 @@ USE_TZ = True
 
 # ##### DATABASE CONFIGURATION ############################
 
+try:
+    # Use the deployment connection as the local default without copying credentials
+    # into the test configuration. CI supplies all connection values through its
+    # environment instead.
+    # app imports
+    from .secrets import DATABASES as DEPLOYMENT_DATABASES
+except ImportError:
+    DEPLOYMENT_DATABASES = {}
+
+DEPLOYMENT_DATABASE = DEPLOYMENT_DATABASES.get("default", {})
+DATABASE_NAME = os.environ.get("POSTGRES_DB", DEPLOYMENT_DATABASE.get("NAME", "labman"))
+
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql",
-        "NAME": os.environ.get("POSTGRES_DB", "labman_test"),
-        "USER": os.environ.get("POSTGRES_USER", "labman"),
-        "PASSWORD": os.environ.get("POSTGRES_PASSWORD", "labman"),
-        "HOST": os.environ.get("POSTGRES_HOST", "localhost"),
-        "PORT": os.environ.get("POSTGRES_PORT", "5432"),
+        "NAME": DATABASE_NAME,
+        "USER": os.environ.get("POSTGRES_USER", DEPLOYMENT_DATABASE.get("USER", "labman")),
+        "PASSWORD": os.environ.get("POSTGRES_PASSWORD", DEPLOYMENT_DATABASE.get("PASSWORD", "labman")),
+        "HOST": os.environ.get("POSTGRES_HOST", DEPLOYMENT_DATABASE.get("HOST", "127.0.0.1")),
+        "PORT": os.environ.get("POSTGRES_PORT", DEPLOYMENT_DATABASE.get("PORT", "5432")),
         "TEST": {
-            "NAME": os.environ.get("POSTGRES_TEST_DB", "labman_test"),
+            "NAME": os.environ.get("POSTGRES_TEST_DB", f"{DATABASE_NAME}_test"),
         },
     }
 }

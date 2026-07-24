@@ -461,7 +461,7 @@ class BookingDialog(IsAuthenticaedViewMixin, HTMXFormMixin, views.generic.Update
         try:
             booking.delete(force=force)
         except models.BookingError:
-            HttpResponseNotModified("Error allowing delete - no action!")
+            return HttpResponseNotModified()
         return HttpResponse(
             status=204,
             headers={

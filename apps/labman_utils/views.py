@@ -111,6 +111,176 @@ class IsSuperuserViewMixin(IsAuthenticaedViewMixin):
         return super().test_func() and self.request.user.is_superuser
 
 
+EDITOR_GROUPS = ("Academic", "Staff")
+
+
+def is_academic_or_staff(user):
+    """Return whether an account has general content-editing privileges.
+
+    Args:
+        user (Account):
+            Account to inspect.
+
+    Returns:
+        (bool):
+            True for superusers and members of the Academic or Staff groups.
+
+    Examples:
+        Inspect the public interface in an interactive session::
+
+            >>> callable(is_academic_or_staff)
+            True
+    """
+    return bool(
+        getattr(user, "is_authenticated", False)
+        and (user.is_superuser or user.groups.filter(name__in=EDITOR_GROUPS).exists())
+    )
+
+
+def can_edit_equipment_resource(user, resource):
+    """Return whether an account may edit a resource through its equipment links.
+
+    Args:
+        user (Account):
+            Account requesting access.
+        resource (Model):
+            Document, photo, or flat page being edited.
+
+    Returns:
+        (bool):
+            True when the account has general editing privileges or manages every
+            equipment item linked to the resource.
+
+    Examples:
+        Inspect the public interface in an interactive session::
+
+            >>> callable(can_edit_equipment_resource)
+            True
+    """
+    if is_academic_or_staff(user):
+        return True
+    equipment_manager = getattr(resource, "equipment", None)
+    if equipment_manager is None:
+        return False
+    equipment = list(equipment_manager.all())
+    return bool(equipment) and all(item.can_edit(user) for item in equipment)
+
+
+class IsAcademicOrStaffViewMixin(IsAuthenticaedViewMixin):
+    """Restrict a view to Academic or Staff group members and superusers."""
+
+    def test_func(self):
+        """Return whether the current account has general editing privileges.
+
+        Returns:
+            (bool):
+                True when the account is a superuser or belongs to an editor group.
+
+        Examples:
+            Inspect the public interface in an interactive session::
+
+                >>> callable(IsAcademicOrStaffViewMixin.test_func)
+                True
+        """
+        return super().test_func() and is_academic_or_staff(self.request.user)
+
+
+class ResourceEditorViewMixin(IsAuthenticaedViewMixin):
+    """Restrict resource edits to general editors or relevant equipment managers."""
+
+    resource_model = None
+
+    def _permission_resource(self):
+        """Return the resource named by the URL, if any."""
+        if self.resource_model is None or "pk" not in self.kwargs:
+            return None
+        return self.resource_model.objects.filter(pk=self.kwargs["pk"]).first()
+
+    def test_func(self):
+        """Return whether the current account may edit the requested resource.
+
+        Returns:
+            (bool):
+                True for general editors or managers of all related equipment.
+
+        Examples:
+            Inspect the public interface in an interactive session::
+
+                >>> callable(ResourceEditorViewMixin.test_func)
+                True
+        """
+        if not super().test_func():
+            return False
+        user = self.request.user
+        if is_academic_or_staff(user):
+            return True
+        if resource := self._permission_resource():
+            if not can_edit_equipment_resource(user, resource):
+                return False
+            if equipment_pk := self.kwargs.get("equipment"):
+                return resource.equipment.filter(pk=equipment_pk).exists()
+            return True
+        if equipment_pk := self.kwargs.get("equipment"):
+            equipment = Equipment.objects.filter(pk=equipment_pk).first()
+            return bool(equipment and equipment.can_edit(user))
+        return False
+
+    def can_submit_resource_form(self, form):
+        """Return whether submitted hidden relationships remain within the user's scope.
+
+        Args:
+            form (ModelForm):
+                Validated resource form.
+
+        Returns:
+            (bool):
+                True when the request and submitted equipment are authorised.
+
+        Examples:
+            Inspect the public interface in an interactive session::
+
+                >>> callable(ResourceEditorViewMixin.can_submit_resource_form)
+                True
+        """
+        user = self.request.user
+        if is_academic_or_staff(user):
+            return True
+        resource = self._permission_resource()
+        if resource is not None and not can_edit_equipment_resource(user, resource):
+            return False
+        equipment = form.cleaned_data.get("equipment")
+        if equipment is None:
+            return resource is not None
+        return equipment.can_edit(user)
+
+    def can_submit_resource_links(self, form):
+        """Return whether submitted resource links remain within the user's scope.
+
+        Args:
+            form (ModelForm):
+                Validated resource-linking form.
+
+        Returns:
+            (bool):
+                True when all changed links are for equipment managed by the user.
+
+        Examples:
+            Inspect the public interface in an interactive session::
+
+                >>> callable(ResourceEditorViewMixin.can_submit_resource_links)
+                True
+        """
+        user = self.request.user
+        if is_academic_or_staff(user) or "equipment" in self.kwargs:
+            return True
+        resource = self._permission_resource()
+        if resource is None or not can_edit_equipment_resource(user, resource):
+            return False
+        if form.cleaned_data.get("location") or form.cleaned_data.get("account"):
+            return False
+        return all(equipment.can_edit(user) for equipment in form.cleaned_data.get("equipment", []))
+
+
 class IsStaffViewMixin(IsSuperuserViewMixin):
     """Mixin to enforce that the user is a staff user.
 
@@ -1029,7 +1199,7 @@ class PhotoDisplay(DetailView):
     context_object_name = "photo"
 
 
-class DocumentDialog(IsAuthenticaedViewMixin, HTMXFormMixin, UpdateView):
+class DocumentDialog(ResourceEditorViewMixin, HTMXFormMixin, UpdateView):
     """Produce the HTML for a document form in a dialog.
 
             This HTMX-enabled view handles creating and editing documents associated with equipment or locations.
@@ -1052,6 +1222,7 @@ class DocumentDialog(IsAuthenticaedViewMixin, HTMXFormMixin, UpdateView):
     """
 
     model = Document
+    resource_model = Document
     template_name = "labman_utils/document_form.html"
     context_object_name = "this"
 
@@ -1188,6 +1359,10 @@ class DocumentDialog(IsAuthenticaedViewMixin, HTMXFormMixin, UpdateView):
                 >>> callable(DocumentDialog.htmx_form_valid_document)
                 True
         """
+        if not self.can_submit_resource_form(form):
+            return HttpResponseForbidden("You do not have permission to edit this document.")
+        if not self.can_submit_resource_links(form):
+            return HttpResponseForbidden("You do not have permission to change these document links.")
         self.object = form.save()
         if equipment := form.cleaned_data.get("equipment", None):
             equipment.files.add(self.object)
@@ -1231,8 +1406,8 @@ class DocumentDialog(IsAuthenticaedViewMixin, HTMXFormMixin, UpdateView):
             return HttpResponseNotFound("Unable to locate document.")
         self.object = document
         # Now check I actually have permission to do this...
-        if not self.request.user.is_superuser:
-            return HttpResponseForbidden("You must be a superuser to delete the file.")
+        if not can_edit_equipment_resource(self.request.user, document):
+            return HttpResponseForbidden("You do not have permission to delete the file.")
 
         for equipment in self.object.equipment.all():
             equipment.files.remove(self.object)
@@ -1249,7 +1424,7 @@ class DocumentDialog(IsAuthenticaedViewMixin, HTMXFormMixin, UpdateView):
         )
 
 
-class DocumentLinkDialog(IsAuthenticaedViewMixin, HTMXFormMixin, UpdateView):
+class DocumentLinkDialog(ResourceEditorViewMixin, HTMXFormMixin, UpdateView):
     """Produce the HTML for linking documents to equipment or locations in a dialog.
 
             This HTMX-enabled view handles linking existing documents to equipment or locations through
@@ -1271,6 +1446,7 @@ class DocumentLinkDialog(IsAuthenticaedViewMixin, HTMXFormMixin, UpdateView):
 
     template_name = "labman_utils/link_document_form.html"
     context_object_name = "this"
+    resource_model = Document
 
     def get_form_class(self):
         """Delay the import of the form class until we need it.
@@ -1416,6 +1592,8 @@ class DocumentLinkDialog(IsAuthenticaedViewMixin, HTMXFormMixin, UpdateView):
                 >>> callable(DocumentLinkDialog.htmx_form_valid_document)
                 True
         """
+        if not self.can_submit_resource_links(form):
+            return HttpResponseForbidden("You do not have permission to change these document links.")
         self.object = form.save()
         this = self.object
         if isinstance(this, Document):  # Do the reverse linking.
@@ -1440,7 +1618,7 @@ class DocumentLinkDialog(IsAuthenticaedViewMixin, HTMXFormMixin, UpdateView):
         )
 
 
-class PhotoDialog(IsAuthenticaedViewMixin, HTMXFormMixin, UpdateView):
+class PhotoDialog(ResourceEditorViewMixin, HTMXFormMixin, UpdateView):
     """Produce the HTML for a photo form in a dialog.
 
             This HTMX-enabled view handles creating and editing photos associated with equipment, locations,
@@ -1463,6 +1641,7 @@ class PhotoDialog(IsAuthenticaedViewMixin, HTMXFormMixin, UpdateView):
     """
 
     model = Photo
+    resource_model = Photo
     template_name = "labman_utils/photo_form.html"
     context_object_name = "this"
 
@@ -1596,6 +1775,8 @@ class PhotoDialog(IsAuthenticaedViewMixin, HTMXFormMixin, UpdateView):
                 >>> callable(PhotoDialog.htmx_form_valid_dialog)
                 True
         """
+        if not self.can_submit_resource_form(form):
+            return HttpResponseForbidden("You do not have permission to edit this photo.")
         self.object = form.save()
         for objname in ["equipment", "location", "account"]:
             if obj := form.cleaned_data.get(objname, None):
@@ -1638,8 +1819,8 @@ class PhotoDialog(IsAuthenticaedViewMixin, HTMXFormMixin, UpdateView):
             return HttpResponseNotFound("Unable to locate photo.")
         self.object = photo
         # Now check I actually have permission to do this...
-        if not self.request.user.is_superuser and not self.object.account.first() != self.request.user:
-            return HttpResponseForbidden("You must be a superuser to delete the photo.")
+        if not can_edit_equipment_resource(self.request.user, photo):
+            return HttpResponseForbidden("You do not have permission to delete the photo.")
         for attr in ["equipment", "location", "account"]:
             for obj in getattr(self.object, attr).all():
                 obj.photos.remove(self.object)
@@ -1654,7 +1835,7 @@ class PhotoDialog(IsAuthenticaedViewMixin, HTMXFormMixin, UpdateView):
         )
 
 
-class PhotoLinkDialog(IsAuthenticaedViewMixin, HTMXFormMixin, UpdateView):
+class PhotoLinkDialog(ResourceEditorViewMixin, HTMXFormMixin, UpdateView):
     """Produce the HTML for linking photos to equipment, locations, or accounts in a dialog.
 
             This HTMX-enabled view handles linking existing photos to equipment, locations, or user accounts
@@ -1676,6 +1857,7 @@ class PhotoLinkDialog(IsAuthenticaedViewMixin, HTMXFormMixin, UpdateView):
 
     template_name = "labman_utils/link_photo_form.html"
     context_object_name = "this"
+    resource_model = Photo
 
     def get_form_class(self):
         """Delay the import of the form class until we need it.
@@ -1809,6 +1991,8 @@ class PhotoLinkDialog(IsAuthenticaedViewMixin, HTMXFormMixin, UpdateView):
                 >>> callable(PhotoLinkDialog.htmx_form_valid_photo)
                 True
         """
+        if not self.can_submit_resource_links(form):
+            return HttpResponseForbidden("You do not have permission to change these photo links.")
         self.object = form.save()
         this = self.object
         if isinstance(this, Photo):  # Do the reverse linking.
@@ -1839,7 +2023,7 @@ class PhotoLinkDialog(IsAuthenticaedViewMixin, HTMXFormMixin, UpdateView):
         )
 
 
-class FlatPageDialog(IsAuthenticaedViewMixin, HTMXFormMixin, UpdateView):
+class FlatPageDialog(ResourceEditorViewMixin, HTMXFormMixin, UpdateView):
     """Produce the HTML for a flat page form in a dialog.
 
             This HTMX-enabled view handles creating and editing flat pages associated with equipment or locations.
@@ -1864,6 +2048,7 @@ class FlatPageDialog(IsAuthenticaedViewMixin, HTMXFormMixin, UpdateView):
     """
 
     model = FlatPage
+    resource_model = FlatPage
     template_name = "labman_utils/flatpage_form.html"
     context_object_name = "this"
     form_class = FlatPageForm
@@ -1979,6 +2164,8 @@ class FlatPageDialog(IsAuthenticaedViewMixin, HTMXFormMixin, UpdateView):
                 >>> callable(FlatPageDialog.htmx_form_valid_dialog)
                 True
         """
+        if not self.can_submit_resource_form(form):
+            return HttpResponseForbidden("You do not have permission to edit this flat page.")
         self.object = form.save()
         for objname in ["equipment", "location"]:
             if obj := form.cleaned_data.get(objname, None):
@@ -2021,8 +2208,8 @@ class FlatPageDialog(IsAuthenticaedViewMixin, HTMXFormMixin, UpdateView):
             return HttpResponseNotFound("Unable to locate flatpage.")
         self.object = flatpage
         # Now check I actually have permission to do this...
-        if not self.request.user.is_superuser and not self.object.account.first() != self.request.user:
-            return HttpResponseForbidden("You must be a superuser to delete the flatpage.")
+        if not can_edit_equipment_resource(self.request.user, flatpage):
+            return HttpResponseForbidden("You do not have permission to delete the flatpage.")
         for attr in ["equipment", "location"]:
             for obj in getattr(self.object, attr).all():
                 obj.pages.remove(self.object)
@@ -2037,7 +2224,7 @@ class FlatPageDialog(IsAuthenticaedViewMixin, HTMXFormMixin, UpdateView):
         )
 
 
-class FlatPageLinkDialog(IsAuthenticaedViewMixin, HTMXFormMixin, UpdateView):
+class FlatPageLinkDialog(ResourceEditorViewMixin, HTMXFormMixin, UpdateView):
     """Link pages to objects.
 
             This HTMX-enabled view handles linking existing flat pages to equipment or locations through
@@ -2062,6 +2249,7 @@ class FlatPageLinkDialog(IsAuthenticaedViewMixin, HTMXFormMixin, UpdateView):
     template_name = "labman_utils/link_flatpage_form.html"
     context_object_name = "this"
     linked_objects = {"equipment": Equipment, "location": Location}
+    resource_model = FlatPage
 
     def get_form_class(self):
         """Delay the import of the form class until we need it.
@@ -2192,6 +2380,8 @@ class FlatPageLinkDialog(IsAuthenticaedViewMixin, HTMXFormMixin, UpdateView):
                 >>> callable(FlatPageLinkDialog.htmx_form_valid_flatpage)
                 True
         """
+        if not self.can_submit_resource_links(form):
+            return HttpResponseForbidden("You do not have permission to change these flat-page links.")
         self.object = form.save()
         this = self.object
         if isinstance(this, FlatPage):  # Do the reverse linking.

@@ -202,7 +202,7 @@ class TestAccountViews:
         url = reverse("accounts:my_account")
         response = client.get(url)
         assert response.status_code in (302, 301)
-        assert "/login" in response["Location"]
+        assert response["Location"].startswith(f"{reverse('core_login')}?")
 
     @pytest.mark.django_db
     def test_my_account_view_returns_200_for_authenticated_user(self, client_logged_in):
@@ -224,7 +224,7 @@ class TestAccountViews:
         url = reverse("accounts:user_account", kwargs={"username": regular_user.username})
         response = client.get(url)
         assert response.status_code in (302, 301)
-        assert "/login" in response["Location"]
+        assert response["Location"].startswith(f"{reverse('core_login')}?")
 
     @pytest.mark.django_db
     def test_user_account_view_returns_200(self, client_logged_in, regular_user):
@@ -246,7 +246,7 @@ class TestAccountViews:
         url = reverse("accounts:list_accounts_by_group", kwargs={"group": "Academic"})
         response = client.get(url)
         assert response.status_code in (302, 301)
-        assert "/login" in response["Location"]
+        assert response["Location"].startswith(f"{reverse('core_login')}?")
 
     @pytest.mark.django_db
     def test_account_list_by_group_view_returns_200(self, client_logged_in):

@@ -33,7 +33,11 @@ from costings.models import CostCentre
 from extra_views import FormSetView
 from htmx_views.views import HTMXFormMixin, HTMXProcessMixin
 from labman_utils.models import Document
-from labman_utils.views import IsAuthenticaedViewMixin, IsSuperuserViewMixin
+from labman_utils.views import (
+    IsAcademicOrStaffViewMixin,
+    IsAuthenticaedViewMixin,
+    IsSuperuserViewMixin,
+)
 
 # app imports
 from .forms import (
@@ -675,7 +679,7 @@ class UserlisttDialog(IsAuthenticaedViewMixin, HTMXFormMixin, UpdateView):
         )
 
 
-class EquipmentDialog(IsAuthenticaedViewMixin, HTMXFormMixin, UpdateView):
+class EquipmentDialog(IsAcademicOrStaffViewMixin, HTMXFormMixin, UpdateView):
     """HTMX dialog for editing equipment details.
 
             Provides an HTMX-powered dialog interface for editing equipment information

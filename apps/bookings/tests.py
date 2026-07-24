@@ -7,6 +7,8 @@ as well as the bookings views.
 """
 # Python imports
 from datetime import time, timedelta
+from types import SimpleNamespace
+from unittest.mock import Mock, patch
 
 # Django imports
 from django.urls import reverse
@@ -130,7 +132,7 @@ class TestBookingViews:
         url = reverse("bookings:equipment_calendar", kwargs={"equipment": equipment.pk, "date": 20240101})
         response = client.get(url)
         assert response.status_code in (302, 301)
-        assert "/login" in response["Location"]
+        assert response["Location"].startswith(f"{reverse('core_login')}?")
 
     @pytest.mark.django_db
     def test_calendar_view_returns_200(self, client_logged_in, equipment):
@@ -152,7 +154,7 @@ class TestBookingViews:
         url = reverse("bookings:all_equipment_calendar")
         response = client.get(url)
         assert response.status_code in (302, 301)
-        assert "/login" in response["Location"]
+        assert response["Location"].startswith(f"{reverse('core_login')}?")
 
     @pytest.mark.django_db
     def test_all_calendar_view_returns_200(self, client_logged_in, equipment):
@@ -167,7 +169,7 @@ class TestBookingViews:
         url = reverse("bookings:reporting")
         response = client.get(url)
         assert response.status_code in (302, 301)
-        assert "/login" in response["Location"]
+        assert response["Location"].startswith(f"{reverse('core_login')}?")
 
     @pytest.mark.django_db
     def test_booking_records_view_returns_200(self, client_logged_in):
@@ -175,3 +177,22 @@ class TestBookingViews:
         url = reverse("bookings:reporting")
         response = client_logged_in.get(url)
         assert response.status_code == 200
+
+    def test_rejected_booking_delete_returns_not_modified(self):
+        """A policy-rejected booking deletion is not reported as successful."""
+        # external imports
+        from bookings.models import BookingError
+        from bookings.views import BookingDialog
+
+        user = Mock()
+        equipment = Mock(category="characterisation")
+        equipment.can_edit.return_value = False
+        booking = Mock(user=user, equipment=equipment)
+        booking.delete.side_effect = BookingError("Deletion is not permitted")
+        view = BookingDialog()
+        view.request = SimpleNamespace(GET={"booking": "42"}, user=user)
+
+        with patch("bookings.views.models.BookingEntry.objects.get", return_value=booking):
+            response = view.htmx_delete_booking(view.request)
+
+        assert response.status_code == 304

@@ -202,12 +202,33 @@ Access the admin interface at `/riaradh/` (requires superuser account).
 
 ### Running Tests
 
-```bash
-# Run all tests
-python manage.py test
+The test suite uses PostgreSQL-specific fields and therefore requires an isolated
+PostgreSQL database. Create it once on a development server, owned by the same
+database account used by the application:
 
-# Run specific app tests
-python manage.py test apps.bookings
+```bash
+sudo -u postgres createdb --owner=labman labman_test
+```
+
+The application account does not need the PostgreSQL `CREATEDB` privilege. The
+test settings read the local connection from `labman/settings/secrets.py`; the
+database name can be overridden with `POSTGRES_TEST_DB`.
+
+Install the test dependencies and run the suite against the pre-provisioned
+database:
+
+```bash
+python -m pip install -r requirements/testing.txt
+make test
+```
+
+GitHub Actions provisions an ephemeral `labman_test` database through its
+PostgreSQL service container and uses the same `pytest --reuse-db` workflow.
+
+To run a subset:
+
+```bash
+pytest --reuse-db apps/bookings/tests.py
 ```
 
 ### Code Quality
