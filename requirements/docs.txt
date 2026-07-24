@@ -1,0 +1,6 @@
+# Documentation dependencies for the labman project.
+# Install with: pip install -r requirements/docs.txt
+
+Sphinx
+sphinx-automodapi
+sphinx-better-theme
