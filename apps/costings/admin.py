@@ -6,9 +6,7 @@ used in laboratory financial tracking and equipment charging. It includes
 import/export functionality for data management and reporting.
 """
 # Django imports
-from django.contrib.admin import (
-    register,
-)
+from django.contrib.admin import register
 
 # external imports
 from import_export.admin import ImportExportModelAdmin

@@ -8,7 +8,13 @@ from contextlib import contextmanager
 
 # Django imports
 from django.conf import settings
+from django.core.exceptions import ImproperlyConfigured
+from django.http import Http404
 from django.views import View
+from django.views.generic import TemplateView
+
+# external imports
+from ajax_select import registry
 
 logger = logging.getLogger(__name__)
 
@@ -95,6 +101,8 @@ def dispatch(self, request, *args, **kwargs):
         )
     else:
         handler = self.http_method_not_allowed
+    if not callable(handler):
+        handler = self.http_method_not_allowed
     return handler(request, *args, **kwargs)
 
 
@@ -159,13 +167,38 @@ class HTMXProcessMixin:
         if not getattr(self.request, "htmx", False) or self._htmx_get_context_data:  # Default behaviour
             return super().get_context_data(**kwargs)
 
-        # Look for a request specifc to the element involved.
-        for elem in self.htmx_elements():
-            handler = getattr(self, f"get_context_data_{elem}", False)
-            if handler:
-                with temp_attr(self, "_htmx_get_context_data", True):
-                    return handler(**kwargs)
+        # Look for a request specific to the element involved.
+        handler = self.get_context_data_function(**kwargs)
+        if handler is not None:
+            with temp_attr(self, "_htmx_get_context_data", True):
+                return handler(**kwargs)
         return super().get_context_data(**kwargs)
+
+    def get_context_data_function(self, **kwargs):
+        """Return the first callable element-specific context handler.
+
+        Keyword Parameters:
+            **kwargs (object):
+                Context keyword arguments. They are accepted so subclasses can use them when extending handler
+                selection.
+
+        Returns:
+            (callable | None):
+                The selected handler, or ``None`` when no handler matches.
+
+        Examples:
+            Inspect the public interface in an interactive session::
+
+                >>> callable(HTMXProcessMixin.get_context_data_function)
+                True
+
+        """
+        del kwargs
+        for elem in self.htmx_elements():
+            handler = getattr(self, f"get_context_data_{elem}", None)
+            if callable(handler):
+                return handler
+        return None
 
     def get_context_object_name(self, object_list):
         """Get context object name being aware of htmx elements.
@@ -194,9 +227,10 @@ class HTMXProcessMixin:
 
         # Look for a request specifc to the element involved.
         for elem in self.htmx_elements():
-            if callable(handler := getattr(self, f"get_context_object_name{elem}", None)):
-                with temp_attr(self, "_htmx_get_context_object_name", True):
-                    return handler(object_list)
+            for handler_name in (f"get_context_object_name_{elem}", f"get_context_object_name{elem}"):
+                if callable(handler := getattr(self, handler_name, None)):
+                    with temp_attr(self, "_htmx_get_context_object_name", True):
+                        return handler(object_list)
             if sub_name := getattr(self, f"context_object_{elem}", False):
                 return sub_name
 
@@ -223,8 +257,8 @@ class HTMXProcessMixin:
 
         # Look for a request specifc to the element involved.
         for elem in self.htmx_elements():
-            handler = getattr(self, f"get_template_names_{elem}", False)
-            if handler:
+            handler = getattr(self, f"get_template_names_{elem}", None)
+            if callable(handler):
                 if settings.DEBUG:
                     logger.debug(f"Template_handl;er: {handler.__name__}")
                 with temp_attr(self, "_htmx_get_template_names", True):
@@ -265,11 +299,13 @@ class HTMXProcessMixin:
 
         """
         for elem in self.htmx_elements():
-            handler = getattr(self, f"htmx_delete_{elem}", False)
-            if handler:
+            handler = getattr(self, f"htmx_delete_{elem}", None)
+            if callable(handler):
                 break
         else:
             handler = getattr(self, "delete", self.http_method_not_allowed)
+        if not callable(handler):
+            handler = self.http_method_not_allowed
         if settings.DEBUG:
             logger.debug(f"HTMX Method handler: {handler.__name__}")
         return handler(request, *args, **kwargs)
@@ -303,11 +339,13 @@ class HTMXProcessMixin:
 
         """
         for elem in self.htmx_elements():
-            handler = getattr(self, f"htmx_get_{elem}", False)
-            if handler:
+            handler = getattr(self, f"htmx_get_{elem}", None)
+            if callable(handler):
                 break
         else:
             handler = getattr(self, "get", self.http_method_not_allowed)
+        if not callable(handler):
+            handler = self.http_method_not_allowed
         if settings.DEBUG:
             logger.debug(f"HTMX Method handler: {handler.__name__}")
         return handler(request, *args, **kwargs)
@@ -341,11 +379,13 @@ class HTMXProcessMixin:
 
         """
         for elem in self.htmx_elements():
-            handler = getattr(self, f"htmx_patch_{elem}", False)
-            if handler:
+            handler = getattr(self, f"htmx_patch_{elem}", None)
+            if callable(handler):
                 break
         else:
             handler = getattr(self, "patch", self.http_method_not_allowed)
+        if not callable(handler):
+            handler = self.http_method_not_allowed
         if settings.DEBUG:
             logger.debug(f"HTMX Method handler: {handler.__name__}")
         return handler(request, *args, **kwargs)
@@ -379,11 +419,13 @@ class HTMXProcessMixin:
 
         """
         for elem in self.htmx_elements():
-            handler = getattr(self, f"htmx_post_{elem}", False)
-            if handler:
+            handler = getattr(self, f"htmx_post_{elem}", None)
+            if callable(handler):
                 break
         else:
             handler = getattr(self, "post", self.http_method_not_allowed)
+        if not callable(handler):
+            handler = self.http_method_not_allowed
         if settings.DEBUG:
             logger.debug(f"HTMX Method handler: {handler.__name__}")
         return handler(request, *args, **kwargs)
@@ -417,11 +459,13 @@ class HTMXProcessMixin:
 
         """
         for elem in self.htmx_elements():
-            handler = getattr(self, f"htmx_put_{elem}", False)
-            if handler:
+            handler = getattr(self, f"htmx_put_{elem}", None)
+            if callable(handler):
                 break
         else:
             handler = getattr(self, "put", self.http_method_not_allowed)
+        if not callable(handler):
+            handler = self.http_method_not_allowed
         if settings.DEBUG:
             logger.debug(f"HTMX Method handler: {handler.__name__}")
         return handler(request, *args, **kwargs)
@@ -526,6 +570,111 @@ class HTMXFormMixin(HTMXProcessMixin):
         return super().form_invalid(form)
 
 
-if not hasattr(View, "_bon_htmx_dispatch"):  # View needs monkey patching
-    setattr(View, "_non_htmx_dispatch", View.dispatch)
-    setattr(View, "dispatch", dispatch)
+class LinkedSelectEndpointView(TemplateView):
+    """Return linked-select options from an authorised ``ajax_select`` lookup.
+
+    Attributes:
+        template_name (str):
+            Template used to render the option list.
+
+    Examples:
+        Inspect the public interface in an interactive session::
+
+            >>> LinkedSelectEndpointView.__name__
+            'LinkedSelectEndpointView'
+
+    """
+
+    http_method_names = ["get", "head", "options"]
+    template_name = "htmx_views/widgets/options.html"
+
+    def dispatch(self, request, *args, **kwargs):
+        """Resolve the lookup and enforce its authorisation policy.
+
+        Args:
+            request (object):
+                The HTTP request.
+            *args (object):
+                Positional arguments supplied by Django.
+
+        Keyword Parameters:
+            **kwargs (object):
+                URL keyword arguments supplied by Django.
+
+        Returns:
+            (object):
+                The rendered response.
+
+        Raises:
+            Http404:
+                If the requested lookup channel is not registered.
+            PermissionDenied:
+                If the lookup's authorisation policy rejects the request.
+
+        Examples:
+            Inspect the public interface in an interactive session::
+
+                >>> callable(LinkedSelectEndpointView.dispatch)
+                True
+
+        """
+        self.lookup_channel = kwargs.get("lookup_channel")
+        try:
+            self.lookup = registry.get(self.lookup_channel)
+        except ImproperlyConfigured as error:
+            raise Http404("Unknown linked-select lookup channel.") from error
+
+        self.lookup.check_auth(request)
+        self.parent = request.GET.get("_htmx_parent") or getattr(self.lookup, "parameter_name", None)
+        return super().dispatch(request, *args, **kwargs)
+
+    def get_context_data(self, **kwargs):
+        """Add the lookup options to the template context.
+
+        Keyword Parameters:
+            **kwargs (object):
+                Context keyword arguments supplied by Django.
+
+        Returns:
+            (dict):
+                Template context containing ``options`` as ``(value, label)`` pairs.
+
+        Raises:
+            ImproperlyConfigured:
+                If neither the request nor the lookup identifies the parent field.
+
+        Examples:
+            Inspect the public interface in an interactive session::
+
+                >>> callable(LinkedSelectEndpointView.get_context_data)
+                True
+
+        """
+        if self.parent is None:
+            raise ImproperlyConfigured(
+                f"Creating an htmx_views widget for {self.lookup_channel} without knowing the trigger."
+            )
+
+        query = self.request.GET.get(self.parent)
+        try:
+            query = int(query)
+        except (TypeError, ValueError):
+            pass
+
+        context = super().get_context_data(**kwargs)
+        context["options"] = []
+        if query:
+            context["options"] = [
+                (item.pk, str(item)) for item in self.lookup.get_query(query, self.request).distinct()
+            ]
+        return context
+
+
+def _install_htmx_dispatch(view_class=View):
+    """Install the HTMX-aware dispatch function idempotently."""
+    if not hasattr(view_class, "_non_htmx_dispatch"):
+        setattr(view_class, "_non_htmx_dispatch", view_class.dispatch)
+    setattr(view_class, "dispatch", dispatch)
+
+
+_install_htmx_dispatch()

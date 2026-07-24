@@ -12,10 +12,13 @@ This module tests the pure-Python view logic provided by the htmx_views app:
 All tests here are pure unit tests that do **not** require database access.
 """
 # Python imports
-from unittest.mock import MagicMock
+from types import SimpleNamespace
+from unittest.mock import MagicMock, patch
 
 # Django imports
-from django.http import HttpResponse
+from django.core.exceptions import ImproperlyConfigured, PermissionDenied
+from django.http import Http404, HttpResponse
+from django.test import RequestFactory
 
 # external imports
 import pytest
@@ -1064,3 +1067,217 @@ class TestHTMXFormMixinDebugLogging:
         form = MagicMock()
         result = view.form_invalid(form)
         assert result.content == b"super_form_invalid"
+
+
+class TestHTMXDispatchHardening:
+    """Test defensive dispatch behaviour added during cross-project alignment."""
+
+    def test_non_callable_top_level_handler_returns_method_not_allowed(self):
+        """A truthy non-callable HTMX handler produces a 405 response."""
+        # external imports
+        from htmx_views.views import dispatch
+
+        class Concrete:
+            """Provide the minimal dispatch contract."""
+
+            http_method_names = ["get"]
+            htmx_http_method_names = ["get"]
+            htmx_get = "not callable"
+
+            def get(self, request, *args, **kwargs):
+                """Return an ordinary GET response."""
+                return HttpResponse("get")
+
+            def http_method_not_allowed(self, request, *args, **kwargs):
+                """Return a method-not-allowed response."""
+                return HttpResponse("method_not_allowed", status=405)
+
+        result = dispatch(Concrete(), _make_request("GET", htmx=_MockHtmx()))
+
+        assert result.status_code == 405
+
+    def test_dispatch_installer_is_idempotent(self):
+        """Installing dispatch twice preserves the original non-HTMX method."""
+        # external imports
+        from htmx_views.views import _install_htmx_dispatch, dispatch
+
+        class FakeView:
+            """Provide a disposable view class for installer testing."""
+
+            def dispatch(self, request, *args, **kwargs):
+                """Return an ordinary response."""
+                return HttpResponse("original")
+
+        original_dispatch = FakeView.dispatch
+        _install_htmx_dispatch(FakeView)
+        _install_htmx_dispatch(FakeView)
+
+        assert FakeView._non_htmx_dispatch is original_dispatch
+        assert FakeView.dispatch is dispatch
+
+
+class TestHTMXResolverHardening:
+    """Test callable-only resolver behaviour and compatibility aliases."""
+
+    def _make_view(self, htmx):
+        """Create a concrete process mixin."""
+        # external imports
+        from htmx_views.views import HTMXProcessMixin
+
+        class Concrete(HTMXProcessMixin, _StubBase):
+            """Provide a concrete process mixin."""
+
+        view = Concrete.__new__(Concrete)
+        view.request = _make_request(htmx=htmx)
+        view._htmx_get_context_data = False
+        view._htmx_get_context_object_name = False
+        view._htmx_get_template_names = False
+        return view
+
+    def test_empty_htmx_elements_return_no_context_handler(self):
+        """An HTMX request without element metadata falls back safely."""
+        view = self._make_view(_MockHtmx())
+
+        assert view.get_context_data_function() is None
+        assert view.get_context_data() == {"base": True}
+
+    def test_non_callable_context_handler_does_not_hide_later_match(self):
+        """Resolver skips a non-callable trigger-name attribute and checks the target."""
+        view = self._make_view(_MockHtmx(trigger_name="invalid", target="valid"))
+        view.get_context_data_invalid = "not callable"
+        view.get_context_data_valid = lambda **kwargs: {"selected": True, **kwargs}
+
+        assert view.get_context_data() == {"selected": True}
+
+    def test_non_callable_template_handler_does_not_hide_later_match(self):
+        """Template routing skips non-callable attributes and checks later elements."""
+        view = self._make_view(_MockHtmx(trigger_name="invalid", target="valid"))
+        view.get_template_names_invalid = "not callable"
+        view.get_template_names_valid = lambda: ["valid.html"]
+
+        assert view.get_template_names() == ["valid.html"]
+
+    def test_non_callable_verb_handler_returns_method_not_allowed(self):
+        """Verb routing produces 405 when both element and ordinary handlers are non-callable."""
+        view = self._make_view(_MockHtmx(trigger_name="invalid"))
+        view.htmx_get_invalid = "not callable"
+        view.get = "not callable"
+
+        response = view.htmx_get(view.request)
+
+        assert response.status_code == 405
+
+    def test_context_object_name_supports_underscored_handler(self):
+        """The consistent underscored handler spelling is supported."""
+        view = self._make_view(_MockHtmx(trigger_name="table"))
+        view.get_context_object_name_table = lambda object_list: "table_list"
+
+        assert view.get_context_object_name([]) == "table_list"
+
+
+class TestHTMXSelectWidget:
+    """Test the linked select widget."""
+
+    def test_parent_is_inferred_from_correctly_spelled_lookup_attribute(self):
+        """The lookup's ``parameter_name`` supplies the default parent."""
+        # external imports
+        from htmx_views.widgets import HTMXSelectWidget
+
+        lookup = SimpleNamespace(parameter_name="module")
+        with patch("htmx_views.widgets.registry.get", return_value=lookup):
+            widget = HTMXSelectWidget("categories")
+
+        assert widget.parent_name == "module"
+        assert widget.attrs["hx-trigger"] == "change from:#id_module"
+        assert widget.attrs["hx-include"] == "#id_module"
+        assert "_htmx_parent=module" in str(widget.attrs["hx-get"])
+
+    def test_unknown_lookup_raises_configuration_error(self):
+        """An unknown lookup channel fails during widget construction."""
+        # external imports
+        from htmx_views.widgets import HTMXSelectWidget
+
+        with patch(
+            "htmx_views.widgets.registry.get",
+            side_effect=ImproperlyConfigured("missing"),
+        ):
+            with pytest.raises(ImproperlyConfigured, match="does not exist"):
+                HTMXSelectWidget("missing", parent="module")
+
+    def test_context_targets_the_rendered_select(self):
+        """The widget replaces its own select element."""
+        # external imports
+        from htmx_views.widgets import HTMXSelectWidget
+
+        with patch("htmx_views.widgets.registry.get", return_value=SimpleNamespace()):
+            widget = HTMXSelectWidget("categories", parent="module")
+
+        context = widget.get_context("category", None, {})
+
+        assert context["widget"]["attrs"]["hx-target"] == "#id_category"
+
+
+class TestLinkedSelectEndpointView:
+    """Test linked-select endpoint authorisation and rendering."""
+
+    def _request(self, **query):
+        """Build a request for the linked-select endpoint."""
+        request = RequestFactory().get("/htmx_views/select/categories/", query)
+        request.user = SimpleNamespace(is_authenticated=True, is_staff=False)
+        return request
+
+    def test_unknown_lookup_returns_404(self):
+        """Unknown lookup names are not exposed as configuration errors."""
+        # external imports
+        from htmx_views.views import LinkedSelectEndpointView
+
+        request = self._request(_htmx_parent="module", module="7")
+        with patch("htmx_views.views.registry.get", side_effect=ImproperlyConfigured("missing")):
+            with pytest.raises(Http404):
+                LinkedSelectEndpointView.as_view()(request, lookup_channel="missing")
+
+    def test_lookup_permission_denial_remains_403(self):
+        """Lookup authorisation failures propagate as permission denials."""
+        # external imports
+        from htmx_views.views import LinkedSelectEndpointView
+
+        lookup = MagicMock()
+        lookup.check_auth.side_effect = PermissionDenied
+        request = self._request(_htmx_parent="module", module="7")
+        with patch("htmx_views.views.registry.get", return_value=lookup):
+            with pytest.raises(PermissionDenied):
+                LinkedSelectEndpointView.as_view()(request, lookup_channel="categories")
+
+    def test_authorised_lookup_renders_distinct_escaped_options(self):
+        """Authorised requests render every option and escape labels."""
+        # external imports
+        from htmx_views.views import LinkedSelectEndpointView
+
+        class LabelledItem:
+            """Provide a predictable string representation."""
+
+            def __init__(self, pk, label):
+                """Store the option value and label."""
+                self.pk = pk
+                self.label = label
+
+            def __str__(self):
+                """Return the option label."""
+                return self.label
+
+        items = [LabelledItem(1, "<script>"), LabelledItem(2, "Second")]
+        queryset = MagicMock()
+        queryset.distinct.return_value = items
+        lookup = MagicMock(parameter_name="module")
+        lookup.get_query.return_value = queryset
+        request = self._request(module="7")
+
+        with patch("htmx_views.views.registry.get", return_value=lookup):
+            response = LinkedSelectEndpointView.as_view()(request, lookup_channel="categories")
+            response.render()
+
+        lookup.check_auth.assert_called_once_with(request)
+        lookup.get_query.assert_called_once_with(7, request)
+        content = response.content.decode()
+        assert '<option value="1">&lt;script&gt;</option>' in content
+        assert '<option value="2">Second</option>' in content

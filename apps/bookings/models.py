@@ -20,12 +20,7 @@ import numpy as np
 from accounts.models import Account, Role
 from costings.models import ChargeableItem
 from equipment.models import Equipment
-from labman_utils.models import (
-    NamedObject,
-    delta_t,
-    ensure_tz,
-    replace_time,
-)
+from labman_utils.models import NamedObject, delta_t, ensure_tz, replace_time
 from numpy import ceil
 from psycopg2.extras import DateTimeTZRange
 from pytz import timezone

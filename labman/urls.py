@@ -17,12 +17,7 @@ from django.views.generic import TemplateView
 # app imports
 # Django REST Framework launcher import
 from . import api
-from .views import (
-    E403View,
-    E404View,
-    E500View,
-    FileServeView,
-)
+from .views import E403View, E404View, E500View, FileServeView
 
 # Set Error handlers
 handler404 = E404View.as_view()
