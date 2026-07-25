@@ -7,6 +7,7 @@ dependencies:
   - python=3.13
   - django=5.2.11
   - mamba
+  - pip
   - ipython
   - django-mathfilters
   - django-import-export=4.3.7
@@ -119,4 +120,6 @@ dependencies:
   - xlsx2html
   - xlsxwriter
   - django-mptt
+  - pip:
+      - django-htmx-views==0.1.0
 prefix: /usr/lib/miniconda3/envs/django

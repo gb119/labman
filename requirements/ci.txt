@@ -17,6 +17,7 @@ django-constance[database]
 django-extensions
 django-extra-views
 django-htmx
+django-htmx-views==0.1.0
 django-mathfilters
 django-mptt
 django-sortedm2m
