@@ -1153,18 +1153,12 @@ class TestBaseConfigurableHxValsExtraBranches:
 
     def test_placeholder_included_in_json(self):
         """When placeholder is set, 'placeholder' key is included in the JSON output."""
-        # Python imports
-        import json
-
         result = self._render_tag("myfield", "", placeholder="Search...")
         parsed = json.loads("{" + result + "}")
         assert parsed.get("placeholder") == "Search..."
 
     def test_required_included_in_json(self):
         """When required=True, 'required' key is included in the JSON output."""
-        # Python imports
-        import json
-
         result = self._render_tag("myfield", "", required=True)
         parsed = json.loads("{" + result + "}")
         assert parsed.get("required") is True

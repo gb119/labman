@@ -17,3 +17,12 @@ pydocstyle:
     # Google-style section names end in colons and are not underlined.
     - D406
     - D407
+
+# Codacy runs dedicated Pylint and related error-prone analysers. Avoid
+# duplicating those findings through Prospector while retaining its
+# pycodestyle and repository-specific pydocstyle configuration.
+pyflakes:
+  run: false
+
+pylint:
+  run: false
