@@ -105,6 +105,7 @@ DEFAULT_APPS = [
     "tinymce",
     "easy_pdf",
     "django_simple_file_handler",
+    "htmx_views",
 ] + CUSTOM_APPS
 
 # Middlewares
