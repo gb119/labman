@@ -39,6 +39,7 @@ urlpatterns = [
     path("api-auth/", include("rest_framework.urls")),  # Needed by REST framework for user authentication
     path("oauth2/", include("django_auth_adfs.urls")),  # Autrhentication via Duo
     path("riaradh/", admin.site.urls),
+    path(f"htmx_views/", include(f"htmx_views.urls")),
 ]
 
 # Add urls path for all the apps
